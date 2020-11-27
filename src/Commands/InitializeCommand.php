@@ -1,0 +1,109 @@
+<?php declare(strict_types = 1);
+
+/**
+ * InitializeCommand.php
+ *
+ * @license        More in license.md
+ * @copyright      https://www.fastybird.com
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @package        FastyBird:DevicesModule!
+ * @subpackage     Commands
+ * @since          0.1.0
+ *
+ * @date           08.08.20
+ */
+
+namespace FastyBird\DevicesModule\Commands;
+
+use RuntimeException;
+use Symfony\Component\Console;
+use Symfony\Component\Console\Input;
+use Symfony\Component\Console\Output;
+use Symfony\Component\Console\Style;
+
+/**
+ * Module initialize command
+ *
+ * @package        FastyBird:DevicesModule!
+ * @subpackage     Commands
+ *
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ */
+class InitializeCommand extends Console\Command\Command
+{
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function configure(): void
+	{
+		$this
+			->setName('fb:devices-module:initialize')
+			->addOption('noconfirm', null, Input\InputOption::VALUE_NONE, 'do not ask for any confirmation')
+			->setDescription('Initialize module.');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
+	{
+		$symfonyApp = $this->getApplication();
+
+		if ($symfonyApp === null) {
+			return 1;
+		}
+
+		$io = new Style\SymfonyStyle($input, $output);
+
+		$io->title('FB devices module - initialization');
+
+		$io->note('This action will create|update module database structure.');
+
+		/** @var bool $continue */
+		$continue = $io->ask('Would you like to continue?', 'n', function ($answer): bool {
+			if (!in_array($answer, ['y', 'Y', 'n', 'N'], true)) {
+				throw new RuntimeException('You must type Y or N');
+			}
+
+			return in_array($answer, ['y', 'Y'], true);
+		});
+
+		if (!$continue) {
+			return 0;
+		}
+
+		$io->section('Preparing module database');
+
+		$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
+
+		$result = $databaseCmd->run(new Input\ArrayInput([
+			'--force' => true,
+		]), $output);
+
+		if ($result !== 0) {
+			$io->error('Something went wrong, initialization could not be finished.');
+
+			return 1;
+		}
+
+		$databaseProxiesCmd = $symfonyApp->find('orm:generate-proxies');
+
+		$result = $databaseProxiesCmd->run(new Input\ArrayInput([
+			'--quiet' => true,
+		]), $output);
+
+		if ($result !== 0) {
+			$io->error('Something went wrong, initialization could not be finished.');
+
+			return 1;
+		}
+
+		$io->newLine(3);
+
+		$io->success('This module has been successfully initialized and can be now started.');
+
+		return 0;
+	}
+
+}

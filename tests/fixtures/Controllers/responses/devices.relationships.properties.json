@@ -1,0 +1,23 @@
+{
+  "data" : [
+    {
+      "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
+      "type" : "devices-module/device-property"
+    },
+    {
+      "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+      "type" : "devices-module/device-property"
+    }
+  ],
+  "jsonapi" : {
+    "version" : "1.1"
+  },
+  "links" : {
+    "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties",
+    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/properties"
+  },
+  "meta" : {
+    "author" : "FastyBird dev team",
+    "copyright" : "FastyBird s.r.o"
+  }
+}

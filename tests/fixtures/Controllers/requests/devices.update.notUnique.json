@@ -1,0 +1,10 @@
+{
+  "data" : {
+    "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
+    "type" : "devices-module/network-device",
+    "attributes" : {
+      "identifier" : "second-device",
+      "name" : "With name"
+    }
+  }
+}

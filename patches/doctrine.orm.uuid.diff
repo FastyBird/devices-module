@@ -1,0 +1,65 @@
+diff --git a/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php b/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php
+index ea1f2efee..b09f58605 100644
+--- a/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php
++++ b/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php
+@@ -37,6 +37,7 @@
+ use Doctrine\ORM\UnitOfWork;
+ use Doctrine\ORM\Utility\IdentifierFlattener;
+ use Doctrine\ORM\Utility\PersisterHelper;
++use Ramsey\Uuid\Uuid;
+ use function array_key_exists;
+ use function array_map;
+ use function array_merge;
+@@ -590,6 +591,15 @@
+     {
+         $class      = $this->class;
+         $identifier = $this->em->getUnitOfWork()->getEntityIdentifier($entity);
++
++        foreach ($identifier as $key=>$value) {
++            if ($value instanceof Uuid) {
++                $identifier[$key] = $value->getBytes();
++            } else {
++                $identifier[$key] = $value;
++            }
++        }
++
+         $tableName  = $this->quoteStrategy->getTableName($class, $this->platform);
+         $idColumns  = $this->quoteStrategy->getIdentifierColumnNames($class, $this->platform);
+         $id         = array_combine($idColumns, $identifier);
+
+warning: LF will be replaced by CRLF in lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php.
+The file will have its original line endings in your working directory.
+
+
+diff --git a/lib/Doctrine/ORM/Persisters/Entity/JoinedSubclassPersister.php b/lib/Doctrine/ORM/Persisters/Entity/JoinedSubclassPersister.php
+index 1f6d40133..0a3d080a8 100644
+--- a/lib/Doctrine/ORM/Persisters/Entity/JoinedSubclassPersister.php
++++ b/lib/Doctrine/ORM/Persisters/Entity/JoinedSubclassPersister.php
+@@ -26,6 +26,7 @@
+
+ use Doctrine\Common\Collections\Criteria;
+ use Doctrine\ORM\Utility\PersisterHelper;
++use Ramsey\Uuid\Uuid;
+ use function array_combine;
+ use function array_reverse;
+
+@@ -274,6 +275,14 @@
+     {
+         $identifier = $this->em->getUnitOfWork()->getEntityIdentifier($entity);
+
++        foreach ($identifier as $key=>$value) {
++            if ($value instanceof Uuid) {
++                $identifier[$key] = $value->getBytes();
++            } else {
++                $identifier[$key] = $value;
++            }
++        }
++
+         $this->deleteJoinTableRecords($identifier);
+
+         // Delete parent entries in reverse order (root first, until the direct parent of the current class).
+
+
+
+warning: LF will be replaced by CRLF in lib/Doctrine/ORM/Persisters/Entity/JoinedSubclassPersister.php.
+The file will have its original line endings in your working directory.

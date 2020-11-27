@@ -1,0 +1,160 @@
+{
+  "meta" : {
+    "author" : "FastyBird dev team",
+    "copyright" : "FastyBird s.r.o"
+  },
+  "jsonapi" : {
+    "version" : "1.1"
+  },
+  "links" : {
+    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+  },
+  "data" : {
+    "type" : "devices-module/network-device",
+    "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
+    "attributes" : {
+      "identifier" : "updated-device",
+      "name" : "With name",
+      "comment" : null,
+      "state" : "init",
+      "enabled" : true,
+      "control" : [
+        "configure"
+      ],
+      "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
+    },
+    "relationships" : {
+      "hardware" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/hardware",
+          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/hardware"
+        },
+        "data" : {
+          "type" : "devices-module/hardware",
+          "id" : "8059b830-b76d-4f98-be9c-53bd06eab9a5"
+        }
+      },
+      "firmware" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware",
+          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/firmware"
+        },
+        "data" : {
+          "type" : "devices-module/firmware",
+          "id" : "06feddf4-63e2-48bc-af13-f355f01ffbe0"
+        }
+      },
+      "properties" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/properties",
+          "related" : {
+            "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties",
+            "meta" : {
+              "count" : 2
+            }
+          }
+        },
+        "data" : [
+          {
+            "type" : "devices-module/device-property",
+            "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
+          },
+          {
+            "type" : "devices-module/device-property",
+            "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+          }
+        ]
+      },
+      "configuration" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/configuration",
+          "related" : {
+            "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration",
+            "meta" : {
+              "count" : 9
+            }
+          }
+        },
+        "data" : [
+          {
+            "type" : "devices-module/device-configuration-number",
+            "id" : "138c6cfc-ed49-476b-9f1e-6ee1dcb24f0b"
+          },
+          {
+            "type" : "devices-module/device-configuration-number",
+            "id" : "19eb2b65-abce-4061-b591-4ff1a4b1500f"
+          },
+          {
+            "type" : "devices-module/device-configuration-select",
+            "id" : "1b061a97-4d99-4732-9ea5-ea2eb777e970"
+          },
+          {
+            "type" : "devices-module/device-configuration-number",
+            "id" : "20fba951-e76d-4d6b-a572-dec02c6d8de8"
+          },
+          {
+            "type" : "devices-module/device-configuration-number",
+            "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
+          },
+          {
+            "type" : "devices-module/device-configuration-number",
+            "id" : "4897727b-b74e-47ae-a0e7-953c8f3e4f06"
+          },
+          {
+            "type" : "devices-module/device-configuration-select",
+            "id" : "81bdf07b-7dc9-4e3a-98b1-4dc5e9f16b55"
+          },
+          {
+            "type" : "devices-module/device-configuration-number",
+            "id" : "8a41d824-b1db-4548-b07e-606117dd7309"
+          },
+          {
+            "type" : "devices-module/device-configuration-select",
+            "id" : "8d933e4c-1fc9-4361-ba09-eebee4592776"
+          }
+        ]
+      },
+      "channels" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/channels",
+          "related" : {
+            "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels",
+            "meta" : {
+              "count" : 2
+            }
+          }
+        },
+        "data" : [
+          {
+            "type" : "devices-module/channel",
+            "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
+          },
+          {
+            "type" : "devices-module/channel",
+            "id" : "6821f8e9-ae69-4d5c-9b7c-d2b213f1ae0a"
+          }
+        ]
+      },
+      "children" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/children",
+          "related" : {
+            "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/children",
+            "meta" : {
+              "count" : 1
+            }
+          }
+        },
+        "data" : [
+          {
+            "type" : "devices-module/network-device",
+            "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596"
+          }
+        ]
+      }
+    },
+    "links" : {
+      "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+    }
+  }
+}

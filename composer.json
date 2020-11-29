@@ -36,12 +36,11 @@
     "cweagans/composer-patches": "^1.6",
     "fastybird/database": "@dev",
     "fastybird/json-api": "@dev",
-    "fastybird/modules-metadata": "9999999-dev",
+    "fastybird/modules-metadata": "@dev",
     "fastybird/simple-auth": "@dev",
     "fastybird/web-server": "@dev",
     "ipub/doctrine-consistence": "^0.3",
-    "ipub/doctrine-timestampable": "^1.4",
-    "php-on-couch/php-on-couch": "^3.0"
+    "ipub/doctrine-timestampable": "^1.4"
   },
 
   "require-dev": {

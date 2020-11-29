@@ -15,11 +15,13 @@
 
 namespace FastyBird\DevicesModule\Commands;
 
+use FastyBird\Database;
 use RuntimeException;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Style;
+use Throwable;
 
 /**
  * Module initialize command
@@ -31,6 +33,18 @@ use Symfony\Component\Console\Style;
  */
 class InitializeCommand extends Console\Command\Command
 {
+
+	/** @var Database\Helpers\Database */
+	private $database;
+
+	public function __construct(
+		Database\Helpers\Database $database,
+		?string $name = null
+	) {
+		parent::__construct($name);
+
+		$this->database = $database;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -73,6 +87,20 @@ class InitializeCommand extends Console\Command\Command
 			return 0;
 		}
 
+		$io->section('Checking database connection');
+
+		try {
+			if (!$this->database->ping()) {
+				$io->error('Connection to the database could not be established. Check configuration.');
+
+				return 1;
+			}
+		} catch (Throwable $ex) {
+			$io->error('Something went wrong, initialization could not be finished.');
+
+			return 1;
+		}
+
 		$io->section('Preparing module database');
 
 		$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
@@ -101,7 +129,7 @@ class InitializeCommand extends Console\Command\Command
 
 		$io->newLine(3);
 
-		$io->success('This module has been successfully initialized and can be now started.');
+		$io->success('Devices module has been successfully initialized and can be now started.');
 
 		return 0;
 	}

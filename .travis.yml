@@ -7,6 +7,10 @@ php:
 services:
     - mysql
 
+before_script:
+  # Additional PHP config
+  - phpenv config-add ./tests/travis.php.ini
+
 before_install:
     # Turn off XDebug
     - phpenv config-rm xdebug.ini || return 0

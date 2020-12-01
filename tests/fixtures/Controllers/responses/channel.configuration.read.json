@@ -1,50 +1,50 @@
 {
-  "meta" : {
-    "author" : "FastyBird dev team",
-    "copyright" : "FastyBird s.r.o"
+  "meta": {
+    "author": "FastyBird dev team",
+    "copyright": "FastyBird s.r.o"
   },
-  "jsonapi" : {
-    "version" : "1.1"
+  "jsonapi": {
+    "version": "1.1"
   },
-  "links" : {
-    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration/008d911f-e6d4-4b17-aa28-939839581cde"
+  "links": {
+    "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration/008d911f-e6d4-4b17-aa28-939839581cde"
   },
-  "data" : {
-    "type" : "devices-module/channel-configuration-select",
-    "id" : "008d911f-e6d4-4b17-aa28-939839581cde",
-    "attributes" : {
-      "configuration" : "pulse_mode",
-      "name" : null,
-      "comment" : null,
-      "default" : "0",
-      "values" : [
+  "data": {
+    "type": "devices-module/channel-configuration-select",
+    "id": "008d911f-e6d4-4b17-aa28-939839581cde",
+    "attributes": {
+      "configuration": "pulse_mode",
+      "name": null,
+      "comment": null,
+      "default": "0",
+      "values": [
         {
-          "name" : "disabled",
-          "value" : "0"
+          "name": "disabled",
+          "value": "0"
         },
         {
-          "name" : "normally_off",
-          "value" : "1"
+          "name": "normally_off",
+          "value": "1"
         },
         {
-          "name" : "normally_on",
-          "value" : "2"
+          "name": "normally_on",
+          "value": "2"
         }
       ]
     },
-    "relationships" : {
-      "channel" : {
-        "links" : {
-          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
+    "relationships": {
+      "channel": {
+        "links": {
+          "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         },
-        "data" : {
-          "type" : "devices-module/channel",
-          "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
+        "data": {
+          "type": "devices-module/channel",
+          "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
       }
     },
-    "links" : {
-      "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration/008d911f-e6d4-4b17-aa28-939839581cde"
+    "links": {
+      "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration/008d911f-e6d4-4b17-aa28-939839581cde"
     }
   }
 }

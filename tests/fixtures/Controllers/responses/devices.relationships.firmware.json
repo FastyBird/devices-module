@@ -1,17 +1,17 @@
 {
-  "data" : {
-    "id" : "06feddf4-63e2-48bc-af13-f355f01ffbe0",
-    "type" : "devices-module/firmware"
+  "data": {
+    "id": "06feddf4-63e2-48bc-af13-f355f01ffbe0",
+    "type": "devices-module/firmware"
   },
-  "jsonapi" : {
-    "version" : "1.1"
+  "jsonapi": {
+    "version": "1.1"
   },
-  "links" : {
-    "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/firmware",
-    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware"
+  "links": {
+    "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/firmware",
+    "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware"
   },
-  "meta" : {
-    "author" : "FastyBird dev team",
-    "copyright" : "FastyBird s.r.o"
+  "meta": {
+    "author": "FastyBird dev team",
+    "copyright": "FastyBird s.r.o"
   }
 }

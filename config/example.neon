@@ -14,23 +14,24 @@ php:
 	date.timezone: Europe/Prague
 
 extensions:
-	contributteConsole			: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
-	contributteTranslation		: Contributte\Translation\DI\TranslationExtension
-	nettrineAnnotations			: Nettrine\Annotations\DI\AnnotationsExtension
-	nettrineCache				: Nettrine\Cache\DI\CacheExtension
-	nettrineDbal				: Nettrine\DBAL\DI\DbalExtension
-	nettrineOrm					: Nettrine\ORM\DI\OrmExtension
-	nettrineOrmAnnotations		: Nettrine\ORM\DI\OrmAnnotationsExtension
-	nettrineOrmConsole			: Nettrine\ORM\DI\OrmConsoleExtension
-	nettrineOrmCache			: Nettrine\ORM\DI\OrmCacheExtension
-	ipubDoctrineConsistence		: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
-	ipubDoctrineCrud			: IPub\DoctrineCrud\DI\DoctrineCrudExtension
-	ipubDoctrineTimestampable	: IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
-	fbDatabase					: FastyBird\Database\DI\DatabaseExtension
-	fbDateTimeFactory			: FastyBird\DateTimeFactory\DI\DateTimeFactoryExtension
-	fbJsonApi					: FastyBird\JsonApi\DI\JsonApiExtension
-	fbSimpleAuth				: FastyBird\SimpleAuth\DI\SimpleAuthExtension
-	fbWebServer					: FastyBird\WebServer\DI\WebServerExtension
+	contributteConsole					: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+	contributteTranslation				: Contributte\Translation\DI\TranslationExtension
+	nettrineAnnotations					: Nettrine\Annotations\DI\AnnotationsExtension
+	nettrineCache						: Nettrine\Cache\DI\CacheExtension
+	nettrineDbal						: Nettrine\DBAL\DI\DbalExtension
+	nettrineOrm							: Nettrine\ORM\DI\OrmExtension
+	nettrineOrmAnnotations				: Nettrine\ORM\DI\OrmAnnotationsExtension
+	nettrineOrmConsole					: Nettrine\ORM\DI\OrmConsoleExtension
+	nettrineOrmCache					: Nettrine\ORM\DI\OrmCacheExtension
+	ipubDoctrineConsistence				: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
+	ipubDoctrineCrud					: IPub\DoctrineCrud\DI\DoctrineCrudExtension
+	ipubDoctrineTimestampable			: IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
+	ipubDoctrineDynamicDiscriminatorMap	: IPub\DoctrineDynamicDiscriminatorMap\DI\DoctrineDynamicDiscriminatorMapExtension
+	fbDatabase							: FastyBird\Database\DI\DatabaseExtension
+	fbDateTimeFactory					: FastyBird\DateTimeFactory\DI\DateTimeFactoryExtension
+	fbJsonApi							: FastyBird\JsonApi\DI\JsonApiExtension
+	fbSimpleAuth						: FastyBird\SimpleAuth\DI\SimpleAuthExtension
+	fbWebServer							: FastyBird\WebServer\DI\WebServerExtension
 
 contributteConsole:
 	name: FastyBird:Libraries!

@@ -1,7 +1,5 @@
 parameters:
 	level: max
-	bootstrapFiles:
-		- phpstan-bootstrap.php
 	stubFiles:
 		- tests/PHPStan/stubs/Doctrine/ORM/Query.php
 		- tests/PHPStan/stubs/Doctrine/ORM/QueryBuilder.php

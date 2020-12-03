@@ -1,48 +1,48 @@
 {
-  "data": [
+  "data" : [
     {
-      "attributes": {
-        "datatype": "integer",
-        "format": null,
-        "queryable": true,
-        "settable": false,
-        "name": "uptime",
-        "property": "uptime",
-        "unit": null,
-        "value": null,
-        "expected": null,
-        "pending": false
+      "attributes" : {
+        "datatype" : "integer",
+        "format" : null,
+        "queryable" : true,
+        "settable" : false,
+        "name" : "uptime",
+        "property" : "uptime",
+        "unit" : null,
+        "value" : null,
+        "expected" : null,
+        "pending" : false
       },
-      "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+      "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
       },
-      "relationships": {
-        "device": {
-          "data": {
-            "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-            "type": "devices-module/device-property"
+      "relationships" : {
+        "device" : {
+          "data" : {
+            "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+            "type" : "devices-module/device-property"
           },
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "type": "devices-module/device-property"
+      "type" : "devices-module/device-property"
     }
   ],
-  "jsonapi": {
-    "version": "1.1"
+  "jsonapi" : {
+    "version" : "1.1"
   },
-  "links": {
-    "first": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=0&page%5Blimit%5D=1",
-    "last": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=1&page%5Blimit%5D=1",
-    "prev": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=0&page%5Blimit%5D=1",
-    "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=1&page%5Blimit%5D=1"
+  "links" : {
+    "first" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=0&page%5Blimit%5D=1",
+    "last" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=1&page%5Blimit%5D=1",
+    "prev" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=0&page%5Blimit%5D=1",
+    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=1&page%5Blimit%5D=1"
   },
-  "meta": {
-    "author": "FastyBird dev team",
-    "copyright": "FastyBird s.r.o",
-    "totalCount": 2
+  "meta" : {
+    "author" : "FastyBird dev team",
+    "copyright" : "FastyBird s.r.o",
+    "totalCount" : 2
   }
 }

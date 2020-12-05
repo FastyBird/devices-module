@@ -5,6 +5,7 @@ namespace Tests\Cases;
 use FastyBird\DevicesModule\Commands;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\DI;
+use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Middleware;
 use FastyBird\DevicesModule\Models;
@@ -76,6 +77,8 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Hydrators\Devices\NetworkDeviceHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Devices\LocalDeviceHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Channels\ChannelHydrator::class));
+
+		Assert::notNull($container->getByType(Helpers\PropertyHelper::class));
 	}
 
 	/**

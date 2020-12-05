@@ -20,6 +20,7 @@ use Doctrine\Persistence;
 use FastyBird\DevicesModule\Commands;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Middleware;
 use FastyBird\DevicesModule\Models;
@@ -215,6 +216,10 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition(null)
 			->setType(Hydrators\Channels\ChannelHydrator::class);
+
+		// Helpers
+		$builder->addDefinition(null)
+			->setType(Helpers\PropertyHelper::class);
 	}
 
 	/**

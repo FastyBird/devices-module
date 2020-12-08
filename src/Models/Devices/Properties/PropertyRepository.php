@@ -61,6 +61,18 @@ final class PropertyRepository implements IPropertyRepository
 	}
 
 	/**
+	 * @return Persistence\ObjectRepository<Entities\Devices\Properties\Property>
+	 */
+	private function getRepository(): Persistence\ObjectRepository
+	{
+		if ($this->repository === null) {
+			$this->repository = $this->managerRegistry->getRepository(Entities\Devices\Properties\Property::class);
+		}
+
+		return $this->repository;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @throws Throwable
@@ -75,18 +87,6 @@ final class PropertyRepository implements IPropertyRepository
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @return Persistence\ObjectRepository<Entities\Devices\Properties\Property>
-	 */
-	private function getRepository(): Persistence\ObjectRepository
-	{
-		if ($this->repository === null) {
-			$this->repository = $this->managerRegistry->getRepository(Entities\Devices\Properties\Property::class);
-		}
-
-		return $this->repository;
 	}
 
 }

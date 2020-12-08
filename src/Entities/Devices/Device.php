@@ -192,50 +192,9 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getIdentifier(): string
-	{
-		return $this->identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setParent(IDevice $device): void
-	{
-		$this->parent = $device;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getParent(): ?IDevice
-	{
-		return $this->parent;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeParent(): void
 	{
 		$this->parent = null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setChildren(array $children): void
-	{
-		$this->children = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		/** @var IDevice $entity */
-		foreach ($children as $entity) {
-			if (!$this->children->contains($entity)) {
-				// ...and assign them to collection
-				$this->children->add($entity);
-			}
-		}
 	}
 
 	/**
@@ -261,97 +220,29 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
+	public function setChildren(array $children): void
+	{
+		$this->children = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		/** @var IDevice $entity */
+		foreach ($children as $entity) {
+			if (!$this->children->contains($entity)) {
+				// ...and assign them to collection
+				$this->children->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function removeChild(IDevice $child): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->children->contains($child)) {
 			// ...and remove it from collection
 			$this->children->removeElement($child);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment = null): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setState(string $state): void
-	{
-		if (!Types\DeviceConnectionState::isValidValue($state)) {
-			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $state));
-		}
-
-		$this->state = Types\DeviceConnectionState::get($state);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getState(): Types\DeviceConnectionState
-	{
-		return $this->state;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setEnabled(bool $enabled): void
-	{
-		$this->enabled = $enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isEnabled(): bool
-	{
-		return $this->enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setChannels(array $channels = []): void
-	{
-		$this->channels = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		/** @var Entities\Channels\IChannel $entity */
-		foreach ($channels as $entity) {
-			if (!$this->channels->contains($entity)) {
-				// ...and assign them to collection
-				$this->channels->add($entity);
-			}
 		}
 	}
 
@@ -373,6 +264,23 @@ abstract class Device implements IDevice
 	public function getChannels(): array
 	{
 		return $this->channels->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setChannels(array $channels = []): void
+	{
+		$this->channels = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		/** @var Entities\Channels\IChannel $entity */
+		foreach ($channels as $entity) {
+			if (!$this->channels->contains($entity)) {
+				// ...and assign them to collection
+				$this->channels->add($entity);
+			}
+		}
 	}
 
 	/**
@@ -403,22 +311,6 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setControls(array $controls = []): void
-	{
-		$this->controls = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($controls as $entity) {
-			if (!$this->controls->contains($entity)) {
-				// ...and assign them to collection
-				$this->controls->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addControl(Entities\Devices\Controls\IControl $control): void
 	{
 		// Check if collection does not contain inserting entity
@@ -431,28 +323,7 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getControls(): array
-	{
-		return $this->controls->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getControl(string $name): ?Entities\Devices\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Devices\Controls\IControl
 	{
 		$found = $this->controls
 			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
@@ -473,28 +344,25 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
+	public function findControl(string $name): ?Entities\Devices\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
+
+		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function removeControl(Entities\Devices\Controls\IControl $control): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->controls->contains($control)) {
 			// ...and remove it from collection
 			$this->controls->removeElement($control);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setProperties(array $properties = []): void
-	{
-		$this->properties = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($properties as $entity) {
-			if (!$this->properties->contains($entity)) {
-				// ...and assign them to collection
-				$this->properties->add($entity);
-			}
 		}
 	}
 
@@ -521,6 +389,22 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
+	public function setProperties(array $properties = []): void
+	{
+		$this->properties = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($properties as $entity) {
+			if (!$this->properties->contains($entity)) {
+				// ...and assign them to collection
+				$this->properties->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getProperty(string $id): ?Entities\Devices\Properties\IProperty
 	{
 		$found = $this->properties
@@ -529,6 +413,14 @@ abstract class Device implements IDevice
 			});
 
 		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasProperty(string $property): bool
+	{
+		return $this->findProperty($property) !== null;
 	}
 
 	/**
@@ -547,36 +439,12 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function hasProperty(string $property): bool
-	{
-		return $this->findProperty($property) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeProperty(Entities\Devices\Properties\IProperty $property): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->properties->contains($property)) {
 			// ...and remove it from collection
 			$this->properties->removeElement($property);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setConfiguration(array $configuration = []): void
-	{
-		$this->configuration = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($configuration as $entity) {
-			if (!$this->configuration->contains($entity)) {
-				// ...and assign them to collection
-				$this->configuration->add($entity);
-			}
 		}
 	}
 
@@ -598,6 +466,22 @@ abstract class Device implements IDevice
 	public function getConfiguration(): array
 	{
 		return $this->configuration->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setConfiguration(array $configuration = []): void
+	{
+		$this->configuration = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($configuration as $entity) {
+			if (!$this->configuration->contains($entity)) {
+				// ...and assign them to collection
+				$this->configuration->add($entity);
+			}
+		}
 	}
 
 	/**
@@ -649,18 +533,6 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getOwnerId(): ?string
-	{
-		if ($this->parent !== null) {
-			return $this->parent->getOwnerId();
-		}
-
-		return $this->owner;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function toArray(): array
 	{
 		return [
@@ -682,6 +554,98 @@ abstract class Device implements IDevice
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getParent(): ?IDevice
+	{
+		return $this->parent;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setParent(IDevice $device): void
+	{
+		$this->parent = $device;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): ?string
+	{
+		return $this->name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setName(?string $name): void
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setComment(?string $comment = null): void
+	{
+		$this->comment = $comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getState(): Types\DeviceConnectionState
+	{
+		return $this->state;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setState(string $state): void
+	{
+		if (!Types\DeviceConnectionState::isValidValue($state)) {
+			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $state));
+		}
+
+		$this->state = Types\DeviceConnectionState::get($state);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isEnabled(): bool
+	{
+		return $this->enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setEnabled(bool $enabled): void
+	{
+		$this->enabled = $enabled;
+	}
+
+	/**
 	 * @return string[]
 	 */
 	private function getPlainControls(): array
@@ -693,6 +657,42 @@ abstract class Device implements IDevice
 		}
 
 		return $controls;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getControls(): array
+	{
+		return $this->controls->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setControls(array $controls = []): void
+	{
+		$this->controls = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($controls as $entity) {
+			if (!$this->controls->contains($entity)) {
+				// ...and assign them to collection
+				$this->controls->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getOwnerId(): ?string
+	{
+		if ($this->parent !== null) {
+			return $this->parent->getOwnerId();
+		}
+
+		return $this->owner;
 	}
 
 }

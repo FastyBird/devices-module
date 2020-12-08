@@ -41,7 +41,7 @@
     "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties?page%5Boffset%5D=1&page%5Blimit%5D=1"
   },
   "meta" : {
-    "author" : "FastyBird dev team",
+    "author" : "FastyBird team",
     "copyright" : "FastyBird s.r.o",
     "totalCount" : 2
   }

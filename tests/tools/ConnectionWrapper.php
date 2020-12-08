@@ -21,8 +21,12 @@ class ConnectionWrapper extends DBAL\Connection
 	 *
 	 * @throws DBAL\DBALException
 	 */
-	public function __construct(array $params, Driver $driver, ?Configuration $config = null, ?EventManager $eventManager = null)
-	{
+	public function __construct(
+		array $params,
+		Driver $driver,
+		?Configuration $config = null,
+		?EventManager $eventManager = null
+	) {
 		$this->dbName = 'fb_test_' . getmypid();
 
 		unset($params['dbname']);

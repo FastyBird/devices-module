@@ -103,9 +103,23 @@ class Firmware implements IFirmware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Uuid\UuidInterface
+	public function toArray(): array
 	{
-		return $this->device;
+		return [
+			'id'           => $this->getPlainId(),
+			'name'         => $this->getName(),
+			'manufacturer' => $this->getManufacturer()->getValue(),
+			'version'      => $this->getVersion(),
+			'device'       => $this->getDevice(),
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): ?string
+	{
+		return $this->name;
 	}
 
 	/**
@@ -119,9 +133,9 @@ class Firmware implements IFirmware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getName(): ?string
+	public function getManufacturer(): Types\FirmwareManufacturerType
 	{
-		return $this->name;
+		return $this->manufacturer;
 	}
 
 	/**
@@ -140,9 +154,9 @@ class Firmware implements IFirmware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getManufacturer(): Types\FirmwareManufacturerType
+	public function getVersion(): ?string
 	{
-		return $this->manufacturer;
+		return $this->version;
 	}
 
 	/**
@@ -156,23 +170,9 @@ class Firmware implements IFirmware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getVersion(): ?string
+	public function getDevice(): Uuid\UuidInterface
 	{
-		return $this->version;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return [
-			'id'           => $this->getPlainId(),
-			'name'         => $this->getName(),
-			'manufacturer' => $this->getManufacturer()->getValue(),
-			'version'      => $this->getVersion(),
-			'device'       => $this->getDevice(),
-		];
+		return $this->device;
 	}
 
 }

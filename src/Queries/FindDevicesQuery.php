@@ -150,11 +150,17 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @phpstan-param ORM\EntityRepository<T> $repository
 	 */
-	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
+	protected function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $this->createBasicDql($repository)->select('COUNT(d.id)');
+		$qb = $repository->createQueryBuilder('d');
 
-		foreach ($this->select as $modifier) {
+		// $qb->select('nd');
+		// $qb->leftJoin(Entities\Devices\NetworkDevice::class, 'nd', ORM\Query\Expr\Join::WITH, 'd = nd');
+
+		// $qb->select('ld');
+		// $qb->leftJoin(Entities\Devices\LocalDevice::class, 'ld', ORM\Query\Expr\Join::WITH, 'd = ld');
+
+		foreach ($this->filter as $modifier) {
 			$modifier($qb);
 		}
 
@@ -168,17 +174,11 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @phpstan-param ORM\EntityRepository<T> $repository
 	 */
-	protected function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
+	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $repository->createQueryBuilder('d');
+		$qb = $this->createBasicDql($repository)->select('COUNT(d.id)');
 
-		// $qb->select('nd');
-		// $qb->leftJoin(Entities\Devices\NetworkDevice::class, 'nd', ORM\Query\Expr\Join::WITH, 'd = nd');
-
-		// $qb->select('ld');
-		// $qb->leftJoin(Entities\Devices\LocalDevice::class, 'ld', ORM\Query\Expr\Join::WITH, 'd = ld');
-
-		foreach ($this->filter as $modifier) {
+		foreach ($this->select as $modifier) {
 			$modifier($qb);
 		}
 

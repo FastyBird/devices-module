@@ -114,9 +114,40 @@ class Hardware implements IHardware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Uuid\UuidInterface
+	public function toArray(): array
 	{
-		return $this->device;
+		return [
+			'id'           => $this->getPlainId(),
+			'version'      => $this->getVersion(),
+			'manufacturer' => $this->getManufacturer()->getValue(),
+			'model'        => $this->getModel()->getValue(),
+			'mac_address'  => $this->getMacAddress(),
+			'device'       => $this->getDevice(),
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getVersion(): ?string
+	{
+		return $this->version;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setVersion(?string $version): void
+	{
+		$this->version = $version;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getManufacturer(): Types\HardwareManufacturerType
+	{
+		return $this->manufacturer;
 	}
 
 	/**
@@ -135,9 +166,9 @@ class Hardware implements IHardware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getManufacturer(): Types\HardwareManufacturerType
+	public function getModel(): Types\ModelType
 	{
-		return $this->manufacturer;
+		return $this->model;
 	}
 
 	/**
@@ -156,25 +187,9 @@ class Hardware implements IHardware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getModel(): Types\ModelType
+	public function getMacAddress(string $separator = ':'): ?string
 	{
-		return $this->model;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setVersion(?string $version): void
-	{
-		$this->version = $version;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getVersion(): ?string
-	{
-		return $this->version;
+		return $this->macAddress !== null ? implode($separator, str_split($this->macAddress, 2)) : null;
 	}
 
 	/**
@@ -196,24 +211,9 @@ class Hardware implements IHardware
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacAddress(string $separator = ':'): ?string
+	public function getDevice(): Uuid\UuidInterface
 	{
-		return $this->macAddress !== null ? implode($separator, str_split($this->macAddress, 2)) : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return [
-			'id'           => $this->getPlainId(),
-			'version'      => $this->getVersion(),
-			'manufacturer' => $this->getManufacturer()->getValue(),
-			'model'        => $this->getModel()->getValue(),
-			'mac_address'  => $this->getMacAddress(),
-			'device'       => $this->getDevice(),
-		];
+		return $this->device;
 	}
 
 }

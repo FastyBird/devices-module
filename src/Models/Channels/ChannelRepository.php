@@ -37,11 +37,11 @@ final class ChannelRepository implements IChannelRepository
 
 	use Nette\SmartObject;
 
-	/** @var Common\Persistence\ManagerRegistry */
-	private $managerRegistry;
-
 	/** @var Persistence\ObjectRepository<Entities\Channels\Channel>|null */
 	public $repository = null;
+
+	/** @var Common\Persistence\ManagerRegistry */
+	private $managerRegistry;
 
 	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
 	{
@@ -57,6 +57,18 @@ final class ChannelRepository implements IChannelRepository
 		$channel = $queryObject->fetchOne($this->getRepository());
 
 		return $channel;
+	}
+
+	/**
+	 * @return Persistence\ObjectRepository<Entities\Channels\Channel>
+	 */
+	private function getRepository(): Persistence\ObjectRepository
+	{
+		if ($this->repository === null) {
+			$this->repository = $this->managerRegistry->getRepository(Entities\Channels\Channel::class);
+		}
+
+		return $this->repository;
 	}
 
 	/**
@@ -86,18 +98,6 @@ final class ChannelRepository implements IChannelRepository
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @return Persistence\ObjectRepository<Entities\Channels\Channel>
-	 */
-	private function getRepository(): Persistence\ObjectRepository
-	{
-		if ($this->repository === null) {
-			$this->repository = $this->managerRegistry->getRepository(Entities\Channels\Channel::class);
-		}
-
-		return $this->repository;
 	}
 
 }

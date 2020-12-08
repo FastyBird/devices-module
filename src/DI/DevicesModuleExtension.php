@@ -43,6 +43,24 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 {
 
 	/**
+	 * @param Nette\Configurator $config
+	 * @param string $extensionName
+	 *
+	 * @return void
+	 */
+	public static function register(
+		Nette\Configurator $config,
+		string $extensionName = 'fbDevicesModule'
+	): void {
+		$config->onCompile[] = function (
+			Nette\Configurator $config,
+			DI\Compiler $compiler
+		) use ($extensionName): void {
+			$compiler->addExtension($extensionName, new DevicesModuleExtension());
+		};
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function loadConfiguration(): void
@@ -244,7 +262,10 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$ormAnnotationDriverChainService = $builder->getDefinitionByType(Persistence\Mapping\Driver\MappingDriverChain::class);
 
 		if ($ormAnnotationDriverChainService instanceof DI\Definitions\ServiceDefinition) {
-			$ormAnnotationDriverChainService->addSetup('addDriver', [$ormAnnotationDriverService, 'FastyBird\DevicesModule\Entities']);
+			$ormAnnotationDriverChainService->addSetup('addDriver', [
+				$ormAnnotationDriverService,
+				'FastyBird\DevicesModule\Entities',
+			]);
 		}
 	}
 
@@ -297,24 +318,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		return [
 			__DIR__ . '/../Translations',
 		];
-	}
-
-	/**
-	 * @param Nette\Configurator $config
-	 * @param string $extensionName
-	 *
-	 * @return void
-	 */
-	public static function register(
-		Nette\Configurator $config,
-		string $extensionName = 'fbDevicesModule'
-	): void {
-		$config->onCompile[] = function (
-			Nette\Configurator $config,
-			DI\Compiler $compiler
-		) use ($extensionName): void {
-			$compiler->addExtension($extensionName, new DevicesModuleExtension());
-		};
 	}
 
 }

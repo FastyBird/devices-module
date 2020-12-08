@@ -121,11 +121,13 @@ class FindChannelPropertiesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @phpstan-param ORM\EntityRepository<T> $repository
 	 */
-	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
+	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $this->createBasicDql($repository)->select('COUNT(p.id)');
+		$qb = $repository->createQueryBuilder('p');
+		$qb->addSelect('channel');
+		$qb->join('p.channel', 'channel');
 
-		foreach ($this->select as $modifier) {
+		foreach ($this->filter as $modifier) {
 			$modifier($qb);
 		}
 
@@ -139,13 +141,11 @@ class FindChannelPropertiesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @phpstan-param ORM\EntityRepository<T> $repository
 	 */
-	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
+	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $repository->createQueryBuilder('p');
-		$qb->addSelect('channel');
-		$qb->join('p.channel', 'channel');
+		$qb = $this->createBasicDql($repository)->select('COUNT(p.id)');
 
-		foreach ($this->filter as $modifier) {
+		foreach ($this->select as $modifier) {
 			$modifier($qb);
 		}
 

@@ -45,11 +45,11 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Devices\IDeviceRepository */
 	protected $deviceRepository;
 
-	/** @var Models\Devices\Properties\IPropertyRepository */
-	private $propertyRepository;
-
 	/** @var string */
 	protected $translationDomain = 'module.deviceProperties';
+
+	/** @var Models\Devices\Properties\IPropertyRepository */
+	private $propertyRepository;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

@@ -93,6 +93,22 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
+	 * @param Entities\Channels\Controls\IControl[] $controls
+	 *
+	 * @return string[]
+	 */
+	private function formatControls(array $controls): array
+	{
+		$return = [];
+
+		foreach ($controls as $control) {
+			$return[] = $control->getName();
+		}
+
+		return $return;
+	}
+
+	/**
 	 * @param Entities\Channels\IChannel $channel
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
@@ -230,22 +246,6 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 		}
 
 		return parent::getRelationshipSelfLink($channel, $name);
-	}
-
-	/**
-	 * @param Entities\Channels\Controls\IControl[] $controls
-	 *
-	 * @return string[]
-	 */
-	private function formatControls(array $controls): array
-	{
-		$return = [];
-
-		foreach ($controls as $control) {
-			$return[] = $control->getName();
-		}
-
-		return $return;
 	}
 
 }

@@ -62,6 +62,23 @@ final class DeviceRepository implements IDeviceRepository
 	}
 
 	/**
+	 * @param string $type
+	 *
+	 * @return Persistence\ObjectRepository<Entities\Devices\Device>
+	 *
+	 * @phpstan-template T of Entities\Devices\Device
+	 * @phpstan-param    class-string<T> $type
+	 */
+	private function getRepository(string $type): Persistence\ObjectRepository
+	{
+		if (!isset($this->repository[$type])) {
+			$this->repository[$type] = $this->managerRegistry->getRepository($type);
+		}
+
+		return $this->repository[$type];
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @throws Throwable
@@ -91,23 +108,6 @@ final class DeviceRepository implements IDeviceRepository
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @param string $type
-	 *
-	 * @return Persistence\ObjectRepository<Entities\Devices\Device>
-	 *
-	 * @phpstan-template T of Entities\Devices\Device
-	 * @phpstan-param    class-string<T> $type
-	 */
-	private function getRepository(string $type): Persistence\ObjectRepository
-	{
-		if (!isset($this->repository[$type])) {
-			$this->repository[$type] = $this->managerRegistry->getRepository($type);
-		}
-
-		return $this->repository[$type];
 	}
 
 }

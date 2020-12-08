@@ -50,11 +50,11 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 	/** @var Models\Channels\IChannelRepository */
 	protected $channelRepository;
 
-	/** @var Models\Channels\Configuration\IRowRepository */
-	private $rowRepository;
-
 	/** @var string */
 	protected $translationDomain = 'module.channelConfiguration';
+
+	/** @var Models\Channels\Configuration\IRowRepository */
+	private $rowRepository;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

@@ -102,73 +102,17 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConfiguration(): string
+	public function toArray(): array
 	{
-		return $this->configuration;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setDefault(?string $default): void
-	{
-		$this->default = $default;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getDefault()
-	{
-		return $this->default;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setValue(?string $value): void
-	{
-		$this->value = $value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getValue()
-	{
-		return $this->value;
+		return [
+			'id'            => $this->getPlainId(),
+			'type'          => $this->getType(),
+			'configuration' => $this->getConfiguration(),
+			'name'          => $this->getName(),
+			'comment'       => $this->getComment(),
+			'default'       => $this->getDefault(),
+			'value'         => $this->getValue(),
+		];
 	}
 
 	/**
@@ -182,17 +126,73 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
+	public function getConfiguration(): string
 	{
-		return [
-			'id'            => $this->getPlainId(),
-			'type'          => $this->getType(),
-			'configuration' => $this->getConfiguration(),
-			'name'          => $this->getName(),
-			'comment'       => $this->getComment(),
-			'default'       => $this->getDefault(),
-			'value'         => $this->getValue(),
-		];
+		return $this->configuration;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): ?string
+	{
+		return $this->name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setName(?string $name): void
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setComment(?string $comment): void
+	{
+		$this->comment = $comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDefault()
+	{
+		return $this->default;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDefault(?string $default): void
+	{
+		$this->default = $default;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getValue()
+	{
+		return $this->value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setValue(?string $value): void
+	{
+		$this->value = $value;
 	}
 
 }

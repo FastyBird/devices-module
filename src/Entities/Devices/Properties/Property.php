@@ -74,14 +74,6 @@ class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
-	{
-		return $this->device;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
@@ -89,6 +81,14 @@ class Property extends Entities\Property implements IProperty
 			'owner'  => $this->getDevice()->getOwnerId(),
 			'parent' => $this->getDevice()->getParent() !== null ? $this->getDevice()->getParent()->getIdentifier() : null,
 		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDevice(): Entities\Devices\IDevice
+	{
+		return $this->device;
 	}
 
 }

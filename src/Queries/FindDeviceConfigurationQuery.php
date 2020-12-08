@@ -109,11 +109,13 @@ class FindDeviceConfigurationQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @phpstan-param ORM\EntityRepository<T> $repository
 	 */
-	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
+	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $this->createBasicDql($repository)->select('COUNT(r.id)');
+		$qb = $repository->createQueryBuilder('r');
+		$qb->addSelect('device');
+		$qb->join('r.device', 'device');
 
-		foreach ($this->select as $modifier) {
+		foreach ($this->filter as $modifier) {
 			$modifier($qb);
 		}
 
@@ -127,13 +129,11 @@ class FindDeviceConfigurationQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @phpstan-param ORM\EntityRepository<T> $repository
 	 */
-	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
+	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $repository->createQueryBuilder('r');
-		$qb->addSelect('device');
-		$qb->join('r.device', 'device');
+		$qb = $this->createBasicDql($repository)->select('COUNT(r.id)');
 
-		foreach ($this->filter as $modifier) {
+		foreach ($this->select as $modifier) {
 			$modifier($qb);
 		}
 

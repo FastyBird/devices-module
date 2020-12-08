@@ -59,11 +59,11 @@ class DevicesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\IChannelsManager */
 	protected $channelsManager;
 
-	/** @var Hydrators\Devices\NetworkDeviceHydrator */
-	private $networkDeviceHydrator;
-
 	/** @var string */
 	protected $translationDomain = 'module.devices';
+
+	/** @var Hydrators\Devices\NetworkDeviceHydrator */
+	private $networkDeviceHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

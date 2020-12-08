@@ -43,14 +43,6 @@ trait TPhysicalDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setHardware(?Entities\Devices\PhysicalDevice\IHardware $hardware): void
-	{
-		$this->hardware = $hardware;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getHardware(): ?Entities\Devices\PhysicalDevice\IHardware
 	{
 		return $this->hardware;
@@ -59,9 +51,9 @@ trait TPhysicalDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setFirmware(?Entities\Devices\PhysicalDevice\IFirmware $firmware): void
+	public function setHardware(?Entities\Devices\PhysicalDevice\IHardware $hardware): void
 	{
-		$this->firmware = $firmware;
+		$this->hardware = $hardware;
 	}
 
 	/**
@@ -70,6 +62,14 @@ trait TPhysicalDevice
 	public function getFirmware(): ?Entities\Devices\PhysicalDevice\IFirmware
 	{
 		return $this->firmware;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setFirmware(?Entities\Devices\PhysicalDevice\IFirmware $firmware): void
+	{
+		$this->firmware = $firmware;
 	}
 
 }

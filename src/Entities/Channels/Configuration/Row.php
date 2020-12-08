@@ -83,14 +83,6 @@ abstract class Row extends Entities\Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
-	{
-		return $this->channel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
@@ -99,6 +91,14 @@ abstract class Row extends Entities\Row implements IRow
 			'parent'  => $this->getChannel()->getDevice()->getParent() !== null ? $this->getChannel()->getDevice()->getParent()->getIdentifier() : null,
 			'channel' => $this->getChannel()->getChannel(),
 		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChannel(): Entities\Channels\IChannel
+	{
+		return $this->channel;
 	}
 
 }

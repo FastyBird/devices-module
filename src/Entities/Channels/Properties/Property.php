@@ -74,14 +74,6 @@ class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
-	{
-		return $this->channel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
@@ -90,6 +82,14 @@ class Property extends Entities\Property implements IProperty
 			'parent'  => $this->getChannel()->getDevice()->getParent() !== null ? $this->getChannel()->getDevice()->getParent()->getIdentifier() : null,
 			'channel' => $this->getChannel()->getChannel(),
 		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChannel(): Entities\Channels\IChannel
+	{
+		return $this->channel;
 	}
 
 }

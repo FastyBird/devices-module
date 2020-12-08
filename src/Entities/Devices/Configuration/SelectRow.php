@@ -38,13 +38,23 @@ class SelectRow extends Row implements ISelectRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setValues(array $values): void
+	public function getValue(): ?string
 	{
-		$this->setParam('select_values', []);
-
-		foreach ($values as $value) {
-			$this->addValue($value);
+		if ($this->value === null) {
+			return null;
 		}
+
+		return (string) $this->value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'values' => $this->getValues(),
+		]);
 	}
 
 	/**
@@ -53,6 +63,18 @@ class SelectRow extends Row implements ISelectRow
 	public function getValues(): array
 	{
 		return $this->getParam('select_values', []);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setValues(array $values): void
+	{
+		$this->setParam('select_values', []);
+
+		foreach ($values as $value) {
+			$this->addValue($value);
+		}
 	}
 
 	/**
@@ -72,28 +94,6 @@ class SelectRow extends Row implements ISelectRow
 		}
 
 		$this->setParam('select_values', $values);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getValue(): ?string
-	{
-		if ($this->value === null) {
-			return null;
-		}
-
-		return (string) $this->value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return array_merge(parent::toArray(), [
-			'values' => $this->getValues(),
-		]);
 	}
 
 }

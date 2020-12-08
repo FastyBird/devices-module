@@ -64,18 +64,6 @@ class JsonAssert
 	}
 
 	/**
-	 * @param string $jsonString
-	 *
-	 * @return string
-	 *
-	 * @throws Utils\JsonException
-	 */
-	private static function makeJsonPretty(string $jsonString): string
-	{
-		return Utils\Json::encode(Utils\Json::decode($jsonString), Utils\Json::PRETTY);
-	}
-
-	/**
 	 * @param string $input
 	 * @param string $nameForMessage
 	 *
@@ -95,6 +83,18 @@ class JsonAssert
 		} catch (Utils\JsonException $e) {
 			throw new Utils\JsonException(sprintf('%s is invalid: "%s"', $nameForMessage, $e->getMessage()), $e->getCode(), $e);
 		}
+	}
+
+	/**
+	 * @param string $jsonString
+	 *
+	 * @return string
+	 *
+	 * @throws Utils\JsonException
+	 */
+	private static function makeJsonPretty(string $jsonString): string
+	{
+		return Utils\Json::encode(Utils\Json::decode($jsonString), Utils\Json::PRETTY);
 	}
 
 }

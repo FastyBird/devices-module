@@ -49,24 +49,6 @@ class NumberRow extends Row implements INumberRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setMin(?float $min): void
-	{
-		if ($this->getMin() !== $min) {
-			$this->setParam('min_value', $min);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMin(): ?float
-	{
-		return $this->getParam('min_value', null);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function hasMin(): bool
 	{
 		return $this->getParam('min_value', null) !== null;
@@ -75,45 +57,9 @@ class NumberRow extends Row implements INumberRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setMax(?float $max): void
-	{
-		if ($this->getMax() !== $max) {
-			$this->setParam('max_value', $max);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMax(): ?float
-	{
-		return $this->getParam('max_value', null);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function hasMax(): bool
 	{
 		return $this->getParam('max_value', null) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setStep(?float $step): void
-	{
-		if ($this->getStep() !== $step) {
-			$this->setParam('step_value', $step);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getStep(): ?float
-	{
-		return $this->getParam('step_value', null);
 	}
 
 	/**
@@ -146,6 +92,60 @@ class NumberRow extends Row implements INumberRow
 			'max'  => $this->getMax(),
 			'step' => $this->getStep(),
 		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMin(): ?float
+	{
+		return $this->getParam('min_value', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMin(?float $min): void
+	{
+		if ($this->getMin() !== $min) {
+			$this->setParam('min_value', $min);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMax(): ?float
+	{
+		return $this->getParam('max_value', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMax(?float $max): void
+	{
+		if ($this->getMax() !== $max) {
+			$this->setParam('max_value', $max);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getStep(): ?float
+	{
+		return $this->getParam('step_value', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setStep(?float $step): void
+	{
+		if ($this->getStep() !== $step) {
+			$this->setParam('step_value', $step);
+		}
 	}
 
 }

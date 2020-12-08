@@ -119,17 +119,26 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getProperty(): string
+	public function toArray(): array
 	{
-		return $this->property;
+		return [
+			'id'        => $this->getPlainId(),
+			'property'  => $this->getProperty(),
+			'name'      => $this->getName(),
+			'settable'  => $this->isSettable(),
+			'queryable' => $this->isQueryable(),
+			'datatype'  => $this->getDatatype() !== null ? $this->getDatatype()->getValue() : null,
+			'unit'      => $this->getUnit(),
+			'format'    => $this->getFormat(),
+		];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setName(?string $name): void
+	public function getProperty(): string
 	{
-		$this->name = $name;
+		return $this->property;
 	}
 
 	/**
@@ -143,9 +152,9 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setSettable(bool $settable): void
+	public function setName(?string $name): void
 	{
-		$this->settable = $settable;
+		$this->name = $name;
 	}
 
 	/**
@@ -159,9 +168,9 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setQueryable(bool $queryable): void
+	public function setSettable(bool $settable): void
 	{
-		$this->queryable = $queryable;
+		$this->settable = $settable;
 	}
 
 	/**
@@ -170,6 +179,22 @@ class Property implements IProperty
 	public function isQueryable(): bool
 	{
 		return $this->queryable;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setQueryable(bool $queryable): void
+	{
+		$this->queryable = $queryable;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDatatype(): ?Types\DatatypeType
+	{
+		return $this->datatype;
 	}
 
 	/**
@@ -187,22 +212,6 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDatatype(): ?Types\DatatypeType
-	{
-		return $this->datatype;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setUnit(?string $unit): void
-	{
-		$this->unit = $unit;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getUnit(): ?string
 	{
 		return $this->unit;
@@ -211,9 +220,9 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setFormat(?string $format): void
+	public function setUnit(?string $unit): void
 	{
-		$this->format = $format;
+		$this->unit = $unit;
 	}
 
 	/**
@@ -259,18 +268,9 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
+	public function setFormat(?string $format): void
 	{
-		return [
-			'id'        => $this->getPlainId(),
-			'property'  => $this->getProperty(),
-			'name'      => $this->getName(),
-			'settable'  => $this->isSettable(),
-			'queryable' => $this->isQueryable(),
-			'datatype'  => $this->getDatatype() !== null ? $this->getDatatype()->getValue() : null,
-			'unit'      => $this->getUnit(),
-			'format'    => $this->getFormat(),
-		];
+		$this->format = $format;
 	}
 
 }

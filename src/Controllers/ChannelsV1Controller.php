@@ -52,11 +52,11 @@ final class ChannelsV1Controller extends BaseV1Controller
 	/** @var Models\Channels\IChannelRepository */
 	protected $channelRepository;
 
-	/** @var Hydrators\Channels\ChannelHydrator */
-	private $channelHydrator;
-
 	/** @var string */
 	protected $translationDomain = 'module.channels';
+
+	/** @var Hydrators\Channels\ChannelHydrator */
+	private $channelHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

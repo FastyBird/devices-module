@@ -97,6 +97,22 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
+	 * @param Entities\Devices\Controls\IControl[] $controls
+	 *
+	 * @return string[]
+	 */
+	private function formatControls(array $controls): array
+	{
+		$return = [];
+
+		foreach ($controls as $control) {
+			$return[] = $control->getName();
+		}
+
+		return $return;
+	}
+
+	/**
 	 * @param Entities\Devices\IDevice $device
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
@@ -163,6 +179,32 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		}
 
 		return $relationships;
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Channels\IChannel[]
+	 */
+	private function getChannels(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindChannelsQuery();
+		$findQuery->forDevice($device);
+
+		return $this->channelRepository->findAllBy($findQuery);
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Devices\IDevice[]
+	 */
+	private function getChildren(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery->forParent($device);
+
+		return $this->deviceRepository->findAllBy($findQuery);
 	}
 
 	/**
@@ -287,48 +329,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		}
 
 		return parent::getRelationshipSelfLink($device, $name);
-	}
-
-	/**
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Channels\IChannel[]
-	 */
-	private function getChannels(Entities\Devices\IDevice $device): array
-	{
-		$findQuery = new Queries\FindChannelsQuery();
-		$findQuery->forDevice($device);
-
-		return $this->channelRepository->findAllBy($findQuery);
-	}
-
-	/**
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Devices\IDevice[]
-	 */
-	private function getChildren(Entities\Devices\IDevice $device): array
-	{
-		$findQuery = new Queries\FindDevicesQuery();
-		$findQuery->forParent($device);
-
-		return $this->deviceRepository->findAllBy($findQuery);
-	}
-
-	/**
-	 * @param Entities\Devices\Controls\IControl[] $controls
-	 *
-	 * @return string[]
-	 */
-	private function formatControls(array $controls): array
-	{
-		$return = [];
-
-		foreach ($controls as $control) {
-			$return[] = $control->getName();
-		}
-
-		return $return;
 	}
 
 }

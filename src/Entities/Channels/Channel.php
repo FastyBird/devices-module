@@ -144,57 +144,21 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
+	public function addProperty(Entities\Channels\Properties\IProperty $property): void
 	{
-		return $this->device;
+		// Check if collection does not contain inserting entity
+		if (!$this->properties->contains($property)) {
+			// ...and assign it to collection
+			$this->properties->add($property);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setName(?string $name): void
+	public function getProperties(): array
 	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment = null): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setChannel(string $channel): void
-	{
-		$this->channel = $channel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getChannel(): string
-	{
-		return $this->channel;
+		return $this->properties->toArray();
 	}
 
 	/**
@@ -216,26 +180,6 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addProperty(Entities\Channels\Properties\IProperty $property): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->properties->contains($property)) {
-			// ...and assign it to collection
-			$this->properties->add($property);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getProperties(): array
-	{
-		return $this->properties->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getProperty(string $id): ?Entities\Channels\Properties\IProperty
 	{
 		$found = $this->properties
@@ -249,6 +193,14 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
+	public function hasProperty(string $property): bool
+	{
+		return $this->findProperty($property) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty
 	{
 		$found = $this->properties
@@ -257,14 +209,6 @@ class Channel implements IChannel
 			});
 
 		return $found->isEmpty() || $found->first() === false ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasProperty(string $property): bool
-	{
-		return $this->findProperty($property) !== null;
 	}
 
 	/**
@@ -295,22 +239,6 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setConfiguration(array $configuration = []): void
-	{
-		$this->configuration = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($configuration as $entity) {
-			if (!$this->configuration->contains($entity)) {
-				// ...and assign them to collection
-				$this->configuration->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addConfiguration(Entities\Channels\Configuration\IRow $row): void
 	{
 		// Check if collection does not contain inserting entity
@@ -326,6 +254,22 @@ class Channel implements IChannel
 	public function getConfiguration(): array
 	{
 		return $this->configuration->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setConfiguration(array $configuration = []): void
+	{
+		$this->configuration = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($configuration as $entity) {
+			if (!$this->configuration->contains($entity)) {
+				// ...and assign them to collection
+				$this->configuration->add($entity);
+			}
+		}
 	}
 
 	/**
@@ -381,22 +325,6 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setControls(array $controls = []): void
-	{
-		$this->controls = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($controls as $entity) {
-			if (!$this->controls->contains($entity)) {
-				// ...and assign them to collection
-				$this->controls->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addControl(Entities\Channels\Controls\IControl $control): void
 	{
 		// Check if collection does not contain inserting entity
@@ -404,14 +332,6 @@ class Channel implements IChannel
 			// ...and assign it to collection
 			$this->controls->add($control);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getControls(): array
-	{
-		return $this->controls->toArray();
 	}
 
 	/**
@@ -434,6 +354,14 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
+	public function hasControl(string $name): bool
+	{
+		return $this->findControl($name) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function findControl(string $name): ?Entities\Channels\Controls\IControl
 	{
 		$found = $this->controls
@@ -442,14 +370,6 @@ class Channel implements IChannel
 			});
 
 		return $found->isEmpty() || $found->first() === false ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasControl(string $name): bool
-	{
-		return $this->findControl($name) !== null;
 	}
 
 	/**
@@ -486,6 +406,54 @@ class Channel implements IChannel
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): ?string
+	{
+		return $this->name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setName(?string $name): void
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setComment(?string $comment = null): void
+	{
+		$this->comment = $comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChannel(): string
+	{
+		return $this->channel;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setChannel(string $channel): void
+	{
+		$this->channel = $channel;
+	}
+
+	/**
 	 * @return string[]
 	 */
 	private function getPlainControls(): array
@@ -497,6 +465,38 @@ class Channel implements IChannel
 		}
 
 		return $controls;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getControls(): array
+	{
+		return $this->controls->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setControls(array $controls = []): void
+	{
+		$this->controls = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($controls as $entity) {
+			if (!$this->controls->contains($entity)) {
+				// ...and assign them to collection
+				$this->controls->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDevice(): Entities\Devices\IDevice
+	{
+		return $this->device;
 	}
 
 }

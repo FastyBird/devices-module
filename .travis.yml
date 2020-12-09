@@ -2,7 +2,7 @@ language: php
 
 php:
   - 7.4
-  - nightly
+  - 8.0
 
 services:
   - mysql
@@ -51,7 +51,7 @@ jobs:
 
   allow_failures:
     - stage: Test Coverage
-    - php: nightly
+    - php: 8.0
 
 sudo: false
 

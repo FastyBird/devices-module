@@ -22,6 +22,13 @@
       "owner" : "5e79efbf-bd0d-5b7c-46ef-bfbdefbfbd34"
     },
     "relationships" : {
+      "credentials" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/credentials",
+          "related" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/credentials"
+        },
+        "data" : null
+      },
       "hardware" : {
         "links" : {
           "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/hardware",

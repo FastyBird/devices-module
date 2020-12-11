@@ -58,6 +58,9 @@ class Router extends Routing\Router
 	/** @var Controllers\DeviceFirmwareV1Controller */
 	private $deviceFirmwareV1Controller;
 
+	/** @var Controllers\DeviceCredentialsV1Controller */
+	private $deviceCredentialsV1Controller;
+
 	/** @var Controllers\ChannelsV1Controller */
 	private $channelsV1Controller;
 
@@ -83,6 +86,7 @@ class Router extends Routing\Router
 		Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller,
 		Controllers\DeviceHardwareV1Controller $deviceHardwareV1Controller,
 		Controllers\DeviceFirmwareV1Controller $deviceFirmwareV1Controller,
+		Controllers\DeviceCredentialsV1Controller $deviceCredentialsV1Controller,
 		Controllers\ChannelsV1Controller $channelsV1Controller,
 		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
 		Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller,
@@ -99,6 +103,7 @@ class Router extends Routing\Router
 		$this->deviceConfigurationV1Controller = $deviceConfigurationV1Controller;
 		$this->deviceHardwareV1Controller = $deviceHardwareV1Controller;
 		$this->deviceFirmwareV1Controller = $deviceFirmwareV1Controller;
+		$this->deviceCredentialsV1Controller = $deviceCredentialsV1Controller;
 		$this->channelsV1Controller = $channelsV1Controller;
 		$this->channelPropertiesV1Controller = $channelPropertiesV1Controller;
 		$this->channelConfigurationV1Controller = $channelConfigurationV1Controller;
@@ -203,6 +208,22 @@ class Router extends Routing\Router
 					'readRelationship',
 				]);
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE_RELATIONSHIP);
+
+				/**
+				 * DEVICE CREDENTIALS
+				 */
+				$route = $group->get('/credentials', [$this->deviceCredentialsV1Controller, 'read']);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CREDENTIALS);
+
+				$route = $group->get('/credentials/relationships/{' . self::RELATION_ENTITY . '}', [
+					$this->deviceCredentialsV1Controller,
+					'readRelationship',
+				]);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CREDENTIALS_RELATIONSHIP);
+
+				$group->post('/credentials', [$this->deviceCredentialsV1Controller, 'create']);
+
+				$group->patch('/credentials', [$this->deviceCredentialsV1Controller, 'update']);
 
 				$group->group('/channels', function (Routing\RouteCollector $group): void {
 					/**

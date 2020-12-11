@@ -10,15 +10,15 @@ INSERT IGNORE INTO `fb_devices` (`device_id`, `parent_id`, `device_identifier`, 
 (_binary 0x69786D15FD0C4D9F937833287C2009FA, NULL, 'first-device', 'First device', NULL, 'init', 1, '[]', '2020-03-19 14:03:48', '2020-03-22 20:12:07', 'network', '455354e8-96bd-4c29-84e7-9f10e1d4db4b'),
 (_binary 0xBF4CD8702AAC45F0A85EE1CEFD2D6D9A, NULL, 'second-device', NULL, NULL, 'init', 1, '[]', '2020-03-20 21:54:32', '2020-03-20 21:54:32', 'network', '455354e8-96bd-4c29-84e7-9f10e1d4db4b'),
 (_binary 0xE36A27881EF84CDFAB094735F191A509, NULL, 'third-device', 'Third device', 'Custom comment', 'unknown', 1, '[]', '2020-03-20 21:56:41', '2020-03-20 21:56:41', 'local', '455354e8-96bd-4c29-84e7-9f10e1d4db4b'),
-(_binary 0xA1036FF86EE84405AAED58BAE0814596, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'child-device', 'Child device', 'This is child', 'init', 1, '[]', '2020-03-20 21:56:41', '2020-03-20 21:56:41', 'network', null);
+(_binary 0xA1036FF86EE84405AAED58BAE0814596, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'child-device', 'Child device', 'This is child', 'init', 1, '[]', '2020-03-20 21:56:41', '2020-03-20 21:56:41', 'local', null);
 
 INSERT IGNORE INTO `fb_network_physicals_devices` (`device_id`, `hardware_id`, `firmware_id`) VALUES
 (_binary 0x69786D15FD0C4D9F937833287C2009FA, binary 0x8059B830B76D4F98BE9C53BD06EAB9A5, binary 0x06FEDDF463E248BCAF13F355F01FFBE0),
 (_binary 0xBF4CD8702AAC45F0A85EE1CEFD2D6D9A, null, null),
-(_binary 0xA1036FF86EE84405AAED58BAE0814596, null, null);
-
-INSERT IGNORE INTO `fb_network_physicals_devices` (`device_id`, `hardware_id`, `firmware_id`) VALUES
 (_binary 0xE36A27881EF84CDFAB094735F191A509, 0xD8B0D2B4A47A4750A225DDFA973675D3, 0x17C59DFA2EDD438E8C49FAA4E38E5A5E);
+
+INSERT IGNORE INTO `fb_local_physicals_devices` (`device_id`, `hardware_id`, `firmware_id`) VALUES
+(_binary 0xA1036FF86EE84405AAED58BAE0814596, null, null);
 
 INSERT IGNORE INTO `fb_devices_properties` (`property_id`, `device_id`, `property_property`, `property_name`, `property_settable`, `property_queryable`, `property_datatype`, `property_unit`, `property_format`, `created_at`, `updated_at`) VALUES
 (_binary 0xBBCCCF8C33AB431BA795D7BB38B6B6DB, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'uptime', 'uptime', 0, 1, 'integer', NULL, NULL, '2020-03-20 09:18:20', '2020-03-20 09:18:20'),
@@ -37,6 +37,9 @@ INSERT IGNORE INTO `fb_devices_configuration` (`configuration_id`, `device_id`, 
 (_binary 0x81BDF07B7DC94E3A98B14DC5E9F16B55, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'select', 'sensor_read_interval', NULL, NULL, '6', '2019-08-31 14:32:50', '2019-08-31 14:32:50', '{"select_values":[{"value":"1","name":"1"},{"value":"6","name":"6"},{"value":"10","name":"10"},{"value":"15","name":"15"},{"value":"30","name":"30"},{"value":"60","name":"60"},{"value":"300","name":"300"},{"value":"600","name":"600"},{"value":"900","name":"900"},{"value":"1800","name":"1800"},{"value":"3600","name":"3600"}]}'),
 (_binary 0x8A41D824B1DB4548B07E606117DD7309, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'number', 'sensor_report_interval', NULL, NULL, '10', '2019-08-31 14:32:50', '2019-12-10 20:35:50', '{"min_value":1,"max_value":60,"step_value":1}'),
 (_binary 0x8D933E4C1FC94361BA09EEBEE4592776, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'select', 'sensor_power_units', NULL, NULL, '0', '2019-11-26 18:59:07', '2019-11-26 18:59:07', '{"select_values":[{"value":"0","name":"watts"},{"value":"1","name":"kilowatts"}]}');
+
+INSERT IGNORE INTO `fb_physicals_devices_credentials` (`credentials_id`, `device_id`, `credentials_username`, `credentials_password`, `created_at`, `updated_at`) VALUES
+(_binary 0x7C055B2B60C3401793DBE9478D8AA662, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'deviceusrname', 'supersecretpassword', '2020-03-20 09:18:20', '2020-03-20 09:18:20');
 
 INSERT IGNORE INTO `fb_channels` (`channel_id`, `device_id`, `channel_name`, `channel_comment`, `channel_channel`, `params`, `created_at`, `updated_at`) VALUES
 (_binary 0x17C59DFA2EDD438E8C49FAA4E38E5A5E, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'Channel one', NULL, 'channel-one', '[]', '2020-03-20 09:22:12', '2020-03-20 22:37:14'),

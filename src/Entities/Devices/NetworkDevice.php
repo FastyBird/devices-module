@@ -16,6 +16,8 @@
 namespace FastyBird\DevicesModule\Entities\Devices;
 
 use Doctrine\ORM\Mapping as ORM;
+use FastyBird\DevicesModule\Entities;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 
 /**
  * @ORM\Entity
@@ -32,6 +34,30 @@ class NetworkDevice extends Device implements INetworkDevice
 {
 
 	use TPhysicalDevice;
+
+	/**
+	 * @var Entities\Devices\Credentials\ICredentials|null
+	 *
+	 * @IPubDoctrine\Crud(is={"writable"})
+	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Credentials\Credentials", mappedBy="device", cascade={"persist", "remove"})
+	 */
+	private $credentials;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setCredentials(?Credentials\ICredentials $credentials): void
+	{
+		$this->credentials = $credentials;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getCredentials(): ?Credentials\ICredentials
+	{
+		return $this->credentials;
+	}
 
 	/**
 	 * {@inheritDoc}

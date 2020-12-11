@@ -200,9 +200,6 @@ class DevicesV1Controller extends BaseV1Controller
 				);
 
 			} catch (Throwable $ex) {
-				var_dump($ex->getMessage());
-				var_dump($ex->getFile());
-				var_dump($ex->getLine());
 				// Log catched exception
 				$this->logger->error('[CONTROLLER] ' . $ex->getMessage(), [
 					'exception' => [

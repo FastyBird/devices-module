@@ -37,7 +37,7 @@ final class DeviceRepositoryTest extends DbTestCase
 		$entity = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($entity));
-		Assert::type(Entities\Devices\NetworkDevice::class, $entity);
+		Assert::type(Entities\Devices\LocalDevice::class, $entity);
 		Assert::same('child-device', $entity->getIdentifier());
 	}
 

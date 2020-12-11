@@ -44,6 +44,8 @@ final class Constants
 	public const ROUTE_NAME_DEVICE_HARDWARE_RELATIONSHIP = 'device.hardware.relationship';
 	public const ROUTE_NAME_DEVICE_FIRMWARE = 'device.firmware';
 	public const ROUTE_NAME_DEVICE_FIRMWARE_RELATIONSHIP = 'device.firmware.relationship';
+	public const ROUTE_NAME_DEVICE_CREDENTIALS = 'device.credentials';
+	public const ROUTE_NAME_DEVICE_CREDENTIALS_RELATIONSHIP = 'device.credentials.relationship';
 	public const ROUTE_NAME_CHANNELS = 'channels';
 	public const ROUTE_NAME_CHANNEL = 'channel';
 	public const ROUTE_NAME_CHANNEL_RELATIONSHIP = 'channel.relationship';

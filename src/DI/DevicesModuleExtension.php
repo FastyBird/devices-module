@@ -126,6 +126,10 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Models\Devices\PhysicalDevice\FirmwareManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
+		$builder->addDefinition($this->prefix('doctrine.credentialsManager'))
+			->setType(Models\Devices\Credentials\CredentialsManager::class)
+			->setArgument('entityCrud', '__placeholder__');
+
 		$builder->addDefinition($this->prefix('doctrine.channelsManager'))
 			->setType(Models\Channels\ChannelsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
@@ -168,6 +172,10 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->addTag('nette.inject');
 
 		$builder->addDefinition(null)
+			->setType(Controllers\DeviceCredentialsV1Controller::class)
+			->addTag('nette.inject');
+
+		$builder->addDefinition(null)
 			->setType(Controllers\ChannelsV1Controller::class)
 			->addTag('nette.inject');
 
@@ -194,6 +202,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition(null)
 			->setType(Schemas\Devices\Firmware\FirmwareSchema::class);
+
+		$builder->addDefinition(null)
+			->setType(Schemas\Devices\Credentials\CredentialsSchema::class);
 
 		$builder->addDefinition(null)
 			->setType(Schemas\Devices\Configuration\BooleanRowSchema::class);
@@ -234,6 +245,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition(null)
 			->setType(Hydrators\Channels\ChannelHydrator::class);
+
+		$builder->addDefinition(null)
+			->setType(Hydrators\Credentials\CredentialsHydrator::class);
 
 		// Helpers
 		$builder->addDefinition(null)
@@ -296,6 +310,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$firmwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__firmwareManager');
 		$firmwareManagerService->setBody('return new ' . Models\Devices\PhysicalDevice\FirmwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\PhysicalDevice\Firmware::class . '\'));');
+
+		$credentialsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__credentialsManager');
+		$credentialsManagerService->setBody('return new ' . Models\Devices\Credentials\CredentialsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Credentials\Credentials::class . '\'));');
 
 		$channelsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__channelsManager');
 		$channelsManagerService->setBody('return new ' . Models\Channels\ChannelsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Channel::class . '\'));');

@@ -26,4 +26,16 @@ namespace FastyBird\DevicesModule\Entities\Devices;
 interface INetworkDevice extends IDevice, IPhysicalDevice
 {
 
+	/**
+	 * @param Credentials\ICredentials $credentials
+	 *
+	 * @return void
+	 */
+	public function setCredentials(?Credentials\ICredentials $credentials): void;
+
+	/**
+	 * @return Credentials\ICredentials|null
+	 */
+	public function getCredentials(): ?Credentials\ICredentials;
+
 }

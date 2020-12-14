@@ -2,15 +2,10 @@
 
 namespace Tests\Cases;
 
-use FastyBird\DevicesModule\Connections;
-use FastyBird\DevicesModule\Router;
 use FastyBird\WebServer\Http;
 use Fig\Http\Message\RequestMethodInterface;
-use Mockery;
-use PHPOnCouch;
-use Ramsey\Uuid;
+use IPub\SlimRouter;
 use React\Http\Message\ServerRequest;
-use stdClass;
 use Tester\Assert;
 use Tests\Tools;
 
@@ -23,38 +18,6 @@ require_once __DIR__ . '/../DbTestCase.php';
 final class DevicePropertiesV1ControllerTest extends DbTestCase
 {
 
-	public function setUp(): void
-	{
-		parent::setUp();
-
-		$doc = new stdClass();
-		$doc->id = Uuid\Uuid::uuid4();
-
-		$docs = [];
-		$docs[] = $doc;
-
-		$storageClient = Mockery::mock(PHPOnCouch\CouchClient::class);
-		$storageClient
-			->shouldReceive('asCouchDocuments')
-			->getMock()
-			->shouldReceive('find')
-			->andReturn($docs)
-			->getMock()
-			->shouldReceive('storeDoc')
-			->getMock();
-
-		$storageConnection = Mockery::mock(Connections\CouchDbConnection::class);
-		$storageConnection
-			->shouldReceive('getClient')
-			->andReturn($storageClient)
-			->getMock();
-
-		$this->mockContainerService(
-			Connections\CouchDbConnection::class,
-			$storageConnection
-		);
-	}
-
 	/**
 	 * @param string $url
 	 * @param string|null $token
@@ -65,8 +28,8 @@ final class DevicePropertiesV1ControllerTest extends DbTestCase
 	 */
 	public function testRead(string $url, ?string $token, int $statusCode, string $fixture): void
 	{
-		/** @var Router\Router $router */
-		$router = $this->getContainer()->getByType(Router\Router::class);
+		/** @var SlimRouter\Routing\IRouter $router */
+		$router = $this->getContainer()->getByType(SlimRouter\Routing\IRouter::class);
 
 		$headers = [];
 

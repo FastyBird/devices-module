@@ -109,7 +109,7 @@ class DevicesV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_ITEM_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
 		return $response
 			->withEntity(WebServerHttp\ScalarEntity::from($device));
@@ -259,7 +259,7 @@ class DevicesV1Controller extends BaseV1Controller
 
 		$this->validateIdentifier($request, $document);
 
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_ITEM_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
 		try {
 			// Start transaction connection to the database
@@ -355,7 +355,7 @@ class DevicesV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_ITEM_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
 		try {
 			// Start transaction connection to the database
@@ -412,9 +412,9 @@ class DevicesV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_ITEM_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
-		$relationEntity = strtolower($request->getAttribute(Router\Router::RELATION_ENTITY));
+		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
 		if ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PROPERTIES) {
 			return $response

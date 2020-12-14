@@ -86,8 +86,8 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_DEVICE_CONFIGURATION_ROW,
 				[
-					Router\Router::URL_DEVICE_ID => $row->getDevice()->getPlainId(),
-					Router\Router::URL_ITEM_ID   => $row->getPlainId(),
+					Router\Routes::URL_DEVICE_ID => $row->getDevice()->getPlainId(),
+					Router\Routes::URL_ITEM_ID   => $row->getPlainId(),
 				]
 			),
 			false
@@ -133,7 +133,7 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
-						Router\Router::URL_ITEM_ID => $row->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $row->getDevice()->getPlainId(),
 					]
 				),
 				false

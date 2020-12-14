@@ -109,7 +109,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE,
 				[
-					Router\Router::URL_DEVICE_ID => $firmware->getDevice()->toString(),
+					Router\Routes::URL_DEVICE_ID => $firmware->getDevice()->toString(),
 				]
 			),
 			false
@@ -154,7 +154,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
-						Router\Router::URL_ITEM_ID => $firmware->getDevice()->toString(),
+						Router\Routes::URL_ITEM_ID => $firmware->getDevice()->toString(),
 					]
 				),
 				false

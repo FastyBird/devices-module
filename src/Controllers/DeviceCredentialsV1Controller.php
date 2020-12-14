@@ -77,7 +77,7 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		if (!$device instanceof Entities\Devices\INetworkDevice) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -106,7 +106,7 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 	): WebServerHttp\Response {
 		$document = $this->createDocument($request);
 
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		if (!$device instanceof Entities\Devices\INetworkDevice) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -237,7 +237,7 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 	): WebServerHttp\Response {
 		$document = $this->createDocument($request);
 
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		if (!$device instanceof Entities\Devices\INetworkDevice || $device->getCredentials() === null) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -312,7 +312,7 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		if (!$device instanceof Entities\Devices\INetworkDevice) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -323,7 +323,7 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		}
 
 		// & relation entity name
-		$relationEntity = strtolower($request->getAttribute(Router\Router::RELATION_ENTITY));
+		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
 		if ($relationEntity === Schemas\Devices\Credentials\CredentialsSchema::RELATIONSHIPS_DEVICE) {
 			return $response

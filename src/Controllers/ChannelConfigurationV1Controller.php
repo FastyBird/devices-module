@@ -79,10 +79,10 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Router::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
 		if (!$channel->hasControl(DevicesModule\Constants::CONTROL_CONFIG)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -114,10 +114,10 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Router::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
 		if (!$channel->hasControl(DevicesModule\Constants::CONTROL_CONFIG)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -127,10 +127,10 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 			);
 		}
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Router::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
 			$findQuery = new Queries\FindChannelConfigurationQuery();
 			$findQuery->forChannel($channel);
-			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Router::URL_ITEM_ID)));
+			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & configuration row
 			$row = $this->rowRepository->findOneBy($findQuery);
@@ -161,10 +161,10 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Router::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
 		if (!$channel->hasControl(DevicesModule\Constants::CONTROL_CONFIG)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -175,12 +175,12 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		}
 
 		// & relation entity name
-		$relationEntity = strtolower($request->getAttribute(Router\Router::RELATION_ENTITY));
+		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Router::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
 			$findQuery = new Queries\FindChannelConfigurationQuery();
 			$findQuery->forChannel($channel);
-			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Router::URL_ITEM_ID)));
+			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & configuration row
 			$row = $this->rowRepository->findOneBy($findQuery);

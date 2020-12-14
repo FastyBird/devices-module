@@ -117,9 +117,9 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY,
 				[
-					Router\Router::URL_DEVICE_ID  => $property->getChannel()->getDevice()->getPlainId(),
-					Router\Router::URL_CHANNEL_ID => $property->getChannel()->getPlainId(),
-					Router\Router::URL_ITEM_ID    => $property->getPlainId(),
+					Router\Routes::URL_DEVICE_ID  => $property->getChannel()->getDevice()->getPlainId(),
+					Router\Routes::URL_CHANNEL_ID => $property->getChannel()->getPlainId(),
+					Router\Routes::URL_ITEM_ID    => $property->getPlainId(),
 				]
 			),
 			false
@@ -161,8 +161,8 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL,
 					[
-						Router\Router::URL_DEVICE_ID => $property->getChannel()->getDevice()->getPlainId(),
-						Router\Router::URL_ITEM_ID   => $property->getChannel()->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $property->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID   => $property->getChannel()->getPlainId(),
 					]
 				),
 				false

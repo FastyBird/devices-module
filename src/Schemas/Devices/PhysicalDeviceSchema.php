@@ -85,7 +85,7 @@ abstract class PhysicalDeviceSchema extends DeviceSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_HARDWARE,
 					[
-						Router\Router::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
 					]
 				),
 				false
@@ -97,7 +97,7 @@ abstract class PhysicalDeviceSchema extends DeviceSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE,
 					[
-						Router\Router::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
 					]
 				),
 				false
@@ -128,8 +128,8 @@ abstract class PhysicalDeviceSchema extends DeviceSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_RELATIONSHIP,
 					[
-						Router\Router::URL_ITEM_ID     => $device->getPlainId(),
-						Router\Router::RELATION_ENTITY => $name,
+						Router\Routes::URL_ITEM_ID     => $device->getPlainId(),
+						Router\Routes::RELATION_ENTITY => $name,
 
 					]
 				),

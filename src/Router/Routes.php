@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * RouterFactory.php
+ * Routes.php
  *
  * @license        More in license.md
  * @copyright      https://www.fastybird.com
@@ -19,18 +19,18 @@ use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Middleware;
 use FastyBird\SimpleAuth\Middleware as SimpleAuthMiddleware;
+use FastyBird\WebServer\Router as WebServerRouter;
 use IPub\SlimRouter\Routing;
-use Psr\Http\Message\ResponseFactoryInterface;
 
 /**
- * Module router configuration
+ * Module routes configuration
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Router
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class Router extends Routing\Router
+class Routes implements WebServerRouter\IRoutes
 {
 
 	public const URL_ITEM_ID = 'id';
@@ -92,11 +92,8 @@ class Router extends Routing\Router
 		Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller,
 		Middleware\AccessMiddleware $devicesAccessControlMiddleware,
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
-		SimpleAuthMiddleware\UserMiddleware $userMiddleware,
-		?ResponseFactoryInterface $responseFactory = null
+		SimpleAuthMiddleware\UserMiddleware $userMiddleware
 	) {
-		parent::__construct($responseFactory, null);
-
 		$this->devicesV1Controller = $devicesV1Controller;
 		$this->deviceChildrenV1Controller = $deviceChildrenV1Controller;
 		$this->devicePropertiesV1Controller = $devicePropertiesV1Controller;
@@ -116,9 +113,9 @@ class Router extends Routing\Router
 	/**
 	 * @return void
 	 */
-	public function registerRoutes(): void
+	public function registerRoutes(Routing\IRouter $router): void
 	{
-		$routes = $this->group('/v1', function (Routing\RouteCollector $group): void {
+		$routes = $router->group('/v1', function (Routing\RouteCollector $group): void {
 			$group->group('/devices', function (Routing\RouteCollector $group): void {
 				/**
 				 * DEVICES

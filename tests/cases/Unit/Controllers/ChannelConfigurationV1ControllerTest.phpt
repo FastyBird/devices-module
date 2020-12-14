@@ -2,9 +2,9 @@
 
 namespace Tests\Cases;
 
-use FastyBird\DevicesModule\Router;
 use FastyBird\WebServer\Http;
 use Fig\Http\Message\RequestMethodInterface;
+use IPub\SlimRouter;
 use React\Http\Message\ServerRequest;
 use Tester\Assert;
 use Tests\Tools;
@@ -28,8 +28,8 @@ final class ChannelConfigurationV1ControllerTest extends DbTestCase
 	 */
 	public function testRead(string $url, ?string $token, int $statusCode, string $fixture): void
 	{
-		/** @var Router\Router $router */
-		$router = $this->getContainer()->getByType(Router\Router::class);
+		/** @var SlimRouter\Routing\IRouter $router */
+		$router = $this->getContainer()->getByType(SlimRouter\Routing\IRouter::class);
 
 		$headers = [];
 

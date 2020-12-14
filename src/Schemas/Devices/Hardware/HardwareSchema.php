@@ -111,7 +111,7 @@ final class HardwareSchema extends JsonApiSchemas\JsonApiSchema
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_DEVICE_HARDWARE,
 				[
-					Router\Router::URL_DEVICE_ID => $hardware->getDevice()->toString(),
+					Router\Routes::URL_DEVICE_ID => $hardware->getDevice()->toString(),
 				]
 			),
 			false
@@ -156,7 +156,7 @@ final class HardwareSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
-						Router\Router::URL_ITEM_ID => $hardware->getDevice()->toString(),
+						Router\Routes::URL_ITEM_ID => $hardware->getDevice()->toString(),
 					]
 				),
 				false

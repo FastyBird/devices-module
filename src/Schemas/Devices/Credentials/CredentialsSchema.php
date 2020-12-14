@@ -101,7 +101,7 @@ final class CredentialsSchema extends JsonApiSchemas\JsonApiSchema
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_DEVICE_CREDENTIALS,
 				[
-					Router\Router::URL_DEVICE_ID => $credentials->getDevice()->getId()->toString(),
+					Router\Routes::URL_DEVICE_ID => $credentials->getDevice()->getId()->toString(),
 				]
 			),
 			false
@@ -143,7 +143,7 @@ final class CredentialsSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
-						Router\Router::URL_ITEM_ID => $credentials->getDevice()->getId()->toString(),
+						Router\Routes::URL_ITEM_ID => $credentials->getDevice()->getId()->toString(),
 					]
 				),
 				false

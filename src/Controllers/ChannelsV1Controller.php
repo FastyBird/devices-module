@@ -83,7 +83,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		$findQuery = new Queries\FindChannelsQuery();
 		$findQuery->forDevice($device);
@@ -107,9 +107,9 @@ final class ChannelsV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Router::URL_ITEM_ID), $device);
+		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
 
 		return $response
 			->withEntity(WebServerHttp\ScalarEntity::from($channel));
@@ -132,9 +132,9 @@ final class ChannelsV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Router::URL_ITEM_ID), $device);
+		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
 
 		$document = $this->createDocument($request);
 
@@ -205,11 +205,11 @@ final class ChannelsV1Controller extends BaseV1Controller
 		WebServerHttp\Response $response
 	): WebServerHttp\Response {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Router::URL_DEVICE_ID));
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Router::URL_ITEM_ID), $device);
+		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
 
-		$relationEntity = strtolower($request->getAttribute(Router\Router::RELATION_ENTITY));
+		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
 		if ($relationEntity === Schemas\Channels\ChannelSchema::RELATIONSHIPS_PROPERTIES) {
 			return $response

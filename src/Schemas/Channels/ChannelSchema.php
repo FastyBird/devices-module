@@ -122,8 +122,8 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_CHANNEL,
 				[
-					Router\Router::URL_DEVICE_ID => $channel->getDevice()->getPlainId(),
-					Router\Router::URL_ITEM_ID   => $channel->getPlainId(),
+					Router\Routes::URL_DEVICE_ID => $channel->getDevice()->getPlainId(),
+					Router\Routes::URL_ITEM_ID   => $channel->getPlainId(),
 				]
 			),
 			false
@@ -175,8 +175,8 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTIES,
 					[
-						Router\Router::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
-						Router\Router::URL_CHANNEL_ID => $channel->getPlainId(),
+						Router\Routes::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID => $channel->getPlainId(),
 					]
 				),
 				true,
@@ -191,8 +191,8 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROWS,
 					[
-						Router\Router::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
-						Router\Router::URL_CHANNEL_ID => $channel->getPlainId(),
+						Router\Routes::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID => $channel->getPlainId(),
 					]
 				),
 				true,
@@ -207,7 +207,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
-						Router\Router::URL_ITEM_ID => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $channel->getDevice()->getPlainId(),
 					]
 				),
 				false
@@ -236,9 +236,9 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_RELATIONSHIP,
 					[
-						Router\Router::URL_DEVICE_ID   => $channel->getDevice()->getPlainId(),
-						Router\Router::URL_ITEM_ID     => $channel->getPlainId(),
-						Router\Router::RELATION_ENTITY => $name,
+						Router\Routes::URL_DEVICE_ID   => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID     => $channel->getPlainId(),
+						Router\Routes::RELATION_ENTITY => $name,
 					]
 				),
 				false

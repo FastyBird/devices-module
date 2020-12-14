@@ -13,17 +13,16 @@
 # @date			13.02.20
 #
 
-commands:
-	deviceCreate:
-		type:
-			title: "Device type"
-		name:
-			title: "Device name"
-		identifier:
-			title: "Communication identifier"
+deviceCreate:
+	type:
+		title: "Device type"
+	name:
+		title: "Device name"
+	identifier:
+		title: "Communication identifier"
 
-		validation:
-			device:
-				wasNotCreated: "Device could not be created in the system. Error: %error%"
+	validation:
+		device:
+			wasNotCreated: "Device could not be created in the system. Error: %error%"
 
-		success: "Device was successfuly created."
+	success: "Device was successfuly created."

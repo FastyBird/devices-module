@@ -40,13 +40,13 @@ class CreateCommand extends Console\Command\Command
 	use Nette\SmartObject;
 
 	/** @var Models\Devices\IDevicesManager */
-	private $devicesManager;
+	private Models\Devices\IDevicesManager $devicesManager;
 
 	/** @var Translation\PrefixedTranslator */
-	private $translator;
+	private Translation\PrefixedTranslator $translator;
 
 	/** @var string */
-	private $translationDomain = 'commands.deviceCreate';
+	private string $translationDomain = 'commands.deviceCreate';
 
 	/**
 	 * @param Models\Devices\IDevicesManager $devicesManager

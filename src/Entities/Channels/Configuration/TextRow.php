@@ -25,7 +25,7 @@ class TextRow extends Row implements ITextRow
 {
 
 	/** @var string */
-	protected $type = DevicesModule\Constants::DATA_TYPE_TEXT;
+	protected string $type = DevicesModule\Constants::DATA_TYPE_TEXT;
 
 	/**
 	 * {@inheritDoc}

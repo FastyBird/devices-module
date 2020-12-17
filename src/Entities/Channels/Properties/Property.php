@@ -50,7 +50,7 @@ class Property extends Entities\Property implements IProperty
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", inversedBy="properties")
 	 * @ORM\JoinColumn(name="channel_id", referencedColumnName="channel_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $channel;
+	private Entities\Channels\IChannel $channel;
 
 	/**
 	 * @param Entities\Channels\IChannel $channel

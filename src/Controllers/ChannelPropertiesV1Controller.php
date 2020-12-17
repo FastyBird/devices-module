@@ -44,16 +44,16 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TChannelFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected $channelRepository;
+	protected Models\Channels\IChannelRepository $channelRepository;
 
 	/** @var Models\Channels\Properties\IPropertyRepository */
-	protected $propertyRepository;
+	protected Models\Channels\Properties\IPropertyRepository $propertyRepository;
 
 	/** @var string */
-	protected $translationDomain = 'module.channelProperties';
+	protected string $translationDomain = 'module.channelProperties';
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

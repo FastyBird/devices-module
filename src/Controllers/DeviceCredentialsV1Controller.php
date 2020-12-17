@@ -46,13 +46,13 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Models\Devices\Credentials\ICredentialsManager */
-	private $credentialsManager;
+	private Models\Devices\Credentials\ICredentialsManager $credentialsManager;
 
 	/** @var Hydrators\Credentials\CredentialsHydrator */
-	private $credentialsHydrator;
+	private Hydrators\Credentials\CredentialsHydrator $credentialsHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

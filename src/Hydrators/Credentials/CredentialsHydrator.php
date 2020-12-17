@@ -29,17 +29,14 @@ use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 final class CredentialsHydrator extends JsonApiHydrators\Hydrator
 {
 
-	/** @var string */
-	protected $entityIdentifier = self::IDENTIFIER_KEY;
-
 	/** @var string[] */
-	protected $attributes = [
+	protected array $attributes = [
 		'username',
 		'password',
 	];
 
 	/** @var string */
-	protected $translationDomain = 'module.credentials';
+	protected string $translationDomain = 'module.credentials';
 
 	/**
 	 * {@inheritDoc}

@@ -38,10 +38,10 @@ final class PropertyRepository implements IPropertyRepository
 	use Nette\SmartObject;
 
 	/** @var Common\Persistence\ManagerRegistry */
-	private $managerRegistry;
+	private Common\Persistence\ManagerRegistry $managerRegistry;
 
 	/** @var Persistence\ObjectRepository<Entities\Devices\Properties\Property>|null */
-	private $repository = null;
+	private ?Persistence\ObjectRepository $repository = null;
 
 	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
 	{

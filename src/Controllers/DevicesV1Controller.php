@@ -48,22 +48,22 @@ class DevicesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Models\Devices\IDevicesManager */
-	protected $devicesManager;
+	protected Models\Devices\IDevicesManager $devicesManager;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected $channelRepository;
+	protected Models\Channels\IChannelRepository $channelRepository;
 
 	/** @var Models\Channels\IChannelsManager */
-	protected $channelsManager;
+	protected Models\Channels\IChannelsManager $channelsManager;
 
 	/** @var string */
-	protected $translationDomain = 'module.devices';
+	protected string $translationDomain = 'module.devices';
 
 	/** @var Hydrators\Devices\NetworkDeviceHydrator */
-	private $networkDeviceHydrator;
+	private Hydrators\Devices\NetworkDeviceHydrator $networkDeviceHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

@@ -38,10 +38,10 @@ final class ChannelRepository implements IChannelRepository
 	use Nette\SmartObject;
 
 	/** @var Persistence\ObjectRepository<Entities\Channels\Channel>|null */
-	public $repository = null;
+	public ?Persistence\ObjectRepository $repository = null;
 
 	/** @var Common\Persistence\ManagerRegistry */
-	private $managerRegistry;
+	private Common\Persistence\ManagerRegistry $managerRegistry;
 
 	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
 	{

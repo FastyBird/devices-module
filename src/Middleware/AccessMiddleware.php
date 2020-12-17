@@ -36,7 +36,7 @@ final class AccessMiddleware implements MiddlewareInterface
 {
 
 	/** @var Translation\Translator */
-	private $translator;
+	private Translation\Translator $translator;
 
 	public function __construct(
 		Translation\Translator $translator

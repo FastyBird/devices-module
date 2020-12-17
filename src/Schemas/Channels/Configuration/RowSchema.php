@@ -43,7 +43,7 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CHANNEL = 'channel';
 
 	/** @var Routing\IRouter */
-	protected $router;
+	protected Routing\IRouter $router;
 
 	public function __construct(Routing\IRouter $router)
 	{

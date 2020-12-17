@@ -50,7 +50,7 @@ class Firmware implements IFirmware
 	 * @ORM\Column(type="uuid_binary", name="firmware_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
-	protected $id;
+	protected Uuid\UuidInterface $id;
 
 	/**
 	 * @var string|null
@@ -58,7 +58,7 @@ class Firmware implements IFirmware
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="firmware_name", length=150, nullable=true, options={"default": null})
 	 */
-	private $name = null;
+	private ?string $name = null;
 
 	/**
 	 * @var Types\FirmwareManufacturerType
@@ -75,14 +75,14 @@ class Firmware implements IFirmware
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="firmware_version", length=150, nullable=true, options={"default": null})
 	 */
-	private $version = null;
+	private ?string $version = null;
 
 	/**
 	 * @var Uuid\UuidInterface
 	 *
 	 * @ORM\Column(type="uuid_binary", name="device_id", unique=true)
 	 */
-	private $device;
+	private Uuid\UuidInterface $device;
 
 	/**
 	 * @param Entities\Devices\IPhysicalDevice $device

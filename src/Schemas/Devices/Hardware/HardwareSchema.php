@@ -49,10 +49,10 @@ final class HardwareSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_DEVICE = 'device';
 
 	/** @var Models\Devices\IDeviceRepository */
-	private $deviceRepository;
+	private Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Routing\IRouter */
-	private $router;
+	private Routing\IRouter $router;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

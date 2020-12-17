@@ -50,7 +50,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CONFIGURATION = 'configuration';
 
 	/** @var Routing\IRouter */
-	private $router;
+	private Routing\IRouter $router;
 
 	public function __construct(Routing\IRouter $router)
 	{

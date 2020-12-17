@@ -29,7 +29,7 @@ trait TPhysicalDevice
 	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\PhysicalDevice\Hardware")
 	 * @ORM\JoinColumn(name="hardware_id", referencedColumnName="hardware_id", onDelete="CASCADE")
 	 */
-	protected $hardware;
+	protected ?PhysicalDevice\IHardware $hardware = null;
 
 	/**
 	 * @var Entities\Devices\PhysicalDevice\IFirmware|null
@@ -38,7 +38,7 @@ trait TPhysicalDevice
 	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\PhysicalDevice\Firmware")
 	 * @ORM\JoinColumn(name="firmware_id", referencedColumnName="firmware_id", onDelete="CASCADE")
 	 */
-	protected $firmware;
+	protected ?PhysicalDevice\IFirmware $firmware = null;
 
 	/**
 	 * {@inheritDoc}

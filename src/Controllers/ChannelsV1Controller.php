@@ -44,19 +44,19 @@ final class ChannelsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TChannelFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Models\Channels\IChannelsManager */
-	protected $channelsManager;
+	protected Models\Channels\IChannelsManager $channelsManager;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected $channelRepository;
+	protected Models\Channels\IChannelRepository $channelRepository;
 
 	/** @var string */
-	protected $translationDomain = 'module.channels';
+	protected string $translationDomain = 'module.channels';
 
 	/** @var Hydrators\Channels\ChannelHydrator */
-	private $channelHydrator;
+	private Hydrators\Channels\ChannelHydrator $channelHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

@@ -44,13 +44,13 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var string */
-	protected $translationDomain = 'module.deviceConfiguration';
+	protected string $translationDomain = 'module.deviceConfiguration';
 
 	/** @var Models\Devices\Configuration\IRowRepository */
-	private $rowRepository;
+	private Models\Devices\Configuration\IRowRepository $rowRepository;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

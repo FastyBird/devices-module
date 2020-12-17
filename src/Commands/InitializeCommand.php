@@ -35,7 +35,7 @@ class InitializeCommand extends Console\Command\Command
 {
 
 	/** @var Database\Helpers\Database */
-	private $database;
+	private Database\Helpers\Database $database;
 
 	public function __construct(
 		Database\Helpers\Database $database,

@@ -44,16 +44,16 @@ abstract class BaseV1Controller
 	use Nette\SmartObject;
 
 	/** @var Translation\PrefixedTranslator */
-	protected $translator;
+	protected Translation\PrefixedTranslator $translator;
 
 	/** @var ORM\ManagerRegistry */
-	protected $managerRegistry;
+	protected ORM\ManagerRegistry $managerRegistry;
 
 	/** @var Log\LoggerInterface */
-	protected $logger;
+	protected Log\LoggerInterface $logger;
 
 	/** @var string */
-	protected $translationDomain = '';
+	protected string $translationDomain = '';
 
 	/**
 	 * @param Translation\Translator $translator

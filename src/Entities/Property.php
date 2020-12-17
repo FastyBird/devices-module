@@ -42,7 +42,7 @@ class Property implements IProperty
 	 * @ORM\Column(type="uuid_binary", name="property_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
-	protected $id;
+	protected Uuid\UuidInterface $id;
 
 	/**
 	 * @var string
@@ -50,7 +50,7 @@ class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="property_property", length=50, nullable=false)
 	 */
-	protected $property;
+	protected string $property;
 
 	/**
 	 * @var string|null
@@ -58,7 +58,7 @@ class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_name", nullable=true, options={"default": null})
 	 */
-	protected $name = null;
+	protected ?string $name = null;
 
 	/**
 	 * @var bool
@@ -66,7 +66,7 @@ class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="property_settable", nullable=false, options={"default": false})
 	 */
-	protected $settable = false;
+	protected bool $settable = false;
 
 	/**
 	 * @var bool
@@ -74,7 +74,7 @@ class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="property_queryable", nullable=false, options={"default": false})
 	 */
-	protected $queryable = false;
+	protected bool $queryable = false;
 
 	/**
 	 * @var Types\DatatypeType|null
@@ -91,7 +91,7 @@ class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_unit", nullable=true, options={"default": null})
 	 */
-	protected $unit = null;
+	protected ?string $unit = null;
 
 	/**
 	 * @var string|null
@@ -99,7 +99,7 @@ class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_format", nullable=true, options={"default": null})
 	 */
-	protected $format = null;
+	protected ?string $format = null;
 
 	/**
 	 * @param string $property

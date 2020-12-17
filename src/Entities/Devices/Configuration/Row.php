@@ -59,7 +59,7 @@ abstract class Row extends Entities\Row implements IRow
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="configuration")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
 	 */
-	protected $device;
+	protected Entities\Devices\IDevice $device;
 
 	/**
 	 * @param Entities\Devices\IDevice $device

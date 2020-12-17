@@ -29,11 +29,8 @@ use IPub\JsonAPIDocument;
 abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 {
 
-	/** @var string */
-	protected $entityIdentifier = self::IDENTIFIER_KEY;
-
 	/** @var string[] */
-	protected $attributes = [
+	protected array $attributes = [
 		'identifier',
 		'name',
 		'comment',
@@ -41,7 +38,7 @@ abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 	];
 
 	/** @var string */
-	protected $translationDomain = 'module.devices';
+	protected string $translationDomain = 'module.devices';
 
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes

@@ -51,7 +51,7 @@ class Hardware implements IHardware
 	 * @ORM\Column(type="uuid_binary", name="hardware_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
-	protected $id;
+	protected Uuid\UuidInterface $id;
 
 	/**
 	 * @var Types\HardwareManufacturerType
@@ -77,7 +77,7 @@ class Hardware implements IHardware
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="hardware_version", length=150, nullable=true, options={"default": null})
 	 */
-	private $version = null;
+	private ?string $version = null;
 
 	/**
 	 * @var string|null
@@ -85,14 +85,14 @@ class Hardware implements IHardware
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="hardware_mac_address", length=150, nullable=true, options={"default": null})
 	 */
-	private $macAddress = null;
+	private ?string $macAddress = null;
 
 	/**
 	 * @var Uuid\UuidInterface
 	 *
 	 * @ORM\Column(type="uuid_binary", name="device_id", unique=true)
 	 */
-	private $device;
+	private Uuid\UuidInterface $device;
 
 	/**
 	 * @param Entities\Devices\IPhysicalDevice $device

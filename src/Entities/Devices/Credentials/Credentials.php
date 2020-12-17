@@ -48,7 +48,7 @@ class Credentials implements ICredentials
 	 * @ORM\Column(type="uuid_binary", name="credentials_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
-	protected $id;
+	protected Uuid\UuidInterface $id;
 
 	/**
 	 * @var string
@@ -56,7 +56,7 @@ class Credentials implements ICredentials
 	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="credentials_username", length=150, nullable=false)
 	 */
-	private $username = null;
+	private string $username;
 
 	/**
 	 * @var string
@@ -64,7 +64,7 @@ class Credentials implements ICredentials
 	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="credentials_password", length=150, nullable=false)
 	 */
-	private $password = null;
+	private string $password;
 
 	/**
 	 * @var Entities\Devices\INetworkDevice
@@ -72,7 +72,7 @@ class Credentials implements ICredentials
 	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\NetworkDevice", inversedBy="credentials")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", unique=true, onDelete="cascade", nullable=false)
 	 */
-	private $device;
+	private Entities\Devices\INetworkDevice $device;
 
 	/**
 	 * @param Entities\Devices\INetworkDevice $device

@@ -29,22 +29,22 @@ class NumberRow extends Row implements INumberRow
 	 * @var float|null
 	 * @IPubDoctrine\Crud(is="writable")
 	 */
-	protected $min = null;
+	protected ?float $min = null;
 
 	/**
 	 * @var float|null
 	 * @IPubDoctrine\Crud(is="writable")
 	 */
-	protected $max = null;
+	protected ?float $max = null;
 
 	/**
 	 * @var float|null
 	 * @IPubDoctrine\Crud(is="writable")
 	 */
-	protected $step = null;
+	protected ?float $step = null;
 
 	/** @var string */
-	protected $type = DevicesModule\Constants::DATA_TYPE_NUMBER;
+	protected string $type = DevicesModule\Constants::DATA_TYPE_NUMBER;
 
 	/**
 	 * {@inheritDoc}

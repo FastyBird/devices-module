@@ -48,10 +48,10 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_DEVICE = 'device';
 
 	/** @var DevicesModule\Models\Devices\IDeviceRepository */
-	private $deviceRepository;
+	private DevicesModule\Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Routing\IRouter */
-	private $router;
+	private Routing\IRouter $router;
 
 	public function __construct(
 		DevicesModule\Models\Devices\IDeviceRepository $deviceRepository,

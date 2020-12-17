@@ -38,10 +38,10 @@ class FindChannelsQuery extends DoctrineOrmQuery\QueryObject
 {
 
 	/** @var Closure[] */
-	private $filter = [];
+	private array $filter = [];
 
 	/** @var Closure[] */
-	private $select = [];
+	private array $select = [];
 
 	/**
 	 * @param Uuid\UuidInterface $id

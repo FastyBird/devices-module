@@ -56,7 +56,7 @@ class Channel implements IChannel
 	 * @ORM\Column(type="uuid_binary", name="channel_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
-	protected $id;
+	protected Uuid\UuidInterface $id;
 
 	/**
 	 * @var string
@@ -64,7 +64,7 @@ class Channel implements IChannel
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="channel_channel", length=40, nullable=false)
 	 */
-	private $channel;
+	private string $channel;
 
 	/**
 	 * @var string|null
@@ -72,7 +72,7 @@ class Channel implements IChannel
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="channel_name", nullable=true, options={"default": null})
 	 */
-	private $name;
+	private ?string $name;
 
 	/**
 	 * @var string|null
@@ -80,7 +80,7 @@ class Channel implements IChannel
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="text", name="channel_comment", nullable=true, options={"default": null})
 	 */
-	private $comment = null;
+	private ?string $comment = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\Properties\IProperty>
@@ -88,7 +88,7 @@ class Channel implements IChannel
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Properties\Property", mappedBy="channel", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private $properties;
+	private Common\Collections\Collection $properties;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\Configuration\IRow>
@@ -96,7 +96,7 @@ class Channel implements IChannel
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Configuration\Row", mappedBy="channel", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private $configuration;
+	private Common\Collections\Collection $configuration;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\Controls\IControl>
@@ -104,7 +104,7 @@ class Channel implements IChannel
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Controls\Control", mappedBy="channel", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private $controls;
+	private Common\Collections\Collection $controls;
 
 	/**
 	 * @var Entities\Devices\IDevice
@@ -113,7 +113,7 @@ class Channel implements IChannel
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="channels")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $device;
+	private Entities\Devices\IDevice $device;
 
 	/**
 	 * @param Entities\Devices\IDevice $device
@@ -277,16 +277,12 @@ class Channel implements IChannel
 	 */
 	public function getConfigurationRow(string $id): ?Entities\Channels\Configuration\IRow
 	{
-		if ($this->configuration !== null) {
-			$found = $this->configuration
-				->filter(function (Entities\Channels\Configuration\IRow $row) use ($id): bool {
-					return $id === $row->getPlainId();
-				});
+		$found = $this->configuration
+			->filter(function (Entities\Channels\Configuration\IRow $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
 
-			return $found->isEmpty() || $found->first() === false ? null : $found->first();
-		}
-
-		return null;
+		return $found->isEmpty() || $found->first() === false ? null : $found->first();
 	}
 
 	/**
@@ -339,16 +335,12 @@ class Channel implements IChannel
 	 */
 	public function getControl(string $name): ?Entities\Channels\Controls\IControl
 	{
-		if ($this->controls !== null) {
-			$found = $this->controls
-				->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
-					return $name === $row->getName();
-				});
+		$found = $this->controls
+			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
 
-			return $found->isEmpty() || $found->first() === false ? null : $found->first();
-		}
-
-		return null;
+		return $found->isEmpty() || $found->first() === false ? null : $found->first();
 	}
 
 	/**

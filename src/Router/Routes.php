@@ -41,43 +41,43 @@ class Routes implements WebServerRouter\IRoutes
 	public const RELATION_ENTITY = 'relationEntity';
 
 	/** @var Controllers\DevicesV1Controller */
-	private $devicesV1Controller;
+	private Controllers\DevicesV1Controller $devicesV1Controller;
 
 	/** @var Controllers\DeviceChildrenV1Controller */
-	private $deviceChildrenV1Controller;
+	private Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller;
 
 	/** @var Controllers\DevicePropertiesV1Controller */
-	private $devicePropertiesV1Controller;
+	private Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller;
 
 	/** @var Controllers\DeviceConfigurationV1Controller */
-	private $deviceConfigurationV1Controller;
+	private Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller;
 
 	/** @var Controllers\DeviceHardwareV1Controller */
-	private $deviceHardwareV1Controller;
+	private Controllers\DeviceHardwareV1Controller $deviceHardwareV1Controller;
 
 	/** @var Controllers\DeviceFirmwareV1Controller */
-	private $deviceFirmwareV1Controller;
+	private Controllers\DeviceFirmwareV1Controller $deviceFirmwareV1Controller;
 
 	/** @var Controllers\DeviceCredentialsV1Controller */
-	private $deviceCredentialsV1Controller;
+	private Controllers\DeviceCredentialsV1Controller $deviceCredentialsV1Controller;
 
 	/** @var Controllers\ChannelsV1Controller */
-	private $channelsV1Controller;
+	private Controllers\ChannelsV1Controller $channelsV1Controller;
 
 	/** @var Controllers\ChannelPropertiesV1Controller */
-	private $channelPropertiesV1Controller;
+	private Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller;
 
 	/** @var Controllers\ChannelConfigurationV1Controller */
-	private $channelConfigurationV1Controller;
+	private Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller;
 
 	/** @var Middleware\AccessMiddleware */
-	private $devicesAccessControlMiddleware;
+	private Middleware\AccessMiddleware $devicesAccessControlMiddleware;
 
 	/** @var SimpleAuthMiddleware\AccessMiddleware */
-	private $accessControlMiddleware;
+	private SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware;
 
 	/** @var SimpleAuthMiddleware\UserMiddleware */
-	private $userMiddleware;
+	private SimpleAuthMiddleware\UserMiddleware $userMiddleware;
 
 	public function __construct(
 		Controllers\DevicesV1Controller $devicesV1Controller,

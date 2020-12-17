@@ -51,13 +51,13 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CHILDREN = 'children';
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected $channelRepository;
+	protected Models\Channels\IChannelRepository $channelRepository;
 
 	/** @var Routing\IRouter */
-	protected $router;
+	protected Routing\IRouter $router;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

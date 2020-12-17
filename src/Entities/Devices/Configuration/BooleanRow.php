@@ -26,7 +26,7 @@ class BooleanRow extends Row implements IBooleanRow
 {
 
 	/** @var string */
-	protected $type = DevicesModule\Constants::DATA_TYPE_BOOLEAN;
+	protected string $type = DevicesModule\Constants::DATA_TYPE_BOOLEAN;
 
 	/**
 	 * {@inheritDoc}

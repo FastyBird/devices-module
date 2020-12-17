@@ -42,7 +42,7 @@ final class DeviceFirmwareV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository

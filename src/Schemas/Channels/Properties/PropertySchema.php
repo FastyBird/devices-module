@@ -48,10 +48,10 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CHANNEL = 'channel';
 
 	/** @var Routing\IRouter */
-	private $router;
+	private Routing\IRouter $router;
 
 	/** @var Models\States\IPropertyRepository|null */
-	private $propertyRepository;
+	private ?Models\States\IPropertyRepository $propertyRepository = null;
 
 	public function __construct(
 		Routing\IRouter $router,

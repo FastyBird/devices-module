@@ -43,13 +43,13 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected $deviceRepository;
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var string */
-	protected $translationDomain = 'module.deviceProperties';
+	protected string $translationDomain = 'module.deviceProperties';
 
 	/** @var Models\Devices\Properties\IPropertyRepository */
-	private $propertyRepository;
+	private Models\Devices\Properties\IPropertyRepository $propertyRepository;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,

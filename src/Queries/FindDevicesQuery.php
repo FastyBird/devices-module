@@ -38,10 +38,10 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 {
 
 	/** @var Closure[] */
-	protected $filter = [];
+	private array $filter = [];
 
 	/** @var Closure[] */
-	protected $select = [];
+	private array $select = [];
 
 	/**
 	 * @param Uuid\UuidInterface $id

@@ -41,7 +41,7 @@ class NetworkDevice extends Device implements INetworkDevice
 	 * @IPubDoctrine\Crud(is={"writable"})
 	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Credentials\Credentials", mappedBy="device", cascade={"persist", "remove"})
 	 */
-	private $credentials;
+	private ?Credentials\ICredentials $credentials = null;
 
 	/**
 	 * {@inheritDoc}

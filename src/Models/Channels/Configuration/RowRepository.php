@@ -38,10 +38,10 @@ final class RowRepository implements IRowRepository
 	use Nette\SmartObject;
 
 	/** @var Common\Persistence\ManagerRegistry */
-	private $managerRegistry;
+	private Common\Persistence\ManagerRegistry $managerRegistry;
 
 	/** @var Persistence\ObjectRepository<Entities\Channels\Configuration\Row>[] */
-	private $repository = [];
+	private array $repository = [];
 
 	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
 	{

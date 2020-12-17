@@ -54,7 +54,7 @@ class Control implements IControl
 	 * @ORM\Column(type="uuid_binary", name="control_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
-	protected $id;
+	protected Uuid\UuidInterface $id;
 
 	/**
 	 * @var string
@@ -62,7 +62,7 @@ class Control implements IControl
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="control_name", length=100, nullable=false)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var Entities\Channels\IChannel
@@ -71,7 +71,7 @@ class Control implements IControl
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", inversedBy="controls")
 	 * @ORM\JoinColumn(name="channel_id", referencedColumnName="channel_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $channel;
+	private Entities\Channels\IChannel $channel;
 
 	/**
 	 * @param string $name

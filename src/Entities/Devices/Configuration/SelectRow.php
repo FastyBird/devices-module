@@ -30,10 +30,10 @@ class SelectRow extends Row implements ISelectRow
 	 * @var mixed[]
 	 * @IPubDoctrine\Crud(is="writable")
 	 */
-	protected $values = [];
+	protected array $values = [];
 
 	/** @var string */
-	protected $type = DevicesModule\Constants::DATA_TYPE_SELECT;
+	protected string $type = DevicesModule\Constants::DATA_TYPE_SELECT;
 
 	/**
 	 * {@inheritDoc}

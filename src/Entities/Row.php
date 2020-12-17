@@ -42,7 +42,7 @@ abstract class Row implements IRow
 	 * @ORM\Column(type="uuid_binary", name="configuration_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
-	protected $id;
+	protected Uuid\UuidInterface $id;
 
 	/**
 	 * @var string
@@ -50,7 +50,7 @@ abstract class Row implements IRow
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="configuration_configuration", length=50, nullable=false)
 	 */
-	protected $configuration;
+	protected string $configuration;
 
 	/**
 	 * @var string|null
@@ -58,7 +58,7 @@ abstract class Row implements IRow
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="configuration_name", nullable=true, options={"default": null})
 	 */
-	protected $name = null;
+	protected ?string $name = null;
 
 	/**
 	 * @var string|null
@@ -66,7 +66,7 @@ abstract class Row implements IRow
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="text", name="configuration_comment", nullable=true, options={"default": null})
 	 */
-	protected $comment = null;
+	protected ?string $comment = null;
 
 	/**
 	 * @var mixed|null

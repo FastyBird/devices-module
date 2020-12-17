@@ -53,7 +53,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	protected Models\Channels\Properties\IPropertyRepository $propertyRepository;
 
 	/** @var string */
-	protected string $translationDomain = 'module.channelProperties';
+	protected string $translationDomain = 'dvices-module.channelProperties';
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
@@ -126,8 +126,8 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 
 		throw new JsonApiExceptions\JsonApiErrorException(
 			StatusCodeInterface::STATUS_NOT_FOUND,
-			$this->translator->translate('//module.base.messages.notFound.heading'),
-			$this->translator->translate('//module.base.messages.notFound.message')
+			$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
+			$this->translator->translate('//dvices-module.base.messages.notFound.message')
 		);
 	}
 
@@ -169,8 +169,8 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//module.base.messages.notFound.heading'),
-					$this->translator->translate('//module.base.messages.notFound.message')
+					$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
+					$this->translator->translate('//dvices-module.base.messages.notFound.message')
 				);
 			}
 		}

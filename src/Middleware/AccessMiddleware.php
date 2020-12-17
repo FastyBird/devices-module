@@ -61,15 +61,15 @@ final class AccessMiddleware implements MiddlewareInterface
 		} catch (SimpleAuthExceptions\UnauthorizedAccessException $ex) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNAUTHORIZED,
-				$this->translator->translate('//module.base.messages.unauthorized.heading'),
-				$this->translator->translate('//module.base.messages.unauthorized.message')
+				$this->translator->translate('//dvices-module.base.messages.unauthorized.heading'),
+				$this->translator->translate('//dvices-module.base.messages.unauthorized.message')
 			);
 
 		} catch (SimpleAuthExceptions\ForbiddenAccessException $ex) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_FORBIDDEN,
-				$this->translator->translate('//module.base.messages.forbidden.heading'),
-				$this->translator->translate('//module.base.messages.forbidden.message')
+				$this->translator->translate('//dvices-module.base.messages.forbidden.heading'),
+				$this->translator->translate('//dvices-module.base.messages.forbidden.message')
 			);
 		}
 	}

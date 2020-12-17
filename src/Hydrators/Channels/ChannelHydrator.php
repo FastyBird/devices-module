@@ -37,7 +37,7 @@ final class ChannelHydrator extends JsonApiHydrators\Hydrator
 	];
 
 	/** @var string */
-	protected string $translationDomain = 'module.channels';
+	protected string $translationDomain = 'dvices-module.channels';
 
 	/**
 	 * {@inheritDoc}

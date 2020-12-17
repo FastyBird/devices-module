@@ -82,8 +82,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		if (!$device instanceof Entities\Devices\INetworkDevice) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//module.base.messages.notFound.heading'),
-				$this->translator->translate('//module.base.messages.notFound.message')
+				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//dvices-module.base.messages.notFound.message')
 			);
 		}
 
@@ -111,16 +111,16 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		if (!$device instanceof Entities\Devices\INetworkDevice) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//module.base.messages.notFound.heading'),
-				$this->translator->translate('//module.base.messages.notFound.message')
+				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//dvices-module.base.messages.notFound.message')
 			);
 		}
 
 		if ($device->getCredentials() !== null) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//module.base.messages.invalidRelation.heading'),
-				$this->translator->translate('//module.base.messages.invalidRelation.message'),
+				$this->translator->translate('//dvices-module.base.messages.invalidRelation.heading'),
+				$this->translator->translate('//dvices-module.base.messages.invalidRelation.message'),
 				[
 					'pointer' => '/data/relationships/device',
 				]
@@ -138,8 +138,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//module.base.messages.invalidType.heading'),
-					$this->translator->translate('//module.base.messages.invalidType.message'),
+					$this->translator->translate('//dvices-module.base.messages.invalidType.heading'),
+					$this->translator->translate('//dvices-module.base.messages.invalidType.message'),
 					[
 						'pointer' => '/data/type',
 					]
@@ -157,8 +157,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		} catch (DoctrineCrudExceptions\MissingRequiredFieldException $ex) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//module.base.messages.missingAttribute.heading'),
-				$this->translator->translate('//module.base.messages.missingAttribute.message'),
+				$this->translator->translate('//dvices-module.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//dvices-module.base.messages.missingAttribute.message'),
 				[
 					'pointer' => 'data/attributes/' . $ex->getField(),
 				]
@@ -167,8 +167,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//module.base.messages.missingAttribute.heading'),
-				$this->translator->translate('//module.base.messages.missingAttribute.message'),
+				$this->translator->translate('//dvices-module.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//dvices-module.base.messages.missingAttribute.message'),
 				[
 					'pointer' => 'data/attributes/' . $ex->getField(),
 				]
@@ -178,8 +178,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 			if (preg_match("%PRIMARY'%", $ex->getMessage(), $match) === 1) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//module.base.messages.uniqueIdentifier.heading'),
-					$this->translator->translate('//module.base.messages.uniqueIdentifier.message'),
+					$this->translator->translate('//dvices-module.base.messages.uniqueIdentifier.heading'),
+					$this->translator->translate('//dvices-module.base.messages.uniqueIdentifier.message'),
 					[
 						'pointer' => '/data/id',
 					]
@@ -188,8 +188,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//module.base.messages.uniqueAttribute.heading'),
-				$this->translator->translate('//module.base.messages.uniqueAttribute.message')
+				$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.heading'),
+				$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.message')
 			);
 
 		} catch (Throwable $ex) {
@@ -203,8 +203,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//module.base.messages.notCreated.heading'),
-				$this->translator->translate('//module.base.messages.notCreated.message')
+				$this->translator->translate('//dvices-module.base.messages.notCreated.heading'),
+				$this->translator->translate('//dvices-module.base.messages.notCreated.message')
 			);
 
 		} finally {
@@ -242,8 +242,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		if (!$device instanceof Entities\Devices\INetworkDevice || $device->getCredentials() === null) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//module.base.messages.notFound.heading'),
-				$this->translator->translate('//module.base.messages.notFound.message')
+				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//dvices-module.base.messages.notFound.message')
 			);
 		}
 
@@ -257,8 +257,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//module.base.messages.invalidType.heading'),
-					$this->translator->translate('//module.base.messages.invalidType.message'),
+					$this->translator->translate('//dvices-module.base.messages.invalidType.heading'),
+					$this->translator->translate('//dvices-module.base.messages.invalidType.message'),
 					[
 						'pointer' => '/data/type',
 					]
@@ -284,8 +284,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//module.base.messages.notUpdated.heading'),
-				$this->translator->translate('//module.base.messages.notUpdated.message')
+				$this->translator->translate('//dvices-module.base.messages.notUpdated.heading'),
+				$this->translator->translate('//dvices-module.base.messages.notUpdated.message')
 			);
 
 		} finally {
@@ -317,8 +317,8 @@ final class DeviceCredentialsV1Controller extends BaseV1Controller
 		if (!$device instanceof Entities\Devices\INetworkDevice) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//module.base.messages.notFound.heading'),
-				$this->translator->translate('//module.base.messages.notFound.message')
+				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//dvices-module.base.messages.notFound.message')
 			);
 		}
 

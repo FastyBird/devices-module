@@ -43,7 +43,7 @@ final class DeviceChildrenV1Controller extends BaseV1Controller
 	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var string */
-	protected string $translationDomain = 'module.deviceChildren';
+	protected string $translationDomain = 'dvices-module.deviceChildren';
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository

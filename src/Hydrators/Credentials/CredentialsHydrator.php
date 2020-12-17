@@ -36,7 +36,7 @@ final class CredentialsHydrator extends JsonApiHydrators\Hydrator
 	];
 
 	/** @var string */
-	protected string $translationDomain = 'module.credentials';
+	protected string $translationDomain = 'dvices-module.credentials';
 
 	/**
 	 * {@inheritDoc}

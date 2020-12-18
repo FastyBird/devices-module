@@ -10,9 +10,9 @@
 
 ## What is FastyBird devices module?
 
-Devices module is a [Nette framework](https://nette.org) extension for managing connected devices and their basic logic exposing them for clients.
+Devices module is a [Nette framework](https://nette.org) extension for managing connected devices and their basic logic and exposing them for clients.
 
-[FastyBird](https://www.fastybird.com) devices module is an Apache2 licensed distributed extension, developed in [PHP](https://www.php.net) with [Nette framework](https://nette.org).
+[FastyBird](https://www.fastybird.com) devices module is an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed in [PHP](https://www.php.net) with [Nette framework](https://nette.org).
 
 ## Requirements
 
@@ -42,7 +42,7 @@ This command is to start build in web server which is listening for incoming htt
 
 ## Configuration
 
-This module is dependent on other Nette extension. All this extension have to enabled and configured in NEON configuration file.
+This module is dependent on other Nette extensions. All this extensions have to enabled and configured in NEON configuration file.
 
 Example configuration could be found [here](https://github.com/FastyBird/devices-module/blob/master/config/example.neon)
 

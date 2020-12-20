@@ -26,6 +26,7 @@ use FastyBird\DevicesModule\Middleware;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
+use FastyBird\DevicesModule\Subscribers;
 use IPub\DoctrineCrud;
 use Nette;
 use Nette\DI;
@@ -251,6 +252,10 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		// Helpers
 		$builder->addDefinition(null)
 			->setType(Helpers\PropertyHelper::class);
+
+		// Events subscribers
+		$builder->addDefinition(null)
+			->setType(Subscribers\EntitiesSubscriber::class);
 	}
 
 	/**

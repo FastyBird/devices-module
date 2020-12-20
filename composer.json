@@ -34,6 +34,7 @@
     "php": ">=7.4.0",
     "contributte/translation": "^0.8",
     "cweagans/composer-patches": "^1.6",
+    "fastybird/application-exchange": "@dev",
     "fastybird/database": "@dev",
     "fastybird/json-api": "@dev",
     "fastybird/modules-metadata": "@dev",

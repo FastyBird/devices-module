@@ -10,6 +10,7 @@ use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Middleware;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Schemas;
+use FastyBird\DevicesModule\Subscribers;
 use Nette;
 use Ninjify\Nunjuck\TestCase\BaseTestCase;
 use Tester\Assert;
@@ -79,6 +80,8 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Hydrators\Channels\ChannelHydrator::class));
 
 		Assert::notNull($container->getByType(Helpers\PropertyHelper::class));
+
+		Assert::notNull($container->getByType(Subscribers\EntitiesSubscriber::class));
 	}
 
 	/**

@@ -48,4 +48,9 @@ interface IProperty
 	 */
 	public function isPending(): bool;
 
+	/**
+	 * @return mixed[]
+	 */
+	public function toArray(): array;
+
 }

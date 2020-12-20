@@ -1,74 +1,104 @@
 {
-  "data" : [
-    {
-      "attributes" : {
-        "datatype" : "integer",
-        "format" : null,
-        "queryable" : true,
-        "settable" : false,
-        "name" : "rssi",
-        "property" : "rssi",
-        "unit" : null,
-        "value" : null,
-        "expected" : null,
-        "pending" : false
-      },
-      "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-      "links" : {
-        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
-      },
-      "relationships" : {
-        "device" : {
-          "data" : {
-            "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-            "type" : "devices-module/device-property"
-          },
-          "links" : {
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
-          }
-        }
-      },
-      "type" : "devices-module/device-property"
-    },
-    {
-      "attributes" : {
-        "datatype" : "integer",
-        "format" : null,
-        "queryable" : true,
-        "settable" : false,
-        "name" : "uptime",
-        "property" : "uptime",
-        "unit" : null,
-        "value" : null,
-        "expected" : null,
-        "pending" : false
-      },
-      "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-      "links" : {
-        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
-      },
-      "relationships" : {
-        "device" : {
-          "data" : {
-            "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-            "type" : "devices-module/device-property"
-          },
-          "links" : {
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
-          }
-        }
-      },
-      "type" : "devices-module/device-property"
-    }
-  ],
+  "meta" : {
+    "author" : "FastyBird team",
+    "copyright" : "FastyBird s.r.o"
+  },
   "jsonapi" : {
     "version" : "1.1"
   },
   "links" : {
     "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties"
   },
-  "meta" : {
-    "author" : "FastyBird team",
-    "copyright" : "FastyBird s.r.o"
-  }
+  "data" : [
+    {
+      "type" : "devices-module/device-property",
+      "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
+      "attributes" : {
+        "property" : "rssi",
+        "name" : "rssi",
+        "settable" : false,
+        "queryable" : true,
+        "datatype" : "integer",
+        "unit" : null,
+        "format" : null,
+        "value" : null,
+        "expected" : null,
+        "pending" : false
+      },
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+          },
+          "data" : {
+            "type" : "devices-module/device-property",
+            "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
+          }
+        }
+      },
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
+      }
+    },
+    {
+      "type" : "devices-module/device-property",
+      "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
+      "attributes" : {
+        "property" : "status_led",
+        "name" : "status_led",
+        "settable" : true,
+        "queryable" : true,
+        "datatype" : "enum",
+        "unit" : null,
+        "format" : "on,off",
+        "value" : null,
+        "expected" : null,
+        "pending" : false
+      },
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+          },
+          "data" : {
+            "type" : "devices-module/device-property",
+            "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
+          }
+        }
+      },
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
+      }
+    },
+    {
+      "type" : "devices-module/device-property",
+      "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+      "attributes" : {
+        "property" : "uptime",
+        "name" : "uptime",
+        "settable" : false,
+        "queryable" : true,
+        "datatype" : "integer",
+        "unit" : null,
+        "format" : null,
+        "value" : null,
+        "expected" : null,
+        "pending" : false
+      },
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+          },
+          "data" : {
+            "type" : "devices-module/device-property",
+            "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+          }
+        }
+      },
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+      }
+    }
+  ]
 }

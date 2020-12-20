@@ -60,7 +60,7 @@
           "related" : {
             "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties",
             "meta" : {
-              "count" : 2
+              "count" : 3
             }
           }
         },
@@ -68,6 +68,10 @@
           {
             "type" : "devices-module/device-property",
             "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
+          },
+          {
+            "type" : "devices-module/device-property",
+            "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
           },
           {
             "type" : "devices-module/device-property",

@@ -22,7 +22,8 @@ INSERT IGNORE INTO `fb_local_physicals_devices` (`device_id`, `hardware_id`, `fi
 
 INSERT IGNORE INTO `fb_devices_properties` (`property_id`, `device_id`, `property_property`, `property_name`, `property_settable`, `property_queryable`, `property_datatype`, `property_unit`, `property_format`, `created_at`, `updated_at`) VALUES
 (_binary 0xBBCCCF8C33AB431BA795D7BB38B6B6DB, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'uptime', 'uptime', 0, 1, 'integer', NULL, NULL, '2020-03-20 09:18:20', '2020-03-20 09:18:20'),
-(_binary 0x28BC0D382F7C4A71AA7427B102F8DF4C, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'rssi', 'rssi', 0, 1, 'integer', NULL, NULL, '2020-03-20 09:18:20', '2020-03-20 09:18:20');
+(_binary 0x28BC0D382F7C4A71AA7427B102F8DF4C, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'rssi', 'rssi', 0, 1, 'integer', NULL, NULL, '2020-03-20 09:18:20', '2020-03-20 09:18:20'),
+(_binary 0x3FF0029F7FE3405EA3EFEDAAD08E2FFA, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'status_led', 'status_led', 1, 1, 'enum', NULL, 'on,off', '2020-03-20 09:18:20', '2020-03-20 09:18:20');
 
 INSERT IGNORE INTO `fb_devices_controls` (`control_id`, `device_id`, `control_name`, `created_at`, `updated_at`) VALUES
 (_binary 0x7C055B2B60C3401793DBE9478D8AA662, _binary 0x69786D15FD0C4D9F937833287C2009FA, 'configure', '2020-03-20 09:18:20', '2020-03-20 09:18:20');

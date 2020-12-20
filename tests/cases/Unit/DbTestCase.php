@@ -18,13 +18,16 @@ abstract class DbTestCase extends BaseMockeryTestCase
 {
 
 	/** @var Nette\DI\Container|null */
-	private $container;
+	private ?Nette\DI\Container $container = null;
 
 	/** @var bool */
-	private $isDatabaseSetUp = false;
+	private bool $isDatabaseSetUp = false;
 
 	/** @var string[] */
-	private $sqlFiles = [];
+	private array $sqlFiles = [];
+
+	/** @var string[] */
+	private array $neonFiles = [];
 
 	public function setUp(): void
 	{
@@ -50,6 +53,16 @@ abstract class DbTestCase extends BaseMockeryTestCase
 	{
 		if (!in_array($file, $this->sqlFiles, true)) {
 			$this->sqlFiles[] = $file;
+		}
+	}
+
+	/**
+	 * @param string $file
+	 */
+	protected function registerNeonConfigurationFile(string $file): void
+	{
+		if (!in_array($file, $this->neonFiles, true)) {
+			$this->neonFiles[] = $file;
 		}
 	}
 
@@ -97,6 +110,10 @@ abstract class DbTestCase extends BaseMockeryTestCase
 		$config->addParameters(['appDir' => $rootDir, 'wwwDir' => $rootDir]);
 
 		$config->addConfig(__DIR__ . '/../../common.neon');
+
+		foreach ($this->neonFiles as $neonFile) {
+			$config->addConfig($neonFile);
+		}
 
 		DI\DevicesModuleExtension::register($config);
 

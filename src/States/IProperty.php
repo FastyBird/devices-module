@@ -15,6 +15,8 @@
 
 namespace FastyBird\DevicesModule\States;
 
+use Ramsey\Uuid;
+
 /**
  * Property interface
  *
@@ -25,6 +27,11 @@ namespace FastyBird\DevicesModule\States;
  */
 interface IProperty
 {
+
+	/**
+	 * @return Uuid\UuidInterface
+	 */
+	public function getId(): Uuid\UuidInterface;
 
 	/**
 	 * @return bool|float|int|string|null

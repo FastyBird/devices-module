@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\DI;
 use Contributte\Translation;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Commands;
+use FastyBird\DevicesModule\Consumers;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
@@ -249,13 +250,20 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition(null)
 			->setType(Hydrators\Credentials\CredentialsHydrator::class);
 
-		// Helpers
+		// Exchange consumer
 		$builder->addDefinition(null)
-			->setType(Helpers\PropertyHelper::class);
+			->setType(Consumers\DevicePropertyMessageConsumer::class);
+
+		$builder->addDefinition(null)
+			->setType(Consumers\ChannelPropertyMessageConsumer::class);
 
 		// Events subscribers
 		$builder->addDefinition(null)
 			->setType(Subscribers\EntitiesSubscriber::class);
+
+		// Helpers
+		$builder->addDefinition(null)
+			->setType(Helpers\PropertyHelper::class);
 	}
 
 	/**

@@ -27,12 +27,12 @@ interface IProperty
 {
 
 	/**
-	 * @return float|int|bool|string|null
+	 * @return bool|float|int|string|null
 	 */
 	public function getValue();
 
 	/**
-	 * @param float|int|string|null $expected
+	 * @param bool|float|int|string|null $expected
 	 *
 	 * @return void
 	 */

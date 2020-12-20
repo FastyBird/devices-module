@@ -31,13 +31,13 @@ final class PropertyHelper
 
 	/**
 	 * @param Entities\IProperty $property
-	 * @param string|null $value
+	 * @param bool|float|int|string|null $value
 	 *
-	 * @return int|float|string|bool|null
+	 * @return bool|float|int|string|null
 	 */
 	public function normalizeValue(
 		Entities\IProperty $property,
-		?string $value
+		$value
 	) {
 		if ($value === null) {
 			return null;

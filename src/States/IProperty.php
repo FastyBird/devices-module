@@ -34,6 +34,13 @@ interface IProperty
 	public function getId(): Uuid\UuidInterface;
 
 	/**
+	 * @param string|null $value
+	 *
+	 * @return void
+	 */
+	public function setValue(?string $value): void;
+
+	/**
 	 * @return bool|float|int|string|null
 	 */
 	public function getValue();
@@ -49,6 +56,13 @@ interface IProperty
 	 * @return float|int|bool|string|null
 	 */
 	public function getExpected();
+
+	/**
+	 * @param bool $pending
+	 *
+	 * @return void
+	 */
+	public function setPending(bool $pending): void;
 
 	/**
 	 * @return bool

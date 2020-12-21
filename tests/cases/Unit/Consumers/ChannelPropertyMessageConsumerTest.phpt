@@ -3,7 +3,6 @@
 namespace Tests\Cases;
 
 use FastyBird\DevicesModule\Consumers;
-use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
 use Mockery;
 use Nette\Utils;

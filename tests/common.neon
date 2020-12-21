@@ -16,7 +16,7 @@ php:
 extensions:
 	contributteConsole					: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
 	contributteTranslation				: Contributte\Translation\DI\TranslationExtension
-	contributeEvents					: Contributte\EventDispatcher\DI\EventDispatcherExtension
+	contributteEvents					: Contributte\EventDispatcher\DI\EventDispatcherExtension
 	nettrineAnnotations					: Nettrine\Annotations\DI\AnnotationsExtension
 	nettrineCache						: Nettrine\Cache\DI\CacheExtension
 	nettrineDbal						: Nettrine\DBAL\DI\DbalExtension

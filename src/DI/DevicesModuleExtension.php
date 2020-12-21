@@ -70,199 +70,199 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder = $this->getContainerBuilder();
 
 		// Http router
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('middleware.access'))
 			->setType(Middleware\AccessMiddleware::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('router.routes'))
 			->setType(Router\Routes::class);
 
 		// Console commands
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('commands.create'))
 			->setType(Commands\Devices\CreateCommand::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('commands.initialize'))
 			->setType(Commands\InitializeCommand::class);
 
 		// Database repositories
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('models.deviceRepository'))
 			->setType(Models\Devices\DeviceRepository::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('models.devicePropertyRepository'))
 			->setType(Models\Devices\Properties\PropertyRepository::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('models.deviceConfigurationRepository'))
 			->setType(Models\Devices\Configuration\RowRepository::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('models.channelRepository'))
 			->setType(Models\Channels\ChannelRepository::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('models.channelPropertyRepository'))
 			->setType(Models\Channels\Properties\PropertyRepository::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('models.channelConfigurationRepository'))
 			->setType(Models\Channels\Configuration\RowRepository::class);
 
 		// Database managers
-		$builder->addDefinition($this->prefix('doctrine.devicesManager'))
+		$builder->addDefinition($this->prefix('models.devicesManager'))
 			->setType(Models\Devices\DevicesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.devicesControlsManager'))
+		$builder->addDefinition($this->prefix('models.devicesControlsManager'))
 			->setType(Models\Devices\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.devicesPropertiesManager'))
+		$builder->addDefinition($this->prefix('models.devicesPropertiesManager'))
 			->setType(Models\Devices\Properties\PropertiesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.devicesConfigurationManager'))
+		$builder->addDefinition($this->prefix('models.devicesConfigurationManager'))
 			->setType(Models\Devices\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.hardwareManager'))
+		$builder->addDefinition($this->prefix('models.hardwareManager'))
 			->setType(Models\Devices\PhysicalDevice\HardwareManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.firmwareManager'))
+		$builder->addDefinition($this->prefix('models.firmwareManager'))
 			->setType(Models\Devices\PhysicalDevice\FirmwareManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.credentialsManager'))
+		$builder->addDefinition($this->prefix('models.credentialsManager'))
 			->setType(Models\Devices\Credentials\CredentialsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.channelsManager'))
+		$builder->addDefinition($this->prefix('models.channelsManager'))
 			->setType(Models\Channels\ChannelsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.channelsControlsManager'))
+		$builder->addDefinition($this->prefix('models.channelsControlsManager'))
 			->setType(Models\Channels\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.channelsPropertiesManager'))
+		$builder->addDefinition($this->prefix('models.channelsPropertiesManager'))
 			->setType(Models\Channels\Properties\PropertiesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('doctrine.channelsConfigurationManager'))
+		$builder->addDefinition($this->prefix('models.channelsConfigurationManager'))
 			->setType(Models\Channels\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
+		// Events subscribers
+		$builder->addDefinition($this->prefix('subscribers.entities'))
+			->setType(Subscribers\EntitiesSubscriber::class);
+
+		// Message bus consumers
+		$builder->addDefinition($this->prefix('consumers.deviceProperty'))
+			->setType(Consumers\DevicePropertyMessageConsumer::class);
+
+		$builder->addDefinition($this->prefix('consumers.channelProperty'))
+			->setType(Consumers\ChannelPropertyMessageConsumer::class);
+
 		// API controllers
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.devices'))
 			->setType(Controllers\DevicesV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.deviceChildren'))
 			->setType(Controllers\DeviceChildrenV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.deviceProperties'))
 			->setType(Controllers\DevicePropertiesV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.deviceConfiguration'))
 			->setType(Controllers\DeviceConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.deviceHardware'))
 			->setType(Controllers\DeviceHardwareV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.deviceFirmware'))
 			->setType(Controllers\DeviceFirmwareV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.deviceCredentials'))
 			->setType(Controllers\DeviceCredentialsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.channels'))
 			->setType(Controllers\ChannelsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.channelProperites'))
 			->setType(Controllers\ChannelPropertiesV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('controllers.channelConfiguration'))
 			->setType(Controllers\ChannelConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
 		// API schemas
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.devices.network'))
 			->setType(Schemas\Devices\NetworkDeviceSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.devices.local'))
 			->setType(Schemas\Devices\LocalDeviceSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.properties'))
 			->setType(Schemas\Devices\Properties\PropertySchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.hardware'))
 			->setType(Schemas\Devices\Hardware\HardwareSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.firmware'))
 			->setType(Schemas\Devices\Firmware\FirmwareSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.credentials'))
 			->setType(Schemas\Devices\Credentials\CredentialsSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.configuration.boolean'))
 			->setType(Schemas\Devices\Configuration\BooleanRowSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.configuration.number'))
 			->setType(Schemas\Devices\Configuration\NumberRowSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.configuration.select'))
 			->setType(Schemas\Devices\Configuration\SelectRowSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.device.configuration.text'))
 			->setType(Schemas\Devices\Configuration\TextRowSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.channel'))
 			->setType(Schemas\Channels\ChannelSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.channel.property'))
 			->setType(Schemas\Channels\Properties\PropertySchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.configuration.boolean'))
 			->setType(Schemas\Channels\Configuration\BooleanRowSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.configuration.number'))
 			->setType(Schemas\Channels\Configuration\NumberRowSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.configuration.select'))
 			->setType(Schemas\Channels\Configuration\SelectRowSchema::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('schemas.configuration.text'))
 			->setType(Schemas\Channels\Configuration\TextRowSchema::class);
 
 		// API hydrators
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('hydrators.devices.network'))
 			->setType(Hydrators\Devices\NetworkDeviceHydrator::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('hydrators.devices.local'))
 			->setType(Hydrators\Devices\LocalDeviceHydrator::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('hydrators.channel'))
 			->setType(Hydrators\Channels\ChannelHydrator::class);
 
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('hydrators.credentials'))
 			->setType(Hydrators\Credentials\CredentialsHydrator::class);
 
-		// Exchange consumer
-		$builder->addDefinition(null)
-			->setType(Consumers\DevicePropertyMessageConsumer::class);
-
-		$builder->addDefinition(null)
-			->setType(Consumers\ChannelPropertyMessageConsumer::class);
-
-		// Events subscribers
-		$builder->addDefinition(null)
-			->setType(Subscribers\EntitiesSubscriber::class);
-
 		// Helpers
-		$builder->addDefinition(null)
+		$builder->addDefinition($this->prefix('helpers.property'))
 			->setType(Helpers\PropertyHelper::class);
 	}
 
@@ -305,37 +305,37 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$entityFactoryServiceName = $builder->getByType(DoctrineCrud\Crud\IEntityCrudFactory::class, true);
 
-		$devicesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__devicesManager');
+		$devicesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesManager');
 		$devicesManagerService->setBody('return new ' . Models\Devices\DevicesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Device::class . '\'));');
 
-		$devicesControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__devicesControlsManager');
+		$devicesControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesControlsManager');
 		$devicesControlsManagerService->setBody('return new ' . Models\Devices\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Controls\Control::class . '\'));');
 
-		$devicesPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__devicesPropertiesManager');
+		$devicesPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesPropertiesManager');
 		$devicesPropertiesManagerService->setBody('return new ' . Models\Devices\Properties\PropertiesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Properties\Property::class . '\'));');
 
-		$devicesConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__devicesConfigurationManager');
+		$devicesConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConfigurationManager');
 		$devicesConfigurationManagerService->setBody('return new ' . Models\Devices\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Configuration\Row::class . '\'));');
 
-		$hardwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__hardwareManager');
+		$hardwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__hardwareManager');
 		$hardwareManagerService->setBody('return new ' . Models\Devices\PhysicalDevice\HardwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\PhysicalDevice\Hardware::class . '\'));');
 
-		$firmwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__firmwareManager');
+		$firmwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__firmwareManager');
 		$firmwareManagerService->setBody('return new ' . Models\Devices\PhysicalDevice\FirmwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\PhysicalDevice\Firmware::class . '\'));');
 
-		$credentialsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__credentialsManager');
+		$credentialsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__credentialsManager');
 		$credentialsManagerService->setBody('return new ' . Models\Devices\Credentials\CredentialsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Credentials\Credentials::class . '\'));');
 
-		$channelsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__channelsManager');
+		$channelsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsManager');
 		$channelsManagerService->setBody('return new ' . Models\Channels\ChannelsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Channel::class . '\'));');
 
-		$channelsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__channelsControlsManager');
+		$channelsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsControlsManager');
 		$channelsControlsManagerService->setBody('return new ' . Models\Channels\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Controls\Control::class . '\'));');
 
-		$channelsPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__channelsPropertiesManager');
+		$channelsPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsPropertiesManager');
 		$channelsPropertiesManagerService->setBody('return new ' . Models\Channels\Properties\PropertiesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Properties\Property::class . '\'));');
 
-		$channelsConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__doctrine__channelsConfigurationManager');
+		$channelsConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsConfigurationManager');
 		$channelsConfigurationManagerService->setBody('return new ' . Models\Channels\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Configuration\Row::class . '\'));');
 	}
 

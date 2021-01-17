@@ -51,7 +51,7 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 	protected Models\Channels\IChannelRepository $channelRepository;
 
 	/** @var string */
-	protected string $translationDomain = 'dvices-module.channelConfiguration';
+	protected string $translationDomain = 'devices-module.channelConfiguration';
 
 	/** @var Models\Channels\Configuration\IRowRepository */
 	private Models\Channels\Configuration\IRowRepository $rowRepository;
@@ -87,8 +87,8 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		if (!$channel->hasControl(DevicesModule\Constants::CONTROL_CONFIG)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notFound.message')
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message')
 			);
 		}
 
@@ -122,8 +122,8 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		if (!$channel->hasControl(DevicesModule\Constants::CONTROL_CONFIG)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notFound.message')
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message')
 			);
 		}
 
@@ -143,8 +143,8 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 
 		throw new JsonApiExceptions\JsonApiErrorException(
 			StatusCodeInterface::STATUS_NOT_FOUND,
-			$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
-			$this->translator->translate('//dvices-module.base.messages.notFound.message')
+			$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+			$this->translator->translate('//devices-module.base.messages.notFound.message')
 		);
 	}
 
@@ -169,8 +169,8 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		if (!$channel->hasControl(DevicesModule\Constants::CONTROL_CONFIG)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notFound.message')
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message')
 			);
 		}
 
@@ -194,8 +194,8 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//dvices-module.base.messages.notFound.message')
+					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+					$this->translator->translate('//devices-module.base.messages.notFound.message')
 				);
 			}
 		}

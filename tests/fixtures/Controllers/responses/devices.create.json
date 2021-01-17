@@ -10,7 +10,7 @@
     "self" : "/v1/devices"
   },
   "data" : {
-    "type" : "devices-module/network-device",
+    "type" : "devices-module/device",
     "id" : "bbbf5caa-b30e-4558-b83a-699617958cea",
     "attributes" : {
       "identifier" : "new-device",
@@ -22,10 +22,10 @@
       "owner" : "5e79efbf-bd0d-5b7c-46ef-bfbdefbfbd34"
     },
     "relationships" : {
-      "credentials" : {
+      "connector" : {
         "links" : {
-          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/credentials",
-          "related" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/credentials"
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/connector",
+          "related" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/connector"
         },
         "data" : null
       },

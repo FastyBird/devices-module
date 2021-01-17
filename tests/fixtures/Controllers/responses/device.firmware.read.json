@@ -13,7 +13,7 @@
       "device" : {
         "data" : {
           "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
-          "type" : "devices-module/network-device"
+          "type" : "devices-module/device"
         },
         "links" : {
           "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"

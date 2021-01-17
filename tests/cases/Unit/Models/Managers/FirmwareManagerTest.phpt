@@ -26,15 +26,15 @@ final class FirmwareManagerTest extends DbTestCase
 		$findDeviceQuery = new Queries\FindDevicesQuery();
 		$findDeviceQuery->byIdentifier('second-device');
 
-		/** @var Entities\Devices\NetworkDevice $device */
+		/** @var Entities\Devices\Device $device */
 		$device = $deviceRepository->findOneBy($findDeviceQuery);
 
 		Assert::true(is_object($device));
-		Assert::type(Entities\Devices\NetworkDevice::class, $device);
+		Assert::type(Entities\Devices\Device::class, $device);
 		Assert::same('second-device', $device->getIdentifier());
 
-		/** @var Models\Devices\PhysicalDevice\IFirmwareManager $manager */
-		$manager = $this->getContainer()->getByType(Models\Devices\PhysicalDevice\FirmwareManager::class);
+		/** @var Models\Devices\Firmware\IFirmwareManager $manager */
+		$manager = $this->getContainer()->getByType(Models\Devices\Firmware\FirmwareManager::class);
 
 		$entity = $manager->create(Utils\ArrayHash::from([
 			'name'         => 'firmware',
@@ -43,13 +43,13 @@ final class FirmwareManagerTest extends DbTestCase
 		]));
 
 		Assert::true(is_object($entity));
-		Assert::type(Entities\Devices\PhysicalDevice\Firmware::class, $entity);
+		Assert::type(Entities\Devices\Firmware\Firmware::class, $entity);
 
-		/** @var Entities\Devices\NetworkDevice $device */
+		/** @var Entities\Devices\Device $device */
 		$device = $deviceRepository->findOneBy($findDeviceQuery);
 
 		Assert::true(is_object($device->getFirmware()));
-		Assert::type(Entities\Devices\PhysicalDevice\Firmware::class, $device->getFirmware());
+		Assert::type(Entities\Devices\Firmware\Firmware::class, $device->getFirmware());
 		Assert::same($entity, $device->getFirmware());
 	}
 
@@ -61,15 +61,15 @@ final class FirmwareManagerTest extends DbTestCase
 		$findDeviceQuery = new Queries\FindDevicesQuery();
 		$findDeviceQuery->byIdentifier('third-device');
 
-		/** @var Entities\Devices\LocalDevice $device */
+		/** @var Entities\Devices\Device $device */
 		$device = $deviceRepository->findOneBy($findDeviceQuery);
 
 		Assert::true(is_object($device));
-		Assert::type(Entities\Devices\LocalDevice::class, $device);
+		Assert::type(Entities\Devices\Device::class, $device);
 		Assert::same('third-device', $device->getIdentifier());
 
-		/** @var Models\Devices\PhysicalDevice\IFirmwareManager $manager */
-		$manager = $this->getContainer()->getByType(Models\Devices\PhysicalDevice\FirmwareManager::class);
+		/** @var Models\Devices\Firmware\IFirmwareManager $manager */
+		$manager = $this->getContainer()->getByType(Models\Devices\Firmware\FirmwareManager::class);
 
 		$entity = $manager->update($device->getFirmware(), Utils\ArrayHash::from([
 			'name' => 'updated',

@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Schemas\Devices\Firmware;
 
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
@@ -32,7 +31,7 @@ use Neomerx\JsonApi;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Devices\PhysicalDevice\IFirmware>
+ * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Devices\Firmware\IFirmware>
  */
 final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 {
@@ -47,18 +46,12 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public const RELATIONSHIPS_DEVICE = 'device';
 
-	/** @var DevicesModule\Models\Devices\IDeviceRepository */
-	private DevicesModule\Models\Devices\IDeviceRepository $deviceRepository;
-
 	/** @var Routing\IRouter */
 	private Routing\IRouter $router;
 
 	public function __construct(
-		DevicesModule\Models\Devices\IDeviceRepository $deviceRepository,
 		Routing\IRouter $router
 	) {
-		$this->deviceRepository = $deviceRepository;
-
 		$this->router = $router;
 	}
 
@@ -67,7 +60,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public function getEntityClass(): string
 	{
-		return Entities\Devices\PhysicalDevice\Firmware::class;
+		return Entities\Devices\Firmware\Firmware::class;
 	}
 
 	/**
@@ -79,7 +72,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
-	 * @param Entities\Devices\PhysicalDevice\IFirmware $firmware
+	 * @param Entities\Devices\Firmware\IFirmware $firmware
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, string|null>
@@ -96,7 +89,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
-	 * @param Entities\Devices\PhysicalDevice\IFirmware $firmware
+	 * @param Entities\Devices\Firmware\IFirmware $firmware
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
 	 *
@@ -109,7 +102,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE,
 				[
-					Router\Routes::URL_DEVICE_ID => $firmware->getDevice()->toString(),
+					Router\Routes::URL_DEVICE_ID => $firmware->getDevice()->getPlainId(),
 				]
 			),
 			false
@@ -117,7 +110,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
-	 * @param Entities\Devices\PhysicalDevice\IFirmware $firmware
+	 * @param Entities\Devices\Firmware\IFirmware $firmware
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, mixed>
@@ -126,12 +119,9 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public function getRelationships($firmware, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		$findDeviceQuery = new Queries\FindDevicesQuery();
-		$findDeviceQuery->byId($firmware->getDevice());
-
 		return [
 			self::RELATIONSHIPS_DEVICE => [
-				self::RELATIONSHIP_DATA          => $this->deviceRepository->findOneBy($findDeviceQuery),
+				self::RELATIONSHIP_DATA          => $firmware->getDevice(),
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -139,7 +129,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
-	 * @param Entities\Devices\PhysicalDevice\IFirmware $firmware
+	 * @param Entities\Devices\Firmware\IFirmware $firmware
 	 * @param string $name
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
@@ -154,7 +144,7 @@ final class FirmwareSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
-						Router\Routes::URL_ITEM_ID => $firmware->getDevice()->toString(),
+						Router\Routes::URL_ITEM_ID => $firmware->getDevice()->getPlainId(),
 					]
 				),
 				false

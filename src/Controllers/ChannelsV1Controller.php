@@ -53,7 +53,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 	protected Models\Channels\IChannelRepository $channelRepository;
 
 	/** @var string */
-	protected string $translationDomain = 'dvices-module.channels';
+	protected string $translationDomain = 'devices-module.channels';
 
 	/** @var Hydrators\Channels\ChannelHydrator */
 	private Hydrators\Channels\ChannelHydrator $channelHydrator;
@@ -150,8 +150,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//dvices-module.base.messages.invalidType.heading'),
-					$this->translator->translate('//dvices-module.base.messages.invalidType.message'),
+					$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+					$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 					[
 						'pointer' => '/data/type',
 					]
@@ -177,8 +177,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//dvices-module.base.messages.notUpdated.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notUpdated.message')
+				$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
+				$this->translator->translate('//devices-module.base.messages.notUpdated.message')
 			);
 
 		} finally {

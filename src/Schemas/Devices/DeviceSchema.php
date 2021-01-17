@@ -33,11 +33,15 @@ use Neomerx\JsonApi;
  *
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-template T of Entities\Devices\IDevice
- * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
+ * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Devices\IDevice>
  */
-abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
+class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 {
+
+	/**
+	 * Define entity schema type string
+	 */
+	public const SCHEMA_TYPE = 'devices-module/device';
 
 	/**
 	 * Define relationships names
@@ -49,6 +53,11 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 	public const RELATIONSHIPS_PARENT = 'parent';
 	public const RELATIONSHIPS_CHILDREN = 'children';
+
+	public const RELATIONSHIPS_HARDWARE = 'hardware';
+	public const RELATIONSHIPS_FIRMWARE = 'firmware';
+
+	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
@@ -71,12 +80,26 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getType(): string
+	{
+		return self::SCHEMA_TYPE;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getEntityClass(): string
+	{
+		return Entities\Devices\Device::class;
+	}
+
+	/**
 	 * @param Entities\Devices\IDevice $device
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, string>
-	 *
-	 * @phpstan-param T $device
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -117,8 +140,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
 	 *
-	 * @phpstan-param T $device
-	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getSelfLink($device): JsonApi\Contracts\Schema\LinkInterface
@@ -140,8 +161,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, mixed>
-	 *
-	 * @phpstan-param T $device
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -165,6 +184,21 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			],
 			self::RELATIONSHIPS_CHILDREN      => [
 				self::RELATIONSHIP_DATA          => $this->getChildren($device),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
+			self::RELATIONSHIPS_HARDWARE      => [
+				self::RELATIONSHIP_DATA          => $device->getHardware(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
+			self::RELATIONSHIPS_FIRMWARE      => [
+				self::RELATIONSHIP_DATA          => $device->getFirmware(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
+			self::RELATIONSHIPS_CONNECTOR     => [
+				self::RELATIONSHIP_DATA          => $device->getConnector(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -212,8 +246,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param string $name
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
-	 * @phpstan-param T $device
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -290,6 +322,42 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 					'count' => count($device->getChildren()),
 				]
 			);
+
+		} elseif ($name === self::RELATIONSHIPS_HARDWARE) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_DEVICE_HARDWARE,
+					[
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+					]
+				),
+				false
+			);
+
+		} elseif ($name === self::RELATIONSHIPS_FIRMWARE) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE,
+					[
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+					]
+				),
+				false
+			);
+
+		} elseif ($name === self::RELATIONSHIPS_CONNECTOR) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_DEVICE_CONNECTOR,
+					[
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+					]
+				),
+				false
+			);
 		}
 
 		return parent::getRelationshipRelatedLink($device, $name);
@@ -301,8 +369,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
 	 *
-	 * @phpstan-param T $device
-	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipSelfLink($device, string $name): JsonApi\Contracts\Schema\LinkInterface
@@ -313,6 +379,9 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			|| $name === self::RELATIONSHIPS_CHANNELS
 			|| $name === self::RELATIONSHIPS_CHILDREN
 			|| ($name === self::RELATIONSHIPS_PARENT && $device->getParent() !== null)
+			|| $name === self::RELATIONSHIPS_HARDWARE
+			|| $name === self::RELATIONSHIPS_FIRMWARE
+			|| $name === self::RELATIONSHIPS_CONNECTOR
 		) {
 			return new JsonApi\Schema\Link(
 				false,

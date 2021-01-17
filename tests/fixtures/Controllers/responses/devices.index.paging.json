@@ -16,7 +16,7 @@
   },
   "data" : [
     {
-      "type" : "devices-module/local-device",
+      "type" : "devices-module/device",
       "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596",
       "attributes" : {
         "identifier" : "child-device",
@@ -28,20 +28,6 @@
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
       "relationships" : {
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/hardware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/hardware"
-          },
-          "data" : null
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/firmware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/firmware"
-          },
-          "data" : null
-        },
         "properties" : {
           "links" : {
             "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/properties",
@@ -90,13 +76,34 @@
           },
           "data" : []
         },
+        "hardware" : {
+          "links" : {
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/hardware",
+            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/hardware"
+          },
+          "data" : null
+        },
+        "firmware" : {
+          "links" : {
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/firmware",
+            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/firmware"
+          },
+          "data" : null
+        },
+        "connector" : {
+          "links" : {
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/connector",
+            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/connector"
+          },
+          "data" : null
+        },
         "parent" : {
           "links" : {
             "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/parent",
             "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596"
           },
           "data" : {
-            "type" : "devices-module/network-device",
+            "type" : "devices-module/device",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }

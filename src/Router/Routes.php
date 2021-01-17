@@ -58,8 +58,8 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\DeviceFirmwareV1Controller */
 	private Controllers\DeviceFirmwareV1Controller $deviceFirmwareV1Controller;
 
-	/** @var Controllers\DeviceCredentialsV1Controller */
-	private Controllers\DeviceCredentialsV1Controller $deviceCredentialsV1Controller;
+	/** @var Controllers\DeviceConnectorV1Controller */
+	private Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller;
 
 	/** @var Controllers\ChannelsV1Controller */
 	private Controllers\ChannelsV1Controller $channelsV1Controller;
@@ -69,6 +69,9 @@ class Routes implements WebServerRouter\IRoutes
 
 	/** @var Controllers\ChannelConfigurationV1Controller */
 	private Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller;
+
+	/** @var Controllers\ConnectorsV1Controller */
+	private $connectorsV1Controller;
 
 	/** @var Middleware\AccessMiddleware */
 	private Middleware\AccessMiddleware $devicesAccessControlMiddleware;
@@ -86,10 +89,11 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller,
 		Controllers\DeviceHardwareV1Controller $deviceHardwareV1Controller,
 		Controllers\DeviceFirmwareV1Controller $deviceFirmwareV1Controller,
-		Controllers\DeviceCredentialsV1Controller $deviceCredentialsV1Controller,
+		Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller,
 		Controllers\ChannelsV1Controller $channelsV1Controller,
 		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
 		Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller,
+		Controllers\ConnectorsV1Controller $connectorsV1Controller,
 		Middleware\AccessMiddleware $devicesAccessControlMiddleware,
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
 		SimpleAuthMiddleware\UserMiddleware $userMiddleware
@@ -100,10 +104,11 @@ class Routes implements WebServerRouter\IRoutes
 		$this->deviceConfigurationV1Controller = $deviceConfigurationV1Controller;
 		$this->deviceHardwareV1Controller = $deviceHardwareV1Controller;
 		$this->deviceFirmwareV1Controller = $deviceFirmwareV1Controller;
-		$this->deviceCredentialsV1Controller = $deviceCredentialsV1Controller;
+		$this->deviceConnectorV1Controller = $deviceConnectorV1Controller;
 		$this->channelsV1Controller = $channelsV1Controller;
 		$this->channelPropertiesV1Controller = $channelPropertiesV1Controller;
 		$this->channelConfigurationV1Controller = $channelConfigurationV1Controller;
+		$this->connectorsV1Controller = $connectorsV1Controller;
 
 		$this->devicesAccessControlMiddleware = $devicesAccessControlMiddleware;
 		$this->accessControlMiddleware = $accessControlMiddleware;
@@ -207,20 +212,20 @@ class Routes implements WebServerRouter\IRoutes
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE_RELATIONSHIP);
 
 				/**
-				 * DEVICE CREDENTIALS
+				 * DEVICE CONNECTOR
 				 */
-				$route = $group->get('/credentials', [$this->deviceCredentialsV1Controller, 'read']);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CREDENTIALS);
+				$route = $group->get('/connector', [$this->deviceConnectorV1Controller, 'read']);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONNECTOR);
 
-				$route = $group->get('/credentials/relationships/{' . self::RELATION_ENTITY . '}', [
-					$this->deviceCredentialsV1Controller,
+				$route = $group->get('/connector/relationships/{' . self::RELATION_ENTITY . '}', [
+					$this->deviceConnectorV1Controller,
 					'readRelationship',
 				]);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CREDENTIALS_RELATIONSHIP);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONNECTOR_RELATIONSHIP);
 
-				$group->post('/credentials', [$this->deviceCredentialsV1Controller, 'create']);
+				$group->post('/connector', [$this->deviceConnectorV1Controller, 'create']);
 
-				$group->patch('/credentials', [$this->deviceCredentialsV1Controller, 'update']);
+				$group->patch('/connector', [$this->deviceConnectorV1Controller, 'update']);
 
 				$group->group('/channels', function (Routing\RouteCollector $group): void {
 					/**
@@ -278,6 +283,29 @@ class Routes implements WebServerRouter\IRoutes
 						$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROW_RELATIONSHIP);
 					});
 				});
+			});
+
+			$group->group('/connectors', function (Routing\RouteCollector $group): void {
+				/**
+				 * CONNECTORS
+				 */
+				$route = $group->get('', [$this->connectorsV1Controller, 'index']);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTORS);
+
+				$route = $group->get('/{' . self::URL_ITEM_ID . '}', [$this->connectorsV1Controller, 'read']);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR);
+
+				$group->post('', [$this->connectorsV1Controller, 'create']);
+
+				$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->connectorsV1Controller, 'update']);
+
+				$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->connectorsV1Controller, 'delete']);
+
+				$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+					$this->connectorsV1Controller,
+					'readRelationship',
+				]);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_RELATIONSHIP);
 			});
 		});
 

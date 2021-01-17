@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
-use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -60,23 +59,23 @@ class DevicesV1Controller extends BaseV1Controller
 	protected Models\Channels\IChannelsManager $channelsManager;
 
 	/** @var string */
-	protected string $translationDomain = 'dvices-module.devices';
+	protected string $translationDomain = 'devices-module.devices';
 
-	/** @var Hydrators\Devices\NetworkDeviceHydrator */
-	private Hydrators\Devices\NetworkDeviceHydrator $networkDeviceHydrator;
+	/** @var Hydrators\Devices\DeviceHydrator */
+	private Hydrators\Devices\DeviceHydrator $deviceHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Devices\IDevicesManager $devicesManager,
 		Models\Channels\IChannelRepository $channelRepository,
 		Models\Channels\IChannelsManager $channelsManager,
-		Hydrators\Devices\NetworkDeviceHydrator $networkDeviceHydrator
+		Hydrators\Devices\DeviceHydrator $deviceHydrator
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->devicesManager = $devicesManager;
 		$this->channelRepository = $channelRepository;
 		$this->channelsManager = $channelsManager;
-		$this->networkDeviceHydrator = $networkDeviceHydrator;
+		$this->deviceHydrator = $deviceHydrator;
 	}
 
 	/**
@@ -133,12 +132,12 @@ class DevicesV1Controller extends BaseV1Controller
 	): WebServerHttp\Response {
 		$document = $this->createDocument($request);
 
-		if ($document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE) {
+		if ($document->getResource()->getType() === Schemas\Devices\DeviceSchema::SCHEMA_TYPE) {
 			try {
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$device = $this->devicesManager->create($this->networkDeviceHydrator->hydrate($document));
+				$device = $this->devicesManager->create($this->deviceHydrator->hydrate($document));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -149,8 +148,8 @@ class DevicesV1Controller extends BaseV1Controller
 			} catch (DoctrineCrudExceptions\MissingRequiredFieldException $ex) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//dvices-module.base.messages.missingAttribute.heading'),
-					$this->translator->translate('//dvices-module.base.messages.missingAttribute.message'),
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.heading'),
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
 					[
 						'pointer' => 'data/attributes/' . $ex->getField(),
 					]
@@ -159,8 +158,8 @@ class DevicesV1Controller extends BaseV1Controller
 			} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//dvices-module.base.messages.missingAttribute.heading'),
-					$this->translator->translate('//dvices-module.base.messages.missingAttribute.message'),
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.heading'),
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
 					[
 						'pointer' => 'data/attributes/' . $ex->getField(),
 					]
@@ -170,8 +169,8 @@ class DevicesV1Controller extends BaseV1Controller
 				if (preg_match("%PRIMARY'%", $ex->getMessage(), $match) === 1) {
 					throw new JsonApiExceptions\JsonApiErrorException(
 						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-						$this->translator->translate('//dvices-module.base.messages.uniqueIdentifier.heading'),
-						$this->translator->translate('//dvices-module.base.messages.uniqueIdentifier.message'),
+						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.heading'),
+						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.message'),
 						[
 							'pointer' => '/data/id',
 						]
@@ -184,8 +183,8 @@ class DevicesV1Controller extends BaseV1Controller
 					if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'device_')) {
 						throw new JsonApiExceptions\JsonApiErrorException(
 							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-							$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.heading'),
-							$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.message'),
+							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
 							[
 								'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
 							]
@@ -195,8 +194,8 @@ class DevicesV1Controller extends BaseV1Controller
 
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.heading'),
-					$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.message')
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message')
 				);
 
 			} catch (Throwable $ex) {
@@ -210,8 +209,8 @@ class DevicesV1Controller extends BaseV1Controller
 
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//dvices-module.base.messages.notCreated.heading'),
-					$this->translator->translate('//dvices-module.base.messages.notCreated.message')
+					$this->translator->translate('//devices-module.base.messages.notCreated.heading'),
+					$this->translator->translate('//devices-module.base.messages.notCreated.message')
 				);
 
 			} finally {
@@ -231,8 +230,8 @@ class DevicesV1Controller extends BaseV1Controller
 
 		throw new JsonApiExceptions\JsonApiErrorException(
 			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-			$this->translator->translate('//dvices-module.base.messages.invalidType.heading'),
-			$this->translator->translate('//dvices-module.base.messages.invalidType.message'),
+			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 			[
 				'pointer' => '/data/type',
 			]
@@ -265,17 +264,14 @@ class DevicesV1Controller extends BaseV1Controller
 			// Start transaction connection to the database
 			$this->getOrmConnection()->beginTransaction();
 
-			if (
-				$document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE
-				&& $device instanceof Entities\Devices\IPhysicalDevice
-			) {
-				$updateDeviceData = $this->networkDeviceHydrator->hydrate($document, $device);
+			if ($document->getResource()->getType() === Schemas\Devices\DeviceSchema::SCHEMA_TYPE) {
+				$updateDeviceData = $this->deviceHydrator->hydrate($document, $device);
 
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//dvices-module.base.messages.invalidType.heading'),
-					$this->translator->translate('//dvices-module.base.messages.invalidType.message'),
+					$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+					$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 					[
 						'pointer' => '/data/type',
 					]
@@ -298,8 +294,8 @@ class DevicesV1Controller extends BaseV1Controller
 				if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'device_')) {
 					throw new JsonApiExceptions\JsonApiErrorException(
 						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-						$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.heading'),
-						$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.message'),
+						$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+						$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
 						[
 							'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
 						]
@@ -309,8 +305,8 @@ class DevicesV1Controller extends BaseV1Controller
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.heading'),
-				$this->translator->translate('//dvices-module.base.messages.uniqueAttribute.message')
+				$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+				$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message')
 			);
 
 		} catch (Throwable $ex) {
@@ -324,8 +320,8 @@ class DevicesV1Controller extends BaseV1Controller
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//dvices-module.base.messages.notUpdated.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notUpdated.message')
+				$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
+				$this->translator->translate('//devices-module.base.messages.notUpdated.message')
 			);
 
 		} finally {
@@ -383,8 +379,8 @@ class DevicesV1Controller extends BaseV1Controller
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//dvices-module.base.messages.notDeleted.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notDeleted.message')
+				$this->translator->translate('//devices-module.base.messages.notDeleted.heading'),
+				$this->translator->translate('//devices-module.base.messages.notDeleted.message')
 			);
 
 		} finally {
@@ -435,17 +431,11 @@ class DevicesV1Controller extends BaseV1Controller
 			return $response
 				->withEntity(WebServerHttp\ScalarEntity::from($this->channelRepository->findAllBy($findQuery)));
 
-		} elseif (
-			$relationEntity === Schemas\Devices\NetworkDeviceSchema::RELATIONSHIPS_HARDWARE
-			&& $device instanceof Entities\Devices\IPhysicalDevice
-		) {
+		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_HARDWARE) {
 			return $response
 				->withEntity(WebServerHttp\ScalarEntity::from($device->getHardware()));
 
-		} elseif (
-			$relationEntity === Schemas\Devices\NetworkDeviceSchema::RELATIONSHIPS_FIRMWARE
-			&& $device instanceof Entities\Devices\IPhysicalDevice
-		) {
+		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_FIRMWARE) {
 			return $response
 				->withEntity(WebServerHttp\ScalarEntity::from($device->getFirmware()));
 		}

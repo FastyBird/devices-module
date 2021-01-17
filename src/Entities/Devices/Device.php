@@ -47,16 +47,8 @@ use Throwable;
  *       @ORM\Index(name="device_enabled_idx", columns={"device_enabled"})
  *     }
  * )
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="device_type", type="string", length=20)
- * @ORM\DiscriminatorMap({
- *    "device"   = "FastyBird\DevicesModule\Entities\Devices\Device",
- *    "local"    = "FastyBird\DevicesModule\Entities\Devices\LocalDevice",
- *    "network"  = "FastyBird\DevicesModule\Entities\Devices\NetworkDevice"
- * })
- * @ORM\MappedSuperclass
  */
-abstract class Device implements IDevice
+class Device implements IDevice
 {
 
 	use DatabaseEntities\TEntity;
@@ -89,14 +81,14 @@ abstract class Device implements IDevice
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="children")
 	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="device_id", nullable=true, onDelete="SET null")
 	 */
-	protected ?Entities\Devices\IDevice $parent = null;
+	private ?Entities\Devices\IDevice $parent = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, IDevice>
 	 *
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="parent")
 	 */
-	protected Common\Collections\Collection $children;
+	private Common\Collections\Collection $children;
 
 	/**
 	 * @var string|null
@@ -104,7 +96,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_name", nullable=true, options={"default": null})
 	 */
-	protected ?string $name = null;
+	private ?string $name = null;
 
 	/**
 	 * @var string|null
@@ -112,7 +104,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="text", name="device_comment", nullable=true, options={"default": null})
 	 */
-	protected ?string $comment = null;
+	private ?string $comment = null;
 
 	/**
 	 * @var Types\DeviceConnectionState
@@ -121,7 +113,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="device_state", nullable=false, options={"default": "unknown"})
 	 */
-	protected $state;
+	private $state;
 
 	/**
 	 * @var bool
@@ -129,7 +121,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="device_enabled", length=1, nullable=false, options={"default": true})
 	 */
-	protected bool $enabled = true;
+	private bool $enabled = true;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\IChannel>
@@ -137,7 +129,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	protected Common\Collections\Collection $channels;
+	private Common\Collections\Collection $channels;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\Controls\IControl>
@@ -145,7 +137,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Controls\Control", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	protected Common\Collections\Collection $controls;
+	private Common\Collections\Collection $controls;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\Properties\IProperty>
@@ -153,7 +145,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Properties\Property", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	protected Common\Collections\Collection $properties;
+	private Common\Collections\Collection $properties;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\Configuration\IRow>
@@ -161,7 +153,31 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Configuration\Row", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	protected Common\Collections\Collection $configuration;
+	private Common\Collections\Collection $configuration;
+
+	/**
+	 * @var Entities\Devices\Connectors\IConnector|null
+	 *
+	 * @IPubDoctrine\Crud(is={"writable"})
+	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Connectors\Connector", mappedBy="device", cascade={"persist", "remove"})
+	 */
+	private ?Entities\Devices\Connectors\IConnector $connector = null;
+
+	/**
+	 * @var Entities\Devices\Hardware\IHardware|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Hardware\Hardware", mappedBy="device", cascade={"persist", "remove"})
+	 */
+	private ?Hardware\IHardware $hardware = null;
+
+	/**
+	 * @var Entities\Devices\Firmware\IFirmware|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Firmware\Firmware", mappedBy="device", cascade={"persist", "remove"})
+	 */
+	private ?Firmware\IFirmware $firmware = null;
 
 	/**
 	 * @param string $identifier
@@ -693,6 +709,54 @@ abstract class Device implements IDevice
 		}
 
 		return $this->owner;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setConnector(?Entities\Devices\Connectors\IConnector $connector): void
+	{
+		$this->connector = $connector;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConnector(): ?Entities\Devices\Connectors\IConnector
+	{
+		return $this->connector;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardware(): ?Entities\Devices\Hardware\IHardware
+	{
+		return $this->hardware;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardware(?Entities\Devices\Hardware\IHardware $hardware): void
+	{
+		$this->hardware = $hardware;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getFirmware(): ?Entities\Devices\Firmware\IFirmware
+	{
+		return $this->firmware;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setFirmware(?Entities\Devices\Firmware\IFirmware $firmware): void
+	{
+		$this->firmware = $firmware;
 	}
 
 }

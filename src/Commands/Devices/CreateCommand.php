@@ -90,8 +90,6 @@ class CreateCommand extends Console\Command\Command
 
 		$io->title('FB devices module - create device');
 
-		$type = $io->choice($this->translator->translate('type.title'), ['network'], 'network');
-
 		if ($input->hasOption('identifier') && $input->getOption('identifier') !== '') {
 			$identifier = $input->getOption('identifier');
 
@@ -101,10 +99,7 @@ class CreateCommand extends Console\Command\Command
 
 		try {
 			$create = new Utils\ArrayHash();
-
-			if ($type === 'network') {
-				$create->entity = Entities\Devices\NetworkDevice::class;
-			}
+			$create->entity = Entities\Devices\Device::class;
 
 			$create->identifier = $identifier;
 

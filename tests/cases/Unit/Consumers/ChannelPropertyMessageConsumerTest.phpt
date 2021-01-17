@@ -55,7 +55,7 @@ final class ChannelPropertyMessageConsumerTest extends DbTestCase
 		/** @var Consumers\ChannelPropertyMessageConsumer $consumer */
 		$consumer = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageConsumer::class);
 
-		$consumer->consume($routingKey, $origin, $payload);
+		$consumer->consume($origin, $routingKey, $payload);
 
 		Assert::true(true);
 	}

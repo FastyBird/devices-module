@@ -11,7 +11,7 @@
   },
   "data" : [
     {
-      "type" : "devices-module/network-device",
+      "type" : "devices-module/device",
       "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
       "attributes" : {
         "identifier" : "first-device",
@@ -25,36 +25,6 @@
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
       "relationships" : {
-        "credentials" : {
-          "links" : {
-            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/credentials",
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/credentials"
-          },
-          "data" : {
-            "type" : "devices-module/credentials",
-            "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
-          }
-        },
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/hardware",
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/hardware"
-          },
-          "data" : {
-            "type" : "devices-module/hardware",
-            "id" : "8059b830-b76d-4f98-be9c-53bd06eab9a5"
-          }
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware",
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/firmware"
-          },
-          "data" : {
-            "type" : "devices-module/firmware",
-            "id" : "06feddf4-63e2-48bc-af13-f355f01ffbe0"
-          }
-        },
         "properties" : {
           "links" : {
             "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/properties",
@@ -162,10 +132,40 @@
           },
           "data" : [
             {
-              "type" : "devices-module/local-device",
+              "type" : "devices-module/device",
               "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596"
             }
           ]
+        },
+        "hardware" : {
+          "links" : {
+            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/hardware",
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/hardware"
+          },
+          "data" : {
+            "type" : "devices-module/hardware",
+            "id" : "8059b830-b76d-4f98-be9c-53bd06eab9a5"
+          }
+        },
+        "firmware" : {
+          "links" : {
+            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware",
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/firmware"
+          },
+          "data" : {
+            "type" : "devices-module/firmware",
+            "id" : "06feddf4-63e2-48bc-af13-f355f01ffbe0"
+          }
+        },
+        "connector" : {
+          "links" : {
+            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/connector",
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/connector"
+          },
+          "data" : {
+            "type" : "devices-module/connector",
+            "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
+          }
         }
       },
       "links" : {
@@ -173,7 +173,7 @@
       }
     },
     {
-      "type" : "devices-module/local-device",
+      "type" : "devices-module/device",
       "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596",
       "attributes" : {
         "identifier" : "child-device",
@@ -185,20 +185,6 @@
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
       "relationships" : {
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/hardware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/hardware"
-          },
-          "data" : null
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/firmware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/firmware"
-          },
-          "data" : null
-        },
         "properties" : {
           "links" : {
             "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/properties",
@@ -247,13 +233,34 @@
           },
           "data" : []
         },
+        "hardware" : {
+          "links" : {
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/hardware",
+            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/hardware"
+          },
+          "data" : null
+        },
+        "firmware" : {
+          "links" : {
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/firmware",
+            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/firmware"
+          },
+          "data" : null
+        },
+        "connector" : {
+          "links" : {
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/connector",
+            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/connector"
+          },
+          "data" : null
+        },
         "parent" : {
           "links" : {
             "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/parent",
             "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596"
           },
           "data" : {
-            "type" : "devices-module/network-device",
+            "type" : "devices-module/device",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
@@ -263,7 +270,7 @@
       }
     },
     {
-      "type" : "devices-module/network-device",
+      "type" : "devices-module/device",
       "id" : "bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a",
       "attributes" : {
         "identifier" : "second-device",
@@ -275,27 +282,6 @@
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
       "relationships" : {
-        "credentials" : {
-          "links" : {
-            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/credentials",
-            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/credentials"
-          },
-          "data" : null
-        },
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/hardware",
-            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/hardware"
-          },
-          "data" : null
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/firmware",
-            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/firmware"
-          },
-          "data" : null
-        },
         "properties" : {
           "links" : {
             "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/properties",
@@ -348,6 +334,27 @@
             }
           },
           "data" : []
+        },
+        "hardware" : {
+          "links" : {
+            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/hardware",
+            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/hardware"
+          },
+          "data" : null
+        },
+        "firmware" : {
+          "links" : {
+            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/firmware",
+            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/firmware"
+          },
+          "data" : null
+        },
+        "connector" : {
+          "links" : {
+            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/connector",
+            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/connector"
+          },
+          "data" : null
         }
       },
       "links" : {
@@ -355,7 +362,7 @@
       }
     },
     {
-      "type" : "devices-module/local-device",
+      "type" : "devices-module/device",
       "id" : "e36a2788-1ef8-4cdf-ab09-4735f191a509",
       "attributes" : {
         "identifier" : "third-device",
@@ -367,26 +374,6 @@
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
       "relationships" : {
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/hardware",
-            "related" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/hardware"
-          },
-          "data" : {
-            "type" : "devices-module/hardware",
-            "id" : "d8b0d2b4-a47a-4750-a225-ddfa973675d3"
-          }
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/firmware",
-            "related" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/firmware"
-          },
-          "data" : {
-            "type" : "devices-module/firmware",
-            "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
-          }
-        },
         "properties" : {
           "links" : {
             "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/properties",
@@ -434,6 +421,33 @@
             }
           },
           "data" : []
+        },
+        "hardware" : {
+          "links" : {
+            "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/hardware",
+            "related" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/hardware"
+          },
+          "data" : {
+            "type" : "devices-module/hardware",
+            "id" : "d8b0d2b4-a47a-4750-a225-ddfa973675d3"
+          }
+        },
+        "firmware" : {
+          "links" : {
+            "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/firmware",
+            "related" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/firmware"
+          },
+          "data" : {
+            "type" : "devices-module/firmware",
+            "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
+          }
+        },
+        "connector" : {
+          "links" : {
+            "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/connector",
+            "related" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/connector"
+          },
+          "data" : null
         }
       },
       "links" : {

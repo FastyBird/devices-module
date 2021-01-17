@@ -55,7 +55,7 @@ final class DevicePropertyMessageConsumerTest extends DbTestCase
 		/** @var Consumers\DevicePropertyMessageConsumer $consumer */
 		$consumer = $this->getContainer()->getByType(Consumers\DevicePropertyMessageConsumer::class);
 
-		$consumer->consume($routingKey, $origin, $payload);
+		$consumer->consume($origin, $routingKey, $payload);
 
 		Assert::true(true);
 	}

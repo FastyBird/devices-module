@@ -28,7 +28,7 @@ final class DeviceRepositoryTest extends DbTestCase
 		$parent = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($parent));
-		Assert::type(Entities\Devices\NetworkDevice::class, $parent);
+		Assert::type(Entities\Devices\Device::class, $parent);
 		Assert::same('first-device', $parent->getIdentifier());
 
 		$findQuery = new Queries\FindDevicesQuery();
@@ -37,7 +37,7 @@ final class DeviceRepositoryTest extends DbTestCase
 		$entity = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($entity));
-		Assert::type(Entities\Devices\LocalDevice::class, $entity);
+		Assert::type(Entities\Devices\Device::class, $entity);
 		Assert::same('child-device', $entity->getIdentifier());
 	}
 

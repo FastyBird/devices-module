@@ -306,4 +306,40 @@ interface IDevice extends DatabaseEntities\IEntity,
 	 */
 	public function toArray(): array;
 
+	/**
+	 * @param Entities\Devices\Connectors\IConnector $connector
+	 *
+	 * @return void
+	 */
+	public function setConnector(?Entities\Devices\Connectors\IConnector $connector): void;
+
+	/**
+	 * @return Entities\Devices\Connectors\IConnector|null
+	 */
+	public function getConnector(): ?Entities\Devices\Connectors\IConnector;
+
+	/**
+	 * @param Entities\Devices\Hardware\IHardware|null $hardware
+	 *
+	 * @return void
+	 */
+	public function setHardware(?Entities\Devices\Hardware\IHardware $hardware): void;
+
+	/**
+	 * @return Entities\Devices\Hardware\IHardware|null
+	 */
+	public function getHardware(): ?Entities\Devices\Hardware\IHardware;
+
+	/**
+	 * @param Entities\Devices\Firmware\IFirmware|null $firmware
+	 *
+	 * @return void
+	 */
+	public function setFirmware(?Entities\Devices\Firmware\IFirmware $firmware): void;
+
+	/**
+	 * @return Entities\Devices\Firmware\IFirmware|null
+	 */
+	public function getFirmware(): ?Entities\Devices\Firmware\IFirmware;
+
 }

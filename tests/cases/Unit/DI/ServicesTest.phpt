@@ -43,8 +43,9 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Models\Devices\DevicesManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Controls\ControlsManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Properties\PropertiesManager::class));
-		Assert::notNull($container->getByType(Models\Devices\PhysicalDevice\HardwareManager::class));
-		Assert::notNull($container->getByType(Models\Devices\PhysicalDevice\FirmwareManager::class));
+		Assert::notNull($container->getByType(Models\Devices\Hardware\HardwareManager::class));
+		Assert::notNull($container->getByType(Models\Devices\Firmware\FirmwareManager::class));
+		Assert::notNull($container->getByType(Models\Devices\Connectors\ConnectorsManager::class));
 		Assert::notNull($container->getByType(Models\Channels\ChannelsManager::class));
 		Assert::notNull($container->getByType(Models\Channels\Controls\ControlsManager::class));
 		Assert::notNull($container->getByType(Models\Channels\Properties\PropertiesManager::class));
@@ -56,12 +57,13 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Controllers\DeviceConfigurationV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceHardwareV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceFirmwareV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\DeviceConnectorV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelPropertiesV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelConfigurationV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\ConnectorsV1Controller::class));
 
-		Assert::notNull($container->getByType(Schemas\Devices\NetworkDeviceSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\LocalDeviceSchema::class));
+		Assert::notNull($container->getByType(Schemas\Devices\DeviceSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Properties\PropertySchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Hardware\HardwareSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Firmware\FirmwareSchema::class));
@@ -75,9 +77,10 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Schemas\Channels\Configuration\NumberRowSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Configuration\SelectRowSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Configuration\TextRowSchema::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\ConnectorSchema::class));
 
-		Assert::notNull($container->getByType(Hydrators\Devices\NetworkDeviceHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Devices\LocalDeviceHydrator::class));
+		Assert::notNull($container->getByType(Hydrators\Devices\DeviceHydrator::class));
+		Assert::notNull($container->getByType(Hydrators\Devices\Connectors\ConnectorHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Channels\ChannelHydrator::class));
 
 		Assert::notNull($container->getByType(Consumers\DevicePropertyMessageConsumer::class));

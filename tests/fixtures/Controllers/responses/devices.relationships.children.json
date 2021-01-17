@@ -2,7 +2,7 @@
   "data" : [
     {
       "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596",
-      "type" : "devices-module/local-device"
+      "type" : "devices-module/device"
     }
   ],
   "jsonapi" : {

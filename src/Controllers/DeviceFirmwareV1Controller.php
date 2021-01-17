@@ -16,13 +16,11 @@
 namespace FastyBird\DevicesModule\Controllers;
 
 use FastyBird\DevicesModule\Controllers;
-use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use FastyBird\WebServer\Http as WebServerHttp;
-use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message;
 
 /**
@@ -65,14 +63,6 @@ final class DeviceFirmwareV1Controller extends BaseV1Controller
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
-		if (!$device instanceof Entities\Devices\IPhysicalDevice) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notFound.message')
-			);
-		}
-
 		return $response
 			->withEntity(WebServerHttp\ScalarEntity::from($device->getFirmware()));
 	}
@@ -91,14 +81,6 @@ final class DeviceFirmwareV1Controller extends BaseV1Controller
 	): WebServerHttp\Response {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
-
-		if (!$device instanceof Entities\Devices\IPhysicalDevice) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//dvices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//dvices-module.base.messages.notFound.message')
-			);
-		}
 
 		// & relation entity name
 		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));

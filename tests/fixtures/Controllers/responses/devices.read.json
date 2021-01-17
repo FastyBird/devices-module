@@ -10,7 +10,7 @@
     "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
   },
   "data" : {
-    "type" : "devices-module/network-device",
+    "type" : "devices-module/device",
     "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
     "attributes" : {
       "identifier" : "first-device",
@@ -24,13 +24,13 @@
       "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
     },
     "relationships" : {
-      "credentials" : {
+      "connector" : {
         "links" : {
-          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/credentials",
-          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/credentials"
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/connector",
+          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/connector"
         },
         "data" : {
-          "type" : "devices-module/credentials",
+          "type" : "devices-module/connector",
           "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
         }
       },
@@ -161,7 +161,7 @@
         },
         "data" : [
           {
-            "type" : "devices-module/local-device",
+            "type" : "devices-module/device",
             "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596"
           }
         ]

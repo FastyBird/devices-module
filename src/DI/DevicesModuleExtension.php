@@ -119,16 +119,16 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Models\Devices\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.hardwareManager'))
-			->setType(Models\Devices\PhysicalDevice\HardwareManager::class)
+		$builder->addDefinition($this->prefix('models.devicesHardwareManager'))
+			->setType(Models\Devices\Hardware\HardwareManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.firmwareManager'))
-			->setType(Models\Devices\PhysicalDevice\FirmwareManager::class)
+		$builder->addDefinition($this->prefix('models.devicesFirmwareManager'))
+			->setType(Models\Devices\Firmware\FirmwareManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.credentialsManager'))
-			->setType(Models\Devices\Credentials\CredentialsManager::class)
+		$builder->addDefinition($this->prefix('models.devicesConnectorManager'))
+			->setType(Models\Devices\Connectors\ConnectorsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		$builder->addDefinition($this->prefix('models.channelsManager'))
@@ -183,8 +183,8 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Controllers\DeviceFirmwareV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceCredentials'))
-			->setType(Controllers\DeviceCredentialsV1Controller::class)
+		$builder->addDefinition($this->prefix('controllers.deviceConnector'))
+			->setType(Controllers\DeviceConnectorV1Controller::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.channels'))
@@ -199,12 +199,13 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Controllers\ChannelConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
-		// API schemas
-		$builder->addDefinition($this->prefix('schemas.devices.network'))
-			->setType(Schemas\Devices\NetworkDeviceSchema::class);
+		$builder->addDefinition($this->prefix('controllers.connectors'))
+			->setType(Controllers\ConnectorsV1Controller::class)
+			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('schemas.devices.local'))
-			->setType(Schemas\Devices\LocalDeviceSchema::class);
+		// API schemas
+		$builder->addDefinition($this->prefix('schemas.device'))
+			->setType(Schemas\Devices\DeviceSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.properties'))
 			->setType(Schemas\Devices\Properties\PropertySchema::class);
@@ -215,8 +216,8 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.device.firmware'))
 			->setType(Schemas\Devices\Firmware\FirmwareSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.credentials'))
-			->setType(Schemas\Devices\Credentials\CredentialsSchema::class);
+		$builder->addDefinition($this->prefix('schemas.device.connector'))
+			->setType(Schemas\Devices\Connectors\ConnectorSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.configuration.boolean'))
 			->setType(Schemas\Devices\Configuration\BooleanRowSchema::class);
@@ -248,18 +249,18 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.configuration.text'))
 			->setType(Schemas\Channels\Configuration\TextRowSchema::class);
 
-		// API hydrators
-		$builder->addDefinition($this->prefix('hydrators.devices.network'))
-			->setType(Hydrators\Devices\NetworkDeviceHydrator::class);
+		$builder->addDefinition($this->prefix('schemas.connector'))
+			->setType(Schemas\Connectors\ConnectorSchema::class);
 
-		$builder->addDefinition($this->prefix('hydrators.devices.local'))
-			->setType(Hydrators\Devices\LocalDeviceHydrator::class);
+		// API hydrators
+		$builder->addDefinition($this->prefix('hydrators.device'))
+			->setType(Hydrators\Devices\DeviceHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.channel'))
 			->setType(Hydrators\Channels\ChannelHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.credentials'))
-			->setType(Hydrators\Credentials\CredentialsHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.connectors'))
+			->setType(Hydrators\Devices\Connectors\ConnectorHydrator::class);
 
 		// Helpers
 		$builder->addDefinition($this->prefix('helpers.property'))
@@ -317,14 +318,14 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$devicesConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConfigurationManager');
 		$devicesConfigurationManagerService->setBody('return new ' . Models\Devices\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Configuration\Row::class . '\'));');
 
-		$hardwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__hardwareManager');
-		$hardwareManagerService->setBody('return new ' . Models\Devices\PhysicalDevice\HardwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\PhysicalDevice\Hardware::class . '\'));');
+		$hardwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesHardwareManager');
+		$hardwareManagerService->setBody('return new ' . Models\Devices\Hardware\HardwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Hardware\Hardware::class . '\'));');
 
-		$firmwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__firmwareManager');
-		$firmwareManagerService->setBody('return new ' . Models\Devices\PhysicalDevice\FirmwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\PhysicalDevice\Firmware::class . '\'));');
+		$firmwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesFirmwareManager');
+		$firmwareManagerService->setBody('return new ' . Models\Devices\Firmware\FirmwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Firmware\Firmware::class . '\'));');
 
-		$credentialsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__credentialsManager');
-		$credentialsManagerService->setBody('return new ' . Models\Devices\Credentials\CredentialsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Credentials\Credentials::class . '\'));');
+		$connectorManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConnectorManager');
+		$connectorManagerService->setBody('return new ' . Models\Devices\Connectors\ConnectorsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Connectors\Connector::class . '\'));');
 
 		$channelsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsManager');
 		$channelsManagerService->setBody('return new ' . Models\Channels\ChannelsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Channel::class . '\'));');

@@ -43,7 +43,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same('fb.bus.entity.created.device', $key);
 				Assert::equal([
 					'identifier' => 'device-name',
-					'type'       => 'local',
 					'parent'     => null,
 					'device'     => 'device-name',
 					'owner'      => null,
@@ -66,7 +65,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$entityManager
 		);
 
-		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
+		$entity = new Entities\Devices\Device('device-name', 'device-name');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -99,7 +98,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 		$entityManager
 			->shouldReceive('getClassMetadata')
-			->withArgs([Entities\Devices\LocalDevice::class])
+			->withArgs([Entities\Devices\Device::class])
 			->andReturn($metadata);
 
 		if ($withUow) {
@@ -134,7 +133,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same('fb.bus.entity.updated.device', $key);
 				Assert::equal([
 					'identifier' => 'device-name',
-					'type'       => 'local',
 					'parent'     => null,
 					'device'     => 'device-name',
 					'owner'      => null,
@@ -157,7 +155,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$entityManager
 		);
 
-		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
+		$entity = new Entities\Devices\Device('device-name', 'device-name');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -180,7 +178,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same('fb.bus.entity.deleted.device', $key);
 				Assert::equal([
 					'identifier' => 'device-name',
-					'type'       => 'local',
 					'parent'     => null,
 					'device'     => 'device-name',
 					'owner'      => null,
@@ -196,7 +193,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			})
 			->times(1);
 
-		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
+		$entity = new Entities\Devices\Device('device-name', 'device-name');
 		$entity->setName('Device custom name');
 
 		$uow = Mockery::mock(ORM\UnitOfWork::class);

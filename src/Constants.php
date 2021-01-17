@@ -47,8 +47,8 @@ final class Constants
 	public const ROUTE_NAME_DEVICE_HARDWARE_RELATIONSHIP = 'device.hardware.relationship';
 	public const ROUTE_NAME_DEVICE_FIRMWARE = 'device.firmware';
 	public const ROUTE_NAME_DEVICE_FIRMWARE_RELATIONSHIP = 'device.firmware.relationship';
-	public const ROUTE_NAME_DEVICE_CREDENTIALS = 'device.credentials';
-	public const ROUTE_NAME_DEVICE_CREDENTIALS_RELATIONSHIP = 'device.credentials.relationship';
+	public const ROUTE_NAME_DEVICE_CONNECTOR = 'device.connector';
+	public const ROUTE_NAME_DEVICE_CONNECTOR_RELATIONSHIP = 'device.connector.relationship';
 	public const ROUTE_NAME_CHANNELS = 'channels';
 	public const ROUTE_NAME_CHANNEL = 'channel';
 	public const ROUTE_NAME_CHANNEL_RELATIONSHIP = 'channel.relationship';
@@ -58,6 +58,9 @@ final class Constants
 	public const ROUTE_NAME_CHANNEL_CONFIGURATION_ROWS = 'channel.configuration.rows';
 	public const ROUTE_NAME_CHANNEL_CONFIGURATION_ROW = 'channel.configuration.row';
 	public const ROUTE_NAME_CHANNEL_CONFIGURATION_ROW_RELATIONSHIP = 'channel.configuration.row.relationship';
+	public const ROUTE_NAME_CONNECTORS = 'connectors';
+	public const ROUTE_NAME_CONNECTOR = 'connector';
+	public const ROUTE_NAME_CONNECTOR_RELATIONSHIP = 'connector.relationship';
 
 	/**
 	 * Data types

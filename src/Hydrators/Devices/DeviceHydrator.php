@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Hydrators\Devices;
 
+use FastyBird\DevicesModule\Entities;
 use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use IPub\JsonAPIDocument;
 
@@ -26,7 +27,7 @@ use IPub\JsonAPIDocument;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
+class DeviceHydrator extends JsonApiHydrators\Hydrator
 {
 
 	/** @var string[] */
@@ -38,7 +39,15 @@ abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 	];
 
 	/** @var string */
-	protected string $translationDomain = 'dvices-module.devices';
+	protected string $translationDomain = 'devices-module.devices';
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getEntityName(): string
+	{
+		return Entities\Devices\Device::class;
+	}
 
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes

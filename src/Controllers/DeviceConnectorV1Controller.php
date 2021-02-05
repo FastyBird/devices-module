@@ -166,7 +166,6 @@ final class DeviceConnectorV1Controller extends BaseV1Controller
 			);
 
 		} catch (Throwable $ex) {
-			var_dump($ex->getMessage());
 			// Log catched exception
 			$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
 				'exception' => [

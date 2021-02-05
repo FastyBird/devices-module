@@ -51,18 +51,6 @@ return [
 		StatusCodeInterface::STATUS_OK,
 		__DIR__ . '/responses/devices.relationships.children.json',
 	],
-	'readRelationshipsHardware'      => [
-		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/hardware',
-		'Bearer ' . VALID_TOKEN,
-		StatusCodeInterface::STATUS_OK,
-		__DIR__ . '/responses/devices.relationships.hardware.json',
-	],
-	'readRelationshipsFirmware'      => [
-		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware',
-		'Bearer ' . VALID_TOKEN,
-		StatusCodeInterface::STATUS_OK,
-		__DIR__ . '/responses/devices.relationships.firmware.json',
-	],
 
 	// Invalid responses
 	////////////////////

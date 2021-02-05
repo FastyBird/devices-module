@@ -124,6 +124,57 @@ class Device implements IDevice
 	private bool $enabled = true;
 
 	/**
+	 * @var Types\HardwareManufacturerType
+	 *
+	 * @Enum(class=Types\HardwareManufacturerType::class)
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="device_hardware_manufacturer", length=150, nullable=false, options={"default": "generic"})
+	 */
+	private $hardwareManufacturer;
+
+	/**
+	 * @var Types\ModelType
+	 *
+	 * @Enum(class=Types\ModelType::class)
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="device_hardware_model", length=150, nullable=false, options={"default": "custom"})
+	 */
+	private $hardwareModel;
+
+	/**
+	 * @var string|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="device_hardware_version", length=150, nullable=true, options={"default": null})
+	 */
+	private ?string $hardwareVersion = null;
+
+	/**
+	 * @var string|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="device_mac_address", length=150, nullable=true, options={"default": null})
+	 */
+	private ?string $macAddress = null;
+
+	/**
+	 * @var Types\FirmwareManufacturerType
+	 *
+	 * @Enum(class=Types\FirmwareManufacturerType::class)
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="device_firmware_manufacturer", length=150, nullable=false, options={"default": "generic"})
+	 */
+	private $firmwareManufacturer;
+
+	/**
+	 * @var string|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="device_firmware_version", length=150, nullable=true, options={"default": null})
+	 */
+	private ?string $firmwareVersion = null;
+
+	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\IChannel>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -164,22 +215,6 @@ class Device implements IDevice
 	private ?Entities\Devices\Connectors\IConnector $connector = null;
 
 	/**
-	 * @var Entities\Devices\Hardware\IHardware|null
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Hardware\Hardware", mappedBy="device", cascade={"persist", "remove"})
-	 */
-	private ?Hardware\IHardware $hardware = null;
-
-	/**
-	 * @var Entities\Devices\Firmware\IFirmware|null
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Firmware\Firmware", mappedBy="device", cascade={"persist", "remove"})
-	 */
-	private ?Firmware\IFirmware $firmware = null;
-
-	/**
 	 * @param string $identifier
 	 * @param string|null $name
 	 * @param Uuid\UuidInterface|null $id
@@ -197,6 +232,11 @@ class Device implements IDevice
 		$this->name = $name;
 
 		$this->state = Types\DeviceConnectionState::get(Types\DeviceConnectionState::STATE_UNKNOWN);
+
+		$this->hardwareManufacturer = Types\HardwareManufacturerType::get(Types\HardwareManufacturerType::MANUFACTURER_GENERIC);
+		$this->hardwareModel = Types\ModelType::get(Types\ModelType::MODEL_CUSTOM);
+
+		$this->firmwareManufacturer = Types\FirmwareManufacturerType::get(Types\FirmwareManufacturerType::MANUFACTURER_GENERIC);
 
 		$this->children = new Common\Collections\ArrayCollection();
 		$this->channels = new Common\Collections\ArrayCollection();
@@ -560,6 +600,14 @@ class Device implements IDevice
 			'state'      => $this->getState()->getValue(),
 			'enabled'    => $this->isEnabled(),
 
+			'hardware_version'      => $this->getHardwareVersion(),
+			'hardware_manufacturer' => $this->getHardwareManufacturer()->getValue(),
+			'hardware_model'        => $this->getHardwareModel()->getValue(),
+			'mac_address'           => $this->getMacAddress(),
+
+			'firmware_manufacturer' => $this->getFirmwareManufacturer()->getValue(),
+			'firmware_version'      => $this->getFirmwareVersion(),
+
 			'control' => $this->getPlainControls(),
 
 			'params' => (array) $this->getParams(),
@@ -662,6 +710,125 @@ class Device implements IDevice
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareVersion(): ?string
+	{
+		return $this->hardwareVersion;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareVersion(?string $version): void
+	{
+		$this->hardwareVersion = $version;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareManufacturer(): Types\HardwareManufacturerType
+	{
+		return $this->hardwareManufacturer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareManufacturer(?string $manufacturer): void
+	{
+		if ($manufacturer !== null && Types\HardwareManufacturerType::isValidValue(strtolower($manufacturer))) {
+			$this->hardwareManufacturer = Types\HardwareManufacturerType::get(strtolower($manufacturer));
+
+		} else {
+			$this->hardwareManufacturer = Types\HardwareManufacturerType::get(Types\HardwareManufacturerType::MANUFACTURER_GENERIC);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareModel(): Types\ModelType
+	{
+		return $this->hardwareModel;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareModel(?string $model): void
+	{
+		if ($model !== null && Types\ModelType::isValidValue(strtolower($model))) {
+			$this->hardwareModel = Types\ModelType::get(strtolower($model));
+
+		} else {
+			$this->hardwareModel = Types\ModelType::get(Types\ModelType::MODEL_CUSTOM);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMacAddress(string $separator = ':'): ?string
+	{
+		return $this->macAddress !== null ? implode($separator, str_split($this->macAddress, 2)) : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMacAddress(?string $macAddress): void
+	{
+		if (
+			$macAddress !== null
+			&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $macAddress) === 0
+			&& preg_match('/^([0-9A-Fa-f]{12})$/', $macAddress) === 0
+		) {
+			throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
+		}
+
+		$this->macAddress = $macAddress !== null ? strtolower(str_replace([':', '-'], '', $macAddress)) : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getFirmwareManufacturer(): Types\FirmwareManufacturerType
+	{
+		return $this->firmwareManufacturer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setFirmwareManufacturer(?string $manufacturer): void
+	{
+		if ($manufacturer !== null && Types\FirmwareManufacturerType::isValidValue(strtolower($manufacturer))) {
+			$this->firmwareManufacturer = Types\FirmwareManufacturerType::get(strtolower($manufacturer));
+
+		} else {
+			$this->firmwareManufacturer = Types\FirmwareManufacturerType::get(Types\FirmwareManufacturerType::MANUFACTURER_GENERIC);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getFirmwareVersion(): ?string
+	{
+		return $this->firmwareVersion;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setFirmwareVersion(?string $version): void
+	{
+		$this->firmwareVersion = $version;
+	}
+
+	/**
 	 * @return string[]
 	 */
 	private function getPlainControls(): array
@@ -725,38 +892,6 @@ class Device implements IDevice
 	public function getConnector(): ?Entities\Devices\Connectors\IConnector
 	{
 		return $this->connector;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardware(): ?Entities\Devices\Hardware\IHardware
-	{
-		return $this->hardware;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardware(?Entities\Devices\Hardware\IHardware $hardware): void
-	{
-		$this->hardware = $hardware;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFirmware(): ?Entities\Devices\Firmware\IFirmware
-	{
-		return $this->firmware;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setFirmware(?Entities\Devices\Firmware\IFirmware $firmware): void
-	{
-		$this->firmware = $firmware;
 	}
 
 }

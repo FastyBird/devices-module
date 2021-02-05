@@ -127,6 +127,80 @@ interface IDevice extends DatabaseEntities\IEntity,
 	public function setEnabled(bool $enabled): void;
 
 	/**
+	 * @param string|null $manufacturer
+	 *
+	 * @return void
+	 */
+	public function setHardwareManufacturer(?string $manufacturer): void;
+
+	/**
+	 * @return Types\HardwareManufacturerType
+	 */
+	public function getHardwareManufacturer(): Types\HardwareManufacturerType;
+
+	/**
+	 * @param string|null $model
+	 *
+	 * @return void
+	 */
+	public function setHardwareModel(?string $model): void;
+
+	/**
+	 * @return Types\ModelType
+	 */
+	public function getHardwareModel(): Types\ModelType;
+
+	/**
+	 * @param string|null $version
+	 *
+	 * @return void
+	 */
+	public function setHardwareVersion(?string $version): void;
+
+	/**
+	 * @return string|null
+	 */
+	public function getHardwareVersion(): ?string;
+
+	/**
+	 * @param string|null $macAddress
+	 *
+	 * @return void
+	 */
+	public function setMacAddress(?string $macAddress): void;
+
+	/**
+	 * @param string $separator
+	 *
+	 * @return string|null
+	 */
+	public function getMacAddress(string $separator = ':'): ?string;
+
+	/**
+	 * @param string|null $manufacturer
+	 *
+	 * @return void
+	 */
+	public function setFirmwareManufacturer(?string $manufacturer): void;
+
+	/**
+	 * @return Types\FirmwareManufacturerType
+	 */
+	public function getFirmwareManufacturer(): Types\FirmwareManufacturerType;
+
+	/**
+	 * @param string|null $version
+	 *
+	 * @return void
+	 */
+	public function setFirmwareVersion(?string $version): void;
+
+	/**
+	 * @return string|null
+	 */
+	public function getFirmwareVersion(): ?string;
+
+	/**
 	 * @return bool
 	 */
 	public function isEnabled(): bool;
@@ -317,29 +391,5 @@ interface IDevice extends DatabaseEntities\IEntity,
 	 * @return Entities\Devices\Connectors\IConnector|null
 	 */
 	public function getConnector(): ?Entities\Devices\Connectors\IConnector;
-
-	/**
-	 * @param Entities\Devices\Hardware\IHardware|null $hardware
-	 *
-	 * @return void
-	 */
-	public function setHardware(?Entities\Devices\Hardware\IHardware $hardware): void;
-
-	/**
-	 * @return Entities\Devices\Hardware\IHardware|null
-	 */
-	public function getHardware(): ?Entities\Devices\Hardware\IHardware;
-
-	/**
-	 * @param Entities\Devices\Firmware\IFirmware|null $firmware
-	 *
-	 * @return void
-	 */
-	public function setFirmware(?Entities\Devices\Firmware\IFirmware $firmware): void;
-
-	/**
-	 * @return Entities\Devices\Firmware\IFirmware|null
-	 */
-	public function getFirmware(): ?Entities\Devices\Firmware\IFirmware;
 
 }

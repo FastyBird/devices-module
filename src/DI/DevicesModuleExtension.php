@@ -119,14 +119,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Models\Devices\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.devicesHardwareManager'))
-			->setType(Models\Devices\Hardware\HardwareManager::class)
-			->setArgument('entityCrud', '__placeholder__');
-
-		$builder->addDefinition($this->prefix('models.devicesFirmwareManager'))
-			->setType(Models\Devices\Firmware\FirmwareManager::class)
-			->setArgument('entityCrud', '__placeholder__');
-
 		$builder->addDefinition($this->prefix('models.devicesConnectorManager'))
 			->setType(Models\Devices\Connectors\ConnectorsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
@@ -175,14 +167,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Controllers\DeviceConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceHardware'))
-			->setType(Controllers\DeviceHardwareV1Controller::class)
-			->addTag('nette.inject');
-
-		$builder->addDefinition($this->prefix('controllers.deviceFirmware'))
-			->setType(Controllers\DeviceFirmwareV1Controller::class)
-			->addTag('nette.inject');
-
 		$builder->addDefinition($this->prefix('controllers.deviceConnector'))
 			->setType(Controllers\DeviceConnectorV1Controller::class)
 			->addTag('nette.inject');
@@ -209,12 +193,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition($this->prefix('schemas.device.properties'))
 			->setType(Schemas\Devices\Properties\PropertySchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.hardware'))
-			->setType(Schemas\Devices\Hardware\HardwareSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.firmware'))
-			->setType(Schemas\Devices\Firmware\FirmwareSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.connector'))
 			->setType(Schemas\Devices\Connectors\ConnectorSchema::class);
@@ -317,12 +295,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$devicesConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConfigurationManager');
 		$devicesConfigurationManagerService->setBody('return new ' . Models\Devices\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Configuration\Row::class . '\'));');
-
-		$hardwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesHardwareManager');
-		$hardwareManagerService->setBody('return new ' . Models\Devices\Hardware\HardwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Hardware\Hardware::class . '\'));');
-
-		$firmwareManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesFirmwareManager');
-		$firmwareManagerService->setBody('return new ' . Models\Devices\Firmware\FirmwareManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Firmware\Firmware::class . '\'));');
 
 		$connectorManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConnectorManager');
 		$connectorManagerService->setBody('return new ' . Models\Devices\Connectors\ConnectorsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Connectors\Connector::class . '\'));');

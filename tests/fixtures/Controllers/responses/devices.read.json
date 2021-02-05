@@ -18,42 +18,18 @@
       "comment" : null,
       "state" : "init",
       "enabled" : true,
+      "hardware_model" : "sonoff_basic",
+      "hardware_manufacturer" : "itead",
+      "hardware_version" : "rev1",
+      "mac_address" : "80:7d:3a:3d:be:6d",
+      "firmware_manufacturer" : "fastybird",
+      "firmware_version" : null,
       "control" : [
         "configure"
       ],
       "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
     },
     "relationships" : {
-      "connector" : {
-        "links" : {
-          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/connector",
-          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/connector"
-        },
-        "data" : {
-          "type" : "devices-module/connector",
-          "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
-        }
-      },
-      "hardware" : {
-        "links" : {
-          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/hardware",
-          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/hardware"
-        },
-        "data" : {
-          "type" : "devices-module/hardware",
-          "id" : "8059b830-b76d-4f98-be9c-53bd06eab9a5"
-        }
-      },
-      "firmware" : {
-        "links" : {
-          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware",
-          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/firmware"
-        },
-        "data" : {
-          "type" : "devices-module/firmware",
-          "id" : "06feddf4-63e2-48bc-af13-f355f01ffbe0"
-        }
-      },
       "properties" : {
         "links" : {
           "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/properties",
@@ -165,6 +141,16 @@
             "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596"
           }
         ]
+      },
+      "connector" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/connector",
+          "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/connector"
+        },
+        "data" : {
+          "type" : "devices-module/connector",
+          "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
+        }
       }
     },
     "links" : {

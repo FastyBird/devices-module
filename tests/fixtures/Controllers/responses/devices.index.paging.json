@@ -24,6 +24,12 @@
         "comment" : "This is child",
         "state" : "init",
         "enabled" : true,
+        "hardware_model" : "custom",
+        "hardware_manufacturer" : "generic",
+        "hardware_version" : null,
+        "mac_address" : null,
+        "firmware_manufacturer" : "generic",
+        "firmware_version" : null,
         "control" : [],
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
@@ -75,20 +81,6 @@
             }
           },
           "data" : []
-        },
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/hardware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/hardware"
-          },
-          "data" : null
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/firmware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/firmware"
-          },
-          "data" : null
         },
         "connector" : {
           "links" : {

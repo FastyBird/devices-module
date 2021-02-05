@@ -43,8 +43,6 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Models\Devices\DevicesManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Controls\ControlsManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Properties\PropertiesManager::class));
-		Assert::notNull($container->getByType(Models\Devices\Hardware\HardwareManager::class));
-		Assert::notNull($container->getByType(Models\Devices\Firmware\FirmwareManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Connectors\ConnectorsManager::class));
 		Assert::notNull($container->getByType(Models\Channels\ChannelsManager::class));
 		Assert::notNull($container->getByType(Models\Channels\Controls\ControlsManager::class));
@@ -55,8 +53,6 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Controllers\DeviceChildrenV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DevicePropertiesV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceConfigurationV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\DeviceHardwareV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\DeviceFirmwareV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceConnectorV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelPropertiesV1Controller::class));
@@ -65,8 +61,6 @@ final class ServicesTest extends BaseTestCase
 
 		Assert::notNull($container->getByType(Schemas\Devices\DeviceSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Properties\PropertySchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Hardware\HardwareSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Firmware\FirmwareSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Configuration\BooleanRowSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Configuration\NumberRowSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Configuration\SelectRowSchema::class));

@@ -19,6 +19,12 @@
         "comment" : null,
         "state" : "init",
         "enabled" : true,
+        "hardware_model" : "sonoff_basic",
+        "hardware_manufacturer" : "itead",
+        "hardware_version" : "rev1",
+        "mac_address" : "80:7d:3a:3d:be:6d",
+        "firmware_manufacturer" : "fastybird",
+        "firmware_version" : null,
         "control" : [
           "configure"
         ],
@@ -137,26 +143,6 @@
             }
           ]
         },
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/hardware",
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/hardware"
-          },
-          "data" : {
-            "type" : "devices-module/hardware",
-            "id" : "8059b830-b76d-4f98-be9c-53bd06eab9a5"
-          }
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/firmware",
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/firmware"
-          },
-          "data" : {
-            "type" : "devices-module/firmware",
-            "id" : "06feddf4-63e2-48bc-af13-f355f01ffbe0"
-          }
-        },
         "connector" : {
           "links" : {
             "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/connector",
@@ -181,6 +167,12 @@
         "comment" : "This is child",
         "state" : "init",
         "enabled" : true,
+        "hardware_model" : "custom",
+        "hardware_manufacturer" : "generic",
+        "hardware_version" : null,
+        "mac_address" : null,
+        "firmware_manufacturer" : "generic",
+        "firmware_version" : null,
         "control" : [],
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
@@ -233,20 +225,6 @@
           },
           "data" : []
         },
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/hardware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/hardware"
-          },
-          "data" : null
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/firmware",
-            "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/firmware"
-          },
-          "data" : null
-        },
         "connector" : {
           "links" : {
             "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/connector",
@@ -278,6 +256,12 @@
         "comment" : null,
         "state" : "init",
         "enabled" : true,
+        "hardware_model" : "custom",
+        "hardware_manufacturer" : "generic",
+        "hardware_version" : null,
+        "mac_address" : null,
+        "firmware_manufacturer" : "generic",
+        "firmware_version" : null,
         "control" : [],
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
@@ -335,20 +319,6 @@
           },
           "data" : []
         },
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/hardware",
-            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/hardware"
-          },
-          "data" : null
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/firmware",
-            "related" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/firmware"
-          },
-          "data" : null
-        },
         "connector" : {
           "links" : {
             "self" : "/v1/devices/bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a/relationships/connector",
@@ -370,6 +340,12 @@
         "comment" : "Custom comment",
         "state" : "unknown",
         "enabled" : true,
+        "hardware_model" : "fastybird_wifi_gw",
+        "hardware_manufacturer" : "fastybird",
+        "hardware_version" : "rev1",
+        "mac_address" : "80:7d:3a:3d:be:6d",
+        "firmware_manufacturer" : "fastybird",
+        "firmware_version" : null,
         "control" : [],
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
@@ -421,26 +397,6 @@
             }
           },
           "data" : []
-        },
-        "hardware" : {
-          "links" : {
-            "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/hardware",
-            "related" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/hardware"
-          },
-          "data" : {
-            "type" : "devices-module/hardware",
-            "id" : "d8b0d2b4-a47a-4750-a225-ddfa973675d3"
-          }
-        },
-        "firmware" : {
-          "links" : {
-            "self" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/relationships/firmware",
-            "related" : "/v1/devices/e36a2788-1ef8-4cdf-ab09-4735f191a509/firmware"
-          },
-          "data" : {
-            "type" : "devices-module/firmware",
-            "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
-          }
         },
         "connector" : {
           "links" : {

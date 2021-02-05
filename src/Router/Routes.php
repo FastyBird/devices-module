@@ -52,12 +52,6 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\DeviceConfigurationV1Controller */
 	private Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller;
 
-	/** @var Controllers\DeviceHardwareV1Controller */
-	private Controllers\DeviceHardwareV1Controller $deviceHardwareV1Controller;
-
-	/** @var Controllers\DeviceFirmwareV1Controller */
-	private Controllers\DeviceFirmwareV1Controller $deviceFirmwareV1Controller;
-
 	/** @var Controllers\DeviceConnectorV1Controller */
 	private Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller;
 
@@ -87,8 +81,6 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller,
 		Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller,
 		Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller,
-		Controllers\DeviceHardwareV1Controller $deviceHardwareV1Controller,
-		Controllers\DeviceFirmwareV1Controller $deviceFirmwareV1Controller,
 		Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller,
 		Controllers\ChannelsV1Controller $channelsV1Controller,
 		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
@@ -102,8 +94,6 @@ class Routes implements WebServerRouter\IRoutes
 		$this->deviceChildrenV1Controller = $deviceChildrenV1Controller;
 		$this->devicePropertiesV1Controller = $devicePropertiesV1Controller;
 		$this->deviceConfigurationV1Controller = $deviceConfigurationV1Controller;
-		$this->deviceHardwareV1Controller = $deviceHardwareV1Controller;
-		$this->deviceFirmwareV1Controller = $deviceFirmwareV1Controller;
 		$this->deviceConnectorV1Controller = $deviceConnectorV1Controller;
 		$this->channelsV1Controller = $channelsV1Controller;
 		$this->channelPropertiesV1Controller = $channelPropertiesV1Controller;
@@ -186,30 +176,6 @@ class Routes implements WebServerRouter\IRoutes
 					'readRelationship',
 				]);
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONFIGURATION_ROW_RELATIONSHIP);
-
-				/**
-				 * DEVICE HARDWARE
-				 */
-				$route = $group->get('/hardware', [$this->deviceHardwareV1Controller, 'read']);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_HARDWARE);
-
-				$route = $group->get('/hardware/relationships/{' . self::RELATION_ENTITY . '}', [
-					$this->deviceHardwareV1Controller,
-					'readRelationship',
-				]);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_HARDWARE_RELATIONSHIP);
-
-				/**
-				 * DEVICE FIRMWARE
-				 */
-				$route = $group->get('/firmware', [$this->deviceFirmwareV1Controller, 'read']);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE);
-
-				$route = $group->get('/firmware/relationships/{' . self::RELATION_ENTITY . '}', [
-					$this->deviceFirmwareV1Controller,
-					'readRelationship',
-				]);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE_RELATIONSHIP);
 
 				/**
 				 * DEVICE CONNECTOR

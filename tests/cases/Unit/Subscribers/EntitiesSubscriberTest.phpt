@@ -42,16 +42,22 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 				Assert::same('fb.bus.entity.created.device', $key);
 				Assert::equal([
-					'identifier' => 'device-name',
-					'parent'     => null,
-					'device'     => 'device-name',
-					'owner'      => null,
-					'name'       => 'Device custom name',
-					'comment'    => null,
-					'state'      => 'unknown',
-					'enabled'    => true,
-					'control'    => [],
-					'params'     => [],
+					'identifier'            => 'device-name',
+					'parent'                => null,
+					'device'                => 'device-name',
+					'owner'                 => null,
+					'name'                  => 'Device custom name',
+					'comment'               => null,
+					'state'                 => 'unknown',
+					'enabled'               => true,
+					'hardware_version'      => null,
+					'hardware_manufacturer' => 'generic',
+					'hardware_model'        => 'custom',
+					'mac_address'           => null,
+					'firmware_manufacturer' => 'generic',
+					'firmware_version'      => null,
+					'control'               => [],
+					'params'                => [],
 				], $data);
 
 				return true;
@@ -132,16 +138,22 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 				Assert::same('fb.bus.entity.updated.device', $key);
 				Assert::equal([
-					'identifier' => 'device-name',
-					'parent'     => null,
-					'device'     => 'device-name',
-					'owner'      => null,
-					'name'       => 'Device custom name',
-					'comment'    => null,
-					'state'      => 'unknown',
-					'enabled'    => true,
-					'control'    => [],
-					'params'     => [],
+					'identifier'            => 'device-name',
+					'parent'                => null,
+					'device'                => 'device-name',
+					'owner'                 => null,
+					'name'                  => 'Device custom name',
+					'comment'               => null,
+					'state'                 => 'unknown',
+					'enabled'               => true,
+					'hardware_version'      => null,
+					'hardware_manufacturer' => 'generic',
+					'hardware_model'        => 'custom',
+					'mac_address'           => null,
+					'firmware_manufacturer' => 'generic',
+					'firmware_version'      => null,
+					'control'               => [],
+					'params'                => [],
 				], $data);
 
 				return true;
@@ -177,16 +189,22 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 				Assert::same('fb.bus.entity.deleted.device', $key);
 				Assert::equal([
-					'identifier' => 'device-name',
-					'parent'     => null,
-					'device'     => 'device-name',
-					'owner'      => null,
-					'name'       => 'Device custom name',
-					'comment'    => null,
-					'state'      => 'unknown',
-					'enabled'    => true,
-					'control'    => [],
-					'params'     => [],
+					'identifier'            => 'device-name',
+					'parent'                => null,
+					'device'                => 'device-name',
+					'owner'                 => null,
+					'name'                  => 'Device custom name',
+					'comment'               => null,
+					'state'                 => 'unknown',
+					'enabled'               => true,
+					'hardware_version'      => null,
+					'hardware_manufacturer' => 'generic',
+					'hardware_model'        => 'custom',
+					'mac_address'           => null,
+					'firmware_manufacturer' => 'generic',
+					'firmware_version'      => null,
+					'control'               => [],
+					'params'                => [],
 				], $data);
 
 				return true;

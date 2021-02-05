@@ -430,14 +430,6 @@ class DevicesV1Controller extends BaseV1Controller
 
 			return $response
 				->withEntity(WebServerHttp\ScalarEntity::from($this->channelRepository->findAllBy($findQuery)));
-
-		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_HARDWARE) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($device->getHardware()));
-
-		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_FIRMWARE) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($device->getFirmware()));
 		}
 
 		return parent::readRelationship($request, $response);

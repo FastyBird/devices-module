@@ -54,9 +54,6 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_PARENT = 'parent';
 	public const RELATIONSHIPS_CHILDREN = 'children';
 
-	public const RELATIONSHIPS_HARDWARE = 'hardware';
-	public const RELATIONSHIPS_FIRMWARE = 'firmware';
-
 	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
 	/** @var Models\Devices\IDeviceRepository */
@@ -112,6 +109,14 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 			'state'   => $device->getState()->getValue(),
 			'enabled' => $device->isEnabled(),
+
+			'hardware_model'        => $device->getHardwareModel()->getValue(),
+			'hardware_manufacturer' => $device->getHardwareManufacturer()->getValue(),
+			'hardware_version'      => $device->getHardwareVersion(),
+			'mac_address'           => $device->getMacAddress(),
+
+			'firmware_manufacturer' => $device->getFirmwareManufacturer()->getValue(),
+			'firmware_version'      => $device->getFirmwareVersion(),
 
 			'control' => $this->formatControls($device->getControls()),
 
@@ -184,16 +189,6 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			],
 			self::RELATIONSHIPS_CHILDREN      => [
 				self::RELATIONSHIP_DATA          => $this->getChildren($device),
-				self::RELATIONSHIP_LINKS_SELF    => true,
-				self::RELATIONSHIP_LINKS_RELATED => true,
-			],
-			self::RELATIONSHIPS_HARDWARE      => [
-				self::RELATIONSHIP_DATA          => $device->getHardware(),
-				self::RELATIONSHIP_LINKS_SELF    => true,
-				self::RELATIONSHIP_LINKS_RELATED => true,
-			],
-			self::RELATIONSHIPS_FIRMWARE      => [
-				self::RELATIONSHIP_DATA          => $device->getFirmware(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -323,30 +318,6 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				]
 			);
 
-		} elseif ($name === self::RELATIONSHIPS_HARDWARE) {
-			return new JsonApi\Schema\Link(
-				false,
-				$this->router->urlFor(
-					DevicesModule\Constants::ROUTE_NAME_DEVICE_HARDWARE,
-					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
-					]
-				),
-				false
-			);
-
-		} elseif ($name === self::RELATIONSHIPS_FIRMWARE) {
-			return new JsonApi\Schema\Link(
-				false,
-				$this->router->urlFor(
-					DevicesModule\Constants::ROUTE_NAME_DEVICE_FIRMWARE,
-					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
-					]
-				),
-				false
-			);
-
 		} elseif ($name === self::RELATIONSHIPS_CONNECTOR) {
 			return new JsonApi\Schema\Link(
 				false,
@@ -379,8 +350,6 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			|| $name === self::RELATIONSHIPS_CHANNELS
 			|| $name === self::RELATIONSHIPS_CHILDREN
 			|| ($name === self::RELATIONSHIPS_PARENT && $device->getParent() !== null)
-			|| $name === self::RELATIONSHIPS_HARDWARE
-			|| $name === self::RELATIONSHIPS_FIRMWARE
 			|| $name === self::RELATIONSHIPS_CONNECTOR
 		) {
 			return new JsonApi\Schema\Link(

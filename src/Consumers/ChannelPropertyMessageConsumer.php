@@ -102,7 +102,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 		$device = $this->deviceRepository->findOneBy($findQuery);
 
 		if ($device === null) {
-			$this->logger->error(sprintf('[FB:NODE:CONSUMER] Device "%s" is not registered', $message->offsetGet('device')));
+			$this->logger->error(sprintf('[FB:DEVICES_MODULE:CONSUMER] Device "%s" is not registered', $message->offsetGet('device')));
 
 			return;
 		}
@@ -114,7 +114,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 		$channel = $this->channelRepository->findOneBy($findQuery);
 
 		if ($channel === null) {
-			$this->logger->error(sprintf('[FB:NODE:CONSUMER] Device channel "%s" is not registered', $message->offsetGet('device')));
+			$this->logger->error(sprintf('[FB:DEVICES_MODULE:CONSUMER] Device channel "%s" is not registered', $message->offsetGet('device')));
 
 			return;
 		}
@@ -122,7 +122,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 		$property = $channel->findProperty($message->offsetGet('property'));
 
 		if ($property === null) {
-			$this->logger->error(sprintf('[FB:NODE:CONSUMER] Property "%s" is not registered', $message->offsetGet('property')));
+			$this->logger->error(sprintf('[FB:DEVICES_MODULE:CONSUMER] Property "%s" is not registered', $message->offsetGet('property')));
 
 			return;
 		}
@@ -160,7 +160,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 			return;
 		}
 
-		$this->logger->info('[FB:NODE:CONSUMER] Successfully consumed entity message', [
+		$this->logger->info('[FB:DEVICES_MODULE:CONSUMER] Successfully consumed entity message', [
 			'message' => [
 				'routingKey' => $routingKey,
 				'origin'     => $origin,

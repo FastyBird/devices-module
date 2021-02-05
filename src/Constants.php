@@ -43,10 +43,6 @@ final class Constants
 	public const ROUTE_NAME_DEVICE_CONFIGURATION_ROWS = 'device.configuration.rows';
 	public const ROUTE_NAME_DEVICE_CONFIGURATION_ROW = 'device.configuration.row';
 	public const ROUTE_NAME_DEVICE_CONFIGURATION_ROW_RELATIONSHIP = 'device.configuration.row.relationship';
-	public const ROUTE_NAME_DEVICE_HARDWARE = 'device.hardware';
-	public const ROUTE_NAME_DEVICE_HARDWARE_RELATIONSHIP = 'device.hardware.relationship';
-	public const ROUTE_NAME_DEVICE_FIRMWARE = 'device.firmware';
-	public const ROUTE_NAME_DEVICE_FIRMWARE_RELATIONSHIP = 'device.firmware.relationship';
 	public const ROUTE_NAME_DEVICE_CONNECTOR = 'device.connector';
 	public const ROUTE_NAME_DEVICE_CONNECTOR_RELATIONSHIP = 'device.connector.relationship';
 	public const ROUTE_NAME_CHANNELS = 'channels';

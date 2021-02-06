@@ -14,6 +14,7 @@
     "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
     "attributes" : {
       "identifier" : "first-device",
+      "key" : "bLikkz",
       "name" : "First device",
       "comment" : null,
       "state" : "init",

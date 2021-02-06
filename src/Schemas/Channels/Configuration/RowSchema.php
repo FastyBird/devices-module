@@ -64,6 +64,7 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 	{
 		return [
 			'configuration' => $row->getConfiguration(),
+			'key'           => $row->getKey(),
 			'name'          => $row->getName(),
 			'comment'       => $row->getComment(),
 			'default'       => $row->getDefault(),

@@ -15,6 +15,7 @@
       "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
       "attributes" : {
         "name" : "Channel one",
+        "key" : "bLikxh",
         "comment" : null,
         "channel" : "channel-one",
         "control" : [
@@ -87,6 +88,7 @@
       "id" : "6821f8e9-ae69-4d5c-9b7c-d2b213f1ae0a",
       "attributes" : {
         "name" : "Channel two",
+        "key" : "bLikxq",
         "comment" : null,
         "channel" : "channel-two",
         "control" : [

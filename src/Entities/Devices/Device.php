@@ -38,7 +38,8 @@ use Throwable;
  *       "comment"="Devices"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="device_identifier_unique", columns={"device_identifier"})
+ *       @ORM\UniqueConstraint(name="device_identifier_unique", columns={"device_identifier"}),
+ *       @ORM\UniqueConstraint(name="device_key_unique", columns={"device_key"})
  *     },
  *     indexes={
  *       @ORM\Index(name="device_identifier_idx", columns={"device_identifier"}),
@@ -51,6 +52,7 @@ use Throwable;
 class Device implements IDevice
 {
 
+	use Entities\TKey;
 	use DatabaseEntities\TEntity;
 	use DatabaseEntities\TEntityParams;
 	use SimpleAuthEntities\TEntityOwner;
@@ -72,7 +74,14 @@ class Device implements IDevice
 	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="device_identifier", length=50, nullable=false)
 	 */
-	protected string $identifier;
+	private string $identifier;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", name="device_key", length=50, nullable=false)
+	 */
+	private string $key;
 
 	/**
 	 * @var Entities\Devices\IDevice|null
@@ -593,6 +602,7 @@ class Device implements IDevice
 	{
 		return [
 			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
 			'identifier' => $this->getIdentifier(),
 			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
 			'name'       => $this->getName(),

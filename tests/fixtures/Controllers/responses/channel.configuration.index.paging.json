@@ -20,6 +20,7 @@
       "id" : "31669d32-8cfa-4a71-bd06-d536a2f94c2c",
       "attributes" : {
         "configuration" : "relay_boot",
+        "key" : "bLikyh",
         "name" : null,
         "comment" : null,
         "default" : "0",

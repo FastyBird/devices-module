@@ -31,6 +31,7 @@ use Throwable;
 class Property implements IProperty
 {
 
+	use TKey;
 	use DatabaseEntities\TEntity;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
@@ -43,6 +44,13 @@ class Property implements IProperty
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
 	protected Uuid\UuidInterface $id;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", name="property_key", length=50, nullable=false)
+	 */
+	private string $key;
 
 	/**
 	 * @var string
@@ -123,6 +131,7 @@ class Property implements IProperty
 	{
 		return [
 			'id'        => $this->getPlainId(),
+			'key'       => $this->getKey(),
 			'property'  => $this->getProperty(),
 			'name'      => $this->getName(),
 			'settable'  => $this->isSettable(),

@@ -14,6 +14,7 @@
     "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
     "attributes" : {
       "name" : "Channel one",
+      "key" : "bLikxh",
       "comment" : null,
       "channel" : "channel-one",
       "control" : [

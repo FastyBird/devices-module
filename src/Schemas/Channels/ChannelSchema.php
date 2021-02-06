@@ -85,6 +85,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 	{
 		return [
 			'name'    => $channel->getName(),
+			'key'     => $channel->getKey(),
 			'comment' => $channel->getComment(),
 			'channel' => $channel->getChannel(),
 

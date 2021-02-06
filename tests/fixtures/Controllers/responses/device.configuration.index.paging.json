@@ -20,6 +20,7 @@
       "id" : "19eb2b65-abce-4061-b591-4ff1a4b1500f",
       "attributes" : {
         "configuration" : "btn_delay",
+        "key" : "bLikvA",
         "name" : null,
         "comment" : null,
         "default" : "500",

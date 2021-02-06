@@ -44,6 +44,7 @@ use Throwable;
 class Channel implements IChannel
 {
 
+	use Entities\TKey;
 	use DatabaseEntities\TEntity;
 	use DatabaseEntities\TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
@@ -57,6 +58,13 @@ class Channel implements IChannel
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
 	protected Uuid\UuidInterface $id;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", name="channel_key", length=50, nullable=false)
+	 */
+	private string $key;
 
 	/**
 	 * @var string
@@ -383,6 +391,7 @@ class Channel implements IChannel
 	{
 		return [
 			'id'      => $this->getPlainId(),
+			'key'     => $this->getKey(),
 			'name'    => $this->getName(),
 			'comment' => $this->getComment(),
 			'channel' => $this->getChannel(),

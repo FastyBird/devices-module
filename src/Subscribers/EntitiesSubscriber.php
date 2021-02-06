@@ -21,9 +21,11 @@ use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\ApplicationExchange\Publisher as ApplicationExchangePublisher;
 use FastyBird\Database\Entities as DatabaseEntities;
+use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
 use Nette;
 use Ramsey\Uuid;
@@ -47,6 +49,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
+	/** @var Helpers\NumberHashHelper */
+	private Helpers\NumberHashHelper $numberHashHelper;
+
+	/** @var DateTimeFactory\DateTimeFactory */
+	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
+
 	/** @var Models\States\IPropertyRepository|null */
 	private ?Models\States\IPropertyRepository $propertyStateRepository;
 
@@ -57,10 +65,14 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	private ORM\EntityManagerInterface $entityManager;
 
 	public function __construct(
+		Helpers\NumberHashHelper $numberHashHelper,
+		DateTimeFactory\DateTimeFactory $dateTimeFactory,
 		ApplicationExchangePublisher\IPublisher $publisher,
 		ORM\EntityManagerInterface $entityManager,
 		?Models\States\IPropertyRepository $propertyStateRepository = null
 	) {
+		$this->numberHashHelper = $numberHashHelper;
+		$this->dateTimeFactory = $dateTimeFactory;
 		$this->propertyStateRepository = $propertyStateRepository;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
@@ -76,9 +88,24 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		return [
 			ORM\Events::preFlush,
 			ORM\Events::onFlush,
+			ORM\Events::prePersist,
 			ORM\Events::postPersist,
 			ORM\Events::postUpdate,
 		];
+	}
+
+	/**
+	 * @param ORM\Event\LifecycleEventArgs $eventArgs
+	 *
+	 * @return void
+	 */
+	public function prePersist(ORM\Event\LifecycleEventArgs $eventArgs): void
+	{
+		$entity = $eventArgs->getObject();
+
+		if (method_exists($entity, 'setKey')) {
+			$entity->setKey($this->numberHashHelper->alphaIdToHash($this->dateTimeFactory->getNow()->getTimestamp()));
+		}
 	}
 
 	/**

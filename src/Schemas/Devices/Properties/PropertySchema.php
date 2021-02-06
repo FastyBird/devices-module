@@ -91,6 +91,7 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 
 		return [
 			'property'  => $property->getProperty(),
+			'key'       => $property->getKey(),
 			'name'      => $property->getName(),
 			'settable'  => $property->isSettable(),
 			'queryable' => $property->isQueryable(),

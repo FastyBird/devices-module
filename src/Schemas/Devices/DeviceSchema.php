@@ -104,6 +104,7 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	{
 		return [
 			'identifier' => $device->getIdentifier(),
+			'key'        => $device->getKey(),
 			'name'       => $device->getName(),
 			'comment'    => $device->getComment(),
 

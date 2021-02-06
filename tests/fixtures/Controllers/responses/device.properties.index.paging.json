@@ -20,6 +20,7 @@
       "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
       "attributes" : {
         "property" : "status_led",
+        "key" : "bLikvt",
         "name" : "status_led",
         "settable" : true,
         "queryable" : true,

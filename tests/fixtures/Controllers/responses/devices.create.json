@@ -14,6 +14,7 @@
     "id" : "bbbf5caa-b30e-4558-b83a-699617958cea",
     "attributes" : {
       "identifier" : "new-device",
+      "key" : "bJtCcu",
       "name" : "Newly created device",
       "comment" : null,
       "state" : "unknown",

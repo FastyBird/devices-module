@@ -30,6 +30,7 @@ use Throwable;
 abstract class Row implements IRow
 {
 
+	use TKey;
 	use DatabaseEntities\TEntity;
 	use DatabaseEntities\TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
@@ -43,6 +44,13 @@ abstract class Row implements IRow
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
 	protected Uuid\UuidInterface $id;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", name="configuration_key", length=50, nullable=false)
+	 */
+	private string $key;
 
 	/**
 	 * @var string
@@ -106,6 +114,7 @@ abstract class Row implements IRow
 	{
 		return [
 			'id'            => $this->getPlainId(),
+			'key'           => $this->getKey(),
 			'type'          => $this->getType(),
 			'configuration' => $this->getConfiguration(),
 			'name'          => $this->getName(),

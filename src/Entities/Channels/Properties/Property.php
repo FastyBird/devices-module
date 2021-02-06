@@ -31,7 +31,8 @@ use Throwable;
  *       "comment"="Communication channels properties"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_property_unique", columns={"property_property", "channel_id"})
+ *       @ORM\UniqueConstraint(name="channel_property_unique", columns={"property_property", "channel_id"}),
+ *       @ORM\UniqueConstraint(name="property_key_unique", columns={"property_key"})
  *     },
  *     indexes={
  *       @ORM\Index(name="property_property_idx", columns={"property_property"}),

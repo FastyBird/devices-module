@@ -15,6 +15,7 @@
       "id" : "008d911f-e6d4-4b17-aa28-939839581cde",
       "attributes" : {
         "configuration" : "pulse_mode",
+        "key" : "bLikxT",
         "name" : null,
         "comment" : null,
         "default" : "0",
@@ -53,6 +54,7 @@
       "id" : "31669d32-8cfa-4a71-bd06-d536a2f94c2c",
       "attributes" : {
         "configuration" : "relay_boot",
+        "key" : "bLikyh",
         "name" : null,
         "comment" : null,
         "default" : "0",
@@ -95,6 +97,7 @@
       "id" : "3f83999e-c790-4f42-9e8e-4db749d0e6d4",
       "attributes" : {
         "configuration" : "pulse_time",
+        "key" : "bLikyo",
         "name" : null,
         "comment" : null,
         "default" : "1",
@@ -122,6 +125,7 @@
       "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
       "attributes" : {
         "configuration" : "on_disconnect",
+        "key" : "bLikyx",
         "name" : null,
         "comment" : null,
         "default" : "0",

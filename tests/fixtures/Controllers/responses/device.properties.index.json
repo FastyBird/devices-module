@@ -15,6 +15,7 @@
       "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
       "attributes" : {
         "property" : "rssi",
+        "key" : "bLikvh",
         "name" : "rssi",
         "settable" : false,
         "queryable" : true,
@@ -45,6 +46,7 @@
       "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
       "attributes" : {
         "property" : "status_led",
+        "key" : "bLikvt",
         "name" : "status_led",
         "settable" : true,
         "queryable" : true,
@@ -75,6 +77,7 @@
       "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
       "attributes" : {
         "property" : "uptime",
+        "key" : "bLikpV",
         "name" : "uptime",
         "settable" : false,
         "queryable" : true,

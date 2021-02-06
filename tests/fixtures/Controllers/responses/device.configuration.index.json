@@ -15,6 +15,7 @@
       "id" : "138c6cfc-ed49-476b-9f1e-6ee1dcb24f0b",
       "attributes" : {
         "configuration" : "sensor_expected_power",
+        "key" : "bLikmS",
         "name" : null,
         "comment" : null,
         "default" : null,
@@ -42,6 +43,7 @@
       "id" : "19eb2b65-abce-4061-b591-4ff1a4b1500f",
       "attributes" : {
         "configuration" : "btn_delay",
+        "key" : "bLikvA",
         "name" : null,
         "comment" : null,
         "default" : "500",
@@ -69,6 +71,7 @@
       "id" : "1b061a97-4d99-4732-9ea5-ea2eb777e970",
       "attributes" : {
         "configuration" : "sensor_energy_units",
+        "key" : "bLikvL",
         "name" : null,
         "comment" : null,
         "default" : "0",
@@ -103,6 +106,7 @@
       "id" : "20fba951-e76d-4d6b-a572-dec02c6d8de8",
       "attributes" : {
         "configuration" : "sensor_expected_current",
+        "key" : "bLikvZ",
         "name" : null,
         "comment" : null,
         "default" : null,
@@ -130,6 +134,7 @@
       "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
       "attributes" : {
         "configuration" : "sensor_expected_voltage",
+        "key" : "bLikwv",
         "name" : null,
         "comment" : null,
         "default" : null,
@@ -157,6 +162,7 @@
       "id" : "4897727b-b74e-47ae-a0e7-953c8f3e4f06",
       "attributes" : {
         "configuration" : "sensor_save_interval",
+        "key" : "bLikw8",
         "name" : null,
         "comment" : null,
         "default" : "0",
@@ -184,6 +190,7 @@
       "id" : "81bdf07b-7dc9-4e3a-98b1-4dc5e9f16b55",
       "attributes" : {
         "configuration" : "sensor_read_interval",
+        "key" : "bLikwJ",
         "name" : null,
         "comment" : null,
         "default" : "6",
@@ -254,6 +261,7 @@
       "id" : "8a41d824-b1db-4548-b07e-606117dd7309",
       "attributes" : {
         "configuration" : "sensor_report_interval",
+        "key" : "bLikwR",
         "name" : null,
         "comment" : null,
         "default" : "10",
@@ -281,6 +289,7 @@
       "id" : "8d933e4c-1fc9-4361-ba09-eebee4592776",
       "attributes" : {
         "configuration" : "sensor_power_units",
+        "key" : "bLikwZ",
         "name" : null,
         "comment" : null,
         "default" : "0",

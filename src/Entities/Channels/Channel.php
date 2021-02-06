@@ -34,7 +34,8 @@ use Throwable;
  *       "comment"="Communication channels"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_unique", columns={"channel_channel", "device_id"})
+ *       @ORM\UniqueConstraint(name="channel_unique", columns={"channel_channel", "device_id"}),
+ *       @ORM\UniqueConstraint(name="channel_key_unique", columns={"channel_key"})
  *     },
  *     indexes={
  *       @ORM\Index(name="channel_channel_idx", columns={"channel_channel"})

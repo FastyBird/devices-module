@@ -35,7 +35,9 @@ class DeviceConnectionState extends Consistence\Enum\Enum
 	public const STATE_DISCONNECTED = 'disconnected';
 	public const STATE_INIT = 'init';
 	public const STATE_READY = 'ready';
+	public const STATE_RUNNING = 'running';
 	public const STATE_SLEEPING = 'sleeping';
+	public const STATE_STOPPED = 'stopped';
 	public const STATE_LOST = 'lost';
 	public const STATE_ALERT = 'alert';
 	public const STATE_UNKNOWN = 'unknown';

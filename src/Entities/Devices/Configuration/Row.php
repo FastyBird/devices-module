@@ -31,11 +31,11 @@ use Throwable;
  *       "comment"="Devices configurations rows"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="device_configuration_unique", columns={"configuration_name", "device_id"}),
+ *       @ORM\UniqueConstraint(name="device_configuration_unique", columns={"configuration_identifier", "device_id"}),
  *       @ORM\UniqueConstraint(name="configuration_key_unique", columns={"configuration_key"})
  *     },
  *     indexes={
- *       @ORM\Index(name="configuration_name_idx", columns={"configuration_name"})
+ *       @ORM\Index(name="configuration_identifier_idx", columns={"configuration_identifier"})
  *     }
  * )
  * @ORM\InheritanceType("SINGLE_TABLE")
@@ -87,9 +87,7 @@ abstract class Row extends Entities\Row implements IRow
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
-			'device' => $this->getDevice()->getIdentifier(),
-			'owner'  => $this->getDevice()->getOwnerId(),
-			'parent' => $this->getDevice()->getParent() !== null ? $this->getDevice()->getParent()->getIdentifier() : null,
+			'owner' => $this->getDevice()->getOwnerId(),
 		]);
 	}
 

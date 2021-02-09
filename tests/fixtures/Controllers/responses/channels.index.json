@@ -17,7 +17,7 @@
         "name" : "Channel one",
         "key" : "bLikxh",
         "comment" : null,
-        "channel" : "channel-one",
+        "identifier" : "channel-one",
         "control" : [
           "configure"
         ]
@@ -90,7 +90,7 @@
         "name" : "Channel two",
         "key" : "bLikxq",
         "comment" : null,
-        "channel" : "channel-two",
+        "identifier" : "channel-two",
         "control" : [
           "configure"
         ]

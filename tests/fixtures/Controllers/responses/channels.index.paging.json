@@ -21,7 +21,7 @@
         "name" : "Channel two",
         "key" : "bLikxq",
         "comment" : null,
-        "channel" : "channel-two",
+        "identifier" : "channel-two",
         "control" : [
           "configure"
         ]

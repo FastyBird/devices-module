@@ -84,10 +84,10 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 	public function getAttributes($channel, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			'name'    => $channel->getName(),
-			'key'     => $channel->getKey(),
-			'comment' => $channel->getComment(),
-			'channel' => $channel->getChannel(),
+			'key'        => $channel->getKey(),
+			'identifier' => $channel->getIdentifier(),
+			'name'       => $channel->getName(),
+			'comment'    => $channel->getComment(),
 
 			'control' => $this->formatControls($channel->getControls()),
 		];

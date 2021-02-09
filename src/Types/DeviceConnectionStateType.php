@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * Datatype.php
+ * DeviceConnectionStateType.php
  *
  * @license        More in license.md
  * @copyright      https://www.fastybird.com
@@ -10,7 +10,7 @@
  * @subpackage     Types
  * @since          0.1.0
  *
- * @date           24.09.18
+ * @date           25.03.18
  */
 
 namespace FastyBird\DevicesModule\Types;
@@ -18,25 +18,29 @@ namespace FastyBird\DevicesModule\Types;
 use Consistence;
 
 /**
- * Device or channel property data types
+ * Device connection state types
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Types
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class DatatypeType extends Consistence\Enum\Enum
+class DeviceConnectionStateType extends Consistence\Enum\Enum
 {
 
 	/**
-	 * Define data types
+	 * Define device states
 	 */
-	public const DATA_TYPE_INTEGER = 'integer';
-	public const DATA_TYPE_FLOAT = 'float';
-	public const DATA_TYPE_BOOLEAN = 'boolean';
-	public const DATA_TYPE_STRING = 'string';
-	public const DATA_TYPE_ENUM = 'enum';
-	public const DATA_TYPE_COLOR = 'color';
+	public const STATE_CONNECTED = 'connected';
+	public const STATE_DISCONNECTED = 'disconnected';
+	public const STATE_INIT = 'init';
+	public const STATE_READY = 'ready';
+	public const STATE_RUNNING = 'running';
+	public const STATE_SLEEPING = 'sleeping';
+	public const STATE_STOPPED = 'stopped';
+	public const STATE_LOST = 'lost';
+	public const STATE_ALERT = 'alert';
+	public const STATE_UNKNOWN = 'unknown';
 
 	/**
 	 * @return string

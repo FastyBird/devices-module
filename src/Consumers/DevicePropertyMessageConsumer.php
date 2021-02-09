@@ -49,6 +49,9 @@ final class DevicePropertyMessageConsumer implements ApplicationExchangeConsumer
 	/** @var Models\Devices\IDeviceRepository */
 	private Models\Devices\IDeviceRepository $deviceRepository;
 
+	/** @var Models\Devices\Properties\IPropertyRepository */
+	private Models\Devices\Properties\IPropertyRepository $propertyRepository;
+
 	/** @var Models\States\IPropertiesManager|null */
 	private ?Models\States\IPropertiesManager $propertiesStatesManager;
 
@@ -60,12 +63,14 @@ final class DevicePropertyMessageConsumer implements ApplicationExchangeConsumer
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
+		Models\Devices\Properties\IPropertyRepository $propertyRepository,
 		Helpers\PropertyHelper $propertyHelper,
 		?Models\States\IPropertiesManager $propertiesStatesManager = null,
 		?Models\States\IPropertyRepository $propertyStateRepository = null,
 		?Log\LoggerInterface $logger = null
 	) {
 		$this->deviceRepository = $deviceRepository;
+		$this->propertyRepository = $propertyRepository;
 		$this->propertyHelper = $propertyHelper;
 
 		$this->propertiesStatesManager = $propertiesStatesManager;
@@ -92,7 +97,7 @@ final class DevicePropertyMessageConsumer implements ApplicationExchangeConsumer
 		}
 
 		$findQuery = new Queries\FindDevicesQuery();
-		$findQuery->byIdentifier($message->offsetGet('device'));
+		$findQuery->byKey($message->offsetGet('device'));
 
 		$device = $this->deviceRepository->findOneBy($findQuery);
 
@@ -102,7 +107,11 @@ final class DevicePropertyMessageConsumer implements ApplicationExchangeConsumer
 			return;
 		}
 
-		$property = $device->findProperty($message->offsetGet('property'));
+		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery->forDevice($device);
+		$findQuery->byKey($message->offsetGet('property'));
+
+		$property = $this->propertyRepository->findOneBy($findQuery);
 
 		if ($property === null) {
 			$this->logger->error(sprintf('[FB:DEVICES_MODULE:CONSUMER] Property "%s" is not registered', $message->offsetGet('property')));

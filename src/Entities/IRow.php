@@ -35,7 +35,7 @@ interface IRow extends DatabaseEntities\IEntity,
 	/**
 	 * @return string
 	 */
-	public function getConfiguration(): string;
+	public function getIdentifier(): string;
 
 	/**
 	 * @param string|null $name

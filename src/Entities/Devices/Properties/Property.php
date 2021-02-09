@@ -31,11 +31,11 @@ use Throwable;
  *       "comment"="Devices properties"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="device_property_unique", columns={"property_property", "device_id"}),
+ *       @ORM\UniqueConstraint(name="device_property_unique", columns={"property_identifier", "device_id"}),
  *       @ORM\UniqueConstraint(name="property_key_unique", columns={"property_key"})
  *     },
  *     indexes={
- *       @ORM\Index(name="property_property_idx", columns={"property_property"}),
+ *       @ORM\Index(name="property_identifier_idx", columns={"property_identifier"}),
  *       @ORM\Index(name="property_settable_idx", columns={"property_settable"}),
  *       @ORM\Index(name="property_queryable_idx", columns={"property_queryable"})
  *     }
@@ -78,9 +78,7 @@ class Property extends Entities\Property implements IProperty
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
-			'device' => $this->getDevice()->getIdentifier(),
-			'owner'  => $this->getDevice()->getOwnerId(),
-			'parent' => $this->getDevice()->getParent() !== null ? $this->getDevice()->getParent()->getIdentifier() : null,
+			'owner' => $this->getDevice()->getOwnerId(),
 		]);
 	}
 

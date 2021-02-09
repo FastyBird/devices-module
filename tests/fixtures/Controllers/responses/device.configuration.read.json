@@ -13,7 +13,7 @@
     "type" : "devices-module/device-configuration-number",
     "id" : "138c6cfc-ed49-476b-9f1e-6ee1dcb24f0b",
     "attributes" : {
-      "configuration" : "sensor_expected_power",
+      "identifier" : "sensor_expected_power",
       "key" : "bLikmS",
       "name" : null,
       "comment" : null,

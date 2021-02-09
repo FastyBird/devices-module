@@ -31,11 +31,11 @@ use Throwable;
  *       "comment"="Communication channels configurations rows"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_configuration_unique", columns={"configuration_name", "channel_id"}),
+ *       @ORM\UniqueConstraint(name="channel_configuration_unique", columns={"configuration_identifier", "channel_id"}),
  *       @ORM\UniqueConstraint(name="configuration_key_unique", columns={"configuration_key"})
  *     },
  *     indexes={
- *       @ORM\Index(name="configuration_name_idx", columns={"configuration_name"})
+ *       @ORM\Index(name="configuration_identifier_idx", columns={"configuration_identifier"})
  *     }
  * )
  * @ORM\InheritanceType("SINGLE_TABLE")
@@ -87,10 +87,7 @@ abstract class Row extends Entities\Row implements IRow
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
-			'device'  => $this->getChannel()->getDevice()->getIdentifier(),
-			'owner'   => $this->getChannel()->getDevice()->getOwnerId(),
-			'parent'  => $this->getChannel()->getDevice()->getParent() !== null ? $this->getChannel()->getDevice()->getParent()->getIdentifier() : null,
-			'channel' => $this->getChannel()->getChannel(),
+			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
 		]);
 	}
 

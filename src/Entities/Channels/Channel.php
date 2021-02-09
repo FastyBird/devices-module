@@ -34,11 +34,11 @@ use Throwable;
  *       "comment"="Communication channels"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_unique", columns={"channel_channel", "device_id"}),
+ *       @ORM\UniqueConstraint(name="channel_unique", columns={"channel_identifier", "device_id"}),
  *       @ORM\UniqueConstraint(name="channel_key_unique", columns={"channel_key"})
  *     },
  *     indexes={
- *       @ORM\Index(name="channel_channel_idx", columns={"channel_channel"})
+ *       @ORM\Index(name="channel_identifier_idx", columns={"channel_identifier"})
  *     }
  * )
  */
@@ -71,9 +71,9 @@ class Channel implements IChannel
 	 * @var string
 	 *
 	 * @IPubDoctrine\Crud(is="required")
-	 * @ORM\Column(type="string", name="channel_channel", length=40, nullable=false)
+	 * @ORM\Column(type="string", name="channel_identifier", length=40, nullable=false)
 	 */
-	private string $channel;
+	private string $identifier;
 
 	/**
 	 * @var string|null
@@ -126,7 +126,7 @@ class Channel implements IChannel
 
 	/**
 	 * @param Entities\Devices\IDevice $device
-	 * @param string $channel
+	 * @param string $identifier
 	 * @param string|null $name
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -134,14 +134,14 @@ class Channel implements IChannel
 	 */
 	public function __construct(
 		Entities\Devices\IDevice $device,
-		string $channel,
+		string $identifier,
 		?string $name = null,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->device = $device;
-		$this->channel = $channel;
+		$this->identifier = $identifier;
 
 		$this->name = $name;
 
@@ -214,7 +214,7 @@ class Channel implements IChannel
 	{
 		$found = $this->properties
 			->filter(function (Entities\Channels\Properties\IProperty $row) use ($property): bool {
-				return $property === $row->getProperty();
+				return $property === $row->getIdentifier();
 			});
 
 		return $found->isEmpty() || $found->first() === false ? null : $found->first();
@@ -301,7 +301,7 @@ class Channel implements IChannel
 	{
 		$found = $this->configuration
 			->filter(function (Entities\Channels\Configuration\IRow $row) use ($configuration): bool {
-				return $configuration === $row->getConfiguration();
+				return $configuration === $row->getIdentifier();
 			});
 
 		return $found->isEmpty() || $found->first() === false ? null : $found->first();
@@ -391,19 +391,17 @@ class Channel implements IChannel
 	public function toArray(): array
 	{
 		return [
-			'id'      => $this->getPlainId(),
-			'key'     => $this->getKey(),
-			'name'    => $this->getName(),
-			'comment' => $this->getComment(),
-			'channel' => $this->getChannel(),
+			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
 
 			'control' => $this->getPlainControls(),
 
 			'params' => (array) $this->getParams(),
 
-			'device' => $this->getDevice()->getIdentifier(),
 			'owner'  => $this->getDevice()->getOwnerId(),
-			'parent' => $this->getDevice()->getParent() !== null ? $this->getDevice()->getParent()->getIdentifier() : null,
 		];
 	}
 
@@ -442,17 +440,17 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): string
+	public function getIdentifier(): string
 	{
-		return $this->channel;
+		return $this->identifier;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setChannel(string $channel): void
+	public function setIdentifier(string $identifier): void
 	{
-		$this->channel = $channel;
+		$this->identifier = $identifier;
 	}
 
 	/**

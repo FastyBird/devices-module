@@ -31,11 +31,11 @@ use Throwable;
  *       "comment"="Communication channels properties"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_property_unique", columns={"property_property", "channel_id"}),
+ *       @ORM\UniqueConstraint(name="channel_property_unique", columns={"property_identifier", "channel_id"}),
  *       @ORM\UniqueConstraint(name="property_key_unique", columns={"property_key"})
  *     },
  *     indexes={
- *       @ORM\Index(name="property_property_idx", columns={"property_property"}),
+ *       @ORM\Index(name="property_identifier_idx", columns={"property_identifier"}),
  *       @ORM\Index(name="property_settable_idx", columns={"property_settable"}),
  *       @ORM\Index(name="property_queryable_idx", columns={"property_queryable"})
  *     }
@@ -78,10 +78,7 @@ class Property extends Entities\Property implements IProperty
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
-			'device'  => $this->getChannel()->getDevice()->getIdentifier(),
-			'owner'   => $this->getChannel()->getDevice()->getOwnerId(),
-			'parent'  => $this->getChannel()->getDevice()->getParent() !== null ? $this->getChannel()->getDevice()->getParent()->getIdentifier() : null,
-			'channel' => $this->getChannel()->getChannel(),
+			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
 		]);
 	}
 

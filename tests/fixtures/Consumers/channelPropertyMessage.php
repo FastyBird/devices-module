@@ -8,10 +8,9 @@ return [
 		ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
 		ModulesMetadata\Constants::MODULE_UI_ORIGIN,
 		Utils\ArrayHash::from([
-			'device'   => 'first-device',
-			'parent'   => null,
-			'channel'  => 'channel-one',
-			'property' => 'switch',
+			'device'   => 'bLikkz',
+			'channel'  => 'bLikxh',
+			'property' => 'bLikx4',
 			'expected' => 'off',
 		]),
 		[
@@ -24,10 +23,9 @@ return [
 		ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
 		ModulesMetadata\Constants::MODULE_UI_ORIGIN,
 		Utils\ArrayHash::from([
-			'device'   => 'first-device',
-			'parent'   => null,
-			'channel'  => 'channel-one',
-			'property' => 'switch',
+			'device'   => 'bLikkz',
+			'channel'  => 'bLikxh',
+			'property' => 'bLikx4',
 			'expected' => 'on',
 		]),
 		[

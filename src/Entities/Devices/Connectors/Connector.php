@@ -106,7 +106,7 @@ class Connector implements IConnector
 	{
 		return [
 			'id'        => $this->getPlainId(),
-			'device'    => $this->getDevice()->getIdentifier(),
+			'device'    => $this->getDevice()->getKey(),
 			'connector' => $this->getConnector()->getType(),
 		];
 	}

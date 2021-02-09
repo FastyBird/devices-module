@@ -50,15 +50,15 @@ class Property implements IProperty
 	 *
 	 * @ORM\Column(type="string", name="property_key", length=50, nullable=false)
 	 */
-	private string $key;
+	protected string $key;
 
 	/**
 	 * @var string
 	 *
 	 * @IPubDoctrine\Crud(is="required")
-	 * @ORM\Column(type="string", name="property_property", length=50, nullable=false)
+	 * @ORM\Column(type="string", name="property_identifier", length=50, nullable=false)
 	 */
-	protected string $property;
+	protected string $identifier;
 
 	/**
 	 * @var string|null
@@ -85,13 +85,13 @@ class Property implements IProperty
 	protected bool $queryable = false;
 
 	/**
-	 * @var Types\DatatypeType|null
+	 * @var Types\DataTypeType|null
 	 *
-	 * @Enum(class=Types\DatatypeType::class)
+	 * @Enum(class=Types\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string_enum", name="property_datatype", nullable=true, options={"default": null})
+	 * @ORM\Column(type="string_enum", name="property_data_type", nullable=true, options={"default": null})
 	 */
-	protected $datatype = null;
+	protected $dataType = null;
 
 	/**
 	 * @var string|null
@@ -110,18 +110,18 @@ class Property implements IProperty
 	protected ?string $format = null;
 
 	/**
-	 * @param string $property
+	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
-		string $property,
+		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
-		$this->property = $property;
+		$this->identifier = $identifier;
 	}
 
 	/**
@@ -130,24 +130,24 @@ class Property implements IProperty
 	public function toArray(): array
 	{
 		return [
-			'id'        => $this->getPlainId(),
-			'key'       => $this->getKey(),
-			'property'  => $this->getProperty(),
-			'name'      => $this->getName(),
-			'settable'  => $this->isSettable(),
-			'queryable' => $this->isQueryable(),
-			'datatype'  => $this->getDatatype() !== null ? $this->getDatatype()->getValue() : null,
-			'unit'      => $this->getUnit(),
-			'format'    => $this->getFormat(),
+			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'name'       => $this->getName(),
+			'settable'   => $this->isSettable(),
+			'queryable'  => $this->isQueryable(),
+			'data_type'  => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
+			'unit'       => $this->getUnit(),
+			'format'     => $this->getFormat(),
 		];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getProperty(): string
+	public function getIdentifier(): string
 	{
-		return $this->property;
+		return $this->identifier;
 	}
 
 	/**
@@ -201,21 +201,21 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDatatype(): ?Types\DatatypeType
+	public function getDataType(): ?Types\DataTypeType
 	{
-		return $this->datatype;
+		return $this->dataType;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setDatatype(?string $datatype): void
+	public function setDataType(?string $dataType): void
 	{
-		if ($datatype !== null && !Types\DatatypeType::isValidValue($datatype)) {
-			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $datatype));
+		if ($dataType !== null && !Types\DataTypeType::isValidValue($dataType)) {
+			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $dataType));
 		}
 
-		$this->datatype = $datatype !== null ? Types\DatatypeType::get($datatype) : null;
+		$this->dataType = $dataType !== null ? Types\DataTypeType::get($dataType) : null;
 	}
 
 	/**
@@ -241,8 +241,8 @@ class Property implements IProperty
 	{
 		$format = $this->format;
 
-		if ($this->datatype !== null) {
-			if ($this->datatype->equalsValue(Types\DatatypeType::DATA_TYPE_INTEGER)) {
+		if ($this->dataType !== null) {
+			if ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_INTEGER)) {
 				if ($format !== null) {
 					[$min, $max] = explode(':', $format) + [null, null];
 
@@ -251,7 +251,7 @@ class Property implements IProperty
 					}
 				}
 
-			} elseif ($this->datatype->equalsValue(Types\DatatypeType::DATA_TYPE_FLOAT)) {
+			} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {
 				if ($format !== null) {
 					[$min, $max] = explode(':', $format) + [null, null];
 
@@ -260,7 +260,7 @@ class Property implements IProperty
 					}
 				}
 
-			} elseif ($this->datatype->equalsValue(Types\DatatypeType::DATA_TYPE_ENUM)) {
+			} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
 				if ($format !== null) {
 					$format = array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
 						return $item !== '';

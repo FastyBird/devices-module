@@ -8,9 +8,8 @@ return [
 		ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTIES_DATA_ROUTING_KEY,
 		ModulesMetadata\Constants::MODULE_UI_ORIGIN,
 		Utils\ArrayHash::from([
-			'device'   => 'first-device',
-			'parent'   => null,
-			'property' => 'status_led',
+			'device'   => 'bLikkz',
+			'property' => 'bLikvt',
 			'expected' => 'off',
 		]),
 		[
@@ -23,9 +22,8 @@ return [
 		ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTIES_DATA_ROUTING_KEY,
 		ModulesMetadata\Constants::MODULE_UI_ORIGIN,
 		Utils\ArrayHash::from([
-			'device'   => 'first-device',
-			'parent'   => null,
-			'property' => 'status_led',
+			'device'   => 'bLikkz',
+			'property' => 'bLikvt',
 			'expected' => 'on',
 		]),
 		[

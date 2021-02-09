@@ -116,9 +116,9 @@ class Device implements IDevice
 	private ?string $comment = null;
 
 	/**
-	 * @var Types\DeviceConnectionState
+	 * @var Types\DeviceConnectionStateType
 	 *
-	 * @Enum(class=Types\DeviceConnectionState::class)
+	 * @Enum(class=Types\DeviceConnectionStateType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="device_state", nullable=false, options={"default": "unknown"})
 	 */
@@ -240,7 +240,7 @@ class Device implements IDevice
 		$this->identifier = $identifier;
 		$this->name = $name;
 
-		$this->state = Types\DeviceConnectionState::get(Types\DeviceConnectionState::STATE_UNKNOWN);
+		$this->state = Types\DeviceConnectionStateType::get(Types\DeviceConnectionStateType::STATE_UNKNOWN);
 
 		$this->hardwareManufacturer = Types\HardwareManufacturerType::get(Types\HardwareManufacturerType::MANUFACTURER_GENERIC);
 		$this->hardwareModel = Types\ModelType::get(Types\ModelType::MODEL_CUSTOM);
@@ -495,7 +495,7 @@ class Device implements IDevice
 	{
 		$found = $this->properties
 			->filter(function (Entities\Devices\Properties\IProperty $row) use ($property): bool {
-				return $property === $row->getProperty();
+				return $property === $row->getIdentifier();
 			});
 
 		return $found->isEmpty() || $found->first() === false ? null : $found->first();
@@ -569,7 +569,7 @@ class Device implements IDevice
 	{
 		$found = $this->configuration
 			->filter(function (Entities\Devices\Configuration\IRow $row) use ($configuration): bool {
-				return $configuration === $row->getConfiguration();
+				return $configuration === $row->getIdentifier();
 			});
 
 		return $found->isEmpty() || $found->first() === false ? null : $found->first();
@@ -622,7 +622,6 @@ class Device implements IDevice
 
 			'params' => (array) $this->getParams(),
 
-			'device' => $this->getIdentifier(),
 			'owner'  => $this->getOwnerId(),
 		];
 	}
@@ -686,7 +685,7 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getState(): Types\DeviceConnectionState
+	public function getState(): Types\DeviceConnectionStateType
 	{
 		return $this->state;
 	}
@@ -696,11 +695,11 @@ class Device implements IDevice
 	 */
 	public function setState(string $state): void
 	{
-		if (!Types\DeviceConnectionState::isValidValue($state)) {
+		if (!Types\DeviceConnectionStateType::isValidValue($state)) {
 			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $state));
 		}
 
-		$this->state = Types\DeviceConnectionState::get($state);
+		$this->state = Types\DeviceConnectionStateType::get($state);
 	}
 
 	/**

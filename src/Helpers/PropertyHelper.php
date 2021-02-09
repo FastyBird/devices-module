@@ -43,20 +43,20 @@ final class PropertyHelper
 			return null;
 		}
 
-		if ($property->getDatatype() !== null) {
-			if ($property->getDatatype()->equalsValue(Types\DatatypeType::DATA_TYPE_INTEGER)) {
+		if ($property->getDataType() !== null) {
+			if ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_INTEGER)) {
 				return intval($value);
 
-			} elseif ($property->getDatatype()->equalsValue(Types\DatatypeType::DATA_TYPE_FLOAT)) {
+			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {
 				return floatval($value);
 
-			} elseif ($property->getDatatype()->equalsValue(Types\DatatypeType::DATA_TYPE_STRING)) {
+			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_STRING)) {
 				return $value;
 
-			} elseif ($property->getDatatype()->equalsValue(Types\DatatypeType::DATA_TYPE_BOOLEAN)) {
+			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_BOOLEAN)) {
 				return $value === 'true' || $value === '1';
 
-			} elseif ($property->getDatatype()->equalsValue(Types\DatatypeType::DATA_TYPE_ENUM)) {
+			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
 				if (is_array($property->getFormat()) && count($property->getFormat()) > 0) {
 					if (in_array($value, $property->getFormat(), true)) {
 						return $value;

@@ -16,7 +16,7 @@
       "name" : "Updated name",
       "key" : "bLikxh",
       "comment" : "With comment",
-      "channel" : "channel-one",
+      "identifier" : "channel-one",
       "control" : [
         "configure"
       ]

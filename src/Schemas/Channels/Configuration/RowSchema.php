@@ -63,11 +63,11 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 	public function getAttributes($row, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			'configuration' => $row->getConfiguration(),
-			'key'           => $row->getKey(),
-			'name'          => $row->getName(),
-			'comment'       => $row->getComment(),
-			'default'       => $row->getDefault(),
+			'key'        => $row->getKey(),
+			'identifier' => $row->getIdentifier(),
+			'name'       => $row->getName(),
+			'comment'    => $row->getComment(),
+			'default'    => $row->getDefault(),
 		];
 	}
 

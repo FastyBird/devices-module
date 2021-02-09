@@ -16,29 +16,29 @@ final class DatatypeTypeTest extends BaseTestCase
 
 	public function testCreateDatatype(): void
 	{
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_INTEGER);
+		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_INTEGER);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\DataTypeType::class, $datatype);
 
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_FLOAT);
+		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_FLOAT);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\DataTypeType::class, $datatype);
 
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_BOOLEAN);
+		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_BOOLEAN);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\DataTypeType::class, $datatype);
 
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_STRING);
+		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_STRING);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\DataTypeType::class, $datatype);
 
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_ENUM);
+		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_ENUM);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\DataTypeType::class, $datatype);
 
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_COLOR);
+		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_COLOR);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\DataTypeType::class, $datatype);
 	}
 
 	/**
@@ -46,7 +46,7 @@ final class DatatypeTypeTest extends BaseTestCase
 	 */
 	public function testInvalidDatatype(): void
 	{
-		$datatype = Types\DatatypeType::get('invalidtype');
+		$datatype = Types\DataTypeType::get('invalidtype');
 	}
 
 }

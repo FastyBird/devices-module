@@ -56,14 +56,26 @@ class FindChannelPropertiesQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param string $property
+	 * @param string $key
 	 *
 	 * @return void
 	 */
-	public function byProperty(string $property): void
+	public function byKey(string $key): void
 	{
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($property): void {
-			$qb->andWhere('p.property = :property')->setParameter('property', $property);
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($key): void {
+			$qb->andWhere('p.key = :key')->setParameter('key', $key);
+		};
+	}
+
+	/**
+	 * @param string $identifier
+	 *
+	 * @return void
+	 */
+	public function byIdentifier(string $identifier): void
+	{
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($identifier): void {
+			$qb->andWhere('p.identifier = :identifier')->setParameter('identifier', $identifier);
 		};
 	}
 

@@ -56,9 +56,9 @@ abstract class Row implements IRow
 	 * @var string
 	 *
 	 * @IPubDoctrine\Crud(is="required")
-	 * @ORM\Column(type="string", name="configuration_configuration", length=50, nullable=false)
+	 * @ORM\Column(type="string", name="configuration_identifier", length=50, nullable=false)
 	 */
-	protected string $configuration;
+	protected string $identifier;
 
 	/**
 	 * @var string|null
@@ -93,18 +93,18 @@ abstract class Row implements IRow
 	protected $value = null;
 
 	/**
-	 * @param string $configuration
+	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
-		string $configuration,
+		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
-		$this->configuration = $configuration;
+		$this->identifier = $identifier;
 	}
 
 	/**
@@ -113,14 +113,14 @@ abstract class Row implements IRow
 	public function toArray(): array
 	{
 		return [
-			'id'            => $this->getPlainId(),
-			'key'           => $this->getKey(),
-			'type'          => $this->getType(),
-			'configuration' => $this->getConfiguration(),
-			'name'          => $this->getName(),
-			'comment'       => $this->getComment(),
-			'default'       => $this->getDefault(),
-			'value'         => $this->getValue(),
+			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'type'       => $this->getType(),
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+			'default'    => $this->getDefault(),
+			'value'      => $this->getValue(),
 		];
 	}
 
@@ -135,9 +135,9 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConfiguration(): string
+	public function getIdentifier(): string
 	{
-		return $this->configuration;
+		return $this->identifier;
 	}
 
 	/**

@@ -16,7 +16,7 @@
       "name" : "Channel one",
       "key" : "bLikxh",
       "comment" : null,
-      "channel" : "channel-one",
+      "identifier" : "channel-one",
       "control" : [
         "configure"
       ]

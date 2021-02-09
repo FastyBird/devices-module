@@ -52,6 +52,9 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 	/** @var Models\Channels\IChannelRepository */
 	private Models\Channels\IChannelRepository $channelRepository;
 
+	/** @var Models\Channels\Properties\IPropertyRepository */
+	private Models\Channels\Properties\IPropertyRepository $propertyRepository;
+
 	/** @var Models\States\IPropertiesManager|null */
 	private ?Models\States\IPropertiesManager $propertiesStatesManager;
 
@@ -64,6 +67,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Channels\IChannelRepository $channelRepository,
+		Models\Channels\Properties\IPropertyRepository $propertyRepository,
 		Helpers\PropertyHelper $propertyHelper,
 		?Models\States\IPropertiesManager $propertiesStatesManager = null,
 		?Models\States\IPropertyRepository $propertyStateRepository = null,
@@ -71,6 +75,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->channelRepository = $channelRepository;
+		$this->propertyRepository = $propertyRepository;
 		$this->propertyHelper = $propertyHelper;
 
 		$this->propertiesStatesManager = $propertiesStatesManager;
@@ -97,7 +102,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 		}
 
 		$findQuery = new Queries\FindDevicesQuery();
-		$findQuery->byIdentifier($message->offsetGet('device'));
+		$findQuery->byKey($message->offsetGet('device'));
 
 		$device = $this->deviceRepository->findOneBy($findQuery);
 
@@ -109,7 +114,7 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 
 		$findQuery = new Queries\FindChannelsQuery();
 		$findQuery->forDevice($device);
-		$findQuery->byChannel($message->offsetGet('channel'));
+		$findQuery->byKey($message->offsetGet('channel'));
 
 		$channel = $this->channelRepository->findOneBy($findQuery);
 
@@ -119,7 +124,11 @@ final class ChannelPropertyMessageConsumer implements ApplicationExchangeConsume
 			return;
 		}
 
-		$property = $channel->findProperty($message->offsetGet('property'));
+		$findQuery = new Queries\FindChannelPropertiesQuery();
+		$findQuery->forChannel($channel);
+		$findQuery->byKey($message->offsetGet('property'));
+
+		$property = $this->propertyRepository->findOneBy($findQuery);
 
 		if ($property === null) {
 			$this->logger->error(sprintf('[FB:DEVICES_MODULE:CONSUMER] Property "%s" is not registered', $message->offsetGet('property')));

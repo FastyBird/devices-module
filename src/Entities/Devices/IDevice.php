@@ -116,9 +116,9 @@ interface IDevice extends DatabaseEntities\IEntity,
 	public function setState(string $state): void;
 
 	/**
-	 * @return Types\DeviceConnectionState
+	 * @return Types\DeviceConnectionStateType
 	 */
-	public function getState(): Types\DeviceConnectionState;
+	public function getState(): Types\DeviceConnectionStateType;
 
 	/**
 	 * @param bool $enabled

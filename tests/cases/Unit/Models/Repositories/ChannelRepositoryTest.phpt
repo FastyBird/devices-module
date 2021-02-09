@@ -23,13 +23,13 @@ final class ChannelRepositoryTest extends DbTestCase
 		$repository = $this->getContainer()->getByType(Models\Channels\ChannelRepository::class);
 
 		$findQuery = new Queries\FindChannelsQuery();
-		$findQuery->byChannel('channel-one');
+		$findQuery->byIdentifier('channel-one');
 
 		$entity = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($entity));
 		Assert::type(Entities\Channels\Channel::class, $entity);
-		Assert::same('channel-one', $entity->getChannel());
+		Assert::same('channel-one', $entity->getIdentifier());
 	}
 
 	public function testReadResultSet(): void

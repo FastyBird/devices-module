@@ -35,7 +35,7 @@ interface IProperty extends DatabaseEntities\IEntity,
 	/**
 	 * @return string
 	 */
-	public function getProperty(): string;
+	public function getIdentifier(): string;
 
 	/**
 	 * @param string|null $name
@@ -78,12 +78,12 @@ interface IProperty extends DatabaseEntities\IEntity,
 	 *
 	 * @return void
 	 */
-	public function setDatatype(?string $dataType): void;
+	public function setDataType(?string $dataType): void;
 
 	/**
-	 * @return Types\DatatypeType|null
+	 * @return Types\DataTypeType|null
 	 */
-	public function getDatatype(): ?Types\DatatypeType;
+	public function getDataType(): ?Types\DataTypeType;
 
 	/**
 	 * @param string|null $units

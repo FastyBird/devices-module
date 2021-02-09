@@ -63,16 +63,16 @@ interface IChannel extends DatabaseEntities\IEntity,
 	public function getComment(): ?string;
 
 	/**
-	 * @param string $channel
+	 * @param string $identifier
 	 *
 	 * @return void
 	 */
-	public function setChannel(string $channel): void;
+	public function setIdentifier(string $identifier): void;
 
 	/**
 	 * @return string
 	 */
-	public function getChannel(): string;
+	public function getIdentifier(): string;
 
 	/**
 	 * @param Entities\Channels\Properties\IProperty[] $properties

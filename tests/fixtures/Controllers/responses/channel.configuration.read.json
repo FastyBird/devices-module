@@ -13,7 +13,7 @@
     "type" : "devices-module/channel-configuration-select",
     "id" : "008d911f-e6d4-4b17-aa28-939839581cde",
     "attributes" : {
-      "configuration" : "pulse_mode",
+      "identifier" : "pulse_mode",
       "key" : "bLikxT",
       "name" : null,
       "comment" : null,

@@ -276,7 +276,7 @@ jobs:
         run: "${{ env.composer-install }}"
 
       - name: "Tests"
-        run: "make coverage-clover"
+        run: "make coverage"
 
       - name: "Upload test output"
         if: ${{ failure() }}

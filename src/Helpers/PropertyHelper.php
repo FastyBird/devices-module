@@ -44,7 +44,7 @@ final class PropertyHelper
 		}
 
 		if ($property->getDataType() !== null) {
-			if ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_INTEGER)) {
+			if ($property->getDataType()->isInteger()) {
 				return intval($value);
 
 			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {

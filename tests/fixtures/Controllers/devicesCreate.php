@@ -27,6 +27,13 @@ return [
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/devices.create.missing.required.json',
 	],
+	'notUnique' => [
+		'/v1/devices',
+		'Bearer ' . VALID_TOKEN,
+		file_get_contents(__DIR__ . '/requests/devices.create.notUnique.json'),
+		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+		__DIR__ . '/responses/devices.create.notUnique.json',
+	],
 	'invalidType'     => [
 		'/v1/devices',
 		'Bearer ' . VALID_TOKEN,

@@ -196,7 +196,7 @@ class Channel implements IChannel
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -217,7 +217,7 @@ class Channel implements IChannel
 				return $property === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -291,7 +291,7 @@ class Channel implements IChannel
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -304,7 +304,7 @@ class Channel implements IChannel
 				return $configuration === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -349,7 +349,7 @@ class Channel implements IChannel
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -370,7 +370,7 @@ class Channel implements IChannel
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**

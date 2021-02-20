@@ -1,61 +1,62 @@
 {
-  "meta" : {
-    "author" : "FastyBird team",
-    "copyright" : "FastyBird s.r.o",
-    "totalCount" : 4
+  "meta": {
+    "author": "FastyBird team",
+    "copyright": "FastyBird s.r.o",
+    "totalCount": 4
   },
-  "jsonapi" : {
-    "version" : "1.1"
+  "jsonapi": {
+    "version": "1.1"
   },
-  "links" : {
-    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=1&page%5Blimit%5D=1",
-    "first" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
-    "prev" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
-    "next" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=2&page%5Blimit%5D=1",
-    "last" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=3&page%5Blimit%5D=1"
+  "links": {
+    "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=1&page%5Blimit%5D=1",
+    "first": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
+    "prev": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
+    "next": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=2&page%5Blimit%5D=1",
+    "last": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration?page%5Boffset%5D=3&page%5Blimit%5D=1"
   },
-  "data" : [
+  "data": [
     {
-      "type" : "devices-module/channel-configuration-select",
-      "id" : "31669d32-8cfa-4a71-bd06-d536a2f94c2c",
-      "attributes" : {
-        "identifier" : "relay_boot",
-        "key" : "bLikyh",
-        "name" : null,
-        "comment" : null,
-        "default" : "0",
-        "values" : [
+      "type": "devices-module/channel-configuration",
+      "id": "31669d32-8cfa-4a71-bd06-d536a2f94c2c",
+      "attributes": {
+        "key": "bLikyh",
+        "identifier": "relay_boot",
+        "name": null,
+        "comment": null,
+        "data_type": "enum",
+        "default": "0",
+        "values": [
           {
-            "name" : "always_off",
-            "value" : "0"
+            "name": "always_off",
+            "value": "0"
           },
           {
-            "name" : "always_on",
-            "value" : "1"
+            "name": "always_on",
+            "value": "1"
           },
           {
-            "name" : "same_before",
-            "value" : "2"
+            "name": "same_before",
+            "value": "2"
           },
           {
-            "name" : "toggle_before",
-            "value" : "3"
+            "name": "toggle_before",
+            "value": "3"
           }
         ]
       },
-      "relationships" : {
-        "channel" : {
-          "links" : {
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
+      "relationships": {
+        "channel": {
+          "links": {
+            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
           },
-          "data" : {
-            "type" : "devices-module/channel",
-            "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
+          "data": {
+            "type": "devices-module/channel",
+            "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
           }
         }
       },
-      "links" : {
-        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration/31669d32-8cfa-4a71-bd06-d536a2f94c2c"
+      "links": {
+        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/configuration/31669d32-8cfa-4a71-bd06-d536a2f94c2c"
       }
     }
   ]

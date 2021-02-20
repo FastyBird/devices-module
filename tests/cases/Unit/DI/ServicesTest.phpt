@@ -61,16 +61,10 @@ final class ServicesTest extends BaseTestCase
 
 		Assert::notNull($container->getByType(Schemas\Devices\DeviceSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Properties\PropertySchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Configuration\BooleanRowSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Configuration\NumberRowSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Configuration\SelectRowSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Configuration\TextRowSchema::class));
+		Assert::notNull($container->getByType(Schemas\Devices\Configuration\RowSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\ChannelSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Properties\PropertySchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\Configuration\BooleanRowSchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\Configuration\NumberRowSchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\Configuration\SelectRowSchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\Configuration\TextRowSchema::class));
+		Assert::notNull($container->getByType(Schemas\Channels\Configuration\RowSchema::class));
 		Assert::notNull($container->getByType(Schemas\Connectors\ConnectorSchema::class));
 
 		Assert::notNull($container->getByType(Hydrators\Devices\DeviceHydrator::class));

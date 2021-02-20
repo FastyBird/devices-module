@@ -20,13 +20,6 @@ return [
 
 	// Invalid responses
 	////////////////////
-	'updateNotUnique' => [
-		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
-		'Bearer ' . VALID_TOKEN,
-		file_get_contents(__DIR__ . '/requests/devices.update.notUnique.json'),
-		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-		__DIR__ . '/responses/devices.update.notUnique.json',
-	],
 	'invalidType'     => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'Bearer ' . VALID_TOKEN,

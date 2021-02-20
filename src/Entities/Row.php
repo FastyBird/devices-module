@@ -15,17 +15,19 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
+use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\Database\Entities as DatabaseEntities;
+use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Types;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
+use Nette\Utils;
 use Ramsey\Uuid;
 use Throwable;
 
 /**
  * @ORM\MappedSuperclass
- *
- * @property-read string $type
  */
 abstract class Row implements IRow
 {
@@ -50,7 +52,7 @@ abstract class Row implements IRow
 	 *
 	 * @ORM\Column(type="string", name="configuration_key", length=50, nullable=false)
 	 */
-	private string $key;
+	protected string $key;
 
 	/**
 	 * @var string
@@ -77,6 +79,15 @@ abstract class Row implements IRow
 	protected ?string $comment = null;
 
 	/**
+	 * @var Types\DataTypeType
+	 *
+	 * @Enum(class=Types\DataTypeType::class)
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
+	 * @ORM\Column(type="string_enum", name="configuration_data_type", nullable=false)
+	 */
+	protected $dataType;
+
+	/**
 	 * @var mixed|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -91,6 +102,30 @@ abstract class Row implements IRow
 	 * @ORM\Column(type="string", name="configuration_value", nullable=true, options={"default": null})
 	 */
 	protected $value = null;
+
+	/**
+	 * @var float|null
+	 * @IPubDoctrine\Crud(is="writable")
+	 */
+	protected ?float $min = null;
+
+	/**
+	 * @var float|null
+	 * @IPubDoctrine\Crud(is="writable")
+	 */
+	protected ?float $max = null;
+
+	/**
+	 * @var float|null
+	 * @IPubDoctrine\Crud(is="writable")
+	 */
+	protected ?float $step = null;
+
+	/**
+	 * @var mixed[]
+	 * @IPubDoctrine\Crud(is="writable")
+	 */
+	protected array $values = [];
 
 	/**
 	 * @param string $identifier
@@ -112,24 +147,30 @@ abstract class Row implements IRow
 	 */
 	public function toArray(): array
 	{
-		return [
+		$data = [
 			'id'         => $this->getPlainId(),
 			'key'        => $this->getKey(),
 			'identifier' => $this->getIdentifier(),
-			'type'       => $this->getType(),
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),
 			'default'    => $this->getDefault(),
 			'value'      => $this->getValue(),
 		];
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType(): string
-	{
-		return $this->type;
+		if ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT) || $this->dataType->isInteger()) {
+			return array_merge($data, [
+				'min'  => $this->getMin(),
+				'max'  => $this->getMax(),
+				'step' => $this->getStep(),
+			]);
+
+		} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+			return array_merge($data, [
+				'values' => $this->getValues(),
+			]);
+		}
+
+		return $data;
 	}
 
 	/**
@@ -175,6 +216,26 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getDataType(): Types\DataTypeType
+	{
+		return $this->dataType;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDataType(string $dataType): void
+	{
+		if (!Types\DataTypeType::isValidValue($dataType)) {
+			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
+		}
+
+		$this->dataType = Types\DataTypeType::get($dataType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getDefault()
 	{
 		return $this->default;
@@ -193,7 +254,21 @@ abstract class Row implements IRow
 	 */
 	public function getValue()
 	{
-		return $this->value;
+		if ($this->value === null) {
+			return null;
+		}
+
+		if ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {
+			return (float) $this->value;
+
+		} elseif ($this->dataType->isInteger()) {
+			return (int) $this->value;
+
+		} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_BOOLEAN)) {
+			return $this->value === '1' || Utils\Strings::lower((string) $this->value) === 'true';
+		}
+
+		return (string) $this->value;
 	}
 
 	/**
@@ -202,6 +277,123 @@ abstract class Row implements IRow
 	public function setValue(?string $value): void
 	{
 		$this->value = $value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasMin(): bool
+	{
+		return $this->getParam('min_value', null) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasMax(): bool
+	{
+		return $this->getParam('max_value', null) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasStep(): bool
+	{
+		return $this->getParam('step_value', null) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMin(): ?float
+	{
+		return $this->getParam('min_value', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMin(?float $min): void
+	{
+		if ($this->getMin() !== $min) {
+			$this->setParam('min_value', $min);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMax(): ?float
+	{
+		return $this->getParam('max_value', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMax(?float $max): void
+	{
+		if ($this->getMax() !== $max) {
+			$this->setParam('max_value', $max);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getStep(): ?float
+	{
+		return $this->getParam('step_value', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setStep(?float $step): void
+	{
+		if ($this->getStep() !== $step) {
+			$this->setParam('step_value', $step);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getValues(): array
+	{
+		return $this->getParam('select_values', []);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setValues(array $values): void
+	{
+		$this->setParam('select_values', []);
+
+		foreach ($values as $value) {
+			$this->addValue($value);
+		}
+	}
+
+	/**
+	 * @param Utils\ArrayHash $value
+	 *
+	 * @return void
+	 */
+	private function addValue(Utils\ArrayHash $value): void
+	{
+		$values = $this->getParam('select_values', []);
+
+		if ($value->offsetExists('value') && $value->offsetExists('name')) {
+			$values[] = [
+				'name'  => (string) $value->offsetGet('name'),
+				'value' => (string) $value->offsetGet('value'),
+			];
+		}
+
+		$this->setParam('select_values', $values);
 	}
 
 }

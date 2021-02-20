@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Entities;
 
 use FastyBird\Database\Entities as DatabaseEntities;
+use FastyBird\DevicesModule\Types;
 use IPub\DoctrineTimestampable;
 
 /**
@@ -57,6 +58,18 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function setComment(?string $comment): void;
 
 	/**
+	 * @return Types\DataTypeType
+	 */
+	public function getDataType(): Types\DataTypeType;
+
+	/**
+	 * @param string $dataType
+	 *
+	 * @return void
+	 */
+	public function setDataType(string $dataType): void;
+
+	/**
 	 * @return string|null
 	 */
 	public function getComment(): ?string;
@@ -86,9 +99,67 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function getValue();
 
 	/**
-	 * @return string
+	 * @param float|null $min
+	 *
+	 * @return void
 	 */
-	public function getType(): string;
+	public function setMin(?float $min): void;
+
+	/**
+	 * @return float|null
+	 */
+	public function getMin(): ?float;
+
+	/**
+	 * @return bool
+	 */
+	public function hasMin(): bool;
+
+	/**
+	 * @param float|null $max
+	 *
+	 * @return void
+	 */
+	public function setMax(?float $max): void;
+
+	/**
+	 * @return float|null
+	 */
+	public function getMax(): ?float;
+
+	/**
+	 * @return bool
+	 */
+	public function hasMax(): bool;
+
+	/**
+	 * @param float|null $step
+	 *
+	 * @return void
+	 */
+	public function setStep(?float $step): void;
+
+	/**
+	 * @return float|null
+	 */
+	public function getStep(): ?float;
+
+	/**
+	 * @return bool
+	 */
+	public function hasStep(): bool;
+
+	/**
+	 * @param mixed[] $values
+	 *
+	 * @return void
+	 */
+	public function setValues(array $values): void;
+
+	/**
+	 * @return mixed[]
+	 */
+	public function getValues(): array;
 
 	/**
 	 * @return mixed[]

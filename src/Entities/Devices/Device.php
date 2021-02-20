@@ -71,7 +71,7 @@ class Device implements IDevice
 	/**
 	 * @var string
 	 *
-	 * @IPubDoctrine\Crud(is={"required", "writable"})
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="device_identifier", length=50, nullable=false)
 	 */
 	private string $identifier;
@@ -218,7 +218,7 @@ class Device implements IDevice
 	/**
 	 * @var Entities\Devices\Connectors\IConnector|null
 	 *
-	 * @IPubDoctrine\Crud(is={"writable"})
+	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Connectors\Connector", mappedBy="device", cascade={"persist", "remove"})
 	 */
 	private ?Entities\Devices\Connectors\IConnector $connector = null;
@@ -358,7 +358,7 @@ class Device implements IDevice
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -395,7 +395,7 @@ class Device implements IDevice
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -416,7 +416,7 @@ class Device implements IDevice
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -477,7 +477,7 @@ class Device implements IDevice
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -498,7 +498,7 @@ class Device implements IDevice
 				return $property === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -559,7 +559,7 @@ class Device implements IDevice
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -572,7 +572,7 @@ class Device implements IDevice
 				return $configuration === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() || $found->first() === false ? null : $found->first();
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**

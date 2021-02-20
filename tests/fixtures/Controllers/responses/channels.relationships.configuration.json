@@ -2,19 +2,19 @@
   "data" : [
     {
       "id" : "008d911f-e6d4-4b17-aa28-939839581cde",
-      "type" : "devices-module/channel-configuration-select"
+      "type" : "devices-module/channel-configuration"
     },
     {
       "id" : "31669d32-8cfa-4a71-bd06-d536a2f94c2c",
-      "type" : "devices-module/channel-configuration-select"
+      "type" : "devices-module/channel-configuration"
     },
     {
       "id" : "3f83999e-c790-4f42-9e8e-4db749d0e6d4",
-      "type" : "devices-module/channel-configuration-number"
+      "type" : "devices-module/channel-configuration"
     },
     {
       "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
-      "type" : "devices-module/channel-configuration-select"
+      "type" : "devices-module/channel-configuration"
     }
   ],
   "jsonapi" : {

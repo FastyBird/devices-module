@@ -38,19 +38,8 @@ use Throwable;
  *       @ORM\Index(name="configuration_identifier_idx", columns={"configuration_identifier"})
  *     }
  * )
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="configuration_type", type="string", length=20)
- * @ORM\DiscriminatorMap({
- *    "boolean" = "FastyBird\DevicesModule\Entities\Channels\Configuration\BooleanRow",
- *    "number"  = "FastyBird\DevicesModule\Entities\Channels\Configuration\NumberRow",
- *    "select"  = "FastyBird\DevicesModule\Entities\Channels\Configuration\SelectRow",
- *    "text"    = "FastyBird\DevicesModule\Entities\Channels\Configuration\TextRow"
- * })
- * @ORM\MappedSuperclass
- *
- * @property-read string $type
  */
-abstract class Row extends Entities\Row implements IRow
+class Row extends Entities\Row implements IRow
 {
 
 	/**

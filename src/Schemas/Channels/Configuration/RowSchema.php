@@ -19,6 +19,7 @@ use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
+use FastyBird\DevicesModule\Types;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
@@ -31,11 +32,15 @@ use Neomerx\JsonApi;
  *
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-template T of Entities\Channels\Configuration\IRow
- * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
+ * @phpstan-extends  JsonApiSchemas\JsonApiSchema<Entities\Channels\Configuration\IRow>
  */
-abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
+final class RowSchema extends JsonApiSchemas\JsonApiSchema
 {
+
+	/**
+	 * Define entity schema type string
+	 */
+	public const SCHEMA_TYPE = 'devices-module/channel-configuration';
 
 	/**
 	 * Define relationships names
@@ -51,32 +56,63 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function getEntityClass(): string
+	{
+		return Entities\Channels\Configuration\Row::class;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getType(): string
+	{
+		return self::SCHEMA_TYPE;
+	}
+
+	/**
 	 * @param Entities\Channels\Configuration\IRow $row
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, mixed>
 	 *
-	 * @phpstan-param T $row
-	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes($row, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		return [
+		$attributes = [
 			'key'        => $row->getKey(),
 			'identifier' => $row->getIdentifier(),
 			'name'       => $row->getName(),
 			'comment'    => $row->getComment(),
+			'data_type'  => $row->getDataType()->getValue(),
 			'default'    => $row->getDefault(),
 		];
+
+		if (
+			$row->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			|| $row->getDataType()->isInteger()
+		) {
+			return array_merge($attributes, [
+				'min'  => $row->getMin(),
+				'max'  => $row->getMax(),
+				'step' => $row->getStep(),
+			]);
+
+		} elseif ($row->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+			return array_merge($attributes, [
+				'values' => $row->getValues(),
+			]);
+		}
+
+		return $attributes;
 	}
 
 	/**
 	 * @param Entities\Channels\Configuration\IRow $row
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
-	 * @phpstan-param T $row
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -102,8 +138,6 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 	 *
 	 * @return iterable<string, mixed>
 	 *
-	 * @phpstan-param T $row
-	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships($row, JsonApi\Contracts\Schema\ContextInterface $context): iterable
@@ -122,8 +156,6 @@ abstract class RowSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param string $name
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
-	 * @phpstan-param T $row
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

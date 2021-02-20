@@ -197,17 +197,8 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.device.connector'))
 			->setType(Schemas\Devices\Connectors\ConnectorSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.configuration.boolean'))
-			->setType(Schemas\Devices\Configuration\BooleanRowSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.configuration.number'))
-			->setType(Schemas\Devices\Configuration\NumberRowSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.configuration.select'))
-			->setType(Schemas\Devices\Configuration\SelectRowSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.configuration.text'))
-			->setType(Schemas\Devices\Configuration\TextRowSchema::class);
+		$builder->addDefinition($this->prefix('schemas.device.configuration'))
+			->setType(Schemas\Devices\Configuration\RowSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.channel'))
 			->setType(Schemas\Channels\ChannelSchema::class);
@@ -215,17 +206,8 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.channel.property'))
 			->setType(Schemas\Channels\Properties\PropertySchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.configuration.boolean'))
-			->setType(Schemas\Channels\Configuration\BooleanRowSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.configuration.number'))
-			->setType(Schemas\Channels\Configuration\NumberRowSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.configuration.select'))
-			->setType(Schemas\Channels\Configuration\SelectRowSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.configuration.text'))
-			->setType(Schemas\Channels\Configuration\TextRowSchema::class);
+		$builder->addDefinition($this->prefix('schemas.configuration'))
+			->setType(Schemas\Channels\Configuration\RowSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector'))
 			->setType(Schemas\Connectors\ConnectorSchema::class);

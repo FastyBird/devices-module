@@ -31,9 +31,14 @@ class DataTypeType extends Consistence\Enum\Enum
 	/**
 	 * Define data types
 	 */
-	public const DATA_TYPE_INTEGER = 'integer';
+	public const DATA_TYPE_CHAR = 'char';
+	public const DATA_TYPE_UCHAR = 'uchar';
+	public const DATA_TYPE_SHORT = 'short';
+	public const DATA_TYPE_USHORT = 'ushort';
+	public const DATA_TYPE_INT = 'int';
+	public const DATA_TYPE_UINT = 'uint';
 	public const DATA_TYPE_FLOAT = 'float';
-	public const DATA_TYPE_BOOLEAN = 'boolean';
+	public const DATA_TYPE_BOOLEAN = 'bool';
 	public const DATA_TYPE_STRING = 'string';
 	public const DATA_TYPE_ENUM = 'enum';
 	public const DATA_TYPE_COLOR = 'color';
@@ -44,6 +49,19 @@ class DataTypeType extends Consistence\Enum\Enum
 	public function __toString(): string
 	{
 		return (string) self::getValue();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isInteger(): bool
+	{
+		return self::equalsValue(self::DATA_TYPE_CHAR)
+			|| self::equalsValue(self::DATA_TYPE_UCHAR)
+			|| self::equalsValue(self::DATA_TYPE_SHORT)
+			|| self::equalsValue(self::DATA_TYPE_USHORT)
+			|| self::equalsValue(self::DATA_TYPE_INT)
+			|| self::equalsValue(self::DATA_TYPE_UINT);
 	}
 
 }

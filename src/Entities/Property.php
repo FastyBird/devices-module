@@ -212,7 +212,7 @@ class Property implements IProperty
 	public function setDataType(?string $dataType): void
 	{
 		if ($dataType !== null && !Types\DataTypeType::isValidValue($dataType)) {
-			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $dataType));
+			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
 		}
 
 		$this->dataType = $dataType !== null ? Types\DataTypeType::get($dataType) : null;
@@ -242,7 +242,7 @@ class Property implements IProperty
 		$format = $this->format;
 
 		if ($this->dataType !== null) {
-			if ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_INTEGER)) {
+			if ($this->dataType->isInteger()) {
 				if ($format !== null) {
 					[$min, $max] = explode(':', $format) + [null, null];
 

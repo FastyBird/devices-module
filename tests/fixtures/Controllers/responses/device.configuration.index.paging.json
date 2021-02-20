@@ -1,46 +1,47 @@
 {
-  "meta" : {
-    "author" : "FastyBird team",
-    "copyright" : "FastyBird s.r.o",
-    "totalCount" : 9
+  "meta": {
+    "author": "FastyBird team",
+    "copyright": "FastyBird s.r.o",
+    "totalCount": 9
   },
-  "jsonapi" : {
-    "version" : "1.1"
+  "jsonapi": {
+    "version": "1.1"
   },
-  "links" : {
-    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=1&page%5Blimit%5D=1",
-    "first" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
-    "prev" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
-    "next" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=2&page%5Blimit%5D=1",
-    "last" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=8&page%5Blimit%5D=1"
+  "links": {
+    "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=1&page%5Blimit%5D=1",
+    "first": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
+    "prev": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=0&page%5Blimit%5D=1",
+    "next": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=2&page%5Blimit%5D=1",
+    "last": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration?page%5Boffset%5D=8&page%5Blimit%5D=1"
   },
-  "data" : [
+  "data": [
     {
-      "type" : "devices-module/device-configuration-number",
-      "id" : "19eb2b65-abce-4061-b591-4ff1a4b1500f",
-      "attributes" : {
-        "identifier" : "btn_delay",
-        "key" : "bLikvA",
-        "name" : null,
-        "comment" : null,
-        "default" : "500",
-        "min" : 0,
-        "max" : 1000,
-        "step" : 100
+      "type": "devices-module/device-configuration",
+      "id": "19eb2b65-abce-4061-b591-4ff1a4b1500f",
+      "attributes": {
+        "key": "bLikvA",
+        "identifier": "btn_delay",
+        "name": null,
+        "comment": null,
+        "data_type": "int",
+        "default": "500",
+        "min": 0,
+        "max": 1000,
+        "step": 100
       },
-      "relationships" : {
-        "device" : {
-          "links" : {
-            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships": {
+        "device": {
+          "links": {
+            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data" : {
-            "type" : "devices-module/device",
-            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data": {
+            "type": "devices-module/device",
+            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links" : {
-        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/19eb2b65-abce-4061-b591-4ff1a4b1500f"
+      "links": {
+        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/19eb2b65-abce-4061-b591-4ff1a4b1500f"
       }
     }
   ]

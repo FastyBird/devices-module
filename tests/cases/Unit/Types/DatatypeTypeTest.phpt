@@ -16,7 +16,7 @@ final class DatatypeTypeTest extends BaseTestCase
 
 	public function testCreateDatatype(): void
 	{
-		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_INTEGER);
+		$datatype = Types\DataTypeType::get(Types\DataTypeType::DATA_TYPE_INT);
 
 		Assert::type(Types\DataTypeType::class, $datatype);
 

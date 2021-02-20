@@ -135,7 +135,7 @@ jobs:
       - name: "PHPStan"
         run: "make phpstan"
 
-  tests:
+  tests-code-coverage:
     name: "Tests"
     runs-on: "${{ matrix.operating-system }}"
 
@@ -146,15 +146,12 @@ jobs:
       fail-fast: false
 
     services:
-      # mysql-service Label used to access the service container
-      mysql-service:
+      mysql:
         # Docker Hub image (also with version)
         image: mysql:5.7
         env:
-          ## Accessing to Github secrets, where you can store your configuration
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: devices_module
-        ## map the "external" 33306 port with the "internal" 3306
         ports:
           - 33306:3306
         # Set health checks to wait until mysql database has started (it takes some seconds to start)
@@ -167,6 +164,11 @@ jobs:
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
+
+      - name: "Verify MySQL connection from host"
+        run: |
+          sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port 33306 -uroot -e "SHOW DATABASES
 
       - name: "Setup PHP cache environment"
         id: "extcache"
@@ -210,91 +212,6 @@ jobs:
 
       - name: "Tests"
         run: "make tests"
-
-      - name: "Upload test output"
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: output
-          path: tests/**/output
-
-  tests-code-coverage:
-    name: "Tests with code coverage"
-    runs-on: "${{ matrix.operating-system }}"
-
-    strategy:
-      matrix:
-        php-version: ["7.4"]
-        operating-system: ["ubuntu-latest"]
-      fail-fast: false
-
-    if: "github.event_name == 'push'"
-
-    services:
-      # mysql-service Label used to access the service container
-      mysql-service:
-        # Docker Hub image (also with version)
-        image: mysql:5.7
-        env:
-          ## Accessing to Github secrets, where you can store your configuration
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: devices_module
-        ## map the "external" 33306 port with the "internal" 3306
-        ports:
-          - 33306:3306
-        # Set health checks to wait until mysql database has started (it takes some seconds to start)
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
-
-      - name: "Setup PHP cache environment"
-        id: "extcache"
-        uses: "shivammathur/cache-extensions@v1"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "${{ env.extensions }}"
-          key: "${{ env.cache-version }}"
-
-      - name: "Cache PHP extensions"
-        uses: "actions/cache@v2"
-        with:
-          path: "${{ steps.extcache.outputs.dir }}"
-          key: "${{ steps.extcache.outputs.key }}"
-          restore-keys: "${{ steps.extcache.outputs.key }}"
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "${{ env.extensions }}"
-          tools: "composer:${{ env.composer-version }}"
-          coverage: "${{ env.coverage }}"
-
-      - name: "Setup problem matchers for PHP"
-        run: 'echo "::add-matcher::${{ runner.tool_cache }}/php.json"'
-
-      - name: "Get Composer cache directory"
-        id: "composercache"
-        run: 'echo "::set-output name=dir::$(composer config cache-files-dir)"'
-
-      - name: "Cache PHP dependencies"
-        uses: "actions/cache@v2"
-        with:
-          path: "${{ steps.composercache.outputs.dir }}"
-          key: "${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}"
-          restore-keys: "${{ runner.os }}-composer-"
-
-      - name: "Install dependencies"
-        run: "${{ env.composer-install }}"
-
-      - name: "Tests"
-        run: "make coverage"
 
       - name: "Upload test output"
         if: ${{ failure() }}

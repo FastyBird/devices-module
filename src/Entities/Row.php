@@ -284,6 +284,13 @@ abstract class Row implements IRow
 	 */
 	public function hasMin(): bool
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		return $this->getParam('min_value', null) !== null;
 	}
 
@@ -292,6 +299,13 @@ abstract class Row implements IRow
 	 */
 	public function hasMax(): bool
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		return $this->getParam('max_value', null) !== null;
 	}
 
@@ -300,6 +314,13 @@ abstract class Row implements IRow
 	 */
 	public function hasStep(): bool
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		return $this->getParam('step_value', null) !== null;
 	}
 
@@ -308,6 +329,13 @@ abstract class Row implements IRow
 	 */
 	public function getMin(): ?float
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		return $this->getParam('min_value', null);
 	}
 
@@ -316,6 +344,13 @@ abstract class Row implements IRow
 	 */
 	public function setMin(?float $min): void
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		if ($this->getMin() !== $min) {
 			$this->setParam('min_value', $min);
 		}
@@ -326,6 +361,13 @@ abstract class Row implements IRow
 	 */
 	public function getMax(): ?float
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		return $this->getParam('max_value', null);
 	}
 
@@ -334,6 +376,13 @@ abstract class Row implements IRow
 	 */
 	public function setMax(?float $max): void
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		if ($this->getMax() !== $max) {
 			$this->setParam('max_value', $max);
 		}
@@ -344,6 +393,13 @@ abstract class Row implements IRow
 	 */
 	public function getStep(): ?float
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		return $this->getParam('step_value', null);
 	}
 
@@ -352,6 +408,13 @@ abstract class Row implements IRow
 	 */
 	public function setStep(?float $step): void
 	{
+		if (
+			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->isInteger()
+		) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		if ($this->getStep() !== $step) {
 			$this->setParam('step_value', $step);
 		}
@@ -362,6 +425,10 @@ abstract class Row implements IRow
 	 */
 	public function getValues(): array
 	{
+		if (!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		return $this->getParam('select_values', []);
 	}
 
@@ -370,6 +437,10 @@ abstract class Row implements IRow
 	 */
 	public function setValues(array $values): void
 	{
+		if (!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		$this->setParam('select_values', []);
 
 		foreach ($values as $value) {
@@ -384,6 +455,10 @@ abstract class Row implements IRow
 	 */
 	private function addValue(Utils\ArrayHash $value): void
 	{
+		if (!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
+		}
+
 		$values = $this->getParam('select_values', []);
 
 		if ($value->offsetExists('value') && $value->offsetExists('name')) {

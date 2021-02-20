@@ -156,13 +156,14 @@ jobs:
           MYSQL_DATABASE: devices_module
         ## map the "external" 33306 port with the "internal" 3306
         ports:
-          - 3306
+          - 33306:3306
         # Set health checks to wait until mysql database has started (it takes some seconds to start)
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -230,14 +231,23 @@ jobs:
     if: "github.event_name == 'push'"
 
     services:
-      mysql:
+      # mysql-service Label used to access the service container
+      mysql-service:
+        # Docker Hub image (also with version)
         image: mysql:5.7
         env:
+          ## Accessing to Github secrets, where you can store your configuration
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: devices_module
+        ## map the "external" 33306 port with the "internal" 3306
         ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 33306:3306
+        # Set health checks to wait until mysql database has started (it takes some seconds to start)
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: "Checkout"

@@ -60,9 +60,9 @@ nettrineDbal:
 		port: 33306
 		driver: pdo_mysql
 		memory: false
-		dbname: devices_module
+		dbname: testdb
 		user: root
-		password:
+		password: root
 		charset: utf8
 		wrapperClass: \Tests\Tools\ConnectionWrapper
 

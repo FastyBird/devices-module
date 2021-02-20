@@ -145,25 +145,16 @@ jobs:
         operating-system: ["ubuntu-latest"]
       fail-fast: false
 
-    services:
-      mysql:
-        # Docker Hub image (also with version)
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: devices_module
-        ports:
-          - 33306:3306
-        # Set health checks to wait until mysql database has started (it takes some seconds to start)
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
+
+      - name: "Setup MySQL"
+        uses: "mirromutth/mysql-action@v1.1"
+        with:
+          mysql version: "5.7"
+          mysql database: "testdb"
+          mysql root password: "root"
 
       - name: "Verify MySQL connection from host"
         run: |
@@ -232,25 +223,16 @@ jobs:
 
     if: "github.event_name == 'push'"
 
-    services:
-      mysql:
-        # Docker Hub image (also with version)
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: devices_module
-        ports:
-          - 33306:3306
-        # Set health checks to wait until mysql database has started (it takes some seconds to start)
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
+
+      - name: "Setup MySQL"
+        uses: "mirromutth/mysql-action@v1.1"
+        with:
+          mysql version: "5.7"
+          mysql database: "testdb"
+          mysql root password: "root"
 
       - name: "Verify MySQL connection from host"
         run: |

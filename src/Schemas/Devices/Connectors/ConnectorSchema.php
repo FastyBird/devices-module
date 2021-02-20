@@ -39,7 +39,7 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/connector';
+	public const SCHEMA_TYPE = 'devices-module/device-connector';
 
 	/**
 	 * Define relationships names

@@ -1,6 +1,6 @@
 {
   "data" : {
-    "type" : "devices-module/connector",
+    "type" : "devices-module/device-connector",
     "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662",
     "attributes" : {
       "username" : "newusername"

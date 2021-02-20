@@ -65,7 +65,8 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Schemas\Channels\ChannelSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Properties\PropertySchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Configuration\RowSchema::class));
-		Assert::notNull($container->getByType(Schemas\Connectors\ConnectorSchema::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\FbBusConnectorSchema::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\FbMqttV1ConnectorSchema::class));
 
 		Assert::notNull($container->getByType(Hydrators\Devices\DeviceHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Devices\Connectors\ConnectorHydrator::class));

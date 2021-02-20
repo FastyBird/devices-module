@@ -13,8 +13,8 @@
     "type" : "devices-module/device",
     "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
     "attributes" : {
-      "identifier" : "first-device",
       "key" : "bLikkz",
+      "identifier" : "first-device",
       "name" : "First device",
       "comment" : null,
       "state" : "init",
@@ -149,7 +149,7 @@
           "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/connector"
         },
         "data" : {
-          "type" : "devices-module/connector",
+          "type" : "devices-module/device-connector",
           "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
         }
       }

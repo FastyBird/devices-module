@@ -34,8 +34,15 @@ use Throwable;
  *       "comment"="Communication connectors"
  *     }
  * )
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="connector_type", type="string", length=40)
+ * @ORM\DiscriminatorMap({
+ *    "fb_bus"      = "FastyBird\DevicesModule\Entities\Connectors\FbBusConnector",
+ *    "fb_mqtt_v1"  = "FastyBird\DevicesModule\Entities\Connectors\FbMqttV1Connector"
+ * })
+ * @ORM\MappedSuperclass
  */
-class Connector implements IConnector
+abstract class Connector implements IConnector
 {
 
 	use DatabaseEntities\TEntity;
@@ -61,14 +68,6 @@ class Connector implements IConnector
 	private string $name;
 
 	/**
-	 * @var string
-	 *
-	 * @IPubDoctrine\Crud(is="required")
-	 * @ORM\Column(type="string", name="connector_type", length=40, nullable=false)
-	 */
-	private string $type;
-
-	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\Connectors\IConnector>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -78,20 +77,17 @@ class Connector implements IConnector
 
 	/**
 	 * @param string $name
-	 * @param string $type
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		string $name,
-		string $type,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->name = $name;
-		$this->type = $type;
 
 		$this->devices = new Common\Collections\ArrayCollection();
 	}
@@ -102,14 +98,6 @@ class Connector implements IConnector
 	public function getName(): string
 	{
 		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType(): string
-	{
-		return $this->type;
 	}
 
 	/**

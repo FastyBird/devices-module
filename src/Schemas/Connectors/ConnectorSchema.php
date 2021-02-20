@@ -24,22 +24,18 @@ use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
 /**
- * Channel entity schema
+ * Connector entity schema
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Connectors\IConnector>
+ * @phpstan-template T of Entities\Connectors\IConnector
+ * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
  */
-final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
+abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 {
-
-	/**
-	 * Define entity schema type string
-	 */
-	public const SCHEMA_TYPE = 'devices-module/connector';
 
 	/**
 	 * Define relationships names
@@ -55,26 +51,12 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public function getEntityClass(): string
-	{
-		return Entities\Connectors\Connector::class;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getType(): string
-	{
-		return self::SCHEMA_TYPE;
-	}
-
-	/**
 	 * @param Entities\Connectors\IConnector $connector
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, string|string[]|null>
+	 *
+	 * @phpstan-param T $connector
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -82,7 +64,6 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	{
 		return [
 			'name' => $connector->getName(),
-			'type' => $connector->getType(),
 		];
 	}
 
@@ -90,6 +71,8 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param Entities\Connectors\IConnector $connector
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
+	 *
+	 * @phpstan-param T $connector
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -112,6 +95,8 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, mixed>
+	 *
+	 * @phpstan-param T $connector
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

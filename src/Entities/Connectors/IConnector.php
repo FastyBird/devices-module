@@ -35,12 +35,12 @@ interface IConnector extends DatabaseEntities\IEntity,
 	/**
 	 * @return string
 	 */
-	public function getName(): string;
+	public function getType(): string;
 
 	/**
 	 * @return string
 	 */
-	public function getType(): string;
+	public function getName(): string;
 
 	/**
 	 * @return Entities\Devices\Connectors\IConnector[]

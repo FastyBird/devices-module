@@ -1,5 +1,5 @@
 INSERT IGNORE INTO `fb_connectors` (`connector_id`, `connector_name`, `connector_type`, `created_at`, `updated_at`) VALUES
-(_binary 0x17C59DFA2EDD438E8C49FAA4E38E5A5E, 'Custom connector', 'custom_connector', '2020-03-20 09:18:20', '2020-03-20 09:18:20');
+(_binary 0x17C59DFA2EDD438E8C49FAA4E38E5A5E, 'FB MQTT v1', 'fb_mqtt_v1', '2020-03-20 09:18:20', '2020-03-20 09:18:20');
 
 INSERT IGNORE INTO `fb_devices` (`device_id`, `parent_id`, `device_identifier`, `device_key`, `device_name`, `device_comment`, `device_state`, `device_enabled`, `device_hardware_manufacturer`, `device_hardware_model`, `device_hardware_version`, `device_mac_address`, `device_firmware_manufacturer`, `device_firmware_version`, `params`, `created_at`, `updated_at`, `owner`) VALUES
 (_binary 0x69786D15FD0C4D9F937833287C2009FA, NULL, 'first-device', 'bLikkz', 'First device', NULL, 'init', 1, 'itead', 'sonoff_basic', 'rev1', '807d3a3dbe6d', 'fastybird', NULL, '[]', '2020-03-19 14:03:48', '2020-03-22 20:12:07', '455354e8-96bd-4c29-84e7-9f10e1d4db4b'),

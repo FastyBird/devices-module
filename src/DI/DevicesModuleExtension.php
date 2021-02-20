@@ -209,8 +209,11 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.configuration'))
 			->setType(Schemas\Channels\Configuration\RowSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.connector'))
-			->setType(Schemas\Connectors\ConnectorSchema::class);
+		$builder->addDefinition($this->prefix('schemas.connector.fbBus'))
+			->setType(Schemas\Connectors\FbBusConnectorSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.connector.fbMqttV1'))
+			->setType(Schemas\Connectors\FbMqttV1ConnectorSchema::class);
 
 		// API hydrators
 		$builder->addDefinition($this->prefix('hydrators.device'))

@@ -156,11 +156,6 @@ jobs:
           mysql database: "testdb"
           mysql root password: "root"
 
-      - name: "Verify MySQL connection from host"
-        run: |
-          sudo apt-get install -y mysql-client
-          mysql --host 127.0.0.1 --port 3306 -uroot -proot -e "SHOW DATABASES"
-
       - name: "Setup PHP cache environment"
         id: "extcache"
         uses: "shivammathur/cache-extensions@v1"
@@ -233,11 +228,6 @@ jobs:
           mysql version: "5.7"
           mysql database: "testdb"
           mysql root password: "root"
-
-      - name: "Verify MySQL connection from host"
-        run: |
-          sudo apt-get install -y mysql-client
-          mysql --host 127.0.0.1 --port 3306 -uroot -proot -e "SHOW DATABASES"
 
       - name: "Setup PHP cache environment"
         id: "extcache"

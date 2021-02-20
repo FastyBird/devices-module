@@ -220,11 +220,90 @@ jobs:
           name: output
           path: tests/**/output
 
+  tests-code-coverage:
+    name: "Tests with code coverage"
+    runs-on: "${{ matrix.operating-system }}"
+
+    strategy:
+      matrix:
+        php-version: ["7.4"]
+        operating-system: ["ubuntu-latest"]
+      fail-fast: false
+
+    if: "github.event_name == 'push'"
+
+    services:
+      mysql:
+        # Docker Hub image (also with version)
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: devices_module
+        ports:
+          - 33306:3306
+        # Set health checks to wait until mysql database has started (it takes some seconds to start)
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Verify MySQL connection from host"
+        run: |
+          sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port 33306 -uroot -e "SHOW DATABASES"
+
+      - name: "Setup PHP cache environment"
+        id: "extcache"
+        uses: "shivammathur/cache-extensions@v1"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.extensions }}"
+          key: "${{ env.cache-version }}"
+
+      - name: "Cache PHP extensions"
+        uses: "actions/cache@v2"
+        with:
+          path: "${{ steps.extcache.outputs.dir }}"
+          key: "${{ steps.extcache.outputs.key }}"
+          restore-keys: "${{ steps.extcache.outputs.key }}"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.extensions }}"
+          tools: "composer:${{ env.composer-version }} "
+
+      - name: "Setup problem matchers for PHP"
+        run: 'echo "::add-matcher::${{ runner.tool_cache }}/php.json"'
+
+      - name: "Get Composer cache directory"
+        id: "composercache"
+        run: 'echo "::set-output name=dir::$(composer config cache-files-dir)"'
+
+      - name: "Cache PHP dependencies"
+        uses: "actions/cache@v2"
+        with:
+          path: "${{ steps.composercache.outputs.dir }}"
+          key: "${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}"
+          restore-keys: "${{ runner.os }}-composer-"
+
+      - name: "Install dependencies"
+        run: "${{ env.composer-install }}"
+
+      - name: "Tests"
+        run: "make coverage"
+
       - name: "Coveralls.io"
         env:
           CI_NAME: github
           CI: true
           COVERALLS_REPO_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
-          composer require php-coveralls/php-coveralls ^2.1.0
-          vendor/bin/php-coveralls --verbose --config tests/.coveralls.yml
+          wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+          php php-coveralls.phar --verbose --config tests/.coveralls.yml

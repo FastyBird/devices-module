@@ -57,7 +57,7 @@ nettrineDbal:
 	connection:
 		serverVersion: 5.7
 		host: 127.0.0.1
-		port: 33306
+		port: 3306
 		driver: pdo_mysql
 		memory: false
 		dbname: testdb

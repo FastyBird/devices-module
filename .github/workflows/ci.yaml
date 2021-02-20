@@ -135,7 +135,7 @@ jobs:
       - name: "PHPStan"
         run: "make phpstan"
 
-  tests-code-coverage:
+  tests:
     name: "Tests"
     runs-on: "${{ matrix.operating-system }}"
 
@@ -168,7 +168,7 @@ jobs:
       - name: "Verify MySQL connection from host"
         run: |
           sudo apt-get install -y mysql-client
-          mysql --host 127.0.0.1 --port 33306 -uroot -e "SHOW DATABASES
+          mysql --host 127.0.0.1 --port 33306 -uroot -e "SHOW DATABASES"
 
       - name: "Setup PHP cache environment"
         id: "extcache"

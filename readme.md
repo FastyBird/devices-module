@@ -1,11 +1,11 @@
 # FastyBird devices module
 
-[![Build Status](https://img.shields.io/travis/com/FastyBird/devices-module.svg?style=flat-square)](https://travis-ci.com/FastyBird/devices-module)
-[![Code coverage](https://img.shields.io/coveralls/FastyBird/devices-module.svg?style=flat-square)](https://coveralls.io/r/FastyBird/devices-module)
-![PHP](https://img.shields.io/packagist/php-v/fastybird/devices-module?style=flat-square)
-[![Licence](https://img.shields.io/packagist/l/FastyBird/devices-module.svg?style=flat-square)](https://packagist.org/packages/FastyBird/devices-module)
-[![Downloads total](https://img.shields.io/packagist/dt/FastyBird/devices-module.svg?style=flat-square)](https://packagist.org/packages/FastyBird/devices-module)
-[![Latest stable](https://img.shields.io/packagist/v/FastyBird/devices-module.svg?style=flat-square)](https://packagist.org/packages/FastyBird/devices-module)
+[![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flast-square)](https://travis-ci.com/FastyBird/devices-module)
+[![Code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flast-square)](https://coveralls.io/r/FastyBird/devices-module)
+![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flast-square)
+[![Licence](https://badgen.net/packagist/license/FastyBird/devices-module?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
+[![Downloads total](https://badgen.net/packagist/dt/FastyBird/devices-module?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
+[![Latest stable](https://badgen.net/packagist/v/FastyBird/devices-module/latest?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
 
 ## What is FastyBird devices module?

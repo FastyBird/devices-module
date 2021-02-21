@@ -1,6 +1,6 @@
 # FastyBird devices module
 
-[![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flast-square)](https://travis-ci.com/FastyBird/devices-module)
+[![Build Status](https://badgen.net/github/checks/FastyBird/application-events/master?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/actions)
 [![Code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flast-square)](https://coveralls.io/r/FastyBird/devices-module)
 ![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flast-square)
 [![Licence](https://badgen.net/packagist/license/FastyBird/devices-module?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)

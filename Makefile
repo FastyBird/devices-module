@@ -24,4 +24,4 @@ tests: vendor
 	vendor/bin/tester -s -p php --colors 1 -C tests/cases
 
 coverage: vendor
-	vendor/bin/tester -s -p phpdbg --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/cases
+	vendor/bin/tester -s -p php --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/cases

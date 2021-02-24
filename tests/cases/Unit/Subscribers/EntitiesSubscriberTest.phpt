@@ -8,6 +8,7 @@ use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Subscribers;
+use FastyBird\ModulesMetadata;
 use Mockery;
 use Ninjify\Nunjuck\TestCase\BaseMockeryTestCase;
 use stdClass;
@@ -46,9 +47,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ApplicationExchangePublisher\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $key, array $data): bool {
+			->withArgs(function (string $origin, string $key, array $data): bool {
 				unset($data['id']);
 
+				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
 				Assert::same('fb.bus.entity.created.device', $key);
 				Assert::equal([
 					'identifier'            => 'device-name',
@@ -105,9 +107,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ApplicationExchangePublisher\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $key, array $data): bool {
+			->withArgs(function (string $origin, string $key, array $data): bool {
 				unset($data['id']);
 
+				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
 				Assert::same('fb.bus.entity.updated.device', $key);
 				Assert::equal([
 					'identifier'            => 'device-name',
@@ -163,9 +166,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ApplicationExchangePublisher\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $key, array $data): bool {
+			->withArgs(function (string $origin, string $key, array $data): bool {
 				unset($data['id']);
 
+				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
 				Assert::same('fb.bus.entity.deleted.device', $key);
 				Assert::equal([
 					'identifier'            => 'device-name',

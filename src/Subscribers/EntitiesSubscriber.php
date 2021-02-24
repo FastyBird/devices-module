@@ -27,6 +27,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
+use FastyBird\ModulesMetadata;
 use Nette;
 use Ramsey\Uuid;
 use ReflectionClass;
@@ -181,10 +182,18 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			) {
 				$state = $this->propertyStateRepository->findOne($entity->getId());
 
-				$this->publisher->publish($publishRoutingKey, array_merge($state !== null ? $state->toArray() : [], $this->toArray($entity)));
+				$this->publisher->publish(
+					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
+					$publishRoutingKey,
+					array_merge($state !== null ? $state->toArray() : [], $this->toArray($entity))
+				);
 
 			} else {
-				$this->publisher->publish($publishRoutingKey, $this->toArray($entity));
+				$this->publisher->publish(
+					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
+					$publishRoutingKey,
+					$this->toArray($entity)
+				);
 			}
 		}
 	}

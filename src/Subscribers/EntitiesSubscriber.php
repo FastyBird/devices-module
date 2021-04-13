@@ -345,6 +345,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		// Check for valid entity
 		if (
 			!$entity instanceof DatabaseEntities\IEntity
+			|| !$this->validateNamespace($entity)
 			|| $uow->isScheduledForDelete($entity)
 		) {
 			return;
@@ -488,6 +489,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		return substr($class, $pos + Persistence\Proxy::MARKER_LENGTH + 2);
 	}
 
+	/**
+	 * @param object $entity
+	 *
+	 * @return bool
+	 */
 	private function validateNamespace(object $entity): bool
 	{
 		$rc = new ReflectionClass($entity);

@@ -104,6 +104,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	{
 		$entity = $eventArgs->getObject();
 
+		// Check for valid entity
+		if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
+			return;
+		}
+
 		if (method_exists($entity, 'setKey')) {
 			$entity->setKey($this->numberHashHelper->alphaIdToHash($this->dateTimeFactory->getNow()->getTimestamp()));
 		}
@@ -120,7 +125,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$entity = $eventArgs->getObject();
 
 		// Check for valid entity
-		if (!$entity instanceof DatabaseEntities\IEntity) {
+		if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
 			return;
 		}
 
@@ -370,6 +375,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$uow = $this->entityManager->getUnitOfWork();
 
 		foreach ($uow->getScheduledEntityDeletions() as $entity) {
+			// Check for valid entity
+			if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
+				continue;
+			}
+
 			if (
 				(
 					$entity instanceof Entities\Devices\Controls\IControl
@@ -414,7 +424,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			$processedEntities[] = $hash;
 
 			// Check for valid entity
-			if (!$entity instanceof DatabaseEntities\IEntity) {
+			if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
 				continue;
 			}
 
@@ -436,6 +446,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		foreach ($processEntities as $entity) {
+			// Check for valid entity
+			if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
+				continue;
+			}
+
 			$this->processEntityAction($entity, self::ACTION_DELETED);
 		}
 	}
@@ -471,6 +486,13 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		return substr($class, $pos + Persistence\Proxy::MARKER_LENGTH + 2);
+	}
+
+	private function validateNamespace(object $entity): bool
+	{
+		$rc = new ReflectionClass($entity);
+
+		return str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule');
 	}
 
 }

@@ -496,7 +496,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 */
 	private function validateNamespace(object $entity): bool
 	{
-		$rc = new ReflectionClass($entity);
+		try {
+			$rc = new ReflectionClass($entity);
+
+		} catch (ReflectionException $ex) {
+			return false;
+		}
 
 		return str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule');
 	}

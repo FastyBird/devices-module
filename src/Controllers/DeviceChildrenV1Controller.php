@@ -39,11 +39,11 @@ final class DeviceChildrenV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
-
 	/** @var string */
 	protected string $translationDomain = 'devices-module.deviceChildren';
+
+	/** @var Models\Devices\IDeviceRepository */
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository

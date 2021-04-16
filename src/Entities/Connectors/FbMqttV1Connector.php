@@ -71,7 +71,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setServer(int $server): void
+	public function setServer(?string $server): void
 	{
 		$this->setParam('server', $server);
 	}
@@ -87,9 +87,25 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setPort(string $port): void
+	public function setPort(?int $port): void
 	{
 		$this->setParam('port', $port);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getSecuredPort(): ?int
+	{
+		return $this->getParam('secured_port', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setSecuredPort(?int $port): void
+	{
+		$this->setParam('secured_port', $port);
 	}
 
 	/**
@@ -103,7 +119,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setUsername(int $username): void
+	public function setUsername(?string $username): void
 	{
 		$this->setParam('username', $username);
 	}
@@ -119,9 +135,23 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setPassword(int $password): void
+	public function setPassword(?string $password): void
 	{
 		$this->setParam('password', $password);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'type'         => $this->getType(),
+			'server'       => $this->getServer(),
+			'port'         => $this->getPort(),
+			'secured_port' => $this->getSecuredPort(),
+			'username'     => $this->getUsername(),
+		]);
 	}
 
 }

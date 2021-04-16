@@ -46,6 +46,9 @@ class DevicesV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 
+	/** @var string */
+	protected string $translationDomain = 'devices-module.devices';
+
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
 
@@ -57,9 +60,6 @@ class DevicesV1Controller extends BaseV1Controller
 
 	/** @var Models\Channels\IChannelsManager */
 	protected Models\Channels\IChannelsManager $channelsManager;
-
-	/** @var string */
-	protected string $translationDomain = 'devices-module.devices';
 
 	/** @var Hydrators\Devices\DeviceHydrator */
 	private Hydrators\Devices\DeviceHydrator $deviceHydrator;

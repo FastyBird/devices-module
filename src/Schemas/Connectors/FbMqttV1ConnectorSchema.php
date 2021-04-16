@@ -64,10 +64,11 @@ final class FbMqttV1ConnectorSchema extends ConnectorSchema
 	public function getAttributes($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return array_merge((array) parent::getAttributes($connector, $context), [
-			'server'   => $connector->getServer(),
-			'port'     => $connector->getPort(),
-			'username' => $connector->getUsername(),
-			'password' => $connector->getPassword(),
+			'server'       => $connector->getServer(),
+			'port'         => $connector->getPort(),
+			'secured_port' => $connector->getSecuredPort(),
+			'username'     => $connector->getUsername(),
+			'password'     => $connector->getPassword(),
 		]);
 	}
 

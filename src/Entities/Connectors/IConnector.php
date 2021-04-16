@@ -43,8 +43,70 @@ interface IConnector extends DatabaseEntities\IEntity,
 	public function getName(): string;
 
 	/**
+	 * @return bool
+	 */
+	public function isEnabled(): bool;
+
+	/**
+	 * @param bool $enabled
+	 */
+	public function setEnabled(bool $enabled): void;
+
+	/**
 	 * @return Entities\Devices\Connectors\IConnector[]
 	 */
 	public function getDevices(): array;
+
+	/**
+	 * @return Entities\Connectors\Controls\IControl[]
+	 */
+	public function getControls(): array;
+
+	/**
+	 * @param string $name
+	 *
+	 * @return Entities\Connectors\Controls\IControl|null
+	 */
+	public function getControl(string $name): ?Entities\Connectors\Controls\IControl;
+
+	/**
+	 * @param string $name
+	 *
+	 * @return Entities\Connectors\Controls\IControl|null
+	 */
+	public function findControl(string $name): ?Entities\Connectors\Controls\IControl;
+
+	/**
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public function hasControl(string $name): bool;
+
+	/**
+	 * @param Entities\Connectors\Controls\IControl[] $control
+	 *
+	 * @return void
+	 */
+	public function setControls(array $control): void;
+
+	/**
+	 * @param Entities\Connectors\Controls\IControl $control
+	 *
+	 * @return void
+	 */
+	public function addControl(Entities\Connectors\Controls\IControl $control): void;
+
+	/**
+	 * @param Entities\Connectors\Controls\IControl $control
+	 *
+	 * @return void
+	 */
+	public function removeControl(Entities\Connectors\Controls\IControl $control): void;
+
+	/**
+	 * @return mixed[]
+	 */
+	public function toArray(): array;
 
 }

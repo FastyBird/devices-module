@@ -38,6 +38,11 @@ interface IProperty extends DatabaseEntities\IEntity,
 	public function getIdentifier(): string;
 
 	/**
+	 * @return string|null
+	 */
+	public function getName(): ?string;
+
+	/**
 	 * @param string|null $name
 	 *
 	 * @return void
@@ -45,9 +50,9 @@ interface IProperty extends DatabaseEntities\IEntity,
 	public function setName(?string $name): void;
 
 	/**
-	 * @return string|null
+	 * @return bool
 	 */
-	public function getName(): ?string;
+	public function isSettable(): bool;
 
 	/**
 	 * @param bool $settable
@@ -59,7 +64,7 @@ interface IProperty extends DatabaseEntities\IEntity,
 	/**
 	 * @return bool
 	 */
-	public function isSettable(): bool;
+	public function isQueryable(): bool;
 
 	/**
 	 * @param bool $queryable
@@ -69,9 +74,9 @@ interface IProperty extends DatabaseEntities\IEntity,
 	public function setQueryable(bool $queryable): void;
 
 	/**
-	 * @return bool
+	 * @return Types\DataTypeType|null
 	 */
-	public function isQueryable(): bool;
+	public function getDataType(): ?Types\DataTypeType;
 
 	/**
 	 * @param string|null $dataType
@@ -81,9 +86,9 @@ interface IProperty extends DatabaseEntities\IEntity,
 	public function setDataType(?string $dataType): void;
 
 	/**
-	 * @return Types\DataTypeType|null
+	 * @return string|null
 	 */
-	public function getDataType(): ?Types\DataTypeType;
+	public function getUnit(): ?string;
 
 	/**
 	 * @param string|null $units
@@ -93,9 +98,9 @@ interface IProperty extends DatabaseEntities\IEntity,
 	public function setUnit(?string $units): void;
 
 	/**
-	 * @return string|null
+	 * @return string[]|string|int[]|float[]|null
 	 */
-	public function getUnit(): ?string;
+	public function getFormat();
 
 	/**
 	 * @param string|null $format
@@ -103,11 +108,6 @@ interface IProperty extends DatabaseEntities\IEntity,
 	 * @return void
 	 */
 	public function setFormat(?string $format): void;
-
-	/**
-	 * @return string[]|string|int[]|float[]|null
-	 */
-	public function getFormat();
 
 	/**
 	 * @return mixed[]

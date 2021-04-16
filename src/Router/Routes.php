@@ -261,11 +261,7 @@ class Routes implements WebServerRouter\IRoutes
 				$route = $group->get('/{' . self::URL_ITEM_ID . '}', [$this->connectorsV1Controller, 'read']);
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR);
 
-				$group->post('', [$this->connectorsV1Controller, 'create']);
-
 				$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->connectorsV1Controller, 'update']);
-
-				$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->connectorsV1Controller, 'delete']);
 
 				$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
 					$this->connectorsV1Controller,

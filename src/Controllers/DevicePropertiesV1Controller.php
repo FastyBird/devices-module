@@ -42,11 +42,11 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
-
 	/** @var string */
 	protected string $translationDomain = 'devices-module.deviceProperties';
+
+	/** @var Models\Devices\IDeviceRepository */
+	protected Models\Devices\IDeviceRepository $deviceRepository;
 
 	/** @var Models\Devices\Properties\IPropertyRepository */
 	private Models\Devices\Properties\IPropertyRepository $propertyRepository;

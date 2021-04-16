@@ -102,4 +102,17 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 		$this->setParam('baud_rate', $baudRate);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'type'             => $this->getType(),
+			'address'          => $this->getAddress(),
+			'serial_interface' => $this->getSerialInterface(),
+			'baud_rate'        => $this->getBaudRate(),
+		]);
+	}
+
 }

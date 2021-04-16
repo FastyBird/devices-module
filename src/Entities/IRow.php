@@ -39,6 +39,11 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function getIdentifier(): string;
 
 	/**
+	 * @return string|null
+	 */
+	public function getName(): ?string;
+
+	/**
 	 * @param string|null $name
 	 *
 	 * @return void
@@ -48,7 +53,7 @@ interface IRow extends DatabaseEntities\IEntity,
 	/**
 	 * @return string|null
 	 */
-	public function getName(): ?string;
+	public function getComment(): ?string;
 
 	/**
 	 * @param string|null $comment
@@ -70,9 +75,9 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function setDataType(string $dataType): void;
 
 	/**
-	 * @return string|null
+	 * @return mixed|null
 	 */
-	public function getComment(): ?string;
+	public function getDefault();
 
 	/**
 	 * @param string|null $default
@@ -84,7 +89,7 @@ interface IRow extends DatabaseEntities\IEntity,
 	/**
 	 * @return mixed|null
 	 */
-	public function getDefault();
+	public function getValue();
 
 	/**
 	 * @param string|null $value
@@ -94,9 +99,9 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function setValue(?string $value): void;
 
 	/**
-	 * @return mixed|null
+	 * @return float|null
 	 */
-	public function getValue();
+	public function getMin(): ?float;
 
 	/**
 	 * @param float|null $min
@@ -106,14 +111,14 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function setMin(?float $min): void;
 
 	/**
-	 * @return float|null
-	 */
-	public function getMin(): ?float;
-
-	/**
 	 * @return bool
 	 */
 	public function hasMin(): bool;
+
+	/**
+	 * @return float|null
+	 */
+	public function getMax(): ?float;
 
 	/**
 	 * @param float|null $max
@@ -123,14 +128,14 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function setMax(?float $max): void;
 
 	/**
-	 * @return float|null
-	 */
-	public function getMax(): ?float;
-
-	/**
 	 * @return bool
 	 */
 	public function hasMax(): bool;
+
+	/**
+	 * @return float|null
+	 */
+	public function getStep(): ?float;
 
 	/**
 	 * @param float|null $step
@@ -140,14 +145,14 @@ interface IRow extends DatabaseEntities\IEntity,
 	public function setStep(?float $step): void;
 
 	/**
-	 * @return float|null
-	 */
-	public function getStep(): ?float;
-
-	/**
 	 * @return bool
 	 */
 	public function hasStep(): bool;
+
+	/**
+	 * @return mixed[]
+	 */
+	public function getValues(): array;
 
 	/**
 	 * @param mixed[] $values
@@ -155,11 +160,6 @@ interface IRow extends DatabaseEntities\IEntity,
 	 * @return void
 	 */
 	public function setValues(array $values): void;
-
-	/**
-	 * @return mixed[]
-	 */
-	public function getValues(): array;
 
 	/**
 	 * @return mixed[]

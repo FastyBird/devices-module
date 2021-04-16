@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * ChannelsManager.php
+ * ConnectorsManager.php
  *
  * @license        More in license.md
  * @copyright      https://www.fastybird.com
@@ -10,10 +10,10 @@
  * @subpackage     Models
  * @since          0.1.0
  *
- * @date           23.04.17
+ * @date           16.04.21
  */
 
-namespace FastyBird\DevicesModule\Models\Channels;
+namespace FastyBird\DevicesModule\Models\Connectors;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
@@ -22,14 +22,14 @@ use Nette;
 use Nette\Utils;
 
 /**
- * Channels entities manager
+ * Connectors entities manager
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ChannelsManager implements IChannelsManager
+final class ConnectorsManager implements IConnectorsManager
 {
 
 	use Nette\SmartObject;
@@ -49,8 +49,8 @@ final class ChannelsManager implements IChannelsManager
 	 */
 	public function create(
 		Utils\ArrayHash $values
-	): Entities\Channels\IChannel {
-		/** @var Entities\Channels\IChannel $entity */
+	): Entities\Connectors\IConnector {
+		/** @var Entities\Connectors\IConnector $entity */
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
 
 		return $entity;
@@ -60,10 +60,10 @@ final class ChannelsManager implements IChannelsManager
 	 * {@inheritDoc}
 	 */
 	public function update(
-		Entities\Channels\IChannel $entity,
+		Entities\Connectors\IConnector $entity,
 		Utils\ArrayHash $values
-	): Entities\Channels\IChannel {
-		/** @var Entities\Channels\IChannel $entity */
+	): Entities\Connectors\IConnector {
+		/** @var Entities\Connectors\IConnector $entity */
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
 
 		return $entity;
@@ -73,7 +73,7 @@ final class ChannelsManager implements IChannelsManager
 	 * {@inheritDoc}
 	 */
 	public function delete(
-		Entities\Channels\IChannel $entity
+		Entities\Connectors\IConnector $entity
 	): bool {
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);

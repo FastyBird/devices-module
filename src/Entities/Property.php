@@ -127,24 +127,6 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
-	{
-		return [
-			'id'         => $this->getPlainId(),
-			'key'        => $this->getKey(),
-			'identifier' => $this->getIdentifier(),
-			'name'       => $this->getName(),
-			'settable'   => $this->isSettable(),
-			'queryable'  => $this->isQueryable(),
-			'data_type'  => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
-			'unit'       => $this->getUnit(),
-			'format'     => $this->getFormat(),
-		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
@@ -280,6 +262,24 @@ class Property implements IProperty
 	public function setFormat(?string $format): void
 	{
 		$this->format = $format;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'name'       => $this->getName(),
+			'settable'   => $this->isSettable(),
+			'queryable'  => $this->isQueryable(),
+			'data_type'  => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
+			'unit'       => $this->getUnit(),
+			'format'     => $this->getFormat(),
+		];
 	}
 
 }

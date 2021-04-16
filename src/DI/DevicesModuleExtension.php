@@ -102,6 +102,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('models.channelConfigurationRepository'))
 			->setType(Models\Channels\Configuration\RowRepository::class);
 
+		$builder->addDefinition($this->prefix('models.connectorRepository'))
+			->setType(Models\Connectors\ConnectorRepository::class);
+
 		// Database managers
 		$builder->addDefinition($this->prefix('models.devicesManager'))
 			->setType(Models\Devices\DevicesManager::class)
@@ -137,6 +140,10 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition($this->prefix('models.channelsConfigurationManager'))
 			->setType(Models\Channels\Configuration\RowsManager::class)
+			->setArgument('entityCrud', '__placeholder__');
+
+		$builder->addDefinition($this->prefix('models.connectorsManager'))
+			->setType(Models\Connectors\ConnectorsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		// Events subscribers
@@ -225,6 +232,12 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('hydrators.connectors'))
 			->setType(Hydrators\Devices\Connectors\ConnectorHydrator::class);
 
+		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'))
+			->setType(Hydrators\Connectors\FbBusConnectorHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.connectors.fbMqttV1'))
+			->setType(Hydrators\Connectors\FbMqttV1ConnectorHydrator::class);
+
 		// Helpers
 		$builder->addDefinition($this->prefix('helpers.property'))
 			->setType(Helpers\PropertyHelper::class);
@@ -298,6 +311,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$channelsConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsConfigurationManager');
 		$channelsConfigurationManagerService->setBody('return new ' . Models\Channels\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Configuration\Row::class . '\'));');
+
+		$connectorsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsManager');
+		$connectorsManagerService->setBody('return new ' . Models\Connectors\ConnectorsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Connector::class . '\'));');
 	}
 
 	/**

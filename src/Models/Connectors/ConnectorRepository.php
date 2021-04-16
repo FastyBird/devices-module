@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * ChannelRepository.php
+ * ConnectorRepository.php
  *
  * @license        More in license.md
  * @copyright      https://www.fastybird.com
@@ -10,10 +10,10 @@
  * @subpackage     Models
  * @since          0.1.0
  *
- * @date           23.04.17
+ * @date           16.04.21
  */
 
-namespace FastyBird\DevicesModule\Models\Channels;
+namespace FastyBird\DevicesModule\Models\Connectors;
 
 use Doctrine\Common;
 use Doctrine\Persistence;
@@ -25,19 +25,19 @@ use Nette;
 use Throwable;
 
 /**
- * Channel repository
+ * Connector repository
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ChannelRepository implements IChannelRepository
+final class ConnectorRepository implements IConnectorRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var Persistence\ObjectRepository<Entities\Channels\Channel>|null */
+	/** @var Persistence\ObjectRepository<Entities\Connectors\Connector>|null */
 	public ?Persistence\ObjectRepository $repository = null;
 
 	/** @var Common\Persistence\ManagerRegistry */
@@ -51,21 +51,21 @@ final class ChannelRepository implements IChannelRepository
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findOneBy(Queries\FindChannelsQuery $queryObject): ?Entities\Channels\IChannel
+	public function findOneBy(Queries\FindConnectorsQuery $queryObject): ?Entities\Connectors\IConnector
 	{
-		/** @var Entities\Channels\IChannel|null $channel */
-		$channel = $queryObject->fetchOne($this->getRepository());
+		/** @var Entities\Connectors\IConnector|null $connector */
+		$connector = $queryObject->fetchOne($this->getRepository());
 
-		return $channel;
+		return $connector;
 	}
 
 	/**
-	 * @return Persistence\ObjectRepository<Entities\Channels\Channel>
+	 * @return Persistence\ObjectRepository<Entities\Connectors\Connector>
 	 */
 	private function getRepository(): Persistence\ObjectRepository
 	{
 		if ($this->repository === null) {
-			$this->repository = $this->managerRegistry->getRepository(Entities\Channels\Channel::class);
+			$this->repository = $this->managerRegistry->getRepository(Entities\Connectors\Connector::class);
 		}
 
 		return $this->repository;
@@ -76,7 +76,7 @@ final class ChannelRepository implements IChannelRepository
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindChannelsQuery $queryObject): array
+	public function findAllBy(Queries\FindConnectorsQuery $queryObject): array
 	{
 		$result = $queryObject->fetch($this->getRepository());
 
@@ -89,7 +89,7 @@ final class ChannelRepository implements IChannelRepository
 	 * @throws Throwable
 	 */
 	public function getResultSet(
-		Queries\FindChannelsQuery $queryObject
+		Queries\FindConnectorsQuery $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 

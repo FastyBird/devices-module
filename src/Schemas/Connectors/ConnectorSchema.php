@@ -54,7 +54,7 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param Entities\Connectors\IConnector $connector
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|string[]|null>
+	 * @return iterable<string, string|string[]|bool|null>
 	 *
 	 * @phpstan-param T $connector
 	 *
@@ -63,8 +63,26 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	public function getAttributes($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			'name' => $connector->getName(),
+			'name'    => $connector->getName(),
+			'enabled' => $connector->isEnabled(),
+			'control' => $this->formatControls($connector->getControls()),
 		];
+	}
+
+	/**
+	 * @param Entities\Connectors\Controls\IControl[] $controls
+	 *
+	 * @return string[]
+	 */
+	private function formatControls(array $controls): array
+	{
+		$return = [];
+
+		foreach ($controls as $control) {
+			$return[] = $control->getName();
+		}
+
+		return $return;
 	}
 
 	/**
@@ -81,7 +99,7 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 		return new JsonApi\Schema\Link(
 			false,
 			$this->router->urlFor(
-				DevicesModule\Constants::ROUTE_NAME_CHANNEL,
+				DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 				[
 					Router\Routes::URL_ITEM_ID => $connector->getPlainId(),
 				]

@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 
 /**
- * Channel channels repository interface
+ * Channel repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models

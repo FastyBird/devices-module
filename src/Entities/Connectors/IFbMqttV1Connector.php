@@ -32,11 +32,11 @@ interface IFbMqttV1Connector extends IConnector
 	public function getServer(): ?string;
 
 	/**
-	 * @param int $server
+	 * @param string|null $server
 	 *
 	 * @return void
 	 */
-	public function setServer(int $server): void;
+	public function setServer(?string $server): void;
 
 	/**
 	 * @return int|null
@@ -44,11 +44,23 @@ interface IFbMqttV1Connector extends IConnector
 	public function getPort(): ?int;
 
 	/**
-	 * @param string $port
+	 * @param int|null $port
 	 *
 	 * @return void
 	 */
-	public function setPort(string $port): void;
+	public function setPort(?int $port): void;
+
+	/**
+	 * @return int|null
+	 */
+	public function getSecuredPort(): ?int;
+
+	/**
+	 * @param int|null $port
+	 *
+	 * @return void
+	 */
+	public function setSecuredPort(?int $port): void;
 
 	/**
 	 * @return string|null
@@ -56,11 +68,11 @@ interface IFbMqttV1Connector extends IConnector
 	public function getUsername(): ?string;
 
 	/**
-	 * @param int $username
+	 * @param string|null $username
 	 *
 	 * @return void
 	 */
-	public function setUsername(int $username): void;
+	public function setUsername(?string $username): void;
 
 	/**
 	 * @return string|null
@@ -68,10 +80,10 @@ interface IFbMqttV1Connector extends IConnector
 	public function getPassword(): ?string;
 
 	/**
-	 * @param int $password
+	 * @param string|null $password
 	 *
 	 * @return void
 	 */
-	public function setPassword(int $password): void;
+	public function setPassword(?string $password): void;
 
 }

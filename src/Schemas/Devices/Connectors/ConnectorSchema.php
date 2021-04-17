@@ -76,13 +76,29 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param Entities\Devices\Connectors\IConnector $connector
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|null>
+	 * @return iterable<string, string|int|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		return $connector->getParams();
+		if ($connector->getConnector() instanceof Entities\Connectors\FbMqttV1Connector) {
+			return [
+				'username' => $connector->getUsername(),
+				'password' => $connector->getPassword(),
+			];
+
+		} elseif ($connector->getConnector() instanceof Entities\Connectors\FbBusConnector) {
+			return [
+				'address'               => $connector->getAddress(),
+				'max_packet_length'     => $connector->getMaxPacketLength(),
+				'description_support'   => $connector->hasDescriptionSupport(),
+				'settings_support'      => $connector->hasSettingsSupport(),
+				'configured_key_length' => $connector->getConfiguredKeyLength(),
+			];
+		}
+
+		return [];
 	}
 
 	/**
@@ -117,7 +133,7 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	public function getRelationships($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			self::RELATIONSHIPS_DEVICE => [
+			self::RELATIONSHIPS_DEVICE    => [
 				self::RELATIONSHIP_DATA          => $connector->getDevice(),
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,

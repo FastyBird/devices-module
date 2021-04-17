@@ -40,8 +40,8 @@ use Throwable;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="connector_type", type="string", length=40)
  * @ORM\DiscriminatorMap({
- *    "fb_bus"      = "FastyBird\DevicesModule\Entities\Connectors\FbBusConnector",
- *    "fb_mqtt_v1"  = "FastyBird\DevicesModule\Entities\Connectors\FbMqttV1Connector"
+ *    "fb-bus"      = "FastyBird\DevicesModule\Entities\Connectors\FbBusConnector",
+ *    "fb-mqtt-v1"  = "FastyBird\DevicesModule\Entities\Connectors\FbMqttV1Connector"
  * })
  * @ORM\MappedSuperclass
  */
@@ -254,6 +254,8 @@ abstract class Connector implements IConnector
 	public function toArray(): array
 	{
 		return [
+			'id'      => $this->getPlainId(),
+			'type'    => $this->getType(),
 			'name'    => $this->getName(),
 			'key'     => $this->getKey(),
 			'enabled' => $this->isEnabled(),

@@ -26,7 +26,7 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 {
 
 	/** @var string */
-	protected string $type = 'fb_bus';
+	protected string $type = 'fb-bus';
 
 	/**
 	 * @var int|null
@@ -89,7 +89,7 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getBaudRate(): ?string
+	public function getBaudRate(): ?int
 	{
 		return $this->getParam('baud_rate', null);
 	}
@@ -97,7 +97,7 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setBaudRate(int $baudRate): void
+	public function setBaudRate(?int $baudRate): void
 	{
 		$this->setParam('baud_rate', $baudRate);
 	}
@@ -108,7 +108,6 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
-			'type'             => $this->getType(),
 			'address'          => $this->getAddress(),
 			'serial_interface' => $this->getSerialInterface(),
 			'baud_rate'        => $this->getBaudRate(),

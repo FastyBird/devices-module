@@ -102,18 +102,6 @@ class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
-	{
-		return [
-			'id'        => $this->getPlainId(),
-			'device'    => $this->getDevice()->getKey(),
-			'connector' => $this->getConnector()->getType(),
-		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDevice(): Entities\Devices\IDevice
 	{
 		return $this->device;
@@ -130,6 +118,14 @@ class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getUsername(): ?string
+	{
+		return $this->getParam('username', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function setUsername(?string $username): void
 	{
 		$this->setParam('username', $username);
@@ -138,9 +134,127 @@ class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getPassword(): ?string
+	{
+		return $this->getParam('password', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function setPassword(?string $password): void
 	{
 		$this->setParam('password', $password);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getAddress(): ?int
+	{
+		return $this->getParam('address', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setAddress(?int $address): void
+	{
+		$this->setParam('address', $address);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMaxPacketLength(): ?int
+	{
+		return $this->getParam('max_packet_length', null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMaxPacketLength(?int $maxPacketLength): void
+	{
+		$this->setParam('max_packet_length', $maxPacketLength);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasDescriptionSupport(): bool
+	{
+		return $this->getParam('description_support', false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDescriptionSupport(bool $descriptionSupport): void
+	{
+		$this->setParam('description_support', $descriptionSupport);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasSettingsSupport(): bool
+	{
+		return $this->getParam('settings_support', false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setSettingsSupport(bool $settingsSupport): void
+	{
+		$this->setParam('settings_support', $settingsSupport);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConfiguredKeyLength(): ?int
+	{
+		return $this->getParam('configured_key_length', 0);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setConfiguredKeyLength(?int $configuredKeyLength): void
+	{
+		$this->setParam('configured_key_length', $configuredKeyLength);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		$baseProperties = [
+			'id'        => $this->getPlainId(),
+			'device'    => $this->getDevice()->getKey(),
+			'connector' => $this->getConnector()->getType(),
+		];
+
+		if ($this->getConnector() instanceof Entities\Connectors\FbBusConnector) {
+			return array_merge($baseProperties, [
+				'address'               => $this->getAddress(),
+				'max_packet_length'     => $this->getMaxPacketLength(),
+				'description_support'   => $this->hasDescriptionSupport(),
+				'settings_support'      => $this->hasSettingsSupport(),
+				'configured_key_length' => $this->getConfiguredKeyLength(),
+			]);
+
+		} elseif ($this->getConnector() instanceof Entities\Connectors\FbMqttV1Connector) {
+			return array_merge($baseProperties, [
+				'username' => $this->getUsername(),
+			]);
+
+		} else {
+			return $baseProperties;
+		}
 	}
 
 }

@@ -51,15 +51,15 @@ interface IFbBusConnector extends IConnector
 	public function setSerialInterface(string $serialInterface): void;
 
 	/**
-	 * @return string|null
+	 * @return int|null
 	 */
-	public function getBaudRate(): ?string;
+	public function getBaudRate(): ?int;
 
 	/**
-	 * @param int $baudRate
+	 * @param int|null $baudRate
 	 *
 	 * @return void
 	 */
-	public function setBaudRate(int $baudRate): void;
+	public function setBaudRate(?int $baudRate): void;
 
 }

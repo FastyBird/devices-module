@@ -26,7 +26,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 {
 
 	/** @var string */
-	protected string $type = 'fb_mqtt_v1';
+	protected string $type = 'fb-mqtt-v1';
 
 	/**
 	 * @var string|null
@@ -146,7 +146,6 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
-			'type'         => $this->getType(),
 			'server'       => $this->getServer(),
 			'port'         => $this->getPort(),
 			'secured_port' => $this->getSecuredPort(),

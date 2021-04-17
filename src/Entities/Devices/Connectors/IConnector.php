@@ -43,6 +43,90 @@ interface IConnector extends DatabaseEntities\IEntity,
 	public function getConnector(): Entities\Connectors\IConnector;
 
 	/**
+	 * @return string|null
+	 */
+	public function getUsername(): ?string;
+
+	/**
+	 * @param string|null $username
+	 *
+	 * @return void
+	 */
+	public function setUsername(?string $username): void;
+
+	/**
+	 * @return string|null
+	 */
+	public function getPassword(): ?string;
+
+	/**
+	 * @param string|null $password
+	 *
+	 * @return void
+	 */
+	public function setPassword(?string $password): void;
+
+	/**
+	 * @return int|null
+	 */
+	public function getAddress(): ?int;
+
+	/**
+	 * @param int|null $address
+	 *
+	 * @return void
+	 */
+	public function setAddress(?int $address): void;
+
+	/**
+	 * @return int|null
+	 */
+	public function getMaxPacketLength(): ?int;
+
+	/**
+	 * @param int|null $maxPacketLength
+	 *
+	 * @return void
+	 */
+	public function setMaxPacketLength(?int $maxPacketLength): void;
+
+	/**
+	 * @return bool
+	 */
+	public function hasDescriptionSupport(): bool;
+
+	/**
+	 * @param bool $descriptionSupport
+	 *
+	 * @return void
+	 */
+	public function setDescriptionSupport(bool $descriptionSupport): void;
+
+	/**
+	 * @return bool
+	 */
+	public function hasSettingsSupport(): bool;
+
+	/**
+	 * @param bool $settingsSupport
+	 *
+	 * @return void
+	 */
+	public function setSettingsSupport(bool $settingsSupport): void;
+
+	/**
+	 * @return int|null
+	 */
+	public function getConfiguredKeyLength(): ?int;
+
+	/**
+	 * @param int|null $configuredKeyLength
+	 *
+	 * @return void
+	 */
+	public function setConfiguredKeyLength(?int $configuredKeyLength): void;
+
+	/**
 	 * @return mixed[]
 	 */
 	public function toArray(): array;

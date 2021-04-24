@@ -19,8 +19,8 @@ use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
-use FastyBird\DevicesModule\Types;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -91,7 +91,7 @@ final class RowSchema extends JsonApiSchemas\JsonApiSchema
 		];
 
 		if (
-			$row->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			$row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			|| $row->getDataType()->isInteger()
 		) {
 			return array_merge($attributes, [
@@ -100,7 +100,7 @@ final class RowSchema extends JsonApiSchemas\JsonApiSchema
 				'step' => $row->getStep(),
 			]);
 
-		} elseif ($row->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+		} elseif ($row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			return array_merge($attributes, [
 				'values' => $row->getValues(),
 			]);

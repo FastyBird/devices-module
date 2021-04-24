@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\DevicesModule\Types;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -116,9 +116,9 @@ class Device implements IDevice
 	private ?string $comment = null;
 
 	/**
-	 * @var Types\DeviceConnectionStateType
+	 * @var ModulesMetadataTypes\DeviceConnectionStateType
 	 *
-	 * @Enum(class=Types\DeviceConnectionStateType::class)
+	 * @Enum(class=ModulesMetadataTypes\DeviceConnectionStateType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="device_state", nullable=false, options={"default": "unknown"})
 	 */
@@ -133,18 +133,18 @@ class Device implements IDevice
 	private bool $enabled = true;
 
 	/**
-	 * @var Types\HardwareManufacturerType
+	 * @var ModulesMetadataTypes\HardwareManufacturerType
 	 *
-	 * @Enum(class=Types\HardwareManufacturerType::class)
+	 * @Enum(class=ModulesMetadataTypes\HardwareManufacturerType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_hardware_manufacturer", length=150, nullable=false, options={"default": "generic"})
 	 */
 	private $hardwareManufacturer;
 
 	/**
-	 * @var Types\ModelType
+	 * @var ModulesMetadataTypes\DeviceModelType
 	 *
-	 * @Enum(class=Types\ModelType::class)
+	 * @Enum(class=ModulesMetadataTypes\DeviceModelType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_hardware_model", length=150, nullable=false, options={"default": "custom"})
 	 */
@@ -167,9 +167,9 @@ class Device implements IDevice
 	private ?string $macAddress = null;
 
 	/**
-	 * @var Types\FirmwareManufacturerType
+	 * @var ModulesMetadataTypes\FirmwareManufacturerType
 	 *
-	 * @Enum(class=Types\FirmwareManufacturerType::class)
+	 * @Enum(class=ModulesMetadataTypes\FirmwareManufacturerType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_firmware_manufacturer", length=150, nullable=false, options={"default": "generic"})
 	 */
@@ -240,12 +240,12 @@ class Device implements IDevice
 		$this->identifier = $identifier;
 		$this->name = $name;
 
-		$this->state = Types\DeviceConnectionStateType::get(Types\DeviceConnectionStateType::STATE_UNKNOWN);
+		$this->state = ModulesMetadataTypes\DeviceConnectionStateType::get(ModulesMetadataTypes\DeviceConnectionStateType::STATE_UNKNOWN);
 
-		$this->hardwareManufacturer = Types\HardwareManufacturerType::get(Types\HardwareManufacturerType::MANUFACTURER_GENERIC);
-		$this->hardwareModel = Types\ModelType::get(Types\ModelType::MODEL_CUSTOM);
+		$this->hardwareManufacturer = ModulesMetadataTypes\HardwareManufacturerType::get(ModulesMetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC);
+		$this->hardwareModel = ModulesMetadataTypes\DeviceModelType::get(ModulesMetadataTypes\DeviceModelType::MODEL_CUSTOM);
 
-		$this->firmwareManufacturer = Types\FirmwareManufacturerType::get(Types\FirmwareManufacturerType::MANUFACTURER_GENERIC);
+		$this->firmwareManufacturer = ModulesMetadataTypes\FirmwareManufacturerType::get(ModulesMetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC);
 
 		$this->children = new Common\Collections\ArrayCollection();
 		$this->channels = new Common\Collections\ArrayCollection();
@@ -685,7 +685,7 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getState(): Types\DeviceConnectionStateType
+	public function getState(): ModulesMetadataTypes\DeviceConnectionStateType
 	{
 		return $this->state;
 	}
@@ -695,11 +695,11 @@ class Device implements IDevice
 	 */
 	public function setState(string $state): void
 	{
-		if (!Types\DeviceConnectionStateType::isValidValue($state)) {
+		if (!ModulesMetadataTypes\DeviceConnectionStateType::isValidValue($state)) {
 			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $state));
 		}
 
-		$this->state = Types\DeviceConnectionStateType::get($state);
+		$this->state = ModulesMetadataTypes\DeviceConnectionStateType::get($state);
 	}
 
 	/**
@@ -737,7 +737,7 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getHardwareManufacturer(): Types\HardwareManufacturerType
+	public function getHardwareManufacturer(): ModulesMetadataTypes\HardwareManufacturerType
 	{
 		return $this->hardwareManufacturer;
 	}
@@ -747,18 +747,18 @@ class Device implements IDevice
 	 */
 	public function setHardwareManufacturer(?string $manufacturer): void
 	{
-		if ($manufacturer !== null && Types\HardwareManufacturerType::isValidValue(strtolower($manufacturer))) {
-			$this->hardwareManufacturer = Types\HardwareManufacturerType::get(strtolower($manufacturer));
+		if ($manufacturer !== null && ModulesMetadataTypes\HardwareManufacturerType::isValidValue(strtolower($manufacturer))) {
+			$this->hardwareManufacturer = ModulesMetadataTypes\HardwareManufacturerType::get(strtolower($manufacturer));
 
 		} else {
-			$this->hardwareManufacturer = Types\HardwareManufacturerType::get(Types\HardwareManufacturerType::MANUFACTURER_GENERIC);
+			$this->hardwareManufacturer = ModulesMetadataTypes\HardwareManufacturerType::get(ModulesMetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getHardwareModel(): Types\ModelType
+	public function getHardwareModel(): ModulesMetadataTypes\DeviceModelType
 	{
 		return $this->hardwareModel;
 	}
@@ -768,11 +768,11 @@ class Device implements IDevice
 	 */
 	public function setHardwareModel(?string $model): void
 	{
-		if ($model !== null && Types\ModelType::isValidValue(strtolower($model))) {
-			$this->hardwareModel = Types\ModelType::get(strtolower($model));
+		if ($model !== null && ModulesMetadataTypes\DeviceModelType::isValidValue(strtolower($model))) {
+			$this->hardwareModel = ModulesMetadataTypes\DeviceModelType::get(strtolower($model));
 
 		} else {
-			$this->hardwareModel = Types\ModelType::get(Types\ModelType::MODEL_CUSTOM);
+			$this->hardwareModel = ModulesMetadataTypes\DeviceModelType::get(ModulesMetadataTypes\DeviceModelType::MODEL_CUSTOM);
 		}
 	}
 
@@ -803,7 +803,7 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFirmwareManufacturer(): Types\FirmwareManufacturerType
+	public function getFirmwareManufacturer(): ModulesMetadataTypes\FirmwareManufacturerType
 	{
 		return $this->firmwareManufacturer;
 	}
@@ -813,11 +813,11 @@ class Device implements IDevice
 	 */
 	public function setFirmwareManufacturer(?string $manufacturer): void
 	{
-		if ($manufacturer !== null && Types\FirmwareManufacturerType::isValidValue(strtolower($manufacturer))) {
-			$this->firmwareManufacturer = Types\FirmwareManufacturerType::get(strtolower($manufacturer));
+		if ($manufacturer !== null && ModulesMetadataTypes\FirmwareManufacturerType::isValidValue(strtolower($manufacturer))) {
+			$this->firmwareManufacturer = ModulesMetadataTypes\FirmwareManufacturerType::get(strtolower($manufacturer));
 
 		} else {
-			$this->firmwareManufacturer = Types\FirmwareManufacturerType::get(Types\FirmwareManufacturerType::MANUFACTURER_GENERIC);
+			$this->firmwareManufacturer = ModulesMetadataTypes\FirmwareManufacturerType::get(ModulesMetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC);
 		}
 	}
 

@@ -19,7 +19,7 @@ use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\DevicesModule\Types;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Nette\Utils;
@@ -79,9 +79,9 @@ abstract class Row implements IRow
 	protected ?string $comment = null;
 
 	/**
-	 * @var Types\DataTypeType
+	 * @var ModulesMetadataTypes\DataTypeType
 	 *
-	 * @Enum(class=Types\DataTypeType::class)
+	 * @Enum(class=ModulesMetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string_enum", name="configuration_data_type", nullable=false)
 	 */
@@ -185,7 +185,7 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDataType(): Types\DataTypeType
+	public function getDataType(): ModulesMetadataTypes\DataTypeType
 	{
 		return $this->dataType;
 	}
@@ -195,11 +195,11 @@ abstract class Row implements IRow
 	 */
 	public function setDataType(string $dataType): void
 	{
-		if (!Types\DataTypeType::isValidValue($dataType)) {
+		if (!ModulesMetadataTypes\DataTypeType::isValidValue($dataType)) {
 			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
 		}
 
-		$this->dataType = Types\DataTypeType::get($dataType);
+		$this->dataType = ModulesMetadataTypes\DataTypeType::get($dataType);
 	}
 
 	/**
@@ -227,13 +227,13 @@ abstract class Row implements IRow
 			return null;
 		}
 
-		if ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {
+		if ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 			return (float) $this->value;
 
 		} elseif ($this->dataType->isInteger()) {
 			return (int) $this->value;
 
-		} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_BOOLEAN)) {
+		} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
 			return $this->value === '1' || Utils\Strings::lower((string) $this->value) === 'true';
 		}
 
@@ -254,7 +254,7 @@ abstract class Row implements IRow
 	public function getMin(): ?float
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -269,7 +269,7 @@ abstract class Row implements IRow
 	public function setMin(?float $min): void
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -286,7 +286,7 @@ abstract class Row implements IRow
 	public function hasMin(): bool
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -301,7 +301,7 @@ abstract class Row implements IRow
 	public function getMax(): ?float
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -316,7 +316,7 @@ abstract class Row implements IRow
 	public function setMax(?float $max): void
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -333,7 +333,7 @@ abstract class Row implements IRow
 	public function hasMax(): bool
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -348,7 +348,7 @@ abstract class Row implements IRow
 	public function getStep(): ?float
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -363,7 +363,7 @@ abstract class Row implements IRow
 	public function setStep(?float $step): void
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -380,7 +380,7 @@ abstract class Row implements IRow
 	public function hasStep(): bool
 	{
 		if (
-			!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)
+			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
 			&& !$this->dataType->isInteger()
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
@@ -394,7 +394,7 @@ abstract class Row implements IRow
 	 */
 	public function getValues(): array
 	{
-		if (!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+		if (!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
@@ -406,7 +406,7 @@ abstract class Row implements IRow
 	 */
 	public function setValues(array $values): void
 	{
-		if (!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+		if (!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
@@ -424,7 +424,7 @@ abstract class Row implements IRow
 	 */
 	private function addValue(Utils\ArrayHash $value): void
 	{
-		if (!$this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+		if (!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
@@ -455,14 +455,14 @@ abstract class Row implements IRow
 			'value'      => $this->getValue(),
 		];
 
-		if ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT) || $this->dataType->isInteger()) {
+		if ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT) || $this->dataType->isInteger()) {
 			return array_merge($data, [
 				'min'  => $this->getMin(),
 				'max'  => $this->getMax(),
 				'step' => $this->getStep(),
 			]);
 
-		} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+		} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			return array_merge($data, [
 				'values' => $this->getValues(),
 			]);

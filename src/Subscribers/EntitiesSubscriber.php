@@ -386,7 +386,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$entity instanceof Entities\Devices\Controls\IControl
 					|| $entity instanceof Entities\Channels\Controls\IControl
 				)
-				&& $entity->getName() === DevicesModule\Constants::CONTROL_CONFIG
+				&& $entity->getName() === ModulesMetadata\Constants::CONTROL_CONFIG
 			) {
 				if ($entity instanceof Entities\Devices\Controls\IControl) {
 					foreach ($entity->getDevice()->getConfiguration() as $row) {

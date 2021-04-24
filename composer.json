@@ -41,7 +41,6 @@
     "fastybird/modules-metadata": "@dev",
     "fastybird/simple-auth": "@dev",
     "fastybird/web-server": "@dev",
-    "ipub/doctrine-consistence": "^0.3",
     "ipub/doctrine-timestampable": "^1.4"
   },
 

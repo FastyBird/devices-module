@@ -16,7 +16,7 @@
 namespace FastyBird\DevicesModule\Helpers;
 
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Types;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 
 /**
  * Property helpers
@@ -47,16 +47,16 @@ final class PropertyHelper
 			if ($property->getDataType()->isInteger()) {
 				return intval($value);
 
-			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {
+			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 				return floatval($value);
 
-			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_STRING)) {
+			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_STRING)) {
 				return $value;
 
-			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_BOOLEAN)) {
+			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
 				return $value === 'true' || $value === '1';
 
-			} elseif ($property->getDataType()->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 				if (is_array($property->getFormat()) && count($property->getFormat()) > 0) {
 					if (in_array($value, $property->getFormat(), true)) {
 						return $value;

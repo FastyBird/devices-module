@@ -17,7 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Devices;
 
 use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Types;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineTimestampable;
 
@@ -116,9 +116,9 @@ interface IDevice extends DatabaseEntities\IEntity,
 	public function setState(string $state): void;
 
 	/**
-	 * @return Types\DeviceConnectionStateType
+	 * @return ModulesMetadataTypes\DeviceConnectionStateType
 	 */
-	public function getState(): Types\DeviceConnectionStateType;
+	public function getState(): ModulesMetadataTypes\DeviceConnectionStateType;
 
 	/**
 	 * @param bool $enabled
@@ -135,9 +135,9 @@ interface IDevice extends DatabaseEntities\IEntity,
 	public function setHardwareManufacturer(?string $manufacturer): void;
 
 	/**
-	 * @return Types\HardwareManufacturerType
+	 * @return ModulesMetadataTypes\HardwareManufacturerType
 	 */
-	public function getHardwareManufacturer(): Types\HardwareManufacturerType;
+	public function getHardwareManufacturer(): ModulesMetadataTypes\HardwareManufacturerType;
 
 	/**
 	 * @param string|null $model
@@ -147,9 +147,9 @@ interface IDevice extends DatabaseEntities\IEntity,
 	public function setHardwareModel(?string $model): void;
 
 	/**
-	 * @return Types\ModelType
+	 * @return ModulesMetadataTypes\DeviceModelType
 	 */
-	public function getHardwareModel(): Types\ModelType;
+	public function getHardwareModel(): ModulesMetadataTypes\DeviceModelType;
 
 	/**
 	 * @param string|null $version
@@ -185,9 +185,9 @@ interface IDevice extends DatabaseEntities\IEntity,
 	public function setFirmwareManufacturer(?string $manufacturer): void;
 
 	/**
-	 * @return Types\FirmwareManufacturerType
+	 * @return ModulesMetadataTypes\FirmwareManufacturerType
 	 */
-	public function getFirmwareManufacturer(): Types\FirmwareManufacturerType;
+	public function getFirmwareManufacturer(): ModulesMetadataTypes\FirmwareManufacturerType;
 
 	/**
 	 * @param string|null $version

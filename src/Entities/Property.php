@@ -19,7 +19,7 @@ use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\DevicesModule\Types;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
@@ -85,9 +85,9 @@ class Property implements IProperty
 	protected bool $queryable = false;
 
 	/**
-	 * @var Types\DataTypeType|null
+	 * @var ModulesMetadataTypes\DataTypeType|null
 	 *
-	 * @Enum(class=Types\DataTypeType::class)
+	 * @Enum(class=ModulesMetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="property_data_type", nullable=true, options={"default": null})
 	 */
@@ -183,7 +183,7 @@ class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDataType(): ?Types\DataTypeType
+	public function getDataType(): ?ModulesMetadataTypes\DataTypeType
 	{
 		return $this->dataType;
 	}
@@ -193,11 +193,11 @@ class Property implements IProperty
 	 */
 	public function setDataType(?string $dataType): void
 	{
-		if ($dataType !== null && !Types\DataTypeType::isValidValue($dataType)) {
+		if ($dataType !== null && !ModulesMetadataTypes\DataTypeType::isValidValue($dataType)) {
 			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
 		}
 
-		$this->dataType = $dataType !== null ? Types\DataTypeType::get($dataType) : null;
+		$this->dataType = $dataType !== null ? ModulesMetadataTypes\DataTypeType::get($dataType) : null;
 	}
 
 	/**
@@ -233,7 +233,7 @@ class Property implements IProperty
 					}
 				}
 
-			} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {
+			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 				if ($format !== null) {
 					[$min, $max] = explode(':', $format) + [null, null];
 
@@ -242,7 +242,7 @@ class Property implements IProperty
 					}
 				}
 
-			} elseif ($this->dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 				if ($format !== null) {
 					$format = array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
 						return $item !== '';

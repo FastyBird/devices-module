@@ -59,23 +59,6 @@ final class Constants
 	public const ROUTE_NAME_CONNECTOR_RELATIONSHIP = 'connector.relationship';
 
 	/**
-	 * Data types
-	 */
-	public const DATA_TYPE_BOOLEAN = 'boolean';
-	public const DATA_TYPE_NUMBER = 'number';
-	public const DATA_TYPE_SELECT = 'select';
-	public const DATA_TYPE_TEXT = 'text';
-
-	/**
-	 * Control actions
-	 */
-	public const CONTROL_CONFIG = 'configure';
-	public const CONTROL_RESET = 'reset';
-	public const CONTROL_RECONNECT = 'reconnect';
-	public const CONTROL_FACTORY_RESET = 'factory-reset';
-	public const CONTROL_OTA = 'ota';
-
-	/**
 	 * Message bus routing keys mapping
 	 */
 	public const MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING = [

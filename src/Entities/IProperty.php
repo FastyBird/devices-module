@@ -16,7 +16,7 @@
 namespace FastyBird\DevicesModule\Entities;
 
 use FastyBird\Database\Entities as DatabaseEntities;
-use FastyBird\DevicesModule\Types;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineTimestampable;
 
 /**
@@ -74,9 +74,9 @@ interface IProperty extends DatabaseEntities\IEntity,
 	public function setQueryable(bool $queryable): void;
 
 	/**
-	 * @return Types\DataTypeType|null
+	 * @return ModulesMetadataTypes\DataTypeType|null
 	 */
-	public function getDataType(): ?Types\DataTypeType;
+	public function getDataType(): ?ModulesMetadataTypes\DataTypeType;
 
 	/**
 	 * @param string|null $dataType

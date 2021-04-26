@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Middleware;
+use FastyBird\ModulesMetadata;
 use FastyBird\SimpleAuth\Middleware as SimpleAuthMiddleware;
 use FastyBird\WebServer\Router as WebServerRouter;
 use IPub\SlimRouter\Routing;
@@ -39,6 +40,9 @@ class Routes implements WebServerRouter\IRoutes
 	public const URL_CHANNEL_ID = 'channel';
 
 	public const RELATION_ENTITY = 'relationEntity';
+
+	/** @var bool */
+	private bool $usePrefix;
 
 	/** @var Controllers\DevicesV1Controller */
 	private Controllers\DevicesV1Controller $devicesV1Controller;
@@ -77,6 +81,7 @@ class Routes implements WebServerRouter\IRoutes
 	private SimpleAuthMiddleware\UserMiddleware $userMiddleware;
 
 	public function __construct(
+		bool $usePrefix,
 		Controllers\DevicesV1Controller $devicesV1Controller,
 		Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller,
 		Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller,
@@ -90,6 +95,8 @@ class Routes implements WebServerRouter\IRoutes
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
 		SimpleAuthMiddleware\UserMiddleware $userMiddleware
 	) {
+		$this->usePrefix = $usePrefix;
+
 		$this->devicesV1Controller = $devicesV1Controller;
 		$this->deviceChildrenV1Controller = $deviceChildrenV1Controller;
 		$this->devicePropertiesV1Controller = $devicePropertiesV1Controller;
@@ -110,7 +117,28 @@ class Routes implements WebServerRouter\IRoutes
 	 */
 	public function registerRoutes(Routing\IRouter $router): void
 	{
-		$routes = $router->group('/v1', function (Routing\RouteCollector $group): void {
+		if ($this->usePrefix) {
+			$routes = $router->group('/' . ModulesMetadata\Constants::MODULE_DEVICES_PREFIX, function (Routing\RouteCollector $group): void {
+				$this->buildRoutes($group);
+			});
+
+		} else {
+			$routes = $this->buildRoutes($router);
+		}
+
+		$routes->addMiddleware($this->accessControlMiddleware);
+		$routes->addMiddleware($this->userMiddleware);
+		$routes->addMiddleware($this->devicesAccessControlMiddleware);
+	}
+
+	/**
+	 * @param Routing\IRouter | Routing\IRouteCollector $group
+	 *
+	 * @return Routing\IRouteGroup
+	 */
+	private function buildRoutes($group): Routing\IRouteGroup
+	{
+		return $group->group('/v1', function (Routing\RouteCollector $group): void {
 			$group->group('/devices', function (Routing\RouteCollector $group): void {
 				/**
 				 * DEVICES
@@ -270,10 +298,6 @@ class Routes implements WebServerRouter\IRoutes
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_RELATIONSHIP);
 			});
 		});
-
-		$routes->addMiddleware($this->accessControlMiddleware);
-		$routes->addMiddleware($this->userMiddleware);
-		$routes->addMiddleware($this->devicesAccessControlMiddleware);
 	}
 
 }

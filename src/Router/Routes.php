@@ -69,7 +69,7 @@ class Routes implements WebServerRouter\IRoutes
 	private Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller;
 
 	/** @var Controllers\ConnectorsV1Controller */
-	private $connectorsV1Controller;
+	private Controllers\ConnectorsV1Controller $connectorsV1Controller;
 
 	/** @var Middleware\AccessMiddleware */
 	private Middleware\AccessMiddleware $devicesAccessControlMiddleware;
@@ -113,6 +113,8 @@ class Routes implements WebServerRouter\IRoutes
 	}
 
 	/**
+	 * @param Routing\IRouter $router
+	 *
 	 * @return void
 	 */
 	public function registerRoutes(Routing\IRouter $router): void

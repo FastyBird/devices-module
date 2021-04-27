@@ -30,15 +30,11 @@ $ cd path/to/install
 
 Everything required will be then installed in the provided folder `path/to/install`
 
-This module has several console command.
-
-##### HTTP server
+Or if you already have created project you could use command:
 
 ```sh
-$ vendor/bin/fb-console fb:web-server:start
+$ composer require fastybird/devices-module
 ```
-
-This command is to start build in web server which is listening for incoming http api request messages from clients. 
 
 ## Configuration
 
@@ -56,7 +52,14 @@ $ vendor/bin/fb-console fb:devices-module:initialize
 
 This console command is interactive and will ask for all required information.
 
-After this step, module could be started with [server command](#http-server)
+## HTTP server
+
+This module has built-in web server for serving module api to clients. This web server could be started with command:
+```sh
+$ vendor/bin/fb-console fb:web-server:start
+```
+
+After successful start, app is listening for incoming http api request messages from clients.
 
 ## Feedback
 

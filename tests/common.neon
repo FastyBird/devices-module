@@ -62,7 +62,7 @@ nettrineDbal:
 		memory: false
 		dbname: testdb
 		user: root
-		password: root
+		password:
 		charset: utf8
 		wrapperClass: \Tests\Tools\ConnectionWrapper
 

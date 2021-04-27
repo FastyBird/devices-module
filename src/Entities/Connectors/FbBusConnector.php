@@ -59,7 +59,7 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	 */
 	public function getAddress(): ?int
 	{
-		return $this->getParam('address', null);
+		return $this->getParam('address');
 	}
 
 	/**
@@ -75,7 +75,7 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	 */
 	public function getSerialInterface(): ?string
 	{
-		return $this->getParam('serial_interface', null);
+		return $this->getParam('serial_interface');
 	}
 
 	/**
@@ -91,7 +91,7 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	 */
 	public function getBaudRate(): ?int
 	{
-		return $this->getParam('baud_rate', null);
+		return $this->getParam('baud_rate');
 	}
 
 	/**

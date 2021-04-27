@@ -65,7 +65,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	 */
 	public function getServer(): ?string
 	{
-		return $this->getParam('server', null);
+		return $this->getParam('server');
 	}
 
 	/**
@@ -81,7 +81,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	 */
 	public function getPort(): ?int
 	{
-		return $this->getParam('port', null);
+		return $this->getParam('port');
 	}
 
 	/**
@@ -97,7 +97,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	 */
 	public function getSecuredPort(): ?int
 	{
-		return $this->getParam('secured_port', null);
+		return $this->getParam('secured_port');
 	}
 
 	/**
@@ -113,7 +113,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	 */
 	public function getUsername(): ?string
 	{
-		return $this->getParam('username', null);
+		return $this->getParam('username');
 	}
 
 	/**
@@ -129,7 +129,7 @@ class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqtt
 	 */
 	public function getPassword(): ?string
 	{
-		return $this->getParam('password', null);
+		return $this->getParam('password');
 	}
 
 	/**

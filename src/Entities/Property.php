@@ -244,11 +244,9 @@ class Property implements IProperty
 
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 				if ($format !== null) {
-					$format = array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
+					return array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
 						return $item !== '';
 					});
-
-					return $format;
 				}
 			}
 		}

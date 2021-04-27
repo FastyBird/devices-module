@@ -120,7 +120,7 @@ class Connector implements IConnector
 	 */
 	public function getUsername(): ?string
 	{
-		return $this->getParam('username', null);
+		return $this->getParam('username');
 	}
 
 	/**
@@ -136,7 +136,7 @@ class Connector implements IConnector
 	 */
 	public function getPassword(): ?string
 	{
-		return $this->getParam('password', null);
+		return $this->getParam('password');
 	}
 
 	/**
@@ -152,7 +152,7 @@ class Connector implements IConnector
 	 */
 	public function getAddress(): ?int
 	{
-		return $this->getParam('address', null);
+		return $this->getParam('address');
 	}
 
 	/**
@@ -168,7 +168,7 @@ class Connector implements IConnector
 	 */
 	public function getMaxPacketLength(): ?int
 	{
-		return $this->getParam('max_packet_length', null);
+		return $this->getParam('max_packet_length');
 	}
 
 	/**

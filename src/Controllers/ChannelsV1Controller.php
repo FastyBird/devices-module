@@ -167,7 +167,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 			throw $ex;
 
 		} catch (Throwable $ex) {
-			// Log catched exception
+			// Log caught exception
 			$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
 				'exception' => [
 					'message' => $ex->getMessage(),

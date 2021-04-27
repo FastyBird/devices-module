@@ -382,7 +382,7 @@ interface IDevice extends DatabaseEntities\IEntity,
 	public function toArray(): array;
 
 	/**
-	 * @param Entities\Devices\Connectors\IConnector $connector
+	 * @param Entities\Devices\Connectors\IConnector|null $connector
 	 *
 	 * @return void
 	 */

@@ -260,7 +260,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('min_value', null);
+		return $this->getParam('min_value');
 	}
 
 	/**
@@ -292,7 +292,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('min_value', null) !== null;
+		return $this->getParam('min_value') !== null;
 	}
 
 	/**
@@ -307,7 +307,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('max_value', null);
+		return $this->getParam('max_value');
 	}
 
 	/**
@@ -339,7 +339,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('max_value', null) !== null;
+		return $this->getParam('max_value') !== null;
 	}
 
 	/**
@@ -354,7 +354,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('step_value', null);
+		return $this->getParam('step_value');
 	}
 
 	/**
@@ -386,7 +386,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('step_value', null) !== null;
+		return $this->getParam('step_value') !== null;
 	}
 
 	/**

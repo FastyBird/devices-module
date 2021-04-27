@@ -92,9 +92,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setArguments(['usePrefix' => $configuration->apiPrefix]);
 
 		// Console commands
-		$builder->addDefinition($this->prefix('commands.create'))
-			->setType(Commands\Devices\CreateCommand::class);
-
 		$builder->addDefinition($this->prefix('commands.initialize'))
 			->setType(Commands\InitializeCommand::class);
 
@@ -197,7 +194,7 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Controllers\ChannelsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.channelProperites'))
+		$builder->addDefinition($this->prefix('controllers.channelProperties'))
 			->setType(Controllers\ChannelPropertiesV1Controller::class)
 			->addTag('nette.inject');
 

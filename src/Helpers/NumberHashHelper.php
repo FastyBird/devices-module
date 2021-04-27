@@ -16,13 +16,13 @@
 namespace FastyBird\DevicesModule\Helpers;
 
 /**
- * Translates a number to a short alhanumeric version
+ * Translates a number to a short alphanumeric version
  *
  * Translated any number up to 9007199254740992
  * to a shorter version in letters e.g.:
  * 9007199254740989 --> PpQXn7COf
  *
- * specifiying the second argument true, it will
+ * specifying the second argument true, it will
  * translate back e.g.:
  * PpQXn7COf --> 9007199254740989
  *

@@ -28,7 +28,6 @@ final class ServicesTest extends BaseTestCase
 	{
 		$container = $this->createContainer();
 
-		Assert::notNull($container->getByType(Commands\Devices\CreateCommand::class));
 		Assert::notNull($container->getByType(Commands\InitializeCommand::class));
 
 		Assert::notNull($container->getByType(Middleware\AccessMiddleware::class));

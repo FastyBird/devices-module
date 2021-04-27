@@ -105,7 +105,7 @@ class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_name", nullable=true, options={"default": null})
 	 */
-	private ?string $name = null;
+	private ?string $name;
 
 	/**
 	 * @var string|null

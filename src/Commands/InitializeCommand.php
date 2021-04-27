@@ -60,7 +60,7 @@ class InitializeCommand extends Console\Command\Command
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function execute(Input\InputInterface $input, Output\OutputInterface $output)
+	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();
 

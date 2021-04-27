@@ -51,7 +51,7 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	private Routing\IRouter $router;
 
 	/** @var Models\States\IPropertyRepository|null */
-	private ?Models\States\IPropertyRepository $propertyRepository = null;
+	private ?Models\States\IPropertyRepository $propertyRepository;
 
 	public function __construct(
 		Routing\IRouter $router,
@@ -100,7 +100,7 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			'format'     => is_array($property->getFormat()) ? implode(',', $property->getFormat()) : $property->getFormat(),
 			'value'      => $state !== null ? $state->getValue() : null,
 			'expected'   => $state !== null ? $state->getExpected() : null,
-			'pending'    => $state !== null ? $state->isPending() : false,
+			'pending'    => $state !== null && $state->isPending(),
 		];
 	}
 

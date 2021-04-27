@@ -154,6 +154,7 @@ jobs:
         with:
           mysql version: "5.7"
           mysql database: "testdb"
+          mysql root password: ""
 
       - name: "Setup PHP cache environment"
         id: "extcache"

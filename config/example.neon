@@ -97,7 +97,7 @@ nettrineOrmAnnotations:
 
 fbSimpleAuth:
 	token:
-		issuer: com.fastybird.auth-module
+		issuer: com.fastybird.accounts-module
 		signature: 'g3xHbkELpMD9LRqW4WmJkHL7kz2bdNYAQJyEuFVzR3k='
 	enable:
 		middleware: true

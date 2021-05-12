@@ -3,7 +3,7 @@
 /**
  * TKey.php
  *
- * @license        More in license.md
+ * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!

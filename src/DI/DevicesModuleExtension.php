@@ -18,7 +18,6 @@ namespace FastyBird\DevicesModule\DI;
 use Contributte\Translation;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Commands;
-use FastyBird\DevicesModule\Consumers;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
@@ -161,13 +160,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		// Events subscribers
 		$builder->addDefinition($this->prefix('subscribers.entities'))
 			->setType(Subscribers\EntitiesSubscriber::class);
-
-		// Message bus consumers
-		$builder->addDefinition($this->prefix('consumers.deviceProperty'))
-			->setType(Consumers\DevicePropertyMessageConsumer::class);
-
-		$builder->addDefinition($this->prefix('consumers.channelProperty'))
-			->setType(Consumers\ChannelPropertyMessageConsumer::class);
 
 		// API controllers
 		$builder->addDefinition($this->prefix('controllers.devices'))

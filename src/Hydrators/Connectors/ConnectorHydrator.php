@@ -26,6 +26,9 @@ use IPub\JsonAPIDocument;
  * @subpackage     Hydrators
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @phpstan-template  TEntityClass of Entities\Connectors\IConnector
+ * @phpstan-extends   JsonApiHydrators\Hydrator<TEntityClass>
  */
 abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 {
@@ -47,13 +50,16 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
 	 * @return string|null
 	 */
 	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
 	{
-		if ($attributes->get('name') === null || (string) $attributes->get('name') === '') {
+		if (
+			!is_scalar($attributes->get('name'))
+			|| (string) $attributes->get('name') === ''
+		) {
 			return null;
 		}
 

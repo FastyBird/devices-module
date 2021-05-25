@@ -20,7 +20,6 @@ use Doctrine\Common;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\ApplicationExchange\Publisher as ApplicationExchangePublisher;
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
@@ -105,7 +104,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$entity = $eventArgs->getObject();
 
 		// Check for valid entity
-		if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
+		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
 			return;
 		}
 
@@ -125,7 +124,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$entity = $eventArgs->getObject();
 
 		// Check for valid entity
-		if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
+		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
 			return;
 		}
 
@@ -133,12 +132,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param DatabaseEntities\IEntity $entity
+	 * @param Entities\IEntity $entity
 	 * @param string $action
 	 *
 	 * @return void
 	 */
-	private function processEntityAction(DatabaseEntities\IEntity $entity, string $action): void
+	private function processEntityAction(Entities\IEntity $entity, string $action): void
 	{
 		if ($entity instanceof Entities\Devices\Controls\IControl) {
 			$entity = $entity->getDevice();
@@ -204,12 +203,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param DatabaseEntities\IEntity $entity
+	 * @param Entities\IEntity $entity
 	 * @param string $class
 	 *
 	 * @return bool
 	 */
-	private function validateEntity(DatabaseEntities\IEntity $entity, string $class): bool
+	private function validateEntity(Entities\IEntity $entity, string $class): bool
 	{
 		$result = false;
 
@@ -225,11 +224,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param DatabaseEntities\IEntity $entity
+	 * @param Entities\IEntity $entity
 	 *
 	 * @return mixed[]
 	 */
-	private function toArray(DatabaseEntities\IEntity $entity): array
+	private function toArray(Entities\IEntity $entity): array
 	{
 		if (method_exists($entity, 'toArray')) {
 			return $entity->toArray();
@@ -290,14 +289,14 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param DatabaseEntities\IEntity $entity
+	 * @param Entities\IEntity $entity
 	 * @param string $property
 	 *
 	 * @return mixed
 	 *
 	 * @throws Exceptions\PropertyNotExistsException
 	 */
-	private function getPropertyValue(DatabaseEntities\IEntity $entity, string $property)
+	private function getPropertyValue(Entities\IEntity $entity, string $property)
 	{
 		$ucFirst = ucfirst($property);
 
@@ -344,7 +343,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 		// Check for valid entity
 		if (
-			!$entity instanceof DatabaseEntities\IEntity
+			!$entity instanceof Entities\IEntity
 			|| !$this->validateNamespace($entity)
 			|| $uow->isScheduledForDelete($entity)
 		) {
@@ -377,7 +376,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 		foreach ($uow->getScheduledEntityDeletions() as $entity) {
 			// Check for valid entity
-			if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
+			if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
 				continue;
 			}
 
@@ -415,6 +414,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$processEntities = [];
 
 		foreach ($uow->getScheduledEntityDeletions() as $entity) {
+			// Check for valid entity
+			if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
+				continue;
+			}
+
 			// Doctrine is fine deleting elements multiple times. We are not.
 			$hash = $this->getHash($entity, $uow->getEntityIdentifier($entity));
 
@@ -423,11 +427,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			}
 
 			$processedEntities[] = $hash;
-
-			// Check for valid entity
-			if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
-				continue;
-			}
 
 			if (
 				$entity instanceof Entities\Devices\Controls\IControl
@@ -448,7 +447,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 		foreach ($processEntities as $entity) {
 			// Check for valid entity
-			if (!$entity instanceof DatabaseEntities\IEntity || !$this->validateNamespace($entity)) {
+			if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
 				continue;
 			}
 
@@ -457,12 +456,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param DatabaseEntities\IEntity $entity
+	 * @param Entities\IEntity $entity
 	 * @param mixed[] $identifier
 	 *
 	 * @return string
 	 */
-	private function getHash(DatabaseEntities\IEntity $entity, array $identifier): string
+	private function getHash(Entities\IEntity $entity, array $identifier): string
 	{
 		return implode(
 			' ',

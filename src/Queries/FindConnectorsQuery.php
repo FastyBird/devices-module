@@ -31,8 +31,7 @@ use Ramsey\Uuid;
  *
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-template T of Entities\Connectors\Connector
- * @phpstan-extends  DoctrineOrmQuery\QueryObject<T>
+ * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Connectors\Connector>
  */
 class FindConnectorsQuery extends DoctrineOrmQuery\QueryObject
 {
@@ -85,11 +84,11 @@ class FindConnectorsQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository<Entities\Connectors\Connector> $repository
+	 * @param ORM\EntityRepository $repository
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<T> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Connectors\Connector> $repository
 	 */
 	protected function doCreateQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -103,11 +102,11 @@ class FindConnectorsQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository<Entities\Connectors\Connector> $repository
+	 * @param ORM\EntityRepository $repository
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<T> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Connectors\Connector> $repository
 	 */
 	protected function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -121,11 +120,11 @@ class FindConnectorsQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository<Entities\Connectors\Connector> $repository
+	 * @param ORM\EntityRepository $repository
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<T> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Connectors\Connector> $repository
 	 */
 	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{

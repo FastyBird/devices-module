@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Contributte\Translation;
 use Doctrine\DBAL\Connection;
+use Doctrine\Persistence;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Router;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
@@ -26,7 +27,6 @@ use Fig\Http\Message\StatusCodeInterface;
 use IPub\JsonAPIDocument;
 use Nette;
 use Nette\Utils;
-use Nettrine\ORM;
 use Psr\Http\Message;
 use Psr\Log;
 
@@ -49,8 +49,8 @@ abstract class BaseV1Controller
 	/** @var Translation\PrefixedTranslator */
 	protected Translation\PrefixedTranslator $translator;
 
-	/** @var ORM\ManagerRegistry */
-	protected ORM\ManagerRegistry $managerRegistry;
+	/** @var Persistence\ManagerRegistry */
+	protected Persistence\ManagerRegistry $managerRegistry;
 
 	/** @var Log\LoggerInterface */
 	protected Log\LoggerInterface $logger;
@@ -66,11 +66,11 @@ abstract class BaseV1Controller
 	}
 
 	/**
-	 * @param ORM\ManagerRegistry $managerRegistry
+	 * @param Persistence\ManagerRegistry $managerRegistry
 	 *
 	 * @return void
 	 */
-	public function injectManagerRegistry(ORM\ManagerRegistry $managerRegistry): void
+	public function injectManagerRegistry(Persistence\ManagerRegistry $managerRegistry): void
 	{
 		$this->managerRegistry = $managerRegistry;
 	}
@@ -116,7 +116,7 @@ abstract class BaseV1Controller
 	/**
 	 * @param Message\ServerRequestInterface $request
 	 *
-	 * @return JsonAPIDocument\IDocument<JsonAPIDocument\Objects\StandardObject>
+	 * @return JsonAPIDocument\IDocument
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
@@ -145,7 +145,7 @@ abstract class BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param JsonAPIDocument\IDocument<JsonAPIDocument\Objects\StandardObject> $document
+	 * @param JsonAPIDocument\IDocument $document
 	 *
 	 * @return bool
 	 *
@@ -161,7 +161,7 @@ abstract class BaseV1Controller
 				RequestMethodInterface::METHOD_PATCH,
 			], true)
 			&& $request->getAttribute(Router\Routes::URL_ITEM_ID) !== null
-			&& $request->getAttribute(Router\Routes::URL_ITEM_ID) !== $document->getResource()->getIdentifier()->getId()
+			&& $request->getAttribute(Router\Routes::URL_ITEM_ID) !== $document->getResource()->getId()
 		) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_BAD_REQUEST,

@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Entities\Devices\Connectors;
 
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineTimestampable;
 
@@ -27,8 +26,8 @@ use IPub\DoctrineTimestampable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IConnector extends DatabaseEntities\IEntity,
-	DatabaseEntities\IEntityParams,
+interface IConnector extends Entities\IEntity,
+	Entities\IEntityParams,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 

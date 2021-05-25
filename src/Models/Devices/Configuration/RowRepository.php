@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Models\Devices\Configuration;
 
-use Doctrine\Common;
+use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
@@ -37,13 +37,17 @@ final class RowRepository implements IRowRepository
 
 	use Nette\SmartObject;
 
-	/** @var Common\Persistence\ManagerRegistry */
-	private Common\Persistence\ManagerRegistry $managerRegistry;
+	/**
+	 * @var ORM\EntityRepository|null
+	 *
+	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Configuration\Row>|null
+	 */
+	private ?ORM\EntityRepository $repository = null;
 
-	/** @var Persistence\ObjectRepository<Entities\Devices\Configuration\Row>[] */
-	private array $repository = [];
+	/** @var Persistence\ManagerRegistry */
+	private Persistence\ManagerRegistry $managerRegistry;
 
-	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(Persistence\ManagerRegistry $managerRegistry)
 	{
 		$this->managerRegistry = $managerRegistry;
 	}
@@ -52,30 +56,12 @@ final class RowRepository implements IRowRepository
 	 * {@inheritDoc}
 	 */
 	public function findOneBy(
-		Queries\FindDeviceConfigurationQuery $queryObject,
-		string $type = Entities\Devices\Configuration\Row::class
+		Queries\FindDeviceConfigurationQuery $queryObject
 	): ?Entities\Devices\Configuration\IRow {
 		/** @var Entities\Devices\Configuration\IRow|null $property */
-		$property = $queryObject->fetchOne($this->getRepository($type));
+		$property = $queryObject->fetchOne($this->getRepository());
 
 		return $property;
-	}
-
-	/**
-	 * @param string $type
-	 *
-	 * @return Persistence\ObjectRepository<Entities\Devices\Configuration\Row>
-	 *
-	 * @phpstan-template T of Entities\Devices\Configuration\Row
-	 * @phpstan-param    class-string<T> $type
-	 */
-	private function getRepository(string $type): Persistence\ObjectRepository
-	{
-		if (!isset($this->repository[$type])) {
-			$this->repository[$type] = $this->managerRegistry->getRepository($type);
-		}
-
-		return $this->repository[$type];
 	}
 
 	/**
@@ -84,16 +70,35 @@ final class RowRepository implements IRowRepository
 	 * @throws Throwable
 	 */
 	public function getResultSet(
-		Queries\FindDeviceConfigurationQuery $queryObject,
-		string $type = Entities\Devices\Configuration\Row::class
+		Queries\FindDeviceConfigurationQuery $queryObject
 	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository($type));
+		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
 			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return ORM\EntityRepository
+	 *
+	 * @phpstan-return  ORM\EntityRepository<Entities\Devices\Configuration\Row>
+	 */
+	private function getRepository(): ORM\EntityRepository
+	{
+		if ($this->repository === null) {
+			$repository = $this->managerRegistry->getRepository(Entities\Devices\Configuration\Row::class);
+
+			if (!$repository instanceof ORM\EntityRepository) {
+				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+			}
+
+			$this->repository = $repository;
+		}
+
+		return $this->repository;
 	}
 
 }

@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Models\Channels;
 
-use Doctrine\Common;
+use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
@@ -37,13 +37,17 @@ final class ChannelRepository implements IChannelRepository
 
 	use Nette\SmartObject;
 
-	/** @var Persistence\ObjectRepository<Entities\Channels\Channel>|null */
-	public ?Persistence\ObjectRepository $repository = null;
+	/**
+	 * @var ORM\EntityRepository|null
+	 *
+	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Channel>|null
+	 */
+	private ?ORM\EntityRepository $repository = null;
 
-	/** @var Common\Persistence\ManagerRegistry */
-	private Common\Persistence\ManagerRegistry $managerRegistry;
+	/** @var Persistence\ManagerRegistry */
+	private Persistence\ManagerRegistry $managerRegistry;
 
-	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(Persistence\ManagerRegistry $managerRegistry)
 	{
 		$this->managerRegistry = $managerRegistry;
 	}
@@ -57,18 +61,6 @@ final class ChannelRepository implements IChannelRepository
 		$channel = $queryObject->fetchOne($this->getRepository());
 
 		return $channel;
-	}
-
-	/**
-	 * @return Persistence\ObjectRepository<Entities\Channels\Channel>
-	 */
-	private function getRepository(): Persistence\ObjectRepository
-	{
-		if ($this->repository === null) {
-			$this->repository = $this->managerRegistry->getRepository(Entities\Channels\Channel::class);
-		}
-
-		return $this->repository;
 	}
 
 	/**
@@ -98,6 +90,24 @@ final class ChannelRepository implements IChannelRepository
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return ORM\EntityRepository<Entities\Channels\Channel>
+	 */
+	private function getRepository(): ORM\EntityRepository
+	{
+		if ($this->repository === null) {
+			$repository = $this->managerRegistry->getRepository(Entities\Channels\Channel::class);
+
+			if (!$repository instanceof ORM\EntityRepository) {
+				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+			}
+
+			$this->repository = $repository;
+		}
+
+		return $this->repository;
 	}
 
 }

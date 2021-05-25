@@ -34,9 +34,6 @@ interface IPropertyRepository
 	 * @param Queries\FindChannelPropertiesQuery $queryObject
 	 *
 	 * @return Entities\Channels\Properties\IProperty|null
-	 *
-	 * @phpstan-template T of Entities\Channels\Properties\Property
-	 * @phpstan-param    Queries\FindChannelPropertiesQuery<T> $queryObject
 	 */
 	public function findOneBy(Queries\FindChannelPropertiesQuery $queryObject): ?Entities\Channels\Properties\IProperty;
 
@@ -45,9 +42,7 @@ interface IPropertyRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-template T of Entities\Channels\Properties\Property
-	 * @phpstan-param    Queries\FindChannelPropertiesQuery<T> $queryObject
-	 * @phpstan-return   DoctrineOrmQuery\ResultSet<T>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property>
 	 */
 	public function getResultSet(
 		Queries\FindChannelPropertiesQuery $queryObject

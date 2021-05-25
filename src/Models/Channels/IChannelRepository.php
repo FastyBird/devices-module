@@ -34,9 +34,6 @@ interface IChannelRepository
 	 * @param Queries\FindChannelsQuery $queryObject
 	 *
 	 * @return Entities\Channels\IChannel|null
-	 *
-	 * @phpstan-template T of Entities\Channels\Channel
-	 * @phpstan-param    Queries\FindChannelsQuery<T> $queryObject
 	 */
 	public function findOneBy(Queries\FindChannelsQuery $queryObject): ?Entities\Channels\IChannel;
 
@@ -44,9 +41,6 @@ interface IChannelRepository
 	 * @param Queries\FindChannelsQuery $queryObject
 	 *
 	 * @return Entities\Channels\IChannel[]
-	 *
-	 * @phpstan-template T of Entities\Channels\Channel
-	 * @phpstan-param    Queries\FindChannelsQuery<T> $queryObject
 	 */
 	public function findAllBy(Queries\FindChannelsQuery $queryObject): array;
 
@@ -55,9 +49,7 @@ interface IChannelRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-template T of Entities\Channels\Channel
-	 * @phpstan-param    Queries\FindChannelsQuery<T> $queryObject
-	 * @phpstan-return   DoctrineOrmQuery\ResultSet<T>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Channel>
 	 */
 	public function getResultSet(
 		Queries\FindChannelsQuery $queryObject

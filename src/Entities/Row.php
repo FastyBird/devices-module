@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Entities;
 
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
@@ -26,15 +25,12 @@ use Nette\Utils;
 use Ramsey\Uuid;
 use Throwable;
 
-/**
- * @ORM\MappedSuperclass
- */
 abstract class Row implements IRow
 {
 
 	use TKey;
-	use DatabaseEntities\TEntity;
-	use DatabaseEntities\TEntityParams;
+	use TEntity;
+	use TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 

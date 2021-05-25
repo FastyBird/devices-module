@@ -32,33 +32,22 @@ interface IRowRepository
 
 	/**
 	 * @param Queries\FindChannelConfigurationQuery $queryObject
-	 * @param string $type
 	 *
 	 * @return Entities\Channels\Configuration\IRow|null
-	 *
-	 * @phpstan-template T of Entities\Channels\Configuration\Row
-	 * @phpstan-param    Queries\FindChannelConfigurationQuery<T> $queryObject
-	 * @phpstan-param    class-string<T> $type
 	 */
 	public function findOneBy(
-		Queries\FindChannelConfigurationQuery $queryObject,
-		string $type = Entities\Channels\Configuration\Row::class
+		Queries\FindChannelConfigurationQuery $queryObject
 	): ?Entities\Channels\Configuration\IRow;
 
 	/**
 	 * @param Queries\FindChannelConfigurationQuery $queryObject
-	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-template T of Entities\Channels\Configuration\Row
-	 * @phpstan-param    Queries\FindChannelConfigurationQuery<T> $queryObject
-	 * @phpstan-param    class-string<T> $type
-	 * @phpstan-return   DoctrineOrmQuery\ResultSet<T>
+	 * @phpstan-return  DoctrineOrmQuery\ResultSet<Entities\Channels\Configuration\Row>
 	 */
 	public function getResultSet(
-		Queries\FindChannelConfigurationQuery $queryObject,
-		string $type = Entities\Channels\Configuration\Row::class
+		Queries\FindChannelConfigurationQuery $queryObject
 	): DoctrineOrmQuery\ResultSet;
 
 }

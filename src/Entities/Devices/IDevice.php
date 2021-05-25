@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Entities\Devices;
 
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
@@ -29,9 +28,9 @@ use IPub\DoctrineTimestampable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IDevice extends DatabaseEntities\IEntity,
+interface IDevice extends Entities\IEntity,
 	Entities\IKey,
-	DatabaseEntities\IEntityParams,
+	Entities\IEntityParams,
 	SimpleAuthEntities\IEntityOwner,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {

@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * IControl.php
+ * TEntity.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,34 +10,40 @@
  * @subpackage     Entities
  * @since          0.1.0
  *
- * @date           28.07.18
+ * @date           25.05.20
  */
 
-namespace FastyBird\DevicesModule\Entities\Devices\Controls;
+namespace FastyBird\DevicesModule\Entities;
 
-use FastyBird\DevicesModule\Entities;
-use IPub\DoctrineTimestampable;
+use Ramsey\Uuid;
 
 /**
- * Control settings entity interface
+ * Entity base trait
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Entities
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @property-read Uuid\UuidInterface $id
  */
-interface IControl extends Entities\IEntity,
-	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
+trait TEntity
 {
 
 	/**
-	 * @return Entities\Devices\IDevice
+	 * @return Uuid\UuidInterface
 	 */
-	public function getDevice(): Entities\Devices\IDevice;
+	public function getId(): Uuid\UuidInterface
+	{
+		return $this->id;
+	}
 
 	/**
 	 * @return string
 	 */
-	public function getName(): string;
+	public function getPlainId(): string
+	{
+		return $this->id->toString();
+	}
 
 }

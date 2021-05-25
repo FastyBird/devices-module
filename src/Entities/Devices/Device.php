@@ -18,7 +18,6 @@ namespace FastyBird\DevicesModule\Entities\Devices;
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
@@ -53,8 +52,8 @@ class Device implements IDevice
 {
 
 	use Entities\TKey;
-	use DatabaseEntities\TEntity;
-	use DatabaseEntities\TEntityParams;
+	use Entities\TEntity;
+	use Entities\TEntityParams;
 	use SimpleAuthEntities\TEntityOwner;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;

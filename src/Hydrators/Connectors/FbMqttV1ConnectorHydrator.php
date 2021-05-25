@@ -24,6 +24,8 @@ use FastyBird\DevicesModule\Entities;
  * @subpackage     Hydrators
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @phpstan-extends ConnectorHydrator<Entities\Connectors\IFbMqttV1Connector>
  */
 final class FbMqttV1ConnectorHydrator extends ConnectorHydrator
 {

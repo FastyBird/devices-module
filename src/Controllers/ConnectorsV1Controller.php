@@ -132,10 +132,16 @@ class ConnectorsV1Controller extends BaseV1Controller
 			// Start transaction connection to the database
 			$this->getOrmConnection()->beginTransaction();
 
-			if ($document->getResource()->getType() === Schemas\Connectors\FbBusConnectorSchema::SCHEMA_TYPE) {
+			if (
+				$document->getResource()->getType() === Schemas\Connectors\FbBusConnectorSchema::SCHEMA_TYPE
+				&& $connector instanceof Entities\Connectors\IFbBusConnector
+			) {
 				$updateConnectorData = $this->fbBusConnectorHydrator->hydrate($document, $connector);
 
-			} elseif ($document->getResource()->getType() === Schemas\Connectors\FbMqttV1ConnectorSchema::SCHEMA_TYPE) {
+			} elseif (
+				$document->getResource()->getType() === Schemas\Connectors\FbMqttV1ConnectorSchema::SCHEMA_TYPE
+				&& $connector instanceof Entities\Connectors\IFbMqttV1Connector
+			) {
 				$updateConnectorData = $this->fbMqttV1ConnectorHydrator->hydrate($document, $connector);
 
 			} else {

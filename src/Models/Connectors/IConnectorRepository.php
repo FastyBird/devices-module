@@ -34,9 +34,6 @@ interface IConnectorRepository
 	 * @param Queries\FindConnectorsQuery $queryObject
 	 *
 	 * @return Entities\Connectors\IConnector|null
-	 *
-	 * @phpstan-template T of Entities\Connectors\Connector
-	 * @phpstan-param    Queries\FindConnectorsQuery<T> $queryObject
 	 */
 	public function findOneBy(Queries\FindConnectorsQuery $queryObject): ?Entities\Connectors\IConnector;
 
@@ -44,9 +41,6 @@ interface IConnectorRepository
 	 * @param Queries\FindConnectorsQuery $queryObject
 	 *
 	 * @return Entities\Connectors\IConnector[]
-	 *
-	 * @phpstan-template T of Entities\Connectors\Connector
-	 * @phpstan-param    Queries\FindConnectorsQuery<T> $queryObject
 	 */
 	public function findAllBy(Queries\FindConnectorsQuery $queryObject): array;
 
@@ -55,9 +49,7 @@ interface IConnectorRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-template T of Entities\Connectors\Connector
-	 * @phpstan-param    Queries\FindConnectorsQuery<T> $queryObject
-	 * @phpstan-return   DoctrineOrmQuery\ResultSet<T>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector>
 	 */
 	public function getResultSet(
 		Queries\FindConnectorsQuery $queryObject

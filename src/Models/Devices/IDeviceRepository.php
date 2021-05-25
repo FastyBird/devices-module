@@ -32,48 +32,31 @@ interface IDeviceRepository
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
-	 * @param string $type
 	 *
 	 * @return Entities\Devices\IDevice|null
-	 *
-	 * @phpstan-template T of Entities\Devices\Device
-	 * @phpstan-param    Queries\FindDevicesQuery<T> $queryObject
-	 * @phpstan-param    class-string<T> $type
 	 */
 	public function findOneBy(
-		Queries\FindDevicesQuery $queryObject,
-		string $type = Entities\Devices\Device::class
+		Queries\FindDevicesQuery $queryObject
 	): ?Entities\Devices\IDevice;
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
-	 * @param string $type
 	 *
 	 * @return Entities\Devices\IDevice[]
-	 *
-	 * @phpstan-template T of Entities\Devices\Device
-	 * @phpstan-param    Queries\FindDevicesQuery<T> $queryObject
-	 * @phpstan-param    class-string<T> $type
 	 */
 	public function findAllBy(
-		Queries\FindDevicesQuery $queryObject,
-		string $type = Entities\Devices\Device::class
+		Queries\FindDevicesQuery $queryObject
 	): array;
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
-	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-template T of Entities\Devices\Device
-	 * @phpstan-param    Queries\FindDevicesQuery<T> $queryObject
-	 * @phpstan-param    class-string<T> $type
-	 * @phpstan-return   DoctrineOrmQuery\ResultSet<T>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Device>
 	 */
 	public function getResultSet(
-		Queries\FindDevicesQuery $queryObject,
-		string $type = Entities\Devices\Device::class
+		Queries\FindDevicesQuery $queryObject
 	): DoctrineOrmQuery\ResultSet;
 
 }

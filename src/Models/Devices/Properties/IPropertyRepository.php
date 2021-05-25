@@ -34,9 +34,6 @@ interface IPropertyRepository
 	 * @param Queries\FindDevicePropertiesQuery $queryObject
 	 *
 	 * @return Entities\Devices\Properties\IProperty|null
-	 *
-	 * @phpstan-template T of Entities\Devices\Properties\Property
-	 * @phpstan-param    Queries\FindDevicePropertiesQuery<T> $queryObject
 	 */
 	public function findOneBy(
 		Queries\FindDevicePropertiesQuery $queryObject
@@ -47,9 +44,7 @@ interface IPropertyRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-template T of Entities\Devices\Properties\Property
-	 * @phpstan-param    Queries\FindDevicePropertiesQuery<T> $queryObject
-	 * @phpstan-return   DoctrineOrmQuery\ResultSet<T>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\Property>
 	 */
 	public function getResultSet(
 		Queries\FindDevicePropertiesQuery $queryObject

@@ -46,7 +46,7 @@ final class DatatypeTypeTest extends BaseTestCase
 	 */
 	public function testInvalidDatatype(): void
 	{
-		$datatype = ModulesMetadataTypes\DataTypeType::get('invalidtype');
+		ModulesMetadataTypes\DataTypeType::get('invalidtype');
 	}
 
 }

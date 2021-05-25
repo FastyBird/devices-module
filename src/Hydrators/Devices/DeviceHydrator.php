@@ -26,6 +26,8 @@ use IPub\JsonAPIDocument;
  * @subpackage     Hydrators
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @phpstan-extends JsonApiHydrators\Hydrator<Entities\Devices\IDevice>
  */
 class DeviceHydrator extends JsonApiHydrators\Hydrator
 {
@@ -50,13 +52,16 @@ class DeviceHydrator extends JsonApiHydrators\Hydrator
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
 	 * @return string|null
 	 */
 	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
 	{
-		if ($attributes->get('name') === null || (string) $attributes->get('name') === '') {
+		if (
+			!is_scalar($attributes->get('name'))
+			|| (string) $attributes->get('name') === ''
+		) {
 			return null;
 		}
 
@@ -64,13 +69,16 @@ class DeviceHydrator extends JsonApiHydrators\Hydrator
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
 	 * @return string|null
 	 */
 	protected function hydrateCommentAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
 	{
-		if ($attributes->get('comment') === null || (string) $attributes->get('comment') === '') {
+		if (
+			!is_scalar($attributes->get('comment'))
+			|| (string) $attributes->get('comment') === ''
+		) {
 			return null;
 		}
 
@@ -78,13 +86,13 @@ class DeviceHydrator extends JsonApiHydrators\Hydrator
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
 	 * @return bool
 	 */
 	protected function hydrateEnabledAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
 	{
-		return (bool) $attributes->get('enabled');
+		return is_scalar($attributes->get('enabled')) && (bool) $attributes->get('enabled');
 	}
 
 }

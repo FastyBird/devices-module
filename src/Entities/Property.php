@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Entities;
 
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
@@ -25,14 +24,11 @@ use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
 use Throwable;
 
-/**
- * @ORM\MappedSuperclass
- */
-class Property implements IProperty
+abstract class Property implements IProperty
 {
 
 	use TKey;
-	use DatabaseEntities\TEntity;
+	use TEntity;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 

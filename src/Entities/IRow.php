@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineTimestampable;
 
@@ -27,9 +26,9 @@ use IPub\DoctrineTimestampable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IRow extends DatabaseEntities\IEntity,
+interface IRow extends IEntity,
 	IKey,
-	DatabaseEntities\IEntityParams,
+	IEntityParams,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 

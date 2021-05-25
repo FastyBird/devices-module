@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Entities\Connectors\Controls;
 
 use Doctrine\ORM\Mapping as ORM;
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -43,7 +42,7 @@ use Throwable;
 class Control implements IControl
 {
 
-	use DatabaseEntities\TEntity;
+	use Entities\TEntity;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 

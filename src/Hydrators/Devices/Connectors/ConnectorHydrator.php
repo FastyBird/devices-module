@@ -27,6 +27,8 @@ use IPub\JsonAPIDocument;
  * @subpackage     Hydrators
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @phpstan-extends JsonApiHydrators\Hydrator<Entities\Devices\Connectors\IConnector>
  */
 final class ConnectorHydrator extends JsonApiHydrators\Hydrator
 {
@@ -56,7 +58,7 @@ final class ConnectorHydrator extends JsonApiHydrators\Hydrator
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 * @param Entities\Devices\Connectors\IConnector|null $connector
 	 *
 	 * @return string|null
@@ -65,19 +67,22 @@ final class ConnectorHydrator extends JsonApiHydrators\Hydrator
 		JsonAPIDocument\Objects\IStandardObject $attributes,
 		?Entities\Devices\Connectors\IConnector $connector
 	): ?string {
-		if ($attributes->get('username') === null || (string) $attributes->get('username') === '') {
+		if (
+			!is_scalar($attributes->get('username'))
+			|| (string) $attributes->get('username') === ''
+		) {
 			return null;
 		}
 
 		if ($connector !== null) {
-			$connector->setParam('username', (string) $attributes->get('name'));
+			$connector->setParam('username', (string) $attributes->get('username'));
 		}
 
 		return (string) $attributes->get('username');
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 * @param Entities\Devices\Connectors\IConnector|null $connector
 	 *
 	 * @return string|null
@@ -86,7 +91,10 @@ final class ConnectorHydrator extends JsonApiHydrators\Hydrator
 		JsonAPIDocument\Objects\IStandardObject $attributes,
 		?Entities\Devices\Connectors\IConnector $connector
 	): ?string {
-		if ($attributes->get('password') === null || (string) $attributes->get('password') === '') {
+		if (
+			!is_scalar($attributes->get('password'))
+			|| (string) $attributes->get('password') === ''
+		) {
 			return null;
 		}
 

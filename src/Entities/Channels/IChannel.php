@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Entities\Channels;
 
-use FastyBird\Database\Entities as DatabaseEntities;
 use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineTimestampable;
 
@@ -27,9 +26,9 @@ use IPub\DoctrineTimestampable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IChannel extends DatabaseEntities\IEntity,
+interface IChannel extends Entities\IEntity,
 	Entities\IKey,
-	DatabaseEntities\IEntityParams,
+	Entities\IEntityParams,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 

@@ -26,6 +26,8 @@ use IPub\JsonAPIDocument;
  * @subpackage     Hydrators
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @phpstan-extends JsonApiHydrators\Hydrator<Entities\Channels\IChannel>
  */
 final class ChannelHydrator extends JsonApiHydrators\Hydrator
 {
@@ -48,13 +50,16 @@ final class ChannelHydrator extends JsonApiHydrators\Hydrator
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
 	 * @return string|null
 	 */
 	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
 	{
-		if ($attributes->get('name') === null || (string) $attributes->get('name') === '') {
+		if (
+			!is_scalar($attributes->get('name'))
+			|| (string) $attributes->get('name') === ''
+		) {
 			return null;
 		}
 
@@ -62,13 +67,16 @@ final class ChannelHydrator extends JsonApiHydrators\Hydrator
 	}
 
 	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
 	 * @return string|null
 	 */
 	protected function hydrateCommentAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
 	{
-		if ($attributes->get('comment') === null || (string) $attributes->get('comment') === '') {
+		if (
+			!is_scalar($attributes->get('comment'))
+			|| (string) $attributes->get('comment') === ''
+		) {
 			return null;
 		}
 

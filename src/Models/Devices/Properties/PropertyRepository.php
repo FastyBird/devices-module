@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Models\Devices\Properties;
 
-use Doctrine\Common;
+use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
@@ -37,13 +37,17 @@ final class PropertyRepository implements IPropertyRepository
 
 	use Nette\SmartObject;
 
-	/** @var Common\Persistence\ManagerRegistry */
-	private Common\Persistence\ManagerRegistry $managerRegistry;
+	/**
+	 * @var ORM\EntityRepository|null
+	 *
+	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Properties\Property>|null
+	 */
+	private ?ORM\EntityRepository $repository = null;
 
-	/** @var Persistence\ObjectRepository<Entities\Devices\Properties\Property>|null */
-	private ?Persistence\ObjectRepository $repository = null;
+	/** @var Persistence\ManagerRegistry */
+	private Persistence\ManagerRegistry $managerRegistry;
 
-	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(Persistence\ManagerRegistry $managerRegistry)
 	{
 		$this->managerRegistry = $managerRegistry;
 	}
@@ -61,18 +65,6 @@ final class PropertyRepository implements IPropertyRepository
 	}
 
 	/**
-	 * @return Persistence\ObjectRepository<Entities\Devices\Properties\Property>
-	 */
-	private function getRepository(): Persistence\ObjectRepository
-	{
-		if ($this->repository === null) {
-			$this->repository = $this->managerRegistry->getRepository(Entities\Devices\Properties\Property::class);
-		}
-
-		return $this->repository;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 *
 	 * @throws Throwable
@@ -87,6 +79,26 @@ final class PropertyRepository implements IPropertyRepository
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return ORM\EntityRepository
+	 *
+	 * @phpstan-return ORM\EntityRepository<Entities\Devices\Properties\Property>
+	 */
+	private function getRepository(): ORM\EntityRepository
+	{
+		if ($this->repository === null) {
+			$repository = $this->managerRegistry->getRepository(Entities\Devices\Properties\Property::class);
+
+			if (!$repository instanceof ORM\EntityRepository) {
+				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+			}
+
+			$this->repository = $repository;
+		}
+
+		return $this->repository;
 	}
 
 }

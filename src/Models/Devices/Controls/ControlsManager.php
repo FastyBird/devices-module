@@ -37,12 +37,12 @@ final class ControlsManager implements IControlsManager
 	/**
 	 * @var Crud\IEntityCrud
 	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\Controls\Control>
+	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\Controls\IControl>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\Controls\Control> $entityCrud
+	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\Controls\IControl> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

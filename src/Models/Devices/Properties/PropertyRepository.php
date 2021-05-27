@@ -40,7 +40,7 @@ final class PropertyRepository implements IPropertyRepository
 	/**
 	 * @var ORM\EntityRepository|null
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Properties\Property>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Properties\IProperty>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -82,14 +82,18 @@ final class PropertyRepository implements IPropertyRepository
 	}
 
 	/**
+	 * @param string $type
+	 *
 	 * @return ORM\EntityRepository
 	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Devices\Properties\Property>
+	 * @phpstan-param class-string $type
+	 *
+	 * @phpstan-return ORM\EntityRepository<Entities\Devices\Properties\IProperty>
 	 */
-	private function getRepository(): ORM\EntityRepository
+	private function getRepository(string $type = Entities\Devices\Properties\Property::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			$repository = $this->managerRegistry->getRepository(Entities\Devices\Properties\Property::class);
+			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
 				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');

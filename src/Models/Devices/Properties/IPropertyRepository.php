@@ -44,7 +44,7 @@ interface IPropertyRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\Property>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\IProperty>
 	 */
 	public function getResultSet(
 		Queries\FindDevicePropertiesQuery $queryObject

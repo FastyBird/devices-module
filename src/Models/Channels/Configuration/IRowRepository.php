@@ -44,7 +44,7 @@ interface IRowRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-return  DoctrineOrmQuery\ResultSet<Entities\Channels\Configuration\Row>
+	 * @phpstan-return  DoctrineOrmQuery\ResultSet<Entities\Channels\Configuration\IRow>
 	 */
 	public function getResultSet(
 		Queries\FindChannelConfigurationQuery $queryObject

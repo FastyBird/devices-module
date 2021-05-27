@@ -37,12 +37,12 @@ final class DevicesManager implements IDevicesManager
 	/**
 	 * @var Crud\IEntityCrud
 	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\Device>
+	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\IDevice>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\Device> $entityCrud
+	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\IDevice> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

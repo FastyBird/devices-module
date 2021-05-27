@@ -40,7 +40,7 @@ final class RowRepository implements IRowRepository
 	/**
 	 * @var ORM\EntityRepository|null
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Configuration\Row>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Configuration\IRow>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -82,14 +82,18 @@ final class RowRepository implements IRowRepository
 	}
 
 	/**
+	 * @param string $type
+	 *
 	 * @return ORM\EntityRepository
 	 *
-	 * @phpstan-return  ORM\EntityRepository<Entities\Channels\Configuration\Row>
+	 * @phpstan-param class-string $type
+	 *
+	 * @phpstan-return  ORM\EntityRepository<Entities\Channels\Configuration\IRow>
 	 */
-	private function getRepository(): ORM\EntityRepository
+	private function getRepository(string $type = Entities\Channels\Configuration\Row::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			$repository = $this->managerRegistry->getRepository(Entities\Channels\Configuration\Row::class);
+			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
 				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');

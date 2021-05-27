@@ -42,7 +42,7 @@ interface IPropertyRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\IProperty>
 	 */
 	public function getResultSet(
 		Queries\FindChannelPropertiesQuery $queryObject

@@ -31,7 +31,7 @@ use Ramsey\Uuid;
  *
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Configuration\Row>
+ * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Configuration\IRow>
  */
 class FindChannelConfigurationQuery extends DoctrineOrmQuery\QueryObject
 {
@@ -100,7 +100,7 @@ class FindChannelConfigurationQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Configuration\Row> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Configuration\IRow> $repository
 	 */
 	protected function doCreateQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -118,7 +118,7 @@ class FindChannelConfigurationQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Configuration\Row> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Configuration\IRow> $repository
 	 */
 	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -138,7 +138,7 @@ class FindChannelConfigurationQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Configuration\Row> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Configuration\IRow> $repository
 	 */
 	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{

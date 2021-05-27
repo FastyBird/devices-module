@@ -40,7 +40,7 @@ final class ConnectorRepository implements IConnectorRepository
 	/**
 	 * @var ORM\EntityRepository|null
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\Connector>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\IConnector>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -93,14 +93,18 @@ final class ConnectorRepository implements IConnectorRepository
 	}
 
 	/**
+	 * @param string $type
+	 *
 	 * @return ORM\EntityRepository
 	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\Connector>
+	 * @phpstan-param class-string $type
+	 *
+	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\IConnector>
 	 */
-	private function getRepository(): ORM\EntityRepository
+	private function getRepository(string $type = Entities\Connectors\Connector::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			$repository = $this->managerRegistry->getRepository(Entities\Connectors\Connector::class);
+			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
 				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');

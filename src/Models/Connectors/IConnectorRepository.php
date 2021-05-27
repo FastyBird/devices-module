@@ -49,7 +49,7 @@ interface IConnectorRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\IConnector>
 	 */
 	public function getResultSet(
 		Queries\FindConnectorsQuery $queryObject

@@ -37,12 +37,12 @@ final class RowsManager implements IRowsManager
 	/**
 	 * @var Crud\IEntityCrud
 	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Channels\Configuration\Row>
+	 * @phpstan-var Crud\IEntityCrud<Entities\Channels\Configuration\IRow>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\Configuration\Row> $entityCrud
+	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\Configuration\IRow> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

@@ -31,7 +31,7 @@ use Ramsey\Uuid;
  *
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Devices\Device>
+ * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Devices\IDevice>
  */
 class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 {
@@ -141,7 +141,7 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Devices\Device> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Devices\IDevice> $repository
 	 */
 	protected function doCreateQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -159,7 +159,7 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Devices\Device> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Devices\IDevice> $repository
 	 */
 	protected function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -183,7 +183,7 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Devices\Device> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Devices\IDevice> $repository
 	 */
 	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{

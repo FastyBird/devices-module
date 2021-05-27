@@ -40,7 +40,7 @@ final class ChannelRepository implements IChannelRepository
 	/**
 	 * @var ORM\EntityRepository|null
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Channel>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Channels\IChannel>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -93,12 +93,18 @@ final class ChannelRepository implements IChannelRepository
 	}
 
 	/**
-	 * @return ORM\EntityRepository<Entities\Channels\Channel>
+	 * @param string $type
+	 *
+	 * @return ORM\EntityRepository
+	 *
+	 * @phpstan-param class-string $type
+	 *
+	 * @phpstan-return ORM\EntityRepository<Entities\Channels\IChannel>
 	 */
-	private function getRepository(): ORM\EntityRepository
+	private function getRepository(string $type = Entities\Channels\Channel::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			$repository = $this->managerRegistry->getRepository(Entities\Channels\Channel::class);
+			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
 				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');

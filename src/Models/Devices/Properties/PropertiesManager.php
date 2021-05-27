@@ -37,12 +37,12 @@ final class PropertiesManager implements IPropertiesManager
 	/**
 	 * @var Crud\IEntityCrud
 	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\Properties\Property>
+	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\Properties\IProperty>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\Properties\Property> $entityCrud
+	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\Properties\IProperty> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

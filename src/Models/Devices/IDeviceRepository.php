@@ -53,7 +53,7 @@ interface IDeviceRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Device>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\IDevice>
 	 */
 	public function getResultSet(
 		Queries\FindDevicesQuery $queryObject

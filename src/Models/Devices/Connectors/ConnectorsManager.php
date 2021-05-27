@@ -37,12 +37,12 @@ final class ConnectorsManager implements IConnectorsManager
 	/**
 	 * @var Crud\IEntityCrud
 	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\Connectors\Connector>
+	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\Connectors\IConnector>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\Connectors\Connector> $entityCrud
+	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\Connectors\IConnector> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

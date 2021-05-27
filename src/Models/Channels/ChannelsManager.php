@@ -37,12 +37,12 @@ final class ChannelsManager implements IChannelsManager
 	/**
 	 * @var Crud\IEntityCrud
 	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Channels\Channel>
+	 * @phpstan-var Crud\IEntityCrud<Entities\Channels\IChannel>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\Channel> $entityCrud
+	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\IChannel> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

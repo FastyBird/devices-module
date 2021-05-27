@@ -31,7 +31,7 @@ use Ramsey\Uuid;
  *
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Properties\Property>
+ * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Properties\IProperty>
  */
 class FindChannelPropertiesQuery extends DoctrineOrmQuery\QueryObject
 {
@@ -112,7 +112,7 @@ class FindChannelPropertiesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Properties\Property> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Properties\IProperty> $repository
 	 */
 	protected function doCreateQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -130,7 +130,7 @@ class FindChannelPropertiesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Properties\Property> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Properties\IProperty> $repository
 	 */
 	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -150,7 +150,7 @@ class FindChannelPropertiesQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @return ORM\QueryBuilder
 	 *
-	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Properties\Property> $repository
+	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Properties\IProperty> $repository
 	 */
 	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{

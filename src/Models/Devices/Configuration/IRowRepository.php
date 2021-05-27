@@ -44,7 +44,7 @@ interface IRowRepository
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-return  DoctrineOrmQuery\ResultSet<Entities\Devices\Configuration\Row>
+	 * @phpstan-return  DoctrineOrmQuery\ResultSet<Entities\Devices\Configuration\IRow>
 	 */
 	public function getResultSet(
 		Queries\FindDeviceConfigurationQuery $queryObject

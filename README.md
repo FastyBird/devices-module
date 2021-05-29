@@ -10,7 +10,7 @@
 
 ## What is FastyBird IoT devices module?
 
-Devices module is a [Nette framework](https://nette.org) extension for managing connected devices and their basic logic and exposing them for clients.
+Devices module is a [Nette framework](https://nette.org) extension for managing connected devices and their basic logic.
 
 [FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed in [PHP](https://www.php.net) with [Nette framework](https://nette.org).
 

@@ -32,27 +32,43 @@ interface IConnectorRepository
 
 	/**
 	 * @param Queries\FindConnectorsQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return Entities\Connectors\IConnector|null
+	 *
+	 * @phpstan-param class-string $type
 	 */
-	public function findOneBy(Queries\FindConnectorsQuery $queryObject): ?Entities\Connectors\IConnector;
+	public function findOneBy(
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
+	): ?Entities\Connectors\IConnector;
 
 	/**
 	 * @param Queries\FindConnectorsQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return Entities\Connectors\IConnector[]
+	 *
+	 * @phpstan-param class-string $type
 	 */
-	public function findAllBy(Queries\FindConnectorsQuery $queryObject): array;
+	public function findAllBy(
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
+	): array;
 
 	/**
 	 * @param Queries\FindConnectorsQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
+	 *
+	 * @phpstan-param class-string $type
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\IConnector>
 	 */
 	public function getResultSet(
-		Queries\FindConnectorsQuery $queryObject
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
 	): DoctrineOrmQuery\ResultSet;
 
 }

@@ -38,11 +38,11 @@ final class ConnectorRepository implements IConnectorRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository|null
+	 * @var ORM\EntityRepository[]
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\IConnector>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\IConnector>[]
 	 */
-	private ?ORM\EntityRepository $repository = null;
+	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */
 	private Persistence\ManagerRegistry $managerRegistry;
@@ -55,10 +55,12 @@ final class ConnectorRepository implements IConnectorRepository
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findOneBy(Queries\FindConnectorsQuery $queryObject): ?Entities\Connectors\IConnector
-	{
+	public function findOneBy(
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
+	): ?Entities\Connectors\IConnector {
 		/** @var Entities\Connectors\IConnector|null $connector */
-		$connector = $queryObject->fetchOne($this->getRepository());
+		$connector = $queryObject->fetchOne($this->getRepository($type));
 
 		return $connector;
 	}
@@ -68,9 +70,11 @@ final class ConnectorRepository implements IConnectorRepository
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindConnectorsQuery $queryObject): array
-	{
-		$result = $queryObject->fetch($this->getRepository());
+	public function findAllBy(
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
+	): array {
+		$result = $queryObject->fetch($this->getRepository($type));
 
 		return is_array($result) ? $result : $result->toArray();
 	}
@@ -81,9 +85,10 @@ final class ConnectorRepository implements IConnectorRepository
 	 * @throws Throwable
 	 */
 	public function getResultSet(
-		Queries\FindConnectorsQuery $queryObject
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
 	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository());
+		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
 			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
@@ -101,19 +106,19 @@ final class ConnectorRepository implements IConnectorRepository
 	 *
 	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\IConnector>
 	 */
-	private function getRepository(string $type = Entities\Connectors\Connector::class): ORM\EntityRepository
+	private function getRepository(string $type): ORM\EntityRepository
 	{
-		if ($this->repository === null) {
+		if (!isset($this->repository[$type])) {
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
 				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
 			}
 
-			$this->repository = $repository;
+			$this->repository[$type] = $repository;
 		}
 
-		return $this->repository;
+		return $this->repository[$type];
 	}
 
 }

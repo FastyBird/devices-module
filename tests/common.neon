@@ -40,7 +40,7 @@ contributteConsole:
     version: '1.0'
     catchExceptions: true
     autoExit: true
-    url: http://accounts-module.fastybird.com
+    url: http://devices-module.fastybird.com
     lazy: false
     helperSet: \Symfony\Component\Console\Helper\HelperSet
     helpers: []

@@ -34,10 +34,8 @@ import {
   JsonApiModelPropertiesMapper,
   JsonApiPropertiesMapper,
 } from '@/lib/jsonapi'
-import {
-  DeviceJsonModelInterface,
-  ModuleApiPrefix,
-} from '@/lib/types'
+import { DeviceJsonModelInterface } from '@/lib/types'
+import { ModuleApiPrefix } from '@/lib/config'
 
 interface SemaphoreFetchingState {
   items: boolean

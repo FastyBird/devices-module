@@ -44,6 +44,7 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
       return this.name
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -52,6 +53,7 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
     ) {
       return DeviceProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
     }
+    */
 
     return capitalize(this.identifier)
   }

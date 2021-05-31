@@ -47,6 +47,7 @@ export default class ChannelConfiguration extends Configuration implements Chann
       return this.name
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -73,6 +74,7 @@ export default class ChannelConfiguration extends Configuration implements Chann
         return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
       }
     }
+    */
 
     return capitalize(this.identifier)
   }
@@ -82,6 +84,7 @@ export default class ChannelConfiguration extends Configuration implements Chann
       return this.comment
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -95,6 +98,7 @@ export default class ChannelConfiguration extends Configuration implements Chann
         return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
       }
     }
+    */
 
     return null
   }
@@ -104,6 +108,7 @@ export default class ChannelConfiguration extends Configuration implements Chann
       throw new Error(`This field is not allowed for entity type ${this.type}`)
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -129,12 +134,14 @@ export default class ChannelConfiguration extends Configuration implements Chann
 
       return items
     }
+    */
 
     return this.values
   }
 
   get formattedValue(): any {
     if (this.isSelect) {
+      /*
       if (
         this.device !== null &&
         !this.device.isCustomModel &&
@@ -154,6 +161,7 @@ export default class ChannelConfiguration extends Configuration implements Chann
             }
           })
       }
+      */
     }
 
     return this.value

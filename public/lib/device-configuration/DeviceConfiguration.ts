@@ -45,6 +45,7 @@ export default class DeviceConfiguration extends Configuration implements Device
       return this.name
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -53,6 +54,7 @@ export default class DeviceConfiguration extends Configuration implements Device
     ) {
       return DeviceConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
     }
+    */
 
     return capitalize(this.identifier)
   }
@@ -62,6 +64,7 @@ export default class DeviceConfiguration extends Configuration implements Device
       return this.comment
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -70,6 +73,7 @@ export default class DeviceConfiguration extends Configuration implements Device
     ) {
       return DeviceConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
     }
+    */
 
     return null
   }
@@ -79,6 +83,7 @@ export default class DeviceConfiguration extends Configuration implements Device
       throw new Error(`This field is not allowed for entity type ${this.type}`)
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -96,12 +101,14 @@ export default class DeviceConfiguration extends Configuration implements Device
 
       return items
     }
+    */
 
     return this.values
   }
 
   get formattedValue(): any {
     if (this.isSelect) {
+      /*
       if (
         this.device !== null &&
         !this.device.isCustomModel &&
@@ -119,6 +126,7 @@ export default class DeviceConfiguration extends Configuration implements Device
             }
           })
       }
+      */
     }
 
     return this.value

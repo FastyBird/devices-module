@@ -2,7 +2,7 @@ import {
   Model,
   Fields,
 } from '@vuex-orm/core'
-import { DataType, HardwareManufacturer } from '@fastybird/modules-metadata'
+import { DataType } from '@fastybird/modules-metadata'
 
 import {
   PropertyCommandResult,
@@ -158,6 +158,7 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get analogValue(): string {
+    /*
     if (this.device !== null && this.device.hardwareManufacturer === HardwareManufacturer.ITEAD) {
       switch (this.identifier) {
         case 'air_quality':
@@ -188,6 +189,7 @@ export default class Property extends Model implements PropertyInterface {
           return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
       }
     }
+    */
 
     return this.formattedValue
   }
@@ -197,6 +199,7 @@ export default class Property extends Model implements PropertyInterface {
       return null
     }
 
+    /*
     if (this.device !== null && this.device.hardwareManufacturer === HardwareManufacturer.ITEAD) {
       switch (this.identifier) {
         case 'air_quality':
@@ -227,6 +230,7 @@ export default class Property extends Model implements PropertyInterface {
           return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
       }
     }
+    */
 
     return this.formattedValue
   }

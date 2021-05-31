@@ -37,10 +37,8 @@ import {
   JsonApiModelPropertiesMapper,
   JsonApiPropertiesMapper,
 } from '@/lib/jsonapi'
-import {
-  DeviceConnectorJsonModelInterface,
-  ModuleApiPrefix,
-} from '@/lib/types'
+import { DeviceConnectorJsonModelInterface } from '@/lib/types'
+import { ModuleApiPrefix } from '@/lib/config'
 import { ConnectorInterface } from '@/lib/connectors/types'
 
 interface SemaphoreFetchingState {

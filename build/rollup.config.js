@@ -4,9 +4,12 @@ import path from 'path';
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
+import typescript from 'rollup-plugin-typescript2';
+import json from '@rollup/plugin-json';
 import babel from 'rollup-plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
+import dts from 'rollup-plugin-dts';
 
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
@@ -85,6 +88,7 @@ if (!argv.format || argv.format === 'es') {
                 'process.env.ES_BUILD': JSON.stringify('true'),
             }),
             ...baseConfig.plugins.preVue,
+            typescript(),
             babel({
                 ...baseConfig.plugins.babel,
                 presets: [
@@ -97,6 +101,7 @@ if (!argv.format || argv.format === 'es') {
                 ],
             }),
             commonjs(),
+            json(),
         ],
     };
     buildFormats.push(esConfig);
@@ -150,6 +155,19 @@ if (!argv.format || argv.format === 'iife') {
     };
     buildFormats.push(unpkgConfig);
 }
+
+buildFormats.push({
+    // path to your declaration files root
+    input: './dist/lib/types.d.ts',
+    output: {
+        file: 'dist/devices-module.d.ts',
+        format: 'es',
+    },
+    plugins: [
+        dts(),
+    ],
+});
+
 
 // Export config
 export default buildFormats;

@@ -77,6 +77,7 @@ export default class Channel extends Model implements ChannelInterface {
       return this.name
     }
 
+    /*
     const device = Device
       .query()
       .where('id', this.deviceId)
@@ -108,6 +109,7 @@ export default class Channel extends Model implements ChannelInterface {
         return Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.channels.${this.identifier}.title`).toString()
       }
     }
+    */
 
     return capitalize(this.identifier)
   }

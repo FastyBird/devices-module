@@ -135,6 +135,7 @@ export default class Device extends Model implements DeviceInterface {
       return this.name
     }
 
+    /*
     if (Object.prototype.hasOwnProperty.call(Device.store(), '$i18n')) {
       if (this.isCustomModel) {
         return capitalize(this.identifier)
@@ -144,6 +145,7 @@ export default class Device extends Model implements DeviceInterface {
         return Device.store().$i18n.t(`devices.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString()
       }
     }
+    */
 
     return capitalize(this.identifier)
   }

@@ -5,6 +5,7 @@
         "strict": true,
         "declaration": true,
         "declarationDir": "dist",
+        "emitDeclarationOnly": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "importHelpers": true,
@@ -13,20 +14,25 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
+        "resolveJsonModule": true,
         "baseUrl": ".",
+        "noImplicitAny": false,
         "types": [
             "node",
             "vue",
+            "ajv",
+            "@fastybird/modules-metadata",
+            "@fastybird/vue-wamp-v1",
+            "@fastybird/vuex-orm-wamp",
             "@types/node",
             "@types/lodash",
             "@types/uuid",
-            "@fastybird/modules-metadata",
-            "@fastybird/vue-wamp-v1",
-            "@fastybird/vuex-orm-wamp"
+            "@vuex-orm/core",
+            "@vuex-orm/plugin-axios"
         ],
         "paths": {
             "@/*": [
-                "src/*"
+                "public/*"
             ]
         },
         "lib": [
@@ -36,8 +42,12 @@
             "scripthost"
         ]
     },
+    "include": [
+      "public/**/*"
+    ],
     "exclude": [
         "node_modules",
+        "vendor",
         "dist"
     ]
 }

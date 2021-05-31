@@ -46,6 +46,7 @@ export default class ChannelProperty extends Property implements ChannelProperty
       return this.name
     }
 
+    /*
     if (
       this.device !== null &&
       !this.device.isCustomModel &&
@@ -72,6 +73,7 @@ export default class ChannelProperty extends Property implements ChannelProperty
         return ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
       }
     }
+    */
 
     return capitalize(this.identifier)
   }

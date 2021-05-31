@@ -492,37 +492,33 @@ var Property = /*#__PURE__*/function (_Model) {
   }, {
     key: "analogValue",
     get: function get() {
-      if (this.device !== null && this.device.hardwareManufacturer === modulesMetadata.HardwareManufacturer.ITEAD) {
+      /*
+      if (this.device !== null && this.device.hardwareManufacturer === HardwareManufacturer.ITEAD) {
         switch (this.identifier) {
           case 'air_quality':
             if (this.value > 7) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.unhealthy")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
             } else if (this.value > 4) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.moderate")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
             }
-
-            return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.good")).toString();
-
-          case 'light_level':
+             return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
+           case 'light_level':
             if (this.value > 8) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.dusky")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
             } else if (this.value > 4) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.normal")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
             }
-
-            return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.bright")).toString();
-
-          case 'noise_level':
+             return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
+           case 'noise_level':
             if (this.value > 6) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.noisy")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
             } else if (this.value > 3) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.normal")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
             }
-
-            return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.quiet")).toString();
+             return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
         }
       }
-
+      */
       return this.formattedValue;
     }
   }, {
@@ -531,37 +527,34 @@ var Property = /*#__PURE__*/function (_Model) {
       if (this.expected === null) {
         return null;
       }
-
-      if (this.device !== null && this.device.hardwareManufacturer === modulesMetadata.HardwareManufacturer.ITEAD) {
+      /*
+      if (this.device !== null && this.device.hardwareManufacturer === HardwareManufacturer.ITEAD) {
         switch (this.identifier) {
           case 'air_quality':
             if (this.expected > 7) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.unhealthy")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
             } else if (this.expected > 4) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.moderate")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
             }
-
-            return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.good")).toString();
-
-          case 'light_level':
+             return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
+           case 'light_level':
             if (this.expected > 8) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.dusky")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
             } else if (this.expected > 4) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.normal")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
             }
-
-            return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.bright")).toString();
-
-          case 'noise_level':
+             return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
+           case 'noise_level':
             if (this.expected > 6) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.noisy")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
             } else if (this.expected > 3) {
-              return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.normal")).toString();
+              return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
             }
-
-            return Property.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".values.quiet")).toString();
+             return Property.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
         }
       }
+      */
+
 
       return this.formattedValue;
     }
@@ -705,10 +698,17 @@ var DeviceProperty = /*#__PURE__*/function (_Property) {
       if (this.name !== null) {
         return this.name;
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(DeviceProperty.store(), '$i18n') && DeviceProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-        return DeviceProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".title")).toString();
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(DeviceProperty.store(), '$i18n') &&
+        DeviceProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')
+      ) {
+        return DeviceProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
       }
+      */
+
 
       return capitalize__default['default'](this.identifier);
     }
@@ -1013,10 +1013,17 @@ var DeviceConfiguration = /*#__PURE__*/function (_Configuration) {
       if (this.name !== null) {
         return this.name;
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(DeviceConfiguration.store(), '$i18n') && !DeviceConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".identifier.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-        return DeviceConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(this.identifier, ".title")).toString();
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(DeviceConfiguration.store(), '$i18n') &&
+        !DeviceConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.identifier.${this.identifier}.title`).toString().includes('devices.vendors.')
+      ) {
+        return DeviceConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
       }
+      */
+
 
       return capitalize__default['default'](this.identifier);
     }
@@ -1026,60 +1033,51 @@ var DeviceConfiguration = /*#__PURE__*/function (_Configuration) {
       if (this.comment !== null) {
         return this.comment;
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(DeviceConfiguration.store(), '$i18n') && !DeviceConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(this.identifier, ".description")).toString().includes('devices.vendors.')) {
-        return DeviceConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(this.identifier, ".description")).toString();
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(DeviceConfiguration.store(), '$i18n') &&
+        !DeviceConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')
+      ) {
+        return DeviceConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
       }
+      */
+
 
       return null;
     }
   }, {
     key: "selectValues",
     get: function get() {
-      var _this2 = this;
-
       if (!this.isSelect) {
         throw new Error("This field is not allowed for entity type ".concat(this.type));
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(DeviceConfiguration.store(), '$i18n')) {
-        var items = [];
-        this.values.forEach(function (item) {
-          var _this2$device;
-
-          items.push({
-            value: item.value,
-            name: DeviceConfiguration.store().$i18n.t("devices.vendors.".concat((_this2$device = _this2.device) === null || _this2$device === void 0 ? void 0 : _this2$device.hardwareManufacturer, ".configuration.").concat(_this2.identifier, ".values.").concat(item.name)).toString()
-          });
-        });
-        return items;
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(DeviceConfiguration.store(), '$i18n')
+      ) {
+        const items: Array<ValuesItemInterface> = []
+         this.values
+          .forEach((item) => {
+            items.push({
+              value: item.value,
+              name: DeviceConfiguration.store().$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString(),
+            })
+          })
+         return items
       }
+      */
+
 
       return this.values;
     }
   }, {
     key: "formattedValue",
     get: function get() {
-      var _this3 = this;
-
-      if (this.isSelect) {
-        if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(DeviceConfiguration.store(), '$i18n')) {
-          this.values.forEach(function (item) {
-            // eslint-disable-next-line eqeqeq
-            if (item.value == _this3.value) {
-              var _this3$device;
-
-              if (!DeviceConfiguration.store().$i18n.t("devices.vendors.".concat((_this3$device = _this3.device) === null || _this3$device === void 0 ? void 0 : _this3$device.hardwareManufacturer, ".configuration.").concat(_this3.identifier, ".values.").concat(item.name)).toString().includes('devices.vendors.')) {
-                var _this3$device2;
-
-                return DeviceConfiguration.store().$i18n.t("devices.vendors.".concat((_this3$device2 = _this3.device) === null || _this3$device2 === void 0 ? void 0 : _this3$device2.hardwareManufacturer, ".configuration.").concat(_this3.identifier, ".values.").concat(item.name));
-              } else {
-                return _this3.value;
-              }
-            }
-          });
-        }
-      }
+      if (this.isSelect) ;
 
       return this.value;
     }
@@ -1277,33 +1275,31 @@ var ChannelProperty = /*#__PURE__*/function (_Property) {
       if (this.name !== null) {
         return this.name;
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(ChannelProperty.store(), '$i18n')) {
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(ChannelProperty.store(), '$i18n')
+      ) {
         if (this.identifier.includes('_')) {
-          var propertyPart = this.identifier.substring(0, this.identifier.indexOf('_'));
-          var propertyNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10);
-
-          if (!ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".properties.").concat(propertyPart, ".title")).toString().includes('devices.vendors.')) {
-            return ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".properties.").concat(propertyPart, ".title"), {
-              number: propertyNum
-            }).toString();
+          const propertyPart = this.identifier.substring(0, (this.identifier.indexOf('_')))
+          const propertyNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
+           if (!ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${propertyPart}.title`).toString().includes('devices.vendors.')) {
+            return ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${propertyPart}.title`, { number: propertyNum }).toString()
           }
-
-          if (!ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(propertyPart, ".title")).toString().includes('devices.vendors.')) {
-            return ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(propertyPart, ".title"), {
-              number: propertyNum
-            }).toString();
+           if (!ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${propertyPart}.title`).toString().includes('devices.vendors.')) {
+            return ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${propertyPart}.title`, { number: propertyNum }).toString()
           }
         }
-
-        if (!ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".properties.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-          return ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".properties.").concat(this.identifier, ".title")).toString();
+         if (!ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+          return ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${this.identifier}.title`).toString()
         }
-
-        if (!ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-          return ChannelProperty.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".properties.").concat(this.identifier, ".title")).toString();
+         if (!ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+          return ChannelProperty.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
         }
       }
+      */
+
 
       return capitalize__default['default'](this.identifier);
     } // @ts-ignore
@@ -1481,33 +1477,31 @@ var ChannelConfiguration = /*#__PURE__*/function (_Configuration) {
       if (this.name !== null) {
         return this.name;
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(ChannelConfiguration.store(), '$i18n')) {
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(ChannelConfiguration.store(), '$i18n')
+      ) {
         if (this.identifier.includes('_')) {
-          var configurationPart = this.identifier.substring(0, this.identifier.indexOf('_')).toLowerCase();
-          var configurationNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10);
-
-          if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".configuration.").concat(configurationPart, ".title")).toString().includes('devices.vendors.')) {
-            return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".configuration.").concat(configurationPart, ".title"), {
-              number: configurationNum
-            }).toString();
+          const configurationPart = this.identifier.substring(0, (this.identifier.indexOf('_'))).toLowerCase()
+          const configurationNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
+           if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${configurationPart}.title`).toString().includes('devices.vendors.')) {
+            return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${configurationPart}.title`, { number: configurationNum }).toString()
           }
-
-          if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(configurationPart, ".title")).toString().includes('devices.vendors.')) {
-            return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(configurationPart, ".title"), {
-              number: configurationNum
-            }).toString();
+           if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${configurationPart}.title`).toString().includes('devices.vendors.')) {
+            return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${configurationPart}.title`, { number: configurationNum }).toString()
           }
         }
-
-        if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".configuration.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-          return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".configuration.").concat(this.identifier, ".title")).toString();
+         if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+          return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.title`).toString()
         }
-
-        if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-          return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(this.identifier, ".title")).toString();
+         if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+          return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
         }
       }
+      */
+
 
       return capitalize__default['default'](this.identifier);
     }
@@ -1517,82 +1511,61 @@ var ChannelConfiguration = /*#__PURE__*/function (_Configuration) {
       if (this.comment !== null) {
         return this.comment;
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(ChannelConfiguration.store(), '$i18n')) {
-        if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".configuration.").concat(this.identifier, ".description")).toString().includes('devices.vendors.')) {
-          return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".devices.").concat(this.device.hardwareModel, ".configuration.").concat(this.identifier, ".description")).toString();
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(ChannelConfiguration.store(), '$i18n')
+      ) {
+        if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')) {
+          return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.description`).toString()
         }
-
-        if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(this.identifier, ".description")).toString().includes('devices.vendors.')) {
-          return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat(this.device.hardwareManufacturer, ".configuration.").concat(this.identifier, ".description")).toString();
+         if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')) {
+          return ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
         }
       }
+      */
+
 
       return null;
     }
   }, {
     key: "selectValues",
     get: function get() {
-      var _this2 = this;
-
       if (!this.isSelect) {
         throw new Error("This field is not allowed for entity type ".concat(this.type));
       }
-
-      if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(ChannelConfiguration.store(), '$i18n')) {
-        var items = [];
-        this.values.forEach(function (item) {
-          var _this2$device, _this2$device2, _this2$device5;
-
-          var valueName = item.name;
-
-          if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this2$device = _this2.device) === null || _this2$device === void 0 ? void 0 : _this2$device.hardwareManufacturer, ".devices.").concat((_this2$device2 = _this2.device) === null || _this2$device2 === void 0 ? void 0 : _this2$device2.hardwareModel, ".configuration.").concat(_this2.identifier, ".values.").concat(item.name)).toString().includes('devices.vendors.')) {
-            var _this2$device3, _this2$device4;
-
-            valueName = ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this2$device3 = _this2.device) === null || _this2$device3 === void 0 ? void 0 : _this2$device3.hardwareManufacturer, ".devices.").concat((_this2$device4 = _this2.device) === null || _this2$device4 === void 0 ? void 0 : _this2$device4.hardwareModel, ".configuration.").concat(_this2.identifier, ".values.").concat(item.name)).toString();
-          } else if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this2$device5 = _this2.device) === null || _this2$device5 === void 0 ? void 0 : _this2$device5.hardwareManufacturer, ".configuration.").concat(_this2.identifier, ".values.").concat(item.name)).toString().includes('devices.vendors.')) {
-            var _this2$device6;
-
-            valueName = ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this2$device6 = _this2.device) === null || _this2$device6 === void 0 ? void 0 : _this2$device6.hardwareManufacturer, ".configuration.").concat(_this2.identifier, ".values.").concat(item.name)).toString();
-          }
-
-          items.push({
-            value: item.value,
-            name: valueName
-          });
-        });
-        return items;
+      /*
+      if (
+        this.device !== null &&
+        !this.device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(ChannelConfiguration.store(), '$i18n')
+      ) {
+        const items: Array<ValuesItemInterface> = []
+         this.values
+          .forEach((item) => {
+            let valueName = item.name
+             if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+              valueName = ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString()
+            } else if (!ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+              valueName = ChannelConfiguration.store().$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString()
+            }
+             items.push({
+              value: item.value,
+              name: valueName,
+            })
+          })
+         return items
       }
+      */
+
 
       return this.values;
     }
   }, {
     key: "formattedValue",
     get: function get() {
-      var _this3 = this;
-
-      if (this.isSelect) {
-        if (this.device !== null && !this.device.isCustomModel && Object.prototype.hasOwnProperty.call(ChannelConfiguration.store(), '$i18n')) {
-          this.values.forEach(function (item) {
-            // eslint-disable-next-line eqeqeq
-            if (item.value == _this3.value) {
-              var _this3$device, _this3$device2, _this3$device5;
-
-              if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this3$device = _this3.device) === null || _this3$device === void 0 ? void 0 : _this3$device.hardwareManufacturer, ".devices.").concat((_this3$device2 = _this3.device) === null || _this3$device2 === void 0 ? void 0 : _this3$device2.hardwareModel, ".configuration.").concat(_this3.identifier, ".values.").concat(item.name)).toString().includes('devices.vendors.')) {
-                var _this3$device3, _this3$device4;
-
-                return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this3$device3 = _this3.device) === null || _this3$device3 === void 0 ? void 0 : _this3$device3.hardwareManufacturer, ".devices.").concat((_this3$device4 = _this3.device) === null || _this3$device4 === void 0 ? void 0 : _this3$device4.hardwareModel, ".configuration.").concat(_this3.identifier, ".values.").concat(item.name)).toString();
-              } else if (!ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this3$device5 = _this3.device) === null || _this3$device5 === void 0 ? void 0 : _this3$device5.hardwareManufacturer, ".configuration.").concat(_this3.identifier, ".values.").concat(item.name)).toString().includes('devices.vendors.')) {
-                var _this3$device6;
-
-                return ChannelConfiguration.store().$i18n.t("devices.vendors.".concat((_this3$device6 = _this3.device) === null || _this3$device6 === void 0 ? void 0 : _this3$device6.hardwareManufacturer, ".configuration.").concat(_this3.identifier, ".values.").concat(item.name)).toString();
-              } else {
-                return _this3.value;
-              }
-            }
-          });
-        }
-      }
+      if (this.isSelect) ;
 
       return this.value;
     }
@@ -1787,35 +1760,35 @@ var Channel = /*#__PURE__*/function (_Model) {
       if (this.name !== null) {
         return this.name;
       }
-
-      var device = Device.query().where('id', this.deviceId).first();
-
-      if (device !== null && !device.isCustomModel && Object.prototype.hasOwnProperty.call(Channel.store(), '$i18n')) {
+      /*
+      const device = Device
+        .query()
+        .where('id', this.deviceId)
+        .first()
+       if (
+        device !== null &&
+        !device.isCustomModel &&
+        Object.prototype.hasOwnProperty.call(Channel.store(), '$i18n')
+      ) {
         if (this.identifier.includes('_')) {
-          var channelPart = this.identifier.substring(0, this.identifier.indexOf('_'));
-          var channelNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10);
-
-          if (!Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".devices.").concat(device.hardwareModel, ".channels.").concat(channelPart, ".title")).toString().includes('devices.vendors.')) {
-            return Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".devices.").concat(device.hardwareModel, ".channels.").concat(channelPart, ".title"), {
-              number: channelNum + 1
-            }).toString();
+          const channelPart = this.identifier.substring(0, (this.identifier.indexOf('_')))
+          const channelNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
+           if (!Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${channelPart}.title`).toString().includes('devices.vendors.')) {
+            return Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${channelPart}.title`, { number: (channelNum + 1) }).toString()
           }
-
-          if (!Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".channels.").concat(channelPart, ".title")).toString().includes('devices.vendors.')) {
-            return Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".channels.").concat(channelPart, ".title"), {
-              number: channelNum + 1
-            }).toString();
+           if (!Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.channels.${channelPart}.title`).toString().includes('devices.vendors.')) {
+            return Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.channels.${channelPart}.title`, { number: (channelNum + 1) }).toString()
           }
         }
-
-        if (!Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".devices.").concat(device.hardwareModel, ".channels.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-          return Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".devices.").concat(device.hardwareModel, ".channels.").concat(this.identifier, ".title")).toString();
+         if (!Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+          return Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${this.identifier}.title`).toString()
         }
-
-        if (!Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".channels.").concat(this.identifier, ".title")).toString().includes('devices.vendors.')) {
-          return Channel.store().$i18n.t("devices.vendors.".concat(device.hardwareManufacturer, ".channels.").concat(this.identifier, ".title")).toString();
+         if (!Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.channels.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+          return Channel.store().$i18n.t(`devices.vendors.${device.hardwareManufacturer}.channels.${this.identifier}.title`).toString()
         }
       }
+      */
+
 
       return capitalize__default['default'](this.identifier);
     }
@@ -2532,16 +2505,17 @@ var Device = /*#__PURE__*/function (_Model) {
       if (this.name !== null) {
         return this.name;
       }
-
+      /*
       if (Object.prototype.hasOwnProperty.call(Device.store(), '$i18n')) {
         if (this.isCustomModel) {
-          return capitalize__default['default'](this.identifier);
+          return capitalize(this.identifier)
         }
-
-        if (!Device.store().$i18n.t("devices.vendors.".concat(this.hardwareManufacturer, ".devices.").concat(this.hardwareModel, ".title")).toString().includes('devices.vendors.')) {
-          return Device.store().$i18n.t("devices.vendors.".concat(this.hardwareManufacturer, ".devices.").concat(this.hardwareModel, ".title")).toString();
+         if (!Device.store().$i18n.t(`devices.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString().includes('devices.vendors.')) {
+          return Device.store().$i18n.t(`devices.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString()
         }
       }
+      */
+
 
       return capitalize__default['default'](this.identifier);
     }

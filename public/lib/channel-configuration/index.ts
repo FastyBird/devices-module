@@ -34,10 +34,8 @@ import {
   JsonApiModelPropertiesMapper,
   JsonApiPropertiesMapper,
 } from '@/lib/jsonapi'
-import {
-  ChannelConfigurationJsonModelInterface,
-  ModuleApiPrefix,
-} from '@/lib/types'
+import {ChannelConfigurationJsonModelInterface } from '@/lib/types'
+import { ModuleApiPrefix } from '@/lib/config'
 
 interface SemaphoreFetchingState {
   items: Array<string>

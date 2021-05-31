@@ -3,7 +3,7 @@ import {
     Model,
 } from '@vuex-orm/core'
 
-import { ModuleOrigin } from '@fastybird/modules-metadata'
+import {ModuleOrigin} from '@fastybird/modules-metadata'
 
 import Device from '@/lib/devices/Device'
 import devices from '@/lib/devices'
@@ -48,3 +48,5 @@ export default {
         options.database.register(Connector, connectors)
     },
 }
+
+export * from '@/lib/types'

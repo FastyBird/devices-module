@@ -1,5 +1,3 @@
-import { ModulePrefix } from '@fastybird/modules-metadata'
-
 import { TJsonaModel } from 'jsona/lib/JsonaTypes'
 
 import { DeviceEntityTypes } from '@/lib/devices/types'
@@ -9,7 +7,6 @@ import { DeviceConnectorEntityTypes } from '@/lib/device-connector/types'
 import { ChannelEntityTypes } from '@/lib/channels/types'
 import { ChannelPropertyEntityTypes } from '@/lib/channel-properties/types'
 import { ChannelConfigurationEntityTypes } from '@/lib/channel-configuration/types'
-import { ConditionEntityTypes } from '~/models/triggers-module/conditions/types'
 import { ConnectorEntityTypes } from '@/lib/connectors/types'
 
 export interface DeviceJsonModelInterface extends TJsonaModel {
@@ -49,7 +46,7 @@ export interface ChannelConfigurationJsonModelInterface extends TJsonaModel {
 
 export interface ConnectorJsonModelInterface extends TJsonaModel {
   id: string
-  type: ConditionEntityTypes
+  type: ConnectorEntityTypes
 }
 
 export interface RelationInterface extends TJsonaModel {
@@ -57,4 +54,11 @@ export interface RelationInterface extends TJsonaModel {
   type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceConfigurationEntityTypes | DeviceConnectorEntityTypes | ChannelPropertyEntityTypes | ChannelConfigurationEntityTypes | ConnectorEntityTypes
 }
 
-export const ModuleApiPrefix = `/${ModulePrefix.MODULE_DEVICES_PREFIX}`
+declare module '@vuex-orm/core' {
+    namespace Model {
+        /**
+         * Exchange origin name
+         */
+        export const $devicesModuleOrigin: string
+    }
+}

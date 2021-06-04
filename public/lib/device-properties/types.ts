@@ -8,7 +8,7 @@ import {
   TJsonApiRelationships,
 } from 'jsona/lib/JsonaTypes'
 
-import { DeviceEntityTypes } from '@/lib/devices/types'
+import { DeviceEntityTypes, DeviceInterface } from '@/lib/devices/types'
 import { PropertyInterface } from '@/lib/properties/types'
 
 // ENTITY TYPES
@@ -23,6 +23,11 @@ export enum DevicePropertyEntityTypes {
 
 export interface DevicePropertyInterface extends PropertyInterface {
   type: DevicePropertyEntityTypes
+
+  device: DeviceInterface | null
+  deviceBackward: DeviceInterface | null
+
+  deviceId: string
 
   title: string
 }

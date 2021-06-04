@@ -5,6 +5,7 @@ import {
 
 import capitalize from 'lodash/capitalize'
 
+import Device from '@/lib/devices/Device'
 import { DeviceInterface } from '@/lib/devices/types'
 import Property from '@/lib/properties/Property'
 import {
@@ -23,10 +24,24 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
   static fields(): Fields {
     return Object.assign(Property.fields(), {
       type: this.string(DevicePropertyEntityTypes.PROPERTY),
+
+      device: this.belongsTo(Device, 'id'),
+      deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
+
+      deviceId: this.string(''),
     })
   }
 
   type!: DevicePropertyEntityTypes
+
+  device!: DeviceInterface | null
+  deviceBackward!: DeviceInterface | null
+
+  deviceId!: string
+
+  get deviceInstance(): DeviceInterface | null {
+    return this.device
+  }
 
   get title(): string {
     if (this.name !== null) {

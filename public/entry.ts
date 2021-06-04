@@ -23,9 +23,6 @@ import { ComponentsInterface, GlobalConfigInterface, InstallFunction } from '@/t
 
 // install function executed by VuexORM.use()
 const install: InstallFunction = function installVuexOrmWamp(components: ComponentsInterface, config: GlobalConfigInterface) {
-  if (install.installed) return
-  install.installed = true
-
   if (typeof config.originName !== 'undefined') {
     // @ts-ignore
     components.Model.prototype.$devicesModuleOrigin = config.originName

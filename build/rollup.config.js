@@ -1,7 +1,6 @@
 // rollup.config.js
 import fs from 'fs';
 import path from 'path';
-import vue from 'rollup-plugin-vue';
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
@@ -25,7 +24,7 @@ const baseConfig = {
   plugins: {
     preVue: [
       alias({
-        resolve: ['.js', '.jsx', '.ts', '.tsx', '.d.ts', '.vue'],
+        resolve: ['.js', '.ts'],
         entries: {
           '@': path.resolve(projectRoot, 'public'),
         },
@@ -36,16 +35,10 @@ const baseConfig = {
       'process.env.NODE_ENV': JSON.stringify('production'),
       'process.env.ES_BUILD': JSON.stringify('false'),
     },
-    vue: {
-      css: true,
-      template: {
-        isProduction: true,
-      },
-    },
     babel: {
       babelHelpers: 'bundled',
       exclude: 'node_modules/**',
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+      extensions: ['.js', '.ts',],
     },
   },
 };
@@ -63,7 +56,6 @@ const external = [
   'lodash/get',
   'lodash/uniq',
   'uuid',
-  'vue',
   'vuex',
   '@fastybird/modules-metadata',
   '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.property.json',
@@ -90,7 +82,6 @@ const globals = {
   'lodash/get': 'get',
   'lodash/uniq': 'uniq',
   uuid: 'v4',
-  vue: 'Vue',
   vuex: 'Vuex',
   '@fastybird/modules-metadata': 'ModulesMetadata',
   '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.property.json': 'DevicePropertyExchangeEntitySchema',
@@ -121,7 +112,6 @@ if (!argv.format || argv.format === 'es') {
         'process.env.ES_BUILD': JSON.stringify('true'),
       }),
       ...baseConfig.plugins.preVue,
-      vue(baseConfig.plugins.vue),
       babel({
         ...baseConfig.plugins.babel,
         presets: [
@@ -154,13 +144,6 @@ if (!argv.format || argv.format === 'cjs') {
     plugins: [
       replace(baseConfig.plugins.replace),
       ...baseConfig.plugins.preVue,
-      vue({
-        ...baseConfig.plugins.vue,
-        template: {
-          ...baseConfig.plugins.vue.template,
-          optimizeSSR: true,
-        },
-      }),
       babel(baseConfig.plugins.babel),
       commonjs(),
     ],
@@ -183,7 +166,6 @@ if (!argv.format || argv.format === 'iife') {
     plugins: [
       replace(baseConfig.plugins.replace),
       ...baseConfig.plugins.preVue,
-      vue(baseConfig.plugins.vue),
       babel(baseConfig.plugins.babel),
       commonjs(),
       terser({
@@ -209,7 +191,6 @@ buildFormats.push({
       'process.env.ES_BUILD': JSON.stringify('true'),
     }),
     ...baseConfig.plugins.preVue,
-    vue(baseConfig.plugins.vue),
     babel({
       ...baseConfig.plugins.babel,
       presets: [

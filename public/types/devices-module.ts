@@ -1,9 +1,7 @@
 import { Database, Model } from '@vuex-orm/core';
 import { Plugin } from '@vuex-orm/core/dist/src/plugins/use';
 
-export interface InstallFunction extends Plugin {
-    installed?: boolean;
-}
+export interface InstallFunction extends Plugin {}
 
 export interface GlobalConfigInterface {
     database: Database

@@ -41,53 +41,7 @@ export default class ChannelProperty extends Property implements ChannelProperty
 
   channelId!: string
 
-  get title(): string {
-    if (this.name !== null) {
-      return this.name
-    }
-
-    const storeInstance = ChannelProperty.store()
-
-    if (
-      this.device !== null &&
-      !this.device.isCustomModel &&
-      Object.prototype.hasOwnProperty.call(storeInstance, '$i18n')
-    ) {
-      if (this.identifier.includes('_')) {
-        const propertyPart = this.identifier.substring(0, (this.identifier.indexOf('_')))
-        const propertyNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
-
-        // @ts-ignore
-        if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${propertyPart}.title`).toString().includes('devices.vendors.')) {
-          // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${propertyPart}.title`, {number: propertyNum}).toString()
-        }
-
-        // @ts-ignore
-        if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${propertyPart}.title`).toString().includes('devices.vendors.')) {
-          // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${propertyPart}.title`, {number: propertyNum}).toString()
-        }
-      }
-
-      // @ts-ignore
-      if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')) {
-        // @ts-ignore
-        return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.properties.${this.identifier}.title`).toString()
-      }
-
-      // @ts-ignore
-      if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')) {
-        // @ts-ignore
-        return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
-      }
-    }
-
-    return capitalize(this.identifier)
-  }
-
-  // @ts-ignore
-  get device(): DeviceInterface | null {
+  get deviceInstance(): DeviceInterface | null {
     if (this.channel === null) {
       const channel = Channel
         .query()
@@ -108,6 +62,51 @@ export default class ChannelProperty extends Property implements ChannelProperty
       .query()
       .where('id', this.channel.deviceId)
       .first()
+  }
+
+  get title(): string {
+    if (this.name !== null) {
+      return this.name
+    }
+
+    const storeInstance = ChannelProperty.store()
+
+    if (
+      this.deviceInstance !== null &&
+      !this.deviceInstance.isCustomModel &&
+      Object.prototype.hasOwnProperty.call(storeInstance, '$i18n')
+    ) {
+      if (this.identifier.includes('_')) {
+        const propertyPart = this.identifier.substring(0, (this.identifier.indexOf('_')))
+        const propertyNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
+
+        // @ts-ignore
+        if (!storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${propertyPart}.title`).toString().includes('devices.vendors.')) {
+          // @ts-ignore
+          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${propertyPart}.title`, {number: propertyNum}).toString()
+        }
+
+        // @ts-ignore
+        if (!storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${propertyPart}.title`).toString().includes('devices.vendors.')) {
+          // @ts-ignore
+          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${propertyPart}.title`, {number: propertyNum}).toString()
+        }
+      }
+
+      // @ts-ignore
+      if (!storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+        // @ts-ignore
+        return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${this.identifier}.title`).toString()
+      }
+
+      // @ts-ignore
+      if (!storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+        // @ts-ignore
+        return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
+      }
+    }
+
+    return capitalize(this.identifier)
   }
 
   static async get(channel: ChannelInterface, id: string): Promise<boolean> {

@@ -1,7 +1,5 @@
 import { DataType } from '@fastybird/modules-metadata'
 
-import { DeviceInterface } from '@/lib/devices/types'
-
 // ENTITY TYPES
 // ============
 
@@ -72,11 +70,6 @@ export interface PropertyInterface {
   backup: string | null
 
   relationshipNames: Array<string>
-
-  device: DeviceInterface | null
-  deviceBackward: DeviceInterface | null
-
-  deviceId: string
 
   isAnalogSensor: boolean
   isBinarySensor: boolean

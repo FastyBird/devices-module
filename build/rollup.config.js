@@ -1,0 +1,231 @@
+// rollup.config.js
+import fs from 'fs';
+import path from 'path';
+import vue from 'rollup-plugin-vue';
+import alias from '@rollup/plugin-alias';
+import commonjs from '@rollup/plugin-commonjs';
+import replace from '@rollup/plugin-replace';
+import babel from '@rollup/plugin-babel';
+import dts from 'rollup-plugin-dts';
+import {terser} from 'rollup-plugin-terser';
+import minimist from 'minimist';
+
+// Get browserslist config and remove ie from es build targets
+const esbrowserslist = fs.readFileSync('./.browserslistrc')
+  .toString()
+  .split('\n')
+  .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
+
+const argv = minimist(process.argv.slice(2));
+
+const projectRoot = path.resolve(__dirname, '..');
+
+const baseConfig = {
+  input: 'public/entry.ts',
+  plugins: {
+    preVue: [
+      alias({
+        resolve: ['.js', '.jsx', '.ts', '.tsx', '.d.ts', '.vue'],
+        entries: {
+          '@': path.resolve(projectRoot, 'public'),
+        },
+      }),
+    ],
+    replace: {
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.ES_BUILD': JSON.stringify('false'),
+    },
+    vue: {
+      css: true,
+      template: {
+        isProduction: true,
+      },
+    },
+    babel: {
+      babelHelpers: 'bundled',
+      exclude: 'node_modules/**',
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+    },
+  },
+};
+
+// ESM/UMD/IIFE shared settings: externals
+// Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
+const external = [
+  // list external dependencies, exactly the way it is written in the import statement.
+  // eg. 'jquery'
+  'ajv',
+  'jsona',
+  'jsona/lib/simplePropertyMappers',
+  'lodash/capitalize',
+  'lodash/clone',
+  'lodash/get',
+  'lodash/uniq',
+  'uuid',
+  'vue',
+  'vuex',
+  '@fastybird/modules-metadata',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.property.json',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.json',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.configuration.json',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.json',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.connector.json',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.property.json',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.configuration.json',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.connector.json',
+  '@vuex-orm/core',
+];
+
+// UMD/IIFE shared settings: output.globals
+// Refer to https://rollupjs.org/guide/en#output-globals for details
+const globals = {
+  // Provide global variable names to replace your external imports
+  // eg. jquery: '$'
+  ajv: 'Ajv',
+  jsona: 'Jsona',
+  'jsona/lib/simplePropertyMappers': 'defineRelationGetter',
+  'lodash/capitalize': 'capitalize',
+  'lodash/clone': 'clone',
+  'lodash/get': 'get',
+  'lodash/uniq': 'uniq',
+  uuid: 'v4',
+  vue: 'Vue',
+  vuex: 'Vuex',
+  '@fastybird/modules-metadata': 'ModulesMetadata',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.property.json': 'DevicePropertyExchangeEntitySchema',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.json': 'DeviceExchangeEntitySchema',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.configuration.json': 'DeviceConfigurationExchangeEntitySchema',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.json': 'ChannelExchangeEntitySchema',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.connector.json': 'DeviceConnectorExchangeEntitySchema',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.property.json': 'ChannelPropertyExchangeEntitySchema',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.configuration.json': 'ChannelConfigurationExchangeEntitySchema',
+  '@fastybird/modules-metadata/resources/schemas/devices-module/entity.connector.json': 'ConnectorExchangeEntitySchema',
+  '@vuex-orm/core': 'OrmCore',
+};
+
+// Customize configs for individual targets
+const buildFormats = [];
+if (!argv.format || argv.format === 'es') {
+  const esConfig = {
+    ...baseConfig,
+    external,
+    output: {
+      file: 'dist/devices-module.esm.js',
+      format: 'esm',
+      exports: 'named',
+    },
+    plugins: [
+      replace({
+        ...baseConfig.plugins.replace,
+        'process.env.ES_BUILD': JSON.stringify('true'),
+      }),
+      ...baseConfig.plugins.preVue,
+      vue(baseConfig.plugins.vue),
+      babel({
+        ...baseConfig.plugins.babel,
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: esbrowserslist,
+            },
+          ],
+        ],
+      }),
+      commonjs(),
+    ],
+  };
+  buildFormats.push(esConfig);
+}
+
+if (!argv.format || argv.format === 'cjs') {
+  const umdConfig = {
+    ...baseConfig,
+    external,
+    output: {
+      compact: true,
+      file: 'dist/devices-module.ssr.js',
+      format: 'cjs',
+      name: 'DevicesModule',
+      exports: 'named',
+      globals,
+    },
+    plugins: [
+      replace(baseConfig.plugins.replace),
+      ...baseConfig.plugins.preVue,
+      vue({
+        ...baseConfig.plugins.vue,
+        template: {
+          ...baseConfig.plugins.vue.template,
+          optimizeSSR: true,
+        },
+      }),
+      babel(baseConfig.plugins.babel),
+      commonjs(),
+    ],
+  };
+  buildFormats.push(umdConfig);
+}
+
+if (!argv.format || argv.format === 'iife') {
+  const unpkgConfig = {
+    ...baseConfig,
+    external,
+    output: {
+      compact: true,
+      file: 'dist/devices-module.min.js',
+      format: 'iife',
+      name: 'DevicesModule',
+      exports: 'named',
+      globals,
+    },
+    plugins: [
+      replace(baseConfig.plugins.replace),
+      ...baseConfig.plugins.preVue,
+      vue(baseConfig.plugins.vue),
+      babel(baseConfig.plugins.babel),
+      commonjs(),
+      terser({
+        output: {
+          ecma: 5,
+        },
+      }),
+    ],
+  };
+  buildFormats.push(unpkgConfig);
+}
+
+buildFormats.push({
+  ...baseConfig,
+  external,
+  output: {
+    file: 'dist/devices-module.d.ts',
+    format: 'es',
+  },
+  plugins: [
+    replace({
+      ...baseConfig.plugins.replace,
+      'process.env.ES_BUILD': JSON.stringify('true'),
+    }),
+    ...baseConfig.plugins.preVue,
+    vue(baseConfig.plugins.vue),
+    babel({
+      ...baseConfig.plugins.babel,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: esbrowserslist,
+          },
+        ],
+      ],
+    }),
+    commonjs(),
+    dts(),
+  ],
+});
+
+
+// Export config
+export default buildFormats;

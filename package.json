@@ -1,0 +1,80 @@
+{
+  "name": "@fastybird/devices-module",
+  "version": "0.2.0",
+  "description": "Devices module data model plugin",
+  "keywords": [
+    "vuex wamp",
+    "wamp",
+    "wampv1",
+    "websockets",
+    "ws"
+  ],
+  "homepage": "https://www.fastybird.com",
+  "bugs": "https://github.com/FastyBird/devices-module/issues",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "FastyBird s.r.o.",
+    "email": "info@fastybird.com",
+    "url": "https://www.fastybird.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FastyBird/devices-module.git"
+  },
+  "main": "dist/devices-module.ssr.js",
+  "browser": "dist/devices-module.esm.js",
+  "module": "dist/devices-module.esm.js",
+  "unpkg": "dist/devices-module.min.js",
+  "types": "dist/devices-module.d.ts",
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
+    "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
+    "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
+    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
+  },
+  "dependencies": {
+    "@fastybird/modules-metadata": "^0.1",
+    "@fastybird/vue-wamp-v1": "^0.1",
+    "@fastybird/vuex-orm-wamp": "^0.1",
+    "@vuex-orm/core": "^0.36",
+    "@vuex-orm/plugin-axios": "^0.9",
+    "ajv": "^8.5",
+    "jsona": "^1.9",
+    "lodash": "^4.17",
+    "uuid": "^8.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9",
+    "@babel/plugin-proposal-class-properties": "^7.10",
+    "@babel/preset-env": "^7.9",
+    "@babel/preset-typescript": "^7.9",
+    "@nuxt/types": "^2.15.6",
+    "@rollup/plugin-alias": "^2.2",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^11.1",
+    "@rollup/plugin-replace": "^2.3",
+    "@types/lodash": "^4.14.170",
+    "@types/uuid": "^8.3.0",
+    "@vue/cli-plugin-babel": "^4.3",
+    "@vue/cli-plugin-typescript": "^4.3",
+    "@vue/cli-service": "^4.3",
+    "cross-env": "^7.0",
+    "minimist": "^1.2",
+    "rollup": "^2.7",
+    "rollup-plugin-dts": "^3.0",
+    "rollup-plugin-terser": "^5.3",
+    "rollup-plugin-vue": "^5.1",
+    "tslib": "^2.2",
+    "typescript": "^4.3",
+    "vue": "^2.6",
+    "vue-template-compiler": "^2.6",
+    "vuex": "^3.5"
+  },
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=10"
+  }
+}

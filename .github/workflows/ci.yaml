@@ -286,6 +286,7 @@ jobs:
   publish-npmjs:
     name: "Build library and publish it to NPM"
     runs-on: "${{ matrix.operating-system }}"
+    needs: ["qa", "tests"]
 
     strategy:
       matrix:

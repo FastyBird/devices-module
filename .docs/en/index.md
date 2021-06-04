@@ -4,11 +4,13 @@ This module adds support for managing [FastyBird](https://www.fastybird.com) IoT
 
 ## Installation
 
+### Backend
+
 The best way to install **fastybird/devices-module** is using [Composer](https://getcomposer.org/).
 
 > If you don't have Composer yet, [download it](https://getcomposer.org/download/) following the instructions.
 
-#### Create new project
+##### Create new project
 
 If you don't have a project created yet you could start with Nette base project.
 
@@ -24,12 +26,26 @@ Everything required will be then installed in the provided folder.
 cd path/to/install
 ```
 
-#### Install module
+##### Install module
 
 Module could be added to your project with composer command:
 
 ```sh
 composer require fastybird/devices-module
+```
+
+### Frontend
+
+The best way to install **@fastybird/devices-module** is using [Yarn](https://yarnpkg.com/):
+
+```sh
+yarn add @fastybird/devices-module
+```
+
+or if you prefer npm:
+
+```sh
+npm install @fastybird/devices-module
 ```
 
 ## Configuration
@@ -62,3 +78,23 @@ your-console-entrypoint fb:web-server:start
 ```
 
 After successful start, server is listening for incoming http api request messages from clients.
+
+## Register Vuex ORM models
+
+This module could be registered in your Vuex ORM instance
+
+```js
+import VuexORM, { Database } from '@vuex-orm/core'
+import DevicesModule from '@fastybird/devices-module'
+
+// Create new instance of Database
+const database = new Database()
+
+VuexORM.use(DevicesModule, { database })
+
+export default {
+  plugins: [
+    VuexORM.install(database),
+  ],
+}
+```

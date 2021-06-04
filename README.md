@@ -8,11 +8,15 @@
 [![Latest stable](https://badgen.net/packagist/v/FastyBird/devices-module/latest?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
 
+[![Latest stable](https://badgen.net/npm/v/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
+[![Downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
+![Types](https://badgen.net/npm/types/@fastybird/devices-module?cache=300&style=flast-square)
+
 ## What is FastyBird IoT devices module?
 
-Devices module is a [Nette framework](https://nette.org) extension for managing connected devices and their basic logic.
+Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin for managing connected devices and their basic logic.
 
-[FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed in [PHP](https://www.php.net) with [Nette framework](https://nette.org).
+[FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed in [PHP](https://www.php.net) with [Nette framework](https://nette.org) and in [Typescript](https://www.typescriptlang.org).
 
 ### Features:
 
@@ -21,17 +25,36 @@ Devices module is a [Nette framework](https://nette.org) extension for managing 
 - [{JSON:API}](https://jsonapi.org/) schemas for full api access
 - User access check & validation
 - Multilingual
+- JS integration via [Vex ORM](https://vuex-orm.org) plugin
 
 ## Requirements
 
-[FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4 and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
+Backend part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4 and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
+
+Frontend part of [FastyBird](https://www.fastybird.com) devices module is tested against [ECMAScript 6](https://www.w3schools.com/JS/js_es6.asp)
 
 ## Installation
+
+#### Backend
 
 The best way to install **fastybird/devices-module** is using [Composer](http://getcomposer.org/):
 
 ```sh
 composer require fastybird/devices-module
+```
+
+#### Frontend
+
+The best way to install **@fastybird/devices-module** is using [Yarn](https://yarnpkg.com/):
+
+```sh
+yarn add @fastybird/devices-module
+```
+
+or if you prefer npm:
+
+```sh
+npm install @fastybird/devices-module
 ```
 
 ## Documentation

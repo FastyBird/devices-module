@@ -149,10 +149,7 @@ const moduleActions: ActionTree<ChannelConfigurationState, any> = {
     }
   },
 
-  async edit({
-               state,
-               commit,
-             }, payload: { configuration: ChannelConfigurationInterface, data: ChannelConfigurationUpdateInterface }): Promise<Item<ChannelConfiguration>> {
+  async edit({ state, commit }, payload: { configuration: ChannelConfigurationInterface, data: ChannelConfigurationUpdateInterface }): Promise<Item<ChannelConfiguration>> {
     if (state.semaphore.updating.includes(payload.configuration.id)) {
       throw new Error('devices-module.channel-configuration.update.inProgress')
     }

@@ -159,10 +159,7 @@ const moduleActions: ActionTree<ConnectorState, any> = {
     }
   },
 
-  async edit({
-               state,
-               commit,
-             }, payload: { connector: ConnectorInterface, data: ConnectorUpdateInterface }): Promise<Item<Connector>> {
+  async edit({ state, commit }, payload: { connector: ConnectorInterface, data: ConnectorUpdateInterface }): Promise<Item<Connector>> {
     if (state.semaphore.updating.includes(payload.connector.id)) {
       throw new Error('devices-module.connectors.update.inProgress')
     }

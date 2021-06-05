@@ -267,10 +267,7 @@ const moduleActions: ActionTree<DeviceState, any> = {
     }
   },
 
-  async edit({
-               state,
-               commit,
-             }, payload: { device: DeviceInterface, data: DeviceUpdateInterface }): Promise<Item<Device>> {
+  async edit({ state, commit }, payload: { device: DeviceInterface, data: DeviceUpdateInterface }): Promise<Item<Device>> {
     if (state.semaphore.updating.includes(payload.device.id)) {
       throw new Error('devices-module.devices.update.inProgress')
     }

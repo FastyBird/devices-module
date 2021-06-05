@@ -55,7 +55,7 @@ interface ConnectorState {
 
 interface SemaphoreAction {
   type: SemaphoreTypes
-  id?: string;
+  id?: string
 }
 
 const jsonApiFormatter = new Jsona({

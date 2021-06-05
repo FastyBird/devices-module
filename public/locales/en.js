@@ -1,5 +1,5 @@
 export default {
-  devices: {
+  devicesModule: {
     vendors: {
       fastybird: {
         devices: {

@@ -145,9 +145,9 @@ export default class Device extends Model implements DeviceInterface {
       }
 
       // @ts-ignore
-      if (!storeInstance.$i18n.t(`devices.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString().includes('devices.vendors.')) {
+      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString().includes('devices.vendors.')) {
         // @ts-ignore
-        return storeInstance.$i18n.t(`devices.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString()
+        return storeInstance.$i18n.t(`devicesModule.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString()
       }
     }
 

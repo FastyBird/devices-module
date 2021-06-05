@@ -52,10 +52,10 @@ export default class DeviceConfiguration extends Configuration implements Device
       !this.device.isCustomModel &&
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n') &&
       // @ts-ignore
-      !storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.identifier.${this.identifier}.title`).toString().includes('devices.vendors.')
+      !storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.identifier.${this.identifier}.title`).toString().includes('devices.vendors.')
     ) {
       // @ts-ignore
-      return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
+      return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
     }
 
     return capitalize(this.identifier)
@@ -73,10 +73,10 @@ export default class DeviceConfiguration extends Configuration implements Device
       !this.device.isCustomModel &&
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n') &&
       // @ts-ignore
-      !storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')
+      !storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')
     ) {
       // @ts-ignore
-      return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
+      return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
     }
 
     return null
@@ -101,7 +101,7 @@ export default class DeviceConfiguration extends Configuration implements Device
           items.push({
             value: item.value,
             // @ts-ignore
-            name: storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString(),
+            name: storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString(),
           })
         })
 
@@ -125,9 +125,9 @@ export default class DeviceConfiguration extends Configuration implements Device
             // eslint-disable-next-line eqeqeq
             if (item.value == this.value) {
               // @ts-ignore
-              if (!storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+              if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
                 // @ts-ignore
-                return storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`)
+                return storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`)
               } else {
                 return this.value
               }

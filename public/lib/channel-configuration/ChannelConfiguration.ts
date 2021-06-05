@@ -59,28 +59,28 @@ export default class ChannelConfiguration extends Configuration implements Chann
         const configurationNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
 
         // @ts-ignore
-        if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${configurationPart}.title`).toString().includes('devices.vendors.')) {
+        if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${configurationPart}.title`).toString().includes('devices.vendors.')) {
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${configurationPart}.title`, {number: configurationNum}).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${configurationPart}.title`, {number: configurationNum}).toString()
         }
 
         // @ts-ignore
-        if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${configurationPart}.title`).toString().includes('devices.vendors.')) {
+        if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${configurationPart}.title`).toString().includes('devices.vendors.')) {
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${configurationPart}.title`, {number: configurationNum}).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${configurationPart}.title`, {number: configurationNum}).toString()
         }
       }
 
       // @ts-ignore
-      if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.title`).toString().includes('devices.vendors.')) {
         // @ts-ignore
-        return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.title`).toString()
+        return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.title`).toString()
       }
 
       // @ts-ignore
-      if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString().includes('devices.vendors.')) {
         // @ts-ignore
-        return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
+        return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
       }
     }
 
@@ -100,15 +100,15 @@ export default class ChannelConfiguration extends Configuration implements Chann
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n')
     ) {
       // @ts-ignore
-      if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')) {
+      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')) {
         // @ts-ignore
-        return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.description`).toString()
+        return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.devices.${this.device.hardwareModel}.configuration.${this.identifier}.description`).toString()
       }
 
       // @ts-ignore
-      if (!storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')) {
+      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')) {
         // @ts-ignore
-        return storeInstance.$i18n.t(`devices.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
+        return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
       }
     }
 
@@ -134,13 +134,13 @@ export default class ChannelConfiguration extends Configuration implements Chann
           let valueName = item.name
 
           // @ts-ignore
-          if (!storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+          if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
             // @ts-ignore
-            valueName = storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString()
+            valueName = storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString()
           // @ts-ignore
-          } else if (!storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+          } else if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
             // @ts-ignore
-            valueName = storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString()
+            valueName = storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString()
           }
 
           items.push({
@@ -169,13 +169,13 @@ export default class ChannelConfiguration extends Configuration implements Chann
             // eslint-disable-next-line eqeqeq
             if (item.value == this.value) {
               // @ts-ignore
-              if (!storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+              if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
                 // @ts-ignore
-                return storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString()
+                return storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.devices.${this.device?.hardwareModel}.configuration.${this.identifier}.values.${item.name}`).toString()
               // @ts-ignore
-              } else if (!storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+              } else if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
                 // @ts-ignore
-                return storeInstance.$i18n.t(`devices.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString()
+                return storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString()
               } else {
                 return this.value
               }

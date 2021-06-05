@@ -171,38 +171,38 @@ export default class Property extends Model implements PropertyInterface {
         case 'air_quality':
           if (this.value > 7) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
           } else if (this.value > 4) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
           }
 
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
 
         case 'light_level':
           if (this.value > 8) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
           } else if (this.value > 4) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
 
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
 
         case 'noise_level':
           if (this.value > 6) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
           } else if (this.value > 3) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
 
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
       }
     }
 
@@ -225,38 +225,38 @@ export default class Property extends Model implements PropertyInterface {
         case 'air_quality':
           if (this.expected > 7) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
           } else if (this.expected > 4) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
           }
 
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
 
         case 'light_level':
           if (this.expected > 8) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
           } else if (this.expected > 4) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
 
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
 
         case 'noise_level':
           if (this.expected > 6) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
           } else if (this.expected > 3) {
             // @ts-ignore
-            return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
+            return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
 
           // @ts-ignore
-          return storeInstance.$i18n.t(`devices.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
+          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.quiet`).toString()
       }
     }
 

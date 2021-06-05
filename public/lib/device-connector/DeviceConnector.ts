@@ -98,7 +98,7 @@ export default class DeviceConnector extends Model implements DeviceConnectorInt
     })
   }
 
-  static async add(device: DeviceInterface, connector: ConnectorInterface, data: DeviceConnectorCreateInterface, id?: string, draft = true): Promise<Item<DeviceConnector>> {
+  static async add(device: DeviceInterface, connector: ConnectorInterface, data: DeviceConnectorCreateInterface, id?: string | null, draft = true): Promise<Item<DeviceConnector>> {
     return await DeviceConnector.dispatch('add', {
       id,
       draft,

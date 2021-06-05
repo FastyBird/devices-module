@@ -175,7 +175,7 @@ export default class Device extends Model implements DeviceInterface {
     })
   }
 
-  static async add(data: DeviceCreateInterface, id?: string, draft = true): Promise<Item<Device>> {
+  static async add(data: DeviceCreateInterface, id?: string | null, draft = true): Promise<Item<Device>> {
     return await Device.dispatch('add', {
       id,
       draft,

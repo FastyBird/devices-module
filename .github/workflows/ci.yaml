@@ -140,6 +140,7 @@ jobs:
   tests:
     name: "Tests"
     runs-on: "${{ matrix.operating-system }}"
+    needs: ["qa", "static-analysis"]
 
     strategy:
       matrix:

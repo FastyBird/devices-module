@@ -211,6 +211,7 @@ jobs:
   tests-code-coverage:
     name: "Tests with code coverage"
     runs-on: "${{ matrix.operating-system }}"
+    needs: ["tests"]
 
     strategy:
       matrix:

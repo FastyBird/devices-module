@@ -8,6 +8,7 @@ src
 tests
 vendor
 .editorconfig
+.eslintrc
 composer.json
 composer.lock
 editorconfig.xml

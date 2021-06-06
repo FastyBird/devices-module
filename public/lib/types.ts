@@ -2,14 +2,14 @@ import { ModulePrefix } from '@fastybird/modules-metadata'
 
 import { TJsonaModel } from 'jsona/lib/JsonaTypes'
 
-import { DeviceEntityTypes } from '@/lib/devices/types'
-import { DevicePropertyEntityTypes } from '@/lib/device-properties/types'
-import { DeviceConfigurationEntityTypes } from '@/lib/device-configuration/types'
-import { DeviceConnectorEntityTypes } from '@/lib/device-connector/types'
-import { ChannelEntityTypes } from '@/lib/channels/types'
-import { ChannelPropertyEntityTypes } from '@/lib/channel-properties/types'
-import { ChannelConfigurationEntityTypes } from '@/lib/channel-configuration/types'
-import { ConnectorEntityTypes } from '@/lib/connectors/types'
+import { DeviceEntityTypes } from '@/lib/models/devices/types'
+import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
+import { DeviceConfigurationEntityTypes } from '@/lib/models/device-configuration/types'
+import { DeviceConnectorEntityTypes } from '@/lib/models/device-connector/types'
+import { ChannelEntityTypes } from '@/lib/models/channels/types'
+import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
+import { ChannelConfigurationEntityTypes } from '@/lib/models/channel-configuration/types'
+import { ConnectorEntityTypes } from '@/lib/models/connectors/types'
 
 export interface DeviceJsonModelInterface extends TJsonaModel {
   id: string

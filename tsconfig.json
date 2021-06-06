@@ -18,11 +18,9 @@
         "baseUrl": ".",
         "types": [
             "node",
-            "vue",
             "@fastybird/modules-metadata",
             "@fastybird/vue-wamp-v1",
             "@fastybird/vuex-orm-wamp",
-            "@nuxt/types",
             "@types/lodash",
             "@types/uuid",
             "@vuex-orm/core",

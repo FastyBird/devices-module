@@ -283,10 +283,84 @@ jobs:
           wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
           php php-coveralls.phar --verbose --config tests/.coveralls.yml
 
+  jslint:
+    name: "Code linting"
+    runs-on: "${{ matrix.operating-system }}"
+
+    strategy:
+      matrix:
+        operating-system: ["ubuntu-latest"]
+      fail-fast: false
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v1"
+
+      - name: "Setup node"
+        uses: "actions/setup-node@v1"
+        with:
+          node-version: "12"
+
+      - name: "Get yarn cache directory path"
+        id: "yarn-cache-dir-path"
+        run: 'echo "::set-output name=dir::$(yarn cache dir)"'
+
+      - uses: "actions/cache@v1"
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+            ${{ runner.os }}-
+
+      - name: "Install dependencies"
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: 'yarn install'
+
+      - name: "Check linter"
+        run: 'yarn lint:js'
+
+  tslint:
+    name: "Checking typescript"
+    runs-on: "${{ matrix.operating-system }}"
+
+    strategy:
+      matrix:
+        operating-system: ["ubuntu-latest"]
+      fail-fast: false
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v1"
+
+      - name: "Setup node"
+        uses: "actions/setup-node@v1"
+        with:
+          node-version: "12"
+
+      - name: "Get yarn cache directory path"
+        id: "yarn-cache-dir-path"
+        run: 'echo "::set-output name=dir::$(yarn cache dir)"'
+
+      - uses: "actions/cache@v1"
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+            ${{ runner.os }}-
+
+      - name: "Install dependencies"
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: 'yarn install'
+
+      - name: "Check linter"
+        run: 'yarn lint:ts'
+
   publish-npmjs:
     name: "Build library and publish it to NPM"
     runs-on: "${{ matrix.operating-system }}"
-    needs: ["qa", "tests"]
+    needs: ["jslint", "tslint"]
 
     strategy:
       matrix:

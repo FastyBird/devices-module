@@ -273,7 +273,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
     }
 
     return new Promise((resolve, reject) => {
-      ChannelProperty.wamp().call({
+      ChannelProperty.wamp().call<{ data: string }>({
         routing_key: RoutingKeys.CHANNELS_PROPERTIES_DATA,
         origin: ChannelProperty.$devicesModuleOrigin,
         data: {

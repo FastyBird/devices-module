@@ -266,7 +266,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
     }
 
     return new Promise((resolve, reject) => {
-      DeviceProperty.wamp().call({
+      DeviceProperty.wamp().call<{ data: string }>({
         routing_key: RoutingKeys.DEVICES_PROPERTIES_DATA,
         origin: DeviceProperty.$devicesModuleOrigin,
         data: {

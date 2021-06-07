@@ -52,7 +52,7 @@ export default class DeviceConfiguration extends Configuration implements Device
       !this.device.isCustomModel &&
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n') &&
       // @ts-ignore
-      !storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.identifier.${this.identifier}.title`).toString().includes('devices.vendors.')
+      !storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.identifier.${this.identifier}.title`).toString().includes('devicesModule.vendors.')
     ) {
       // @ts-ignore
       return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.title`).toString()
@@ -73,7 +73,7 @@ export default class DeviceConfiguration extends Configuration implements Device
       !this.device.isCustomModel &&
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n') &&
       // @ts-ignore
-      !storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devices.vendors.')
+      !storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString().includes('devicesModule.vendors.')
     ) {
       // @ts-ignore
       return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.configuration.${this.identifier}.description`).toString()
@@ -125,7 +125,7 @@ export default class DeviceConfiguration extends Configuration implements Device
             // eslint-disable-next-line eqeqeq
             if (String(item.value) === String(this.value)) {
               // @ts-ignore
-              if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devices.vendors.')) {
+              if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`).toString().includes('devicesModule.vendors.')) {
                 // @ts-ignore
                 return storeInstance.$i18n.t(`devicesModule.vendors.${this.device?.hardwareManufacturer}.configuration.${this.identifier}.values.${item.name}`)
               } else {

@@ -55,7 +55,7 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
       !this.device.isCustomModel &&
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n') &&
       // @ts-ignore
-      storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devices.vendors.')
+      storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devicesModule.vendors.')
     ) {
       // @ts-ignore
       return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString()

@@ -94,26 +94,26 @@ export default class Channel extends Model implements ChannelInterface {
         const channelNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
 
         // @ts-ignore
-        if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${channelPart}.title`).toString().includes('devices.vendors.')) {
+        if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${channelPart}.title`).toString().includes('devicesModule.vendors.')) {
           // @ts-ignore
           return storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${channelPart}.title`, { number: (channelNum + 1) }).toString()
         }
 
         // @ts-ignore
-        if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.channels.${channelPart}.title`).toString().includes('devices.vendors.')) {
+        if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.channels.${channelPart}.title`).toString().includes('devicesModule.vendors.')) {
           // @ts-ignore
           return storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.channels.${channelPart}.title`, { number: (channelNum + 1) }).toString()
         }
       }
 
       // @ts-ignore
-      if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+      if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${this.identifier}.title`).toString().includes('devicesModule.vendors.')) {
         // @ts-ignore
         return storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.devices.${device.hardwareModel}.channels.${this.identifier}.title`).toString()
       }
 
       // @ts-ignore
-      if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.channels.${this.identifier}.title`).toString().includes('devices.vendors.')) {
+      if (!storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.channels.${this.identifier}.title`).toString().includes('devicesModule.vendors.')) {
         // @ts-ignore
         return storeInstance.$i18n.t(`devicesModule.vendors.${device.hardwareManufacturer}.channels.${this.identifier}.title`).toString()
       }

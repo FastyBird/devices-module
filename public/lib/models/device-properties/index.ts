@@ -275,7 +275,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
           expected: payload.value,
         },
       })
-        .then((response: RpCallResponse): void => {
+        .then((response: RpCallResponse<{ data: string }>): void => {
           if (get(response.data, 'response') === 'accepted') {
             resolve(true)
           } else {

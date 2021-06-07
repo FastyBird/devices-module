@@ -250,7 +250,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
           connector: payload.connector.id,
         },
       })
-        .then((response: RpCallResponse): void => {
+        .then((response: RpCallResponse<{ data: string }>): void => {
           if (get(response.data, 'response') === 'accepted') {
             resolve(true)
           } else {

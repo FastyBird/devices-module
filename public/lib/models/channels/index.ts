@@ -282,7 +282,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
           channel: payload.channel.key,
         },
       })
-        .then((response: RpCallResponse): void => {
+        .then((response: RpCallResponse<{ data: string }>): void => {
           if (get(response.data, 'response') === 'accepted') {
             resolve(true)
           } else {

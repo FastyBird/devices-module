@@ -27,7 +27,7 @@ export enum ConfigurationIntegerDatatypeTypes {
 
 export interface ValuesItemInterface {
   name: string
-  value: any
+  value: string | number | boolean
 }
 
 export interface ConfigurationInterface {

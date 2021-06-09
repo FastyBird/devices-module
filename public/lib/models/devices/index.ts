@@ -5,7 +5,7 @@ import {
   ModuleOrigin,
   DeviceControlAction,
   DeviceEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys,
+  DevicesModule as RoutingKeys, DeviceConnectionState, HardwareManufacturer, DeviceModel, FirmwareManufacturer,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -550,7 +550,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           id: body.id,
         })
 
-        const entityData: { [index: string]: any } = {}
+        const entityData: { [index: string]: string | DeviceConnectionState | HardwareManufacturer | DeviceModel | FirmwareManufacturer | boolean | string[] | null | undefined } = {}
 
         Object.keys(body)
           .forEach((attrName) => {

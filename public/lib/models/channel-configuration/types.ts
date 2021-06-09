@@ -38,7 +38,7 @@ export interface ChannelConfigurationInterface extends ConfigurationInterface {
 
   selectValues: ValuesItemInterface[]
 
-  formattedValue: any
+  formattedValue: string
 
   device: DeviceInterface | null
 

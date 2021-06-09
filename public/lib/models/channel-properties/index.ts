@@ -5,7 +5,7 @@ import * as exchangeEntitySchema
 import {
   ModuleOrigin,
   ChannelPropertyEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys,
+  DevicesModule as RoutingKeys, DataType,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -367,7 +367,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
           id: body.id,
         })
 
-        const entityData: { [index: string]: any } = {
+        const entityData: { [index: string]: string | boolean | number | string[] | number[] | DataType | null | undefined } = {
           type: ChannelPropertyEntityTypes.PROPERTY,
         }
 

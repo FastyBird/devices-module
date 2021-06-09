@@ -37,7 +37,7 @@ export interface DeviceConfigurationInterface extends ConfigurationInterface {
 
   selectValues: ValuesItemInterface[]
 
-  formattedValue: any
+  formattedValue: string
 
   title: string
   description: string | null

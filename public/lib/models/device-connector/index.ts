@@ -4,7 +4,7 @@ import * as exchangeEntitySchema
 import {
   ModuleOrigin,
   DeviceConnectorEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys,
+  DevicesModule as RoutingKeys, ConnectorType,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -391,7 +391,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
           id: body.id,
         })
 
-        const entityData: { [index: string]: any } = {
+        const entityData: { [index: string]: string | number | string[] | ConnectorType | boolean | null | undefined } = {
           type: DeviceConnectorEntityTypes.CONNECTOR,
         }
 

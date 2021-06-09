@@ -352,7 +352,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
           id: body.id,
         })
 
-        const entityData: { [index: string]: any } = {
+        const entityData: { [index: string]: string | string[] | null | undefined } = {
           type: ChannelEntityTypes.CHANNEL,
         }
 

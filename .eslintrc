@@ -10,10 +10,6 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:json/recommended"
   ],
-  "ignorePatterns": [
-    "babel.config.js",
-    "build/*"
-  ],
   "rules": {
     "lines-between-class-members": [
       "error",

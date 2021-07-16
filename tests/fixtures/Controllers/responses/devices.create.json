@@ -17,7 +17,6 @@
       "key" : "bJtCcu",
       "name" : "Newly created device",
       "comment" : null,
-      "state" : "unknown",
       "enabled" : true,
       "hardware_model" : "custom",
       "hardware_manufacturer" : "generic",

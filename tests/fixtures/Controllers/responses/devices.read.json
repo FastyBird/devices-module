@@ -17,7 +17,6 @@
       "identifier" : "first-device",
       "name" : "First device",
       "comment" : null,
-      "state" : "init",
       "enabled" : true,
       "hardware_model" : "sonoff_basic",
       "hardware_manufacturer" : "itead",

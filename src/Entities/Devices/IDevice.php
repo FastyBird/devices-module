@@ -108,18 +108,6 @@ interface IDevice extends Entities\IEntity,
 	public function getComment(): ?string;
 
 	/**
-	 * @param string $state
-	 *
-	 * @return void
-	 */
-	public function setState(string $state): void;
-
-	/**
-	 * @return ModulesMetadataTypes\DeviceConnectionStateType
-	 */
-	public function getState(): ModulesMetadataTypes\DeviceConnectionStateType;
-
-	/**
 	 * @param bool $enabled
 	 *
 	 * @return void

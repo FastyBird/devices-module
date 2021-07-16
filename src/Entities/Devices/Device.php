@@ -43,7 +43,6 @@ use Throwable;
  *     indexes={
  *       @ORM\Index(name="device_identifier_idx", columns={"device_identifier"}),
  *       @ORM\Index(name="device_name_idx", columns={"device_name"}),
- *       @ORM\Index(name="device_state_idx", columns={"device_state"}),
  *       @ORM\Index(name="device_enabled_idx", columns={"device_enabled"})
  *     }
  * )
@@ -113,15 +112,6 @@ class Device implements IDevice
 	 * @ORM\Column(type="text", name="device_comment", nullable=true, options={"default": null})
 	 */
 	private ?string $comment = null;
-
-	/**
-	 * @var ModulesMetadataTypes\DeviceConnectionStateType
-	 *
-	 * @Enum(class=ModulesMetadataTypes\DeviceConnectionStateType::class)
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string_enum", name="device_state", nullable=false, options={"default": "unknown"})
-	 */
-	private $state;
 
 	/**
 	 * @var bool
@@ -238,8 +228,6 @@ class Device implements IDevice
 
 		$this->identifier = $identifier;
 		$this->name = $name;
-
-		$this->state = ModulesMetadataTypes\DeviceConnectionStateType::get(ModulesMetadataTypes\DeviceConnectionStateType::STATE_UNKNOWN);
 
 		$this->hardwareManufacturer = ModulesMetadataTypes\HardwareManufacturerType::get(ModulesMetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC);
 		$this->hardwareModel = ModulesMetadataTypes\DeviceModelType::get(ModulesMetadataTypes\DeviceModelType::MODEL_CUSTOM);
@@ -606,7 +594,6 @@ class Device implements IDevice
 			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),
-			'state'      => $this->getState()->getValue(),
 			'enabled'    => $this->isEnabled(),
 
 			'hardware_version'      => $this->getHardwareVersion(),
@@ -679,26 +666,6 @@ class Device implements IDevice
 	public function setComment(?string $comment = null): void
 	{
 		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getState(): ModulesMetadataTypes\DeviceConnectionStateType
-	{
-		return $this->state;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setState(string $state): void
-	{
-		if (!ModulesMetadataTypes\DeviceConnectionStateType::isValidValue($state)) {
-			throw new Exceptions\InvalidArgumentException(sprintf('Provided device state "%s" is not valid', $state));
-		}
-
-		$this->state = ModulesMetadataTypes\DeviceConnectionStateType::get($state);
 	}
 
 	/**

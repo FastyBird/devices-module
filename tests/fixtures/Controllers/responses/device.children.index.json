@@ -18,7 +18,6 @@
         "key" : "bLikzr",
         "name" : "Child device",
         "comment" : "This is child",
-        "state" : "init",
         "enabled" : true,
         "hardware_model" : "custom",
         "hardware_manufacturer" : "generic",

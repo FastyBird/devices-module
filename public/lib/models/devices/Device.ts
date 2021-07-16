@@ -9,6 +9,7 @@ import {
   FirmwareManufacturer,
   HardwareManufacturer,
   DeviceConnectionState,
+  DevicePropertyName,
 } from '@fastybird/modules-metadata'
 
 import capitalize from 'lodash/capitalize'
@@ -47,7 +48,6 @@ export default class Device extends Model implements DeviceInterface {
       identifier: this.string(''),
       name: this.string(null).nullable(),
       comment: this.string(null).nullable(),
-      state: this.string(DeviceConnectionState.UNKNOWN),
       enabled: this.boolean(false),
 
       hardwareModel: this.string(DeviceModel.CUSTOM),
@@ -84,7 +84,6 @@ export default class Device extends Model implements DeviceInterface {
   identifier!: string
   name!: string | null
   comment!: string | null
-  state!: DeviceConnectionState
   enabled!: boolean
 
   hardwareModel!: DeviceModel
@@ -112,7 +111,12 @@ export default class Device extends Model implements DeviceInterface {
   }
 
   get isReady(): boolean {
-    return this.state === DeviceConnectionState.READY || this.state === DeviceConnectionState.RUNNING
+    const property = DeviceProperty
+      .query()
+      .where('identifier', DevicePropertyName.STATE)
+      .first()
+
+    return property !== null && (property.value === DeviceConnectionState.READY || property.value === DeviceConnectionState.RUNNING)
   }
 
   get icon(): string {

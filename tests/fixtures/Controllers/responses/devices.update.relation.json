@@ -6,7 +6,6 @@
         "configure"
       ],
       "identifier" : "updated-device",
-      "state" : "init",
       "enabled" : true,
       "name" : "First device",
       "title" : "With title"

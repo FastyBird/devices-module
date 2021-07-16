@@ -1,5 +1,4 @@
 import {
-  DeviceConnectionState,
   DeviceModel,
   HardwareManufacturer,
   FirmwareManufacturer,
@@ -51,7 +50,6 @@ export interface DeviceInterface {
   name: string | null
   comment: string | null
 
-  state: DeviceConnectionState
   enabled: boolean
 
   hardwareModel: DeviceModel
@@ -91,7 +89,6 @@ interface DeviceAttributesResponseInterface {
   name: string | null
   comment: string | null
 
-  state: DeviceConnectionState
   enabled: boolean
 
   control: string[]

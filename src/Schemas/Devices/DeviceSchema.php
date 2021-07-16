@@ -108,7 +108,6 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			'name'       => $device->getName(),
 			'comment'    => $device->getComment(),
 
-			'state'   => $device->getState()->getValue(),
 			'enabled' => $device->isEnabled(),
 
 			'hardware_model'        => $device->getHardwareModel()->getValue(),

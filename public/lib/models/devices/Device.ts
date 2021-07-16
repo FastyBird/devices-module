@@ -114,6 +114,7 @@ export default class Device extends Model implements DeviceInterface {
     const property = DeviceProperty
       .query()
       .where('identifier', DevicePropertyName.STATE)
+      .where('deviceId', this.id)
       .first()
 
     return property !== null && (property.value === DeviceConnectionState.READY || property.value === DeviceConnectionState.RUNNING)

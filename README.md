@@ -25,7 +25,7 @@ Devices module is a combined [Nette framework](https://nette.org) extension and 
 - [{JSON:API}](https://jsonapi.org/) schemas for full api access
 - User access check & validation
 - Multilingual
-- JS integration via [Vex ORM](https://vuex-orm.org) plugin
+- JS integration via [Vuex ORM](https://vuex-orm.org) plugin
 
 ## Requirements
 

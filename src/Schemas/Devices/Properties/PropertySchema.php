@@ -138,7 +138,7 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	{
 		return [
 			self::RELATIONSHIPS_DEVICE => [
-				self::RELATIONSHIP_DATA          => $property,
+				self::RELATIONSHIP_DATA          => $property->getDevice(),
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],

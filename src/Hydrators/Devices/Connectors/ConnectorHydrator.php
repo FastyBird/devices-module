@@ -78,7 +78,7 @@ final class ConnectorHydrator extends JsonApiHydrators\Hydrator
 			$connector->setParam('username', (string) $attributes->get('username'));
 		}
 
-		return (string) $attributes->get('username');
+		return is_scalar($attributes->get('username')) ? (string) $attributes->get('username') : null;
 	}
 
 	/**
@@ -102,7 +102,7 @@ final class ConnectorHydrator extends JsonApiHydrators\Hydrator
 			$connector->setParam('password', (string) $attributes->get('password'));
 		}
 
-		return (string) $attributes->get('password');
+		return is_scalar($attributes->get('password')) ? (string) $attributes->get('password') : null;
 	}
 
 }

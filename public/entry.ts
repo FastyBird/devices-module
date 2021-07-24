@@ -25,10 +25,10 @@ import { ComponentsInterface, GlobalConfigInterface } from '@/types/devices-modu
 const install: Plugin = function installVuexOrmWamp(components: ComponentsInterface, config: GlobalConfigInterface) {
   if (typeof config.originName !== 'undefined') {
     // @ts-ignore
-    components.Model.prototype.$devicesModuleOrigin = config.originName
+    components.Model.$devicesModuleOrigin = config.originName
   } else {
     // @ts-ignore
-    components.Model.prototype.$devicesModuleOrigin = ModuleOrigin.MODULE_DEVICES_ORIGIN
+    components.Model.$devicesModuleOrigin = ModuleOrigin.MODULE_DEVICES_ORIGIN
   }
 
   config.database.register(Device, devices)

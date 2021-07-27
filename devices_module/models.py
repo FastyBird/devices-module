@@ -773,6 +773,9 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def __len__(self):
+            if self._items is None:
+                self.initialize()
+
             return len(self._items)
 
         # -----------------------------------------------------------------------------
@@ -920,6 +923,9 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def __len__(self):
+            if self.__items is None:
+                self.initialize()
+
             return len(self.__items)
 
         # -----------------------------------------------------------------------------

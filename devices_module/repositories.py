@@ -35,17 +35,17 @@ from devices_module.items import ConnectorItem, DevicePropertyEntity, ChannelPro
 # @author         Adam Kadlec <adam.kadlec@fastybird.com>
 #
 class PropertiesRepository(ABC):
-    _cache: List[ChannelPropertyItem or DevicePropertyItem] or None = None
+    _items: List[ChannelPropertyItem or DevicePropertyItem] or None = None
 
     __iterator_index = 0
 
     # -----------------------------------------------------------------------------
 
     def get_property_by_id(self, property_id: uuid.UUID) -> DevicePropertyItem or ChannelPropertyItem or None:
-        if self._cache is None:
+        if self._items is None:
             self.initialize()
 
-        for record in self._cache:
+        for record in self._items:
             if record.property_id == property_id:
                 return record
 
@@ -54,10 +54,10 @@ class PropertiesRepository(ABC):
     # -----------------------------------------------------------------------------
 
     def get_property_by_key(self, property_key: str) -> DevicePropertyItem or ChannelPropertyItem or None:
-        if self._cache is None:
+        if self._items is None:
             self.initialize()
 
-        for record in self._cache:
+        for record in self._items:
             if record.key == property_key:
                 return record
 
@@ -65,8 +65,8 @@ class PropertiesRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def clear_cache(self) -> None:
-        self._cache = None
+    def clear(self) -> None:
+        self._items = None
 
     # -----------------------------------------------------------------------------
 
@@ -84,9 +84,14 @@ class PropertiesRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
+    def __len__(self):
+        return len(self._items)
+
+    # -----------------------------------------------------------------------------
+
     def __next__(self) -> DevicePropertyItem or ChannelPropertyItem:
-        if self.__iterator_index < len(self._cache):
-            result: ConnectorItem = self._cache[self.__iterator_index]
+        if self.__iterator_index < len(self._items):
+            result: ConnectorItem = self._items[self.__iterator_index]
 
             self.__iterator_index += 1
 
@@ -110,10 +115,10 @@ class PropertiesRepository(ABC):
 class DevicesPropertiesRepository(PropertiesRepository):
     @orm.db_session
     def initialize(self) -> None:
-        self._cache = []
+        self._items = []
 
         for entity in DevicePropertyEntity.select():
-            self._cache.append(
+            self._items.append(
                 DevicePropertyItem(
                     property_id=entity.property_id,
                     property_identifier=entity.identifier,
@@ -139,10 +144,10 @@ class DevicesPropertiesRepository(PropertiesRepository):
 class ChannelsPropertiesRepository(PropertiesRepository):
     @orm.db_session
     def initialize(self) -> None:
-        self._cache = []
+        self._items = []
 
         for entity in ChannelPropertyEntity.select():
-            self._cache.append(
+            self._items.append(
                 ChannelPropertyItem(
                     property_id=entity.property_id,
                     property_identifier=entity.identifier,
@@ -168,17 +173,17 @@ class ChannelsPropertiesRepository(PropertiesRepository):
 #
 class ConnectorsRepository(ABC):
 
-    __cache: List[ConnectorItem] or None = None
+    __items: List[ConnectorItem] or None = None
 
     __iterator_index = 0
 
     # -----------------------------------------------------------------------------
 
     def get_connector_by_id(self, connector_id: uuid.UUID) -> ConnectorItem or None:
-        if self.__cache is None:
+        if self.__items is None:
             self.initialize()
 
-        for record in self.__cache:
+        for record in self.__items:
             if record.connector_id == connector_id:
                 return record
 
@@ -187,10 +192,10 @@ class ConnectorsRepository(ABC):
     # -----------------------------------------------------------------------------
 
     def get_connector_by_key(self, connector_key: str) -> ConnectorItem or None:
-        if self.__cache is None:
+        if self.__items is None:
             self.initialize()
 
-        for record in self.__cache:
+        for record in self.__items:
             if record.key == connector_key:
                 return record
 
@@ -198,17 +203,17 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def clear_cache(self) -> None:
-        self.__cache = None
+    def clear(self) -> None:
+        self.__items = None
 
     # -----------------------------------------------------------------------------
 
     @orm.db_session
     def initialize(self) -> None:
-        self.__cache = []
+        self.__items = []
 
         for entity in ConnectorEntity.select():
-            self.__cache.append(
+            self.__items.append(
                 ConnectorItem(
                     connector_id=entity.connector_id,
                     connector_name=entity.name,
@@ -229,9 +234,14 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
+    def __len__(self):
+        return len(self.__items)
+
+    # -----------------------------------------------------------------------------
+
     def __next__(self) -> ConnectorItem:
-        if self.__iterator_index < len(self.__cache):
-            result: ConnectorItem = self.__cache[self.__iterator_index]
+        if self.__iterator_index < len(self.__items):
+            result: ConnectorItem = self.__items[self.__iterator_index]
 
             self.__iterator_index += 1
 
@@ -247,8 +257,8 @@ class ConnectorsRepository(ABC):
 # -----------------------------------------------------------------------------
 
 
-device_property_cache = DevicesPropertiesRepository()
+device_property_repository = DevicesPropertiesRepository()
 
-channel_property_cache = ChannelsPropertiesRepository()
+channel_property_repository = ChannelsPropertiesRepository()
 
-connector_cache = ConnectorsRepository()
+connector_repository = ConnectorsRepository()

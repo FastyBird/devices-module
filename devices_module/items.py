@@ -16,13 +16,9 @@
 
 # App dependencies
 import uuid
-from abc import abstractmethod, ABC
+from abc import ABC
 from modules_metadata.types import DataType
-from pony.orm import core as orm
-from typing import Dict, List, Set, Tuple
-
-# App libs
-from devices_module.models import DevicePropertyEntity, ChannelPropertyEntity, ConnectorEntity
+from typing import Dict, Set, Tuple
 
 
 #

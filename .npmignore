@@ -1,6 +1,7 @@
 .github
 build
 config
+devices_module
 node_modules
 patches
 src

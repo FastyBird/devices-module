@@ -48,6 +48,14 @@ or if you prefer npm:
 npm install @fastybird/devices-module
 ```
 
+### Python project:
+
+The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
+
+```sh
+pip install fastybird-devices-module
+```
+
 ## Configuration
 
 This module is dependent on other Nette extensions. All this extensions have to enabled and configured in NEON configuration file.
@@ -97,4 +105,20 @@ export default {
     VuexORM.install(database),
   ],
 }
+```
+
+## Registering PonyORM models
+
+This module has all entities configured for Python PonyORM. Registration needs just database instance:
+
+```python
+from pony.orm import Database
+from devices_module.models import define_entities
+
+db: Database = Database()
+
+ConnectorEntity, \
+    DeviceEntity, DeviceConnectorEntity, DeviceControlEntity, DevicePropertyEntity, DeviceConfigurationEntity, \
+    ChannelEntity, ChannelControlEntity, ChannelPropertyEntity, ChannelConfigurationEntity \
+    = define_entities(db)
 ```

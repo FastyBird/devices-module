@@ -1,0 +1,4 @@
+setuptools~=41.2.0
+pony~=0.7.14
+fastybird-modules-metadata~=0.2
+fastybird-application-events~=0.1

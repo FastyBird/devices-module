@@ -12,6 +12,11 @@
 [![Downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
 ![Types](https://badgen.net/npm/types/@fastybird/devices-module?cache=300&style=flast-square)
 
+![Python](https://badgen.net/pypi/python/fastybird-devices-module?cache=300&style=flat-square)
+[![Licence](https://badgen.net/pypi/license/fastybird-devices-module?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
+[![Latest stable](https://badgen.net/pypi/v/fastybird-devices-module?cache=300&style=flast-square)](https://pypi.org/project/fastybird-devices-module/)
+[![Black](https://img.shields.io/badge/Black-enabled-brightgreen.svg?style=flat-square)](https://github.com/psf/black)
+
 ## What is FastyBird IoT devices module?
 
 Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin for managing connected devices and their basic logic.
@@ -26,12 +31,15 @@ Devices module is a combined [Nette framework](https://nette.org) extension and 
 - User access check & validation
 - Multilingual
 - JS integration via [Vuex ORM](https://vuex-orm.org) plugin
+- Python integration via [PonyORM](https://ponyorm.org)
 
 ## Requirements
 
 Backend part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4 and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
 
 Frontend part of [FastyBird](https://www.fastybird.com) devices module is tested against [ECMAScript 6](https://www.w3schools.com/JS/js_es6.asp)
+
+Python part of [FastyBird](https://www.fastybird.com) devices module is tested against [Python 3.7](http://python.org)
 
 ## Installation
 
@@ -55,6 +63,14 @@ or if you prefer npm:
 
 ```sh
 npm install @fastybird/devices-module
+```
+
+### Python project:
+
+The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
+
+```sh
+pip install fastybird-devices-module
 ```
 
 ## Documentation

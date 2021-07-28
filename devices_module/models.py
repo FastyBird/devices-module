@@ -781,6 +781,9 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def __next__(self) -> DevicePropertyItem or ChannelPropertyItem:
+            if self._items is None:
+                self.initialize()
+
             if self.__iterator_index < len(self._items):
                 result: ConnectorItem = self._items[self.__iterator_index]
 
@@ -931,6 +934,9 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def __next__(self) -> ConnectorItem:
+            if self.__items is None:
+                self.initialize()
+
             if self.__iterator_index < len(self.__items):
                 result: ConnectorItem = self.__items[self.__iterator_index]
 

@@ -119,6 +119,7 @@ db: Database = Database()
 
 ConnectorEntity, \
     DeviceEntity, DeviceConnectorEntity, DeviceControlEntity, DevicePropertyEntity, DeviceConfigurationEntity, \
-    ChannelEntity, ChannelControlEntity, ChannelPropertyEntity, ChannelConfigurationEntity \
+    ChannelEntity, ChannelControlEntity, ChannelPropertyEntity, ChannelConfigurationEntity, \
+    connector_repository, device_property_repository, channel_property_repository \
     = define_entities(db)
 ```

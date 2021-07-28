@@ -65,7 +65,7 @@ or if you prefer npm:
 npm install @fastybird/devices-module
 ```
 
-### Python project:
+#### Python project:
 
 The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
 

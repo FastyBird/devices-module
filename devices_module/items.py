@@ -14,7 +14,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-# App dependencies
+# Library dependencies
 import uuid
 from abc import ABC
 from modules_metadata.types import DataType

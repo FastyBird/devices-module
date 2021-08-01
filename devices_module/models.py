@@ -14,7 +14,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-# App dependencies
+# Library dependencies
 import uuid
 import datetime
 from abc import abstractmethod, ABC
@@ -24,7 +24,7 @@ from modules_metadata.types import DataType, ModuleOrigin
 from pony.orm import core as orm, Database, PrimaryKey, Required, Optional, Set, Json
 from typing import List, Dict
 
-# App libs
+# Library libs
 from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPropertyItem
 
 

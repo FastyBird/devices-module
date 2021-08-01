@@ -14,9 +14,10 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+# Library dependencies
 import codecs
 import re
-from setuptools import setup
+from setuptools import setup, find_packages
 from os import path
 
 this_directory = path.abspath(path.dirname(__file__))
@@ -54,21 +55,15 @@ setup(
     url="https://github.com/FastyBird/devices-module",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    include_package_data=True,
     python_requires=">=3.5",
-    packages=[
-        "devices_module",
-    ],
+    packages=find_packages(),
     install_requires=[
-        "pony>=0.7.14",
-        "setuptools",
-        "fastybird-modules-metadata",
         "fastybird-application-events",
+        "fastybird-modules-metadata",
+        "pony",
+        "setuptools",
     ],
     download_url="https://github.com/FastyBird/devices-module/archive/%s.tar.gz" % VERSION,
-    package_data={
-        "resources": ["resources"],
-    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",

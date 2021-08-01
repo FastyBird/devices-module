@@ -35,15 +35,15 @@ Devices module is a combined [Nette framework](https://nette.org) extension and 
 
 ## Requirements
 
-Backend part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4 and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
+PHP part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4 and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
 
-Frontend part of [FastyBird](https://www.fastybird.com) devices module is tested against [ECMAScript 6](https://www.w3schools.com/JS/js_es6.asp)
+JavaScript part of [FastyBird](https://www.fastybird.com) devices module is tested against [ECMAScript 6](https://www.w3schools.com/JS/js_es6.asp)
 
 Python part of [FastyBird](https://www.fastybird.com) devices module is tested against [Python 3.7](http://python.org)
 
 ## Installation
 
-#### Backend
+#### Application backend in PHP
 
 The best way to install **fastybird/devices-module** is using [Composer](http://getcomposer.org/):
 
@@ -51,7 +51,7 @@ The best way to install **fastybird/devices-module** is using [Composer](http://
 composer require fastybird/devices-module
 ```
 
-#### Frontend
+#### Application frontend in JS
 
 The best way to install **@fastybird/devices-module** is using [Yarn](https://yarnpkg.com/):
 
@@ -65,7 +65,7 @@ or if you prefer npm:
 npm install @fastybird/devices-module
 ```
 
-#### Python project:
+#### Application additional backend in Python
 
 The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
 

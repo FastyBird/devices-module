@@ -4,7 +4,7 @@ This module adds support for managing [FastyBird](https://www.fastybird.com) IoT
 
 ## Installation
 
-### Backend
+### Application backend in PHP
 
 The best way to install **fastybird/devices-module** is using [Composer](https://getcomposer.org/).
 
@@ -34,7 +34,7 @@ Module could be added to your project with composer command:
 composer require fastybird/devices-module
 ```
 
-### Frontend
+### Application frontend in JS
 
 The best way to install **@fastybird/devices-module** is using [Yarn](https://yarnpkg.com/):
 
@@ -48,7 +48,7 @@ or if you prefer npm:
 npm install @fastybird/devices-module
 ```
 
-### Python project:
+### Application additional backend in Python
 
 The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
 

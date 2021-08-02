@@ -1,25 +1,26 @@
 # FastyBird IoT devices module
 
 [![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/actions)
-[![Code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flast-square)](https://coveralls.io/r/FastyBird/devices-module)
-![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flast-square)
-[![Licence](https://badgen.net/packagist/license/FastyBird/devices-module?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
-[![Downloads total](https://badgen.net/packagist/dt/FastyBird/devices-module?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
-[![Latest stable](https://badgen.net/packagist/v/FastyBird/devices-module/latest?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
-[![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+[![Licence](https://badgen.net/packagist/license/FastyBird/devices-module?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
 
-[![Latest stable](https://badgen.net/npm/v/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
-[![Downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
+![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flast-square)
+[![PHP code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flast-square)](https://coveralls.io/r/FastyBird/devices-module)
+[![PHP latest stable](https://badgen.net/packagist/v/FastyBird/devices-module/latest?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
+[![PHP downloads total](https://badgen.net/packagist/dt/FastyBird/devices-module?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
+[![PHPStan](https://img.shields.io/badge/phpstan-enabled-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+
+[![JS latest stable](https://badgen.net/npm/v/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
+[![JS downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
 ![Types](https://badgen.net/npm/types/@fastybird/devices-module?cache=300&style=flast-square)
 
 ![Python](https://badgen.net/pypi/python/fastybird-devices-module?cache=300&style=flat-square)
-[![Licence](https://badgen.net/pypi/license/fastybird-devices-module?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
-[![Latest stable](https://badgen.net/pypi/v/fastybird-devices-module?cache=300&style=flast-square)](https://pypi.org/project/fastybird-devices-module/)
-[![Black](https://img.shields.io/badge/Black-enabled-brightgreen.svg?style=flat-square)](https://github.com/psf/black)
+[![Python latest stable](https://badgen.net/pypi/v/fastybird-devices-module?cache=300&style=flast-square)](https://pypi.org/project/fastybird-devices-module/)
+[![Python downloads month](https://img.shields.io/pypi/dm/fastybird-devices-module?cache=300&style=flat-square)](https://pypi.org/project/fastybird-devices-module/)
+[![Black](https://img.shields.io/badge/black-enabled-brightgreen.svg?style=flat-square)](https://github.com/psf/black)
 
 ## What is FastyBird IoT devices module?
 
-Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin for managing connected devices and their basic logic.
+Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin and also [Python](https://python.org) module for managing connected devices and their basic logic.
 
 [FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed in [PHP](https://www.php.net) with [Nette framework](https://nette.org) and in [Typescript](https://www.typescriptlang.org).
 

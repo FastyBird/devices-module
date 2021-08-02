@@ -1,4 +1,4 @@
 fastybird-application-events>=0.1
-fastybird-modules-metadata>=0.3
+fastybird-modules-metadata>=0.4
 pony>=0.7
 setuptools>=57.4

@@ -14,22 +14,26 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+"""
+Entities cache to prevent database overloading
+"""
+
 # Library dependencies
 import uuid
 from abc import ABC
-from modules_metadata.types import DataType
 from typing import Dict, Set, Tuple
+from modules_metadata.types import DataType
 
 
-#
-# Base property item
-#
-# @package        FastyBird:DevicesModule!
-# @subpackage     Items
-#
-# @author         Adam Kadlec <adam.kadlec@fastybird.com>
-#
 class PropertyItem(ABC):
+    """
+    Property entity base item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
     __id: uuid.UUID
     __key: str
     __identifier: str
@@ -70,65 +74,75 @@ class PropertyItem(ABC):
 
     @property
     def device(self) -> uuid.UUID:
+        """Property device identifier"""
         return self.__device_id
 
     # -----------------------------------------------------------------------------
 
     @property
     def property_id(self) -> uuid.UUID:
+        """Property identifier"""
         return self.__id
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
+        """Property unique human readable key"""
         return self.__key
 
     # -----------------------------------------------------------------------------
 
     @property
     def identifier(self) -> str:
+        """Property human readable identifier"""
         return self.__identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def settable(self) -> bool:
+        """Property is settable flag"""
         return self.__settable
 
     # -----------------------------------------------------------------------------
 
     @property
     def queryable(self) -> bool:
+        """Property is queryable flag"""
         return self.__queryable
 
     # -----------------------------------------------------------------------------
 
     @property
     def data_type(self) -> DataType or None:
+        """Property data type"""
         return self.__data_type
 
     # -----------------------------------------------------------------------------
 
     @property
     def unit(self) -> str or None:
+        """Property unit"""
         return self.__unit
 
     # -----------------------------------------------------------------------------
 
     @property
     def format(self) -> str or None:
+        """Property value format"""
         return self.__format
 
     # -----------------------------------------------------------------------------
 
     def get_format(self) -> Tuple[int, int] or Tuple[float, float] or Set[str]:
+        """Property formatted value format"""
         if self.__format is None:
             return None
 
         if self.__data_type is not None:
             if self.__data_type == DataType.DATA_TYPE_INT:
-                min_value, max_value, *rest = self.__format.split(":") + [None, None]
+                min_value, max_value, *rest = self.__format.split(":") + [None, None]  # pylint: disable=unused-variable
 
                 if min_value is not None and max_value is not None and int(min_value) <= int(max_value):
                     return int(min_value), int(max_value)
@@ -140,13 +154,14 @@ class PropertyItem(ABC):
                     return float(min_value), float(max_value)
 
             elif self.__data_type == DataType.DATA_TYPE_ENUM:
-                return set([x.strip() for x in self.__format.split(",")])
+                return {x.strip() for x in self.__format.split(",")}
 
         return None
 
     # -----------------------------------------------------------------------------
 
     def to_array(self) -> Dict[str, str or int or bool or None]:
+        """Convert property item to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
 
@@ -168,27 +183,26 @@ class PropertyItem(ABC):
         }
 
 
-#
-# Device property item
-#
-# @package        FastyBird:DevicesModule!
-# @subpackage     Items
-#
-# @author         Adam Kadlec <adam.kadlec@fastybird.com>
-#
 class DevicePropertyItem(PropertyItem):
-    pass
+    """
+    Device property entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
 
 
-#
-# Channel property item
-#
-# @package        FastyBird:DevicesModule!
-# @subpackage     Items
-#
-# @author         Adam Kadlec <adam.kadlec@fastybird.com>
-#
 class ChannelPropertyItem(PropertyItem):
+    """
+    Channel property entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
     __channel_id: uuid.UUID
 
     # -----------------------------------------------------------------------------
@@ -223,18 +237,19 @@ class ChannelPropertyItem(PropertyItem):
     # -----------------------------------------------------------------------------
 
     def channel(self) -> uuid.UUID:
+        """Property channel identifier"""
         return self.__channel_id
 
 
-#
-# Connection connector item
-#
-# @package        FastyBird:DevicesModule!
-# @subpackage     Items
-#
-# @author         Adam Kadlec <adam.kadlec@fastybird.com>
-#
 class ConnectorItem:
+    """
+    Connector entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
     __id: uuid.UUID
     __key: str
     __name: str
@@ -262,34 +277,40 @@ class ConnectorItem:
 
     @property
     def connector_id(self) -> uuid.UUID:
+        """Connector identifier"""
         return self.__id
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
+        """Connector unique human readable key"""
         return self.__key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> str:
+        """Connector name"""
         return self.__name
 
     # -----------------------------------------------------------------------------
 
     @property
     def enabled(self) -> bool:
+        """Connector enabled or disabled flag"""
         return self.__enabled
 
     # -----------------------------------------------------------------------------
 
     @property
     def type(self) -> str:
+        """Connector type"""
         return self.__type
 
     # -----------------------------------------------------------------------------
 
     @property
     def params(self) -> dict:
+        """Connector configuration params"""
         return self.__params

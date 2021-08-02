@@ -14,22 +14,38 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+# pylint: disable=too-many-lines
+
+"""
+Module models definitions
+"""
+
 # Library dependencies
 import uuid
 import datetime
 from abc import abstractmethod, ABC
+from typing import List, Dict
 from application_events.database import DatabaseEntityChangedEvent, EntityChangedType
 from application_events.dispatcher import app_dispatcher
 from modules_metadata.types import DataType, ModuleOrigin
 from pony.orm import core as orm, Database, PrimaryKey, Required, Optional, Set, Json
-from typing import List, Dict
 
 # Library libs
 from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPropertyItem
 
 
-def define_entities(db: Database):
+def define_entities(db: Database):  # pylint: disable=invalid-name
+    """Register all module entities and initialize repositories cache"""
+
     class ConnectorEntity(db.Entity):
+        """
+        Connector entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_connectors"
 
         connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="connector_id")
@@ -44,12 +60,22 @@ def define_entities(db: Database):
         devices: List["DeviceConnectorEntity"] = Set("DeviceConnectorEntity", reverse="connector")
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
     class DeviceEntity(db.Entity):
+        """
+        Device entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_devices"
 
         device_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_id")
@@ -95,6 +121,7 @@ def define_entities(db: Database):
         connector: "DeviceConnectorEntity" or None = Optional("DeviceConnectorEntity", reverse="device")
 
         def to_array(self) -> Dict[str, str or int or bool or None]:
+            """Transform entity to dictionary"""
             parent_id: str or None = self.parent.device_id.__str__() if self.parent is not None else None
 
             return {
@@ -116,6 +143,7 @@ def define_entities(db: Database):
             }
 
         def get_plain_controls(self) -> List[str]:
+            """Get list of controls strings"""
             controls: List[str] = []
 
             for control in self.controls:
@@ -124,6 +152,7 @@ def define_entities(db: Database):
             return controls
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.hardware_model = self.hardware_model.lower()
             self.hardware_manufacturer = self.hardware_manufacturer.lower()
             self.firmware_manufacturer = self.firmware_manufacturer.lower()
@@ -131,6 +160,7 @@ def define_entities(db: Database):
             self.created_at = datetime.datetime.now()
 
         def after_insert(self) -> None:
+            """After insert entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -141,6 +171,7 @@ def define_entities(db: Database):
             )
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.hardware_model = self.hardware_model.lower()
             self.hardware_manufacturer = self.hardware_manufacturer.lower()
             self.firmware_manufacturer = self.firmware_manufacturer.lower()
@@ -148,6 +179,7 @@ def define_entities(db: Database):
             self.updated_at = datetime.datetime.now()
 
         def after_update(self) -> None:
+            """After update entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -158,6 +190,14 @@ def define_entities(db: Database):
             )
 
     class DevicePropertyEntity(db.Entity):
+        """
+        Device property entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_devices_properties"
 
         property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
@@ -175,6 +215,7 @@ def define_entities(db: Database):
         device: DeviceEntity = Required("DeviceEntity", reverse="properties", column="device_id", nullable=False)
 
         def to_array(self) -> Dict[str, str or int or bool or None]:
+            """Transform entity to dictionary"""
             if isinstance(self.data_type, DataType):
                 data_type = self.data_type.value
 
@@ -197,9 +238,11 @@ def define_entities(db: Database):
             }
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def after_insert(self) -> None:
+            """After insert entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -210,9 +253,11 @@ def define_entities(db: Database):
             )
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
         def after_update(self) -> None:
+            """After update entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -223,6 +268,14 @@ def define_entities(db: Database):
             )
 
     class DeviceConfigurationEntity(db.Entity):
+        """
+        Device configuration entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_devices_configuration"
 
         configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
@@ -240,71 +293,82 @@ def define_entities(db: Database):
         device: DeviceEntity = Required("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
 
         def has_min(self) -> bool:
-            return True if self.params is not None and self.params.get("min_value") is not None else False
+            """Has min value flag"""
+            return self.params is not None and self.params.get("min_value") is not None
 
         def has_max(self) -> bool:
-            return True if self.params is not None and self.params.get("max_value") is not None else False
+            """Has max value flag"""
+            return self.params is not None and self.params.get("max_value") is not None
 
         def has_step(self) -> bool:
-            return True if self.params is not None and self.params.get("step_value") is not None else False
+            """Has step value flag"""
+            return self.params is not None and self.params.get("step_value") is not None
 
         def get_value(self) -> float or int or str or None:
+            """Get configuration value"""
             if self.value is None:
                 return None
 
             if isinstance(self.data_type, DataType):
                 if (
-                    self.data_type == DataType.DATA_TYPE_CHAR
-                    or self.data_type == DataType.DATA_TYPE_UCHAR
-                    or self.data_type == DataType.DATA_TYPE_SHORT
-                    or self.data_type == DataType.DATA_TYPE_USHORT
-                    or self.data_type == DataType.DATA_TYPE_INT
-                    or self.data_type == DataType.DATA_TYPE_UINT
+                    self.data_type in [
+                        DataType.DATA_TYPE_CHAR,
+                        DataType.DATA_TYPE_UCHAR,
+                        DataType.DATA_TYPE_SHORT,
+                        DataType.DATA_TYPE_USHORT,
+                        DataType.DATA_TYPE_INT,
+                        DataType.DATA_TYPE_UINT,
+                    ]
                 ):
                     return int(self.value)
 
-                elif self.data_type == DataType.DATA_TYPE_FLOAT:
+                if self.data_type == DataType.DATA_TYPE_FLOAT:
                     return float(self.value)
 
             return self.value
 
         def get_min(self) -> float or None:
+            """Get min value"""
             if self.params is not None and self.params.get("min_value") is not None:
                 return float(self.params.get("min_value"))
 
-            else:
-                return None
+            return None
 
         def set_min(self, min_value: float or None) -> None:
+            """Set min value"""
             self.params["min_value"] = min_value
 
         def get_max(self) -> float or None:
+            """Get max value"""
             if self.params is not None and self.params.get("max_value") is not None:
                 return float(self.params.get("max_value"))
 
-            else:
-                return None
+            return None
 
         def set_max(self, max_value: float or None) -> None:
+            """Set max value"""
             self.params["max_value"] = max_value
 
         def get_step(self) -> float or None:
+            """Get step value"""
             if self.params is not None and self.params.get("step_value") is not None:
                 return float(self.params.get("step_value"))
 
-            else:
-                return None
+            return None
 
         def set_step(self, step: float or None) -> None:
+            """Set step value"""
             self.params["step_value"] = step
 
         def get_values(self) -> List[Dict[str, str]]:
+            """Get values for options"""
             return self.params.get("select_values", [])
 
         def set_values(self, select_values: List[Dict[str, str]]) -> None:
+            """Set values for options"""
             self.params["select_values"] = select_values
-
         def to_array(self) -> Dict[str, str or int or bool or None]:
+            """Transform entity to dictionary"""
             if isinstance(self.data_type, DataType):
                 data_type = self.data_type.value
 
@@ -327,13 +391,15 @@ def define_entities(db: Database):
 
             if isinstance(self.data_type, DataType):
                 if (
-                    self.data_type == DataType.DATA_TYPE_CHAR
-                    or self.data_type == DataType.DATA_TYPE_UCHAR
-                    or self.data_type == DataType.DATA_TYPE_SHORT
-                    or self.data_type == DataType.DATA_TYPE_USHORT
-                    or self.data_type == DataType.DATA_TYPE_INT
-                    or self.data_type == DataType.DATA_TYPE_UINT
-                    or self.data_type == DataType.DATA_TYPE_FLOAT
+                    self.data_type in [
+                        DataType.DATA_TYPE_CHAR,
+                        DataType.DATA_TYPE_UCHAR,
+                        DataType.DATA_TYPE_SHORT,
+                        DataType.DATA_TYPE_USHORT,
+                        DataType.DATA_TYPE_INT,
+                        DataType.DATA_TYPE_UINT,
+                        DataType.DATA_TYPE_FLOAT,
+                    ]
                 ):
                     return {
                         **structure,
@@ -344,7 +410,7 @@ def define_entities(db: Database):
                         },
                     }
 
-                elif self.data_type == DataType.DATA_TYPE_ENUM:
+                if self.data_type == DataType.DATA_TYPE_ENUM:
                     return {
                         **structure,
                         **{
@@ -355,9 +421,11 @@ def define_entities(db: Database):
             return structure
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def after_insert(self) -> None:
+            """After insert entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -368,9 +436,11 @@ def define_entities(db: Database):
             )
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
         def after_update(self) -> None:
+            """After update entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -381,6 +451,14 @@ def define_entities(db: Database):
             )
 
     class DeviceControlEntity(db.Entity):
+        """
+        Device control entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_devices_controls"
 
         control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
@@ -391,12 +469,22 @@ def define_entities(db: Database):
         device: DeviceEntity = Required("DeviceEntity", reverse="controls", column="device_id", nullable=False)
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
     class DeviceConnectorEntity(db.Entity):
+        """
+        Device connector entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_devices_connectors"
 
         connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_connector_id")
@@ -408,12 +496,22 @@ def define_entities(db: Database):
         connector: DeviceEntity = Required("ConnectorEntity", reverse="devices", column="connector_id", nullable=False)
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
     class ChannelEntity(db.Entity):
+        """
+        Channel entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_channels"
 
         channel_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="channel_id")
@@ -431,6 +529,7 @@ def define_entities(db: Database):
         controls: List["ChannelControlEntity"] = Set("ChannelControlEntity", reverse="channel")
 
         def to_array(self) -> Dict[str, str or int or bool or None]:
+            """Transform entity to dictionary"""
             return {
                 "id": self.channel_id.__str__(),
                 "key": self.key,
@@ -442,6 +541,7 @@ def define_entities(db: Database):
             }
 
         def get_plain_controls(self) -> List[str]:
+            """Get list of controls strings"""
             controls: List[str] = []
 
             for control in self.controls:
@@ -450,9 +550,11 @@ def define_entities(db: Database):
             return controls
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def after_insert(self) -> None:
+            """After insert entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -463,9 +565,11 @@ def define_entities(db: Database):
             )
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
         def after_update(self) -> None:
+            """After update entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -476,6 +580,14 @@ def define_entities(db: Database):
             )
 
     class ChannelPropertyEntity(db.Entity):
+        """
+        Channel property entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_channels_properties"
 
         property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
@@ -493,6 +605,7 @@ def define_entities(db: Database):
         channel: ChannelEntity = Required("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
 
         def to_array(self) -> Dict[str, str or int or bool or None]:
+            """Transform entity to dictionary"""
             if isinstance(self.data_type, DataType):
                 data_type = self.data_type.value
 
@@ -515,9 +628,11 @@ def define_entities(db: Database):
             }
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def after_insert(self) -> None:
+            """After insert entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -528,9 +643,11 @@ def define_entities(db: Database):
             )
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
         def after_update(self) -> None:
+            """After update entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -541,6 +658,14 @@ def define_entities(db: Database):
             )
 
     class ChannelConfigurationEntity(db.Entity):
+        """
+        Channel configuration entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_channels_configuration"
 
         configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
@@ -558,71 +683,83 @@ def define_entities(db: Database):
         channel: ChannelEntity = Required("ChannelEntity", reverse="configuration", column="channel_id", nullable=False)
 
         def has_min(self) -> bool:
-            return True if self.params is not None and self.params.get("min_value") is not None else False
+            """Has min value flag"""
+            return self.params is not None and self.params.get("min_value") is not None
 
         def has_max(self) -> bool:
-            return True if self.params is not None and self.params.get("max_value") is not None else False
+            """Has max value flag"""
+            return self.params is not None and self.params.get("max_value") is not None
 
         def has_step(self) -> bool:
-            return True if self.params is not None and self.params.get("step_value") is not None else False
+            """Has step value flag"""
+            return self.params is not None and self.params.get("step_value") is not None
 
         def get_value(self) -> float or int or str or None:
+            """Get configuration value"""
             if self.value is None:
                 return None
 
             if isinstance(self.data_type, DataType):
                 if (
-                    self.data_type == DataType.DATA_TYPE_CHAR
-                    or self.data_type == DataType.DATA_TYPE_UCHAR
-                    or self.data_type == DataType.DATA_TYPE_SHORT
-                    or self.data_type == DataType.DATA_TYPE_USHORT
-                    or self.data_type == DataType.DATA_TYPE_INT
-                    or self.data_type == DataType.DATA_TYPE_UINT
+                    self.data_type in [
+                        DataType.DATA_TYPE_CHAR,
+                        DataType.DATA_TYPE_UCHAR,
+                        DataType.DATA_TYPE_SHORT,
+                        DataType.DATA_TYPE_USHORT,
+                        DataType.DATA_TYPE_INT,
+                        DataType.DATA_TYPE_UINT,
+                    ]
                 ):
                     return int(self.value)
 
-                elif self.data_type == DataType.DATA_TYPE_FLOAT:
+                if self.data_type == DataType.DATA_TYPE_FLOAT:
                     return float(self.value)
 
             return self.value
 
         def get_min(self) -> float or None:
+            """Get min value"""
             if self.params is not None and self.params.get("min_value") is not None:
                 return float(self.params.get("min_value"))
 
-            else:
-                return None
+            return None
 
         def set_min(self, min_value: float or None) -> None:
+            """Set min value"""
             self.params["min_value"] = min_value
 
         def get_max(self) -> float or None:
+            """Get max value"""
             if self.params is not None and self.params.get("max_value") is not None:
                 return float(self.params.get("max_value"))
 
-            else:
-                return None
+            return None
 
         def set_max(self, max_value: float or None) -> None:
+            """Set max value"""
             self.params["max_value"] = max_value
 
         def get_step(self) -> float or None:
+            """Get step value"""
             if self.params is not None and self.params.get("step_value") is not None:
                 return float(self.params.get("step_value"))
 
-            else:
-                return None
+            return None
 
         def set_step(self, step: float or None) -> None:
+            """Set step value"""
             self.params["step_value"] = step
 
         def get_values(self) -> List[Dict[str, str]]:
+            """Get values for options"""
             return self.params.get("select_values", [])
 
         def set_values(self, select_values: List[Dict[str, str]]) -> None:
+            """Set values for options"""
             self.params["select_values"] = select_values
 
         def to_array(self) -> Dict[str, str or int or bool or None]:
+            """Transform entity to dictionary"""
             if isinstance(self.data_type, DataType):
                 data_type = self.data_type.value
 
@@ -645,13 +782,15 @@ def define_entities(db: Database):
 
             if isinstance(self.data_type, DataType):
                 if (
-                    self.data_type == DataType.DATA_TYPE_CHAR
-                    or self.data_type == DataType.DATA_TYPE_UCHAR
-                    or self.data_type == DataType.DATA_TYPE_SHORT
-                    or self.data_type == DataType.DATA_TYPE_USHORT
-                    or self.data_type == DataType.DATA_TYPE_INT
-                    or self.data_type == DataType.DATA_TYPE_UINT
-                    or self.data_type == DataType.DATA_TYPE_FLOAT
+                    self.data_type in [
+                        DataType.DATA_TYPE_CHAR,
+                        DataType.DATA_TYPE_UCHAR,
+                        DataType.DATA_TYPE_SHORT,
+                        DataType.DATA_TYPE_USHORT,
+                        DataType.DATA_TYPE_INT,
+                        DataType.DATA_TYPE_UINT,
+                        DataType.DATA_TYPE_FLOAT,
+                    ]
                 ):
                     return {
                         **structure,
@@ -662,7 +801,7 @@ def define_entities(db: Database):
                         },
                     }
 
-                elif self.data_type == DataType.DATA_TYPE_ENUM:
+                if self.data_type == DataType.DATA_TYPE_ENUM:
                     return {
                         **structure,
                         **{
@@ -673,9 +812,11 @@ def define_entities(db: Database):
             return structure
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def after_insert(self) -> None:
+            """After insert entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -686,9 +827,11 @@ def define_entities(db: Database):
             )
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
         def after_update(self) -> None:
+            """After update entity hook"""
             app_dispatcher.dispatch(
                 DatabaseEntityChangedEvent.EVENT_NAME,
                 DatabaseEntityChangedEvent(
@@ -699,6 +842,14 @@ def define_entities(db: Database):
             )
 
     class ChannelControlEntity(db.Entity):
+        """
+        Channel control entity
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _table_: str = "fb_channels_controls"
 
         control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
@@ -709,20 +860,22 @@ def define_entities(db: Database):
         channel: ChannelEntity = Required("ChannelEntity", reverse="controls", column="channel_id", nullable=False)
 
         def before_insert(self) -> None:
+            """Before insert entity hook"""
             self.created_at = datetime.datetime.now()
 
         def before_update(self) -> None:
+            """Before update entity hook"""
             self.updated_at = datetime.datetime.now()
 
-    #
-    # Base properties repository
-    #
-    # @package        FastyBird:DevicesModule!
-    # @subpackage     Repositories
-    #
-    # @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    #
     class PropertiesRepository(ABC):
+        """
+        Base properties repository
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         _items: List[ChannelPropertyItem or DevicePropertyItem] or None = None
 
         __iterator_index = 0
@@ -730,6 +883,7 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def get_property_by_id(self, property_id: uuid.UUID) -> DevicePropertyItem or ChannelPropertyItem or None:
+            """Find property in cache by provided identifier"""
             if self._items is None:
                 self.initialize()
 
@@ -742,6 +896,7 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def get_property_by_key(self, property_key: str) -> DevicePropertyItem or ChannelPropertyItem or None:
+            """Find property in cache by provided key"""
             if self._items is None:
                 self.initialize()
 
@@ -754,13 +909,14 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def clear(self) -> None:
+            """Clear items cache"""
             self._items = None
 
         # -----------------------------------------------------------------------------
 
         @abstractmethod
         def initialize(self) -> None:
-            pass
+            """Initialize repository by fetching entities from database"""
 
         # -----------------------------------------------------------------------------
 
@@ -797,17 +953,18 @@ def define_entities(db: Database):
             # End of iteration
             raise StopIteration
 
-    #
-    # Device properties repository
-    #
-    # @package        FastyBird:DevicesModule!
-    # @subpackage     Repositories
-    #
-    # @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    #
     class DevicesPropertiesRepository(PropertiesRepository):
+        """
+        Devices properties repository
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         @orm.db_session
         def initialize(self) -> None:
+            """Initialize repository by fetching entities from database"""
             self._items = []
 
             for entity in DevicePropertyEntity.select():
@@ -825,17 +982,18 @@ def define_entities(db: Database):
                     )
                 )
 
-    #
-    # Channel properties repository
-    #
-    # @package        FastyBird:DevicesModule!
-    # @subpackage     Repositories
-    #
-    # @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    #
     class ChannelsPropertiesRepository(PropertiesRepository):
+        """
+        Channels properties repository
+
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         @orm.db_session
         def initialize(self) -> None:
+            """Initialize repository by fetching entities from database"""
             self._items = []
 
             for entity in ChannelPropertyEntity.select():
@@ -854,16 +1012,15 @@ def define_entities(db: Database):
                     )
                 )
 
-    #
-    # Connectors repository
-    #
-    # @package        FastyBird:DevicesModule!
-    # @subpackage     Models
-    #
-    # @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    #
     class ConnectorsRepository(ABC):
+        """
+        Connectors repository
 
+        @package        FastyBird:DevicesModule!
+        @module         models
+
+        @author         Adam Kadlec <adam.kadlec@fastybird.com>
+        """
         __items: List[ConnectorItem] or None = None
 
         __iterator_index = 0
@@ -871,6 +1028,7 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def get_connector_by_id(self, connector_id: uuid.UUID) -> ConnectorItem or None:
+            """Find connector in cache by provided identifier"""
             if self.__items is None:
                 self.initialize()
 
@@ -883,6 +1041,7 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def get_connector_by_key(self, connector_key: str) -> ConnectorItem or None:
+            """Find connector in cache by provided key"""
             if self.__items is None:
                 self.initialize()
 
@@ -895,12 +1054,14 @@ def define_entities(db: Database):
         # -----------------------------------------------------------------------------
 
         def clear(self) -> None:
+            """Clear items cache"""
             self.__items = None
 
         # -----------------------------------------------------------------------------
 
         @orm.db_session
         def initialize(self) -> None:
+            """Initialize repository by fetching entities from database"""
             self.__items = []
 
             for entity in ConnectorEntity.select():

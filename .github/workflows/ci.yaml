@@ -204,7 +204,7 @@ jobs:
 
       - name: "Upload test output"
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: "actions/upload-artifact@v2"
         with:
           name: output
           path: tests/**/output
@@ -317,10 +317,10 @@ jobs:
 
       - name: "Install dependencies"
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: 'yarn install'
+        run: "yarn install"
 
       - name: "Check linter"
-        run: 'yarn lint:js'
+        run: "yarn lint:js"
 
   tslint:
     name: "Typescript linting for JS code"
@@ -354,10 +354,10 @@ jobs:
 
       - name: "Install dependencies"
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: 'yarn install'
+        run: "yarn install"
 
       - name: "Check linter"
-        run: 'yarn lint:ts'
+        run: "yarn lint:ts"
 
   publish-npmjs:
     name: "Build JS library and publish it to NPM"

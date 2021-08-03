@@ -385,7 +385,7 @@ jobs:
         id: "get_version"
 
       - name: "Install package dependencies"
-        run: yarn install
+        run: "yarn install"
 
       - name: "Set up git since we will later push to the repo"
         run: |
@@ -396,12 +396,12 @@ jobs:
         run: npm version ${{ steps.get_version.outputs.version-without-v }} --allow-same-version
 
       - name: "Build the project"
-        run: yarn build
+        run: "yarn build"
 
       - name: "Publish to NPM"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
-        run: npm publish --access public
+        run: "npm publish --access public"
 
   publish-github:
     name: "Build JS library and publish it to Github packages"
@@ -431,7 +431,7 @@ jobs:
       - name: "Install package dependencies"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn install
+        run: "yarn install"
 
       - name: "Set up git since we will later push to the repo"
         run: |
@@ -439,15 +439,15 @@ jobs:
           git config --global user.email "code@fastybird.com"
 
       - name: "Upgrade npm version in package.json to the tag used in the release"
-        run: npm version ${{ steps.get_version.outputs.version-without-v }} --allow-same-version
+        run: "npm version ${{ steps.get_version.outputs.version-without-v }} --allow-same-version"
 
       - name: "Build the project"
-        run: yarn build
+        run: "yarn build"
 
       - name: "Publish to NPM"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --access public
+        run: "npm publish --access public"
 
   build-python:
     name: "Build python distribution"
@@ -482,9 +482,7 @@ jobs:
         run: "python setup.py sdist bdist_wheel"
 
       - name: "Run code lint"
-        run: |
-          python -m pip install pylint
-          pylint **/*.py
+        run: "make python_qa"
 
       - name: "Upload build result"
         uses: "actions/upload-artifact@v1"
@@ -499,7 +497,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.7", "3.8"]
+        python: ["3.7", "3.8", "3.9", "3.10"]
         operating-system: ["ubuntu-latest"]
         installable: ["wheel", "sdist"]
 
@@ -517,13 +515,11 @@ jobs:
 
       - name: "Install wheel"
         if: matrix.installable == 'wheel'
-        run: |
-          pip install dist/fastybird_devices_module-*-py3-none-any.whl
+        run: "pip install dist/fastybird_devices_module-*-py3-none-any.whl"
 
       - name: "Install source tarball"
         if: matrix.installable == 'sdist'
-        run: |
-          pip install dist/fastybird-devices-module-*.tar.gz
+        run: "pip install dist/fastybird-devices-module-*.tar.gz"
 
   publish-on-testpypi:
     name: "Publish Python package on TestPyPI"
@@ -545,7 +541,6 @@ jobs:
 
       - name: "Publish to index"
         uses: "pypa/gh-action-pypi-publish@master"
-        continue-on-error: true
         with:
           password: ${{ secrets.testpypi_password }}
           repository_url: "https://test.pypi.org/legacy/"

@@ -1,4 +1,4 @@
-.PHONY: php_qa php_lint php_cs php_csf phpstan php_tests php_coverage
+.PHONY: php_qa php_lint php_cs php_csf phpstan php_tests php_coverage python_qa
 
 all:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | xargs
@@ -25,3 +25,9 @@ php_tests: vendor
 
 php_coverage: vendor
 	vendor/bin/tester -s -p phpdbg --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/cases
+
+pylint:
+	python -m pip install pylint
+
+python_qa: pylint
+	pylint **/*.py

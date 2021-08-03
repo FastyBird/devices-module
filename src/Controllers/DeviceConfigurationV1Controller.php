@@ -175,7 +175,6 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 					return $response
 						->withEntity(WebServerHttp\ScalarEntity::from($device));
 				}
-
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,

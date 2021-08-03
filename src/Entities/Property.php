@@ -228,7 +228,6 @@ abstract class Property implements IProperty
 						return [intval($min), intval($max)];
 					}
 				}
-
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 				if ($format !== null) {
 					[$min, $max] = explode(':', $format) + [null, null];
@@ -237,7 +236,6 @@ abstract class Property implements IProperty
 						return [floatval($min), floatval($max)];
 					}
 				}
-
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 				if ($format !== null) {
 					return array_filter(array_map('trim', explode(',', $format)), function ($item): bool {

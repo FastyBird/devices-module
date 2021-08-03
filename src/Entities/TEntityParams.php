@@ -84,11 +84,9 @@ trait TEntityParams
 
 			if ($value === null) {
 				unset($val[$last]);
-
 			} else {
 				$val[$last] = $value;
 			}
-
 		} else {
 			if ($value === null) {
 				unset($this->params[$parts[0]]);
@@ -121,11 +119,9 @@ trait TEntityParams
 					if (isset($val)) {
 						if (isset($val[$part])) {
 							$val = $val[$part];
-
 						} else {
 							$val = null;
 						}
-
 					} else {
 						$val = $this->params[$part] ?? $default;
 					}

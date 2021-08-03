@@ -56,7 +56,6 @@ trait TChannelFinder
 					$this->translator->translate('//devices-module.base.messages.notFound.message')
 				);
 			}
-
 		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,

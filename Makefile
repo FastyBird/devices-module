@@ -24,7 +24,7 @@ php_tests: vendor
 	vendor/bin/tester -s -p php --colors 1 -C tests/cases
 
 php_coverage: vendor
-	vendor/bin/tester -s -p pcov --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/cases
+	vendor/bin/tester -s -p php --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/cases
 
 pylint:
 	python -m pip install pylint

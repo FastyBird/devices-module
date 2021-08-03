@@ -1,7 +1,7 @@
 # FastyBird IoT devices module
 
 [![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/actions)
-[![Licence](https://badgen.net/packagist/license/FastyBird/devices-module?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
+[![Licence](https://badgen.net/github/license/FastyBird/devices-module?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
 
 ![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flast-square)
 [![PHP code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flast-square)](https://coveralls.io/r/FastyBird/devices-module)

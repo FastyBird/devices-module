@@ -302,9 +302,9 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     if (
       ![
-        RoutingKeys.CHANNELS_CREATED_ENTITY,
-        RoutingKeys.CHANNELS_UPDATED_ENTITY,
-        RoutingKeys.CHANNELS_DELETED_ENTITY,
+        RoutingKeys.CHANNELS_ENTITY_CREATED,
+        RoutingKeys.CHANNELS_ENTITY_UPDATED,
+        RoutingKeys.CHANNELS_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -317,12 +317,12 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     if (validate(body)) {
       if (
         !Channel.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.CHANNELS_UPDATED_ENTITY || payload.routingKey === RoutingKeys.CHANNELS_DELETED_ENTITY)
+        (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED || payload.routingKey === RoutingKeys.CHANNELS_ENTITY_DELETED)
       ) {
         throw new Error('devices-module.channels.update.failed')
       }
 
-      if (payload.routingKey === RoutingKeys.CHANNELS_DELETED_ENTITY) {
+      if (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -343,12 +343,12 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.CHANNELS_UPDATED_ENTITY && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.CHANNELS_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
           id: body.id,
         })
 
@@ -393,7 +393,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.CHANNELS_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }

@@ -309,9 +309,9 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
 
     if (
       ![
-        RoutingKeys.DEVICES_PROPERTY_CREATED_ENTITY,
-        RoutingKeys.DEVICES_PROPERTY_UPDATED_ENTITY,
-        RoutingKeys.DEVICES_PROPERTY_DELETED_ENTITY,
+        RoutingKeys.DEVICES_PROPERTY_ENTITY_CREATED,
+        RoutingKeys.DEVICES_PROPERTY_ENTITY_UPDATED,
+        RoutingKeys.DEVICES_PROPERTY_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -324,12 +324,12 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
     if (validate(body)) {
       if (
         !DeviceProperty.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_UPDATED_ENTITY || payload.routingKey === RoutingKeys.DEVICES_PROPERTY_DELETED_ENTITY)
+        (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_UPDATED || payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_DELETED)
       ) {
         throw new Error('devices-module.device-properties.update.failed')
       }
 
-      if (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_DELETED_ENTITY) {
+      if (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -350,12 +350,12 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_UPDATED_ENTITY && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.DEVICES_PROPERTY_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
           id: body.id,
         })
 
@@ -400,7 +400,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.DEVICES_PROPERTY_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }

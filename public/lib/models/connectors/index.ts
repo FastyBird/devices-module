@@ -84,7 +84,7 @@ const moduleState: ConnectorState = {
 
 const moduleGetters: GetterTree<ConnectorState, unknown> = {
   firstLoadFinished: state => (): boolean => {
-    return !!state.firstLoad
+    return state.firstLoad
   },
 
   getting: state => (id: string): boolean => {
@@ -270,9 +270,9 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
     if (
       ![
-        RoutingKeys.CONNECTOR_CREATED_ENTITY,
-        RoutingKeys.CONNECTOR_UPDATED_ENTITY,
-        RoutingKeys.CONNECTOR_DELETED_ENTITY,
+        RoutingKeys.CONNECTOR_ENTITY_CREATED,
+        RoutingKeys.CONNECTOR_ENTITY_UPDATED,
+        RoutingKeys.CONNECTOR_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -285,12 +285,12 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
     if (validate(body)) {
       if (
         !Connector.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.CONNECTOR_UPDATED_ENTITY || payload.routingKey === RoutingKeys.CONNECTOR_DELETED_ENTITY)
+        (payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED || payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_DELETED)
       ) {
         throw new Error('devices-module.connectors.update.failed')
       }
 
-      if (payload.routingKey === RoutingKeys.CONNECTOR_DELETED_ENTITY) {
+      if (payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -311,12 +311,12 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.CONNECTOR_UPDATED_ENTITY && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.CONNECTOR_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
           id: body.id,
         })
 
@@ -346,7 +346,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.CONNECTOR_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }

@@ -317,9 +317,9 @@ const moduleActions: ActionTree<ChannelConfigurationState, unknown> = {
 
     if (
       ![
-        RoutingKeys.CHANNELS_CONFIGURATION_CREATED_ENTITY,
-        RoutingKeys.CHANNELS_CONFIGURATION_UPDATED_ENTITY,
-        RoutingKeys.CHANNELS_CONFIGURATION_DELETED_ENTITY,
+        RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_CREATED,
+        RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_UPDATED,
+        RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -332,12 +332,12 @@ const moduleActions: ActionTree<ChannelConfigurationState, unknown> = {
     if (validate(body)) {
       if (
         !ChannelConfiguration.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_UPDATED_ENTITY || payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_DELETED_ENTITY)
+        (payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_UPDATED || payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_DELETED)
       ) {
         throw new Error('devices-module.channel-configuration.update.failed')
       }
 
-      if (payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_DELETED_ENTITY) {
+      if (payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -358,16 +358,16 @@ const moduleActions: ActionTree<ChannelConfigurationState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_UPDATED_ENTITY && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
           id: body.id,
         })
 
-        const entityData: { [index: string]: string | number | string[] | number[] | boolean[] | DataType | null | undefined } = {
+        const entityData: { [index: string]: string | number | (string | number | boolean)[] | DataType | null | undefined } = {
           type: ChannelConfigurationEntityTypes.CONFIGURATION,
         }
 
@@ -408,7 +408,7 @@ const moduleActions: ActionTree<ChannelConfigurationState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.CHANNELS_CONFIGURATION_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }

@@ -91,7 +91,7 @@ const moduleState: DeviceState = {
 
 const moduleGetters: GetterTree<DeviceState, unknown> = {
   firstLoadFinished: state => (): boolean => {
-    return !!state.firstLoad
+    return state.firstLoad
   },
 
   getting: state => (id: string): boolean => {
@@ -99,7 +99,7 @@ const moduleGetters: GetterTree<DeviceState, unknown> = {
   },
 
   fetching: state => (): boolean => {
-    return !!state.semaphore.fetching.items
+    return state.semaphore.fetching.items
   },
 }
 
@@ -500,9 +500,9 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     if (
       ![
-        RoutingKeys.DEVICES_CREATED_ENTITY,
-        RoutingKeys.DEVICES_UPDATED_ENTITY,
-        RoutingKeys.DEVICES_DELETED_ENTITY,
+        RoutingKeys.DEVICES_ENTITY_CREATED,
+        RoutingKeys.DEVICES_ENTITY_UPDATED,
+        RoutingKeys.DEVICES_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -515,12 +515,12 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     if (validate(body)) {
       if (
         !Device.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.DEVICES_UPDATED_ENTITY || payload.routingKey === RoutingKeys.DEVICES_DELETED_ENTITY)
+        (payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED || payload.routingKey === RoutingKeys.DEVICES_ENTITY_DELETED)
       ) {
         throw new Error('devices-module.devices.update.failed')
       }
 
-      if (payload.routingKey === RoutingKeys.DEVICES_DELETED_ENTITY) {
+      if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -541,12 +541,12 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.DEVICES_UPDATED_ENTITY && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.DEVICES_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
           id: body.id,
         })
 
@@ -577,7 +577,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.DEVICES_UPDATED_ENTITY ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }

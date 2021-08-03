@@ -1,20 +1,20 @@
 # FastyBird IoT devices module
 
-[![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flast-square)](https://github.com/FastyBird/devices-module/actions)
+[![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/actions)
 [![Licence](https://badgen.net/github/license/FastyBird/devices-module?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
 
-![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flast-square)
-[![PHP code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flast-square)](https://coveralls.io/r/FastyBird/devices-module)
-[![PHP latest stable](https://badgen.net/packagist/v/FastyBird/devices-module/latest?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
-[![PHP downloads total](https://badgen.net/packagist/dt/FastyBird/devices-module?cache=300&style=flast-square)](https://packagist.org/packages/FastyBird/devices-module)
+![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flat-square)
+[![PHP code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flat-square)](https://coveralls.io/r/FastyBird/devices-module)
+[![PHP latest stable](https://badgen.net/packagist/v/FastyBird/devices-module/latest?cache=300&style=flat-square)](https://packagist.org/packages/FastyBird/devices-module)
+[![PHP downloads total](https://badgen.net/packagist/dt/FastyBird/devices-module?cache=300&style=flat-square)](https://packagist.org/packages/FastyBird/devices-module)
 [![PHPStan](https://img.shields.io/badge/phpstan-enabled-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
 
-[![JS latest stable](https://badgen.net/npm/v/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
-[![JS downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flast-square)](https://www.npmjs.com/package/@fastybird/devices-module)
-![Types](https://badgen.net/npm/types/@fastybird/devices-module?cache=300&style=flast-square)
+[![JS latest stable](https://badgen.net/npm/v/@fastybird/devices-module?cache=300&style=flat-square)](https://www.npmjs.com/package/@fastybird/devices-module)
+[![JS downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flat-square)](https://www.npmjs.com/package/@fastybird/devices-module)
+![Types](https://badgen.net/npm/types/@fastybird/devices-module?cache=300&style=flat-square)
 
 ![Python](https://badgen.net/pypi/python/fastybird-devices-module?cache=300&style=flat-square)
-[![Python latest stable](https://badgen.net/pypi/v/fastybird-devices-module?cache=300&style=flast-square)](https://pypi.org/project/fastybird-devices-module/)
+[![Python latest stable](https://badgen.net/pypi/v/fastybird-devices-module?cache=300&style=flat-square)](https://pypi.org/project/fastybird-devices-module/)
 [![Python downloads month](https://img.shields.io/pypi/dm/fastybird-devices-module?cache=300&style=flat-square)](https://pypi.org/project/fastybird-devices-module/)
 [![Black](https://img.shields.io/badge/black-enabled-brightgreen.svg?style=flat-square)](https://github.com/psf/black)
 

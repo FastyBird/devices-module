@@ -117,7 +117,7 @@ export default class Device extends Model implements DeviceInterface {
       .where('deviceId', this.id)
       .first()
 
-    return property !== null && (property.value === DeviceConnectionState.READY || property.value === DeviceConnectionState.RUNNING)
+    return property !== null && (property.actualValue === DeviceConnectionState.READY || property.actualValue === DeviceConnectionState.RUNNING)
   }
 
   get icon(): string {

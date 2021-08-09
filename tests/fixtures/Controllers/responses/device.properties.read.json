@@ -21,8 +21,8 @@
       "data_type": "int",
       "unit": null,
       "format": null,
-      "value": null,
-      "expected": null,
+      "actual_value": null,
+      "expected_value": null,
       "pending": false
     },
     "relationships": {

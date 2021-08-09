@@ -56,7 +56,8 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	public function __construct(
 		Routing\IRouter $router,
 		?Models\States\IPropertyRepository $propertyRepository
-	) {
+	)
+	{
 		$this->router = $router;
 		$this->propertyRepository = $propertyRepository;
 	}
@@ -90,17 +91,17 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property->getId());
 
 		return [
-			'key'        => $property->getKey(),
-			'identifier' => $property->getIdentifier(),
-			'name'       => $property->getName(),
-			'settable'   => $property->isSettable(),
-			'queryable'  => $property->isQueryable(),
-			'data_type'  => $property->getDataType() !== null ? $property->getDataType()->getValue() : null,
-			'unit'       => $property->getUnit(),
-			'format'     => is_array($property->getFormat()) ? implode(',', $property->getFormat()) : $property->getFormat(),
-			'value'      => $state !== null ? $state->getValue() : null,
-			'expected'   => $state !== null ? $state->getExpected() : null,
-			'pending'    => $state !== null && $state->isPending(),
+			'key'            => $property->getKey(),
+			'identifier'     => $property->getIdentifier(),
+			'name'           => $property->getName(),
+			'settable'       => $property->isSettable(),
+			'queryable'      => $property->isQueryable(),
+			'data_type'      => $property->getDataType() !== null ? $property->getDataType()->getValue() : null,
+			'unit'           => $property->getUnit(),
+			'format'         => is_array($property->getFormat()) ? implode(',', $property->getFormat()) : $property->getFormat(),
+			'actual_value'   => $state !== null ? $state->getActualValue() : null,
+			'expected_value' => $state !== null ? $state->getExpectedValue() : null,
+			'pending'        => $state !== null && $state->isPending(),
 		];
 	}
 

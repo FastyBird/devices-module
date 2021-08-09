@@ -31,7 +31,7 @@ trait TChannelFinder
 {
 
 	/**
-	 * @param string $id
+	 * @param non-empty-string $id
 	 * @param Entities\Devices\IDevice $device
 	 *
 	 * @return Entities\Channels\IChannel

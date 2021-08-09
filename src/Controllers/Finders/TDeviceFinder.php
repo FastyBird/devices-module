@@ -31,7 +31,7 @@ trait TDeviceFinder
 {
 
 	/**
-	 * @param string $id
+	 * @param non-empty-string $id
 	 *
 	 * @return Entities\Devices\IDevice
 	 *

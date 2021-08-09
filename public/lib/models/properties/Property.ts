@@ -29,8 +29,8 @@ export default class Property extends Model implements PropertyInterface {
       unit: this.string(null).nullable(),
       format: this.string(null).nullable(),
 
-      value: this.attr(null).nullable(),
-      expected: this.attr(null).nullable(),
+      actualValue: this.attr(null).nullable(),
+      expectedValue: this.attr(null).nullable(),
       pending: this.boolean(false),
 
       // Relations
@@ -49,8 +49,8 @@ export default class Property extends Model implements PropertyInterface {
   unit!: string | null
   format!: string | null
 
-  value!: string | number | boolean | null
-  expected!: string | number | boolean | null
+  actualValue!: string | number | boolean | null
+  expectedValue!: string | number | boolean | null
   pending!: boolean
 
   command!: PropertyCommandState | null
@@ -124,36 +124,36 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get binaryValue(): boolean {
-    if (this.value === null) {
+    if (this.actualValue === null) {
       return false
     }
 
     if (this.isBoolean) {
-      if (typeof this.value === 'boolean') {
-        return this.value
+      if (typeof this.actualValue === 'boolean') {
+        return this.actualValue
       }
 
-      return ['true', '1', 't', 'y', 'yes'].includes(this.value.toString().toLocaleLowerCase())
+      return ['true', '1', 't', 'y', 'yes'].includes(this.actualValue.toString().toLocaleLowerCase())
     } else if (this.isEnum) {
-      return this.value === 'on'
+      return this.actualValue === 'on'
     }
 
     return false
   }
 
   get binaryExpected(): boolean | null {
-    if (this.expected === null) {
+    if (this.expectedValue === null) {
       return null
     }
 
     if (this.isBoolean) {
-      if (typeof this.expected === 'boolean') {
-        return this.expected
+      if (typeof this.expectedValue === 'boolean') {
+        return this.expectedValue
       }
 
-      return ['true', '1', 't', 'y', 'yes'].includes(this.expected.toString().toLocaleLowerCase())
+      return ['true', '1', 't', 'y', 'yes'].includes(this.expectedValue.toString().toLocaleLowerCase())
     } else if (this.isEnum) {
-      return this.expected === 'on'
+      return this.expectedValue === 'on'
     }
 
     return false
@@ -169,10 +169,10 @@ export default class Property extends Model implements PropertyInterface {
     ) {
       switch (this.identifier) {
         case 'air_quality':
-          if (this.value as number > 7) {
+          if (this.actualValue as number > 7) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
-          } else if (this.value as number > 4) {
+          } else if (this.actualValue as number > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
           }
@@ -181,10 +181,10 @@ export default class Property extends Model implements PropertyInterface {
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
 
         case 'light_level':
-          if (this.value as number > 8) {
+          if (this.actualValue as number > 8) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
-          } else if (this.value as number > 4) {
+          } else if (this.actualValue as number > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -193,10 +193,10 @@ export default class Property extends Model implements PropertyInterface {
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
 
         case 'noise_level':
-          if (this.value as number > 6) {
+          if (this.actualValue as number > 6) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
-          } else if (this.value as number > 3) {
+          } else if (this.actualValue as number > 3) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -210,7 +210,7 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get analogExpected(): string | null {
-    if (this.expected === null) {
+    if (this.expectedValue === null) {
       return null
     }
 
@@ -223,10 +223,10 @@ export default class Property extends Model implements PropertyInterface {
     ) {
       switch (this.identifier) {
         case 'air_quality':
-          if (this.expected > 7) {
+          if (this.expectedValue > 7) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
-          } else if (this.expected > 4) {
+          } else if (this.expectedValue > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
           }
@@ -235,10 +235,10 @@ export default class Property extends Model implements PropertyInterface {
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
 
         case 'light_level':
-          if (this.expected > 8) {
+          if (this.expectedValue > 8) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
-          } else if (this.expected > 4) {
+          } else if (this.expectedValue > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -247,10 +247,10 @@ export default class Property extends Model implements PropertyInterface {
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
 
         case 'noise_level':
-          if (this.expected > 6) {
+          if (this.expectedValue > 6) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
-          } else if (this.expected > 3) {
+          } else if (this.expectedValue > 3) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -264,7 +264,7 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get formattedValue(): string {
-    const value = parseFloat(String(this.value))
+    const value = parseFloat(String(this.actualValue))
     const decimals = 2
     const decPoint = ','
     const thousandsSeparator = ' '

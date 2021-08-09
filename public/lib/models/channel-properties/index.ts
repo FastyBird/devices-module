@@ -280,7 +280,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
           device: device.key,
           channel: channel.key,
           property: payload.property.key,
-          expected: payload.value,
+          expected_value: payload.value,
         },
       })
         .then((response: RpCallResponse<{ data: string }>): void => {

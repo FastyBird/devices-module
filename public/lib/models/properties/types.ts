@@ -61,8 +61,8 @@ export interface PropertyInterface {
   unit: string | null
   format: string | null
 
-  value: string | number | boolean | null
-  expected: string | number | boolean | null
+  actualValue: string | number | boolean | null
+  expectedValue: string | number | boolean | null
   pending: boolean
 
   command: PropertyCommandState | null

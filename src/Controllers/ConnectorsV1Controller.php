@@ -214,7 +214,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 	}
 
 	/**
-	 * @param string $id
+	 * @param non-empty-string $id
 	 *
 	 * @return Entities\Connectors\IConnector
 	 *

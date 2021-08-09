@@ -272,7 +272,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
         data: {
           device: device.key,
           configuration: payload.configuration.key,
-          expected: payload.value,
+          expected_value: payload.value,
         },
       })
         .then((response: RpCallResponse<{ data: string }>): void => {

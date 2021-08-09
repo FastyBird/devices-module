@@ -22,8 +22,8 @@
         "data_type" : "enum",
         "unit" : null,
         "format" : "on,off,toggle",
-        "value" : null,
-        "expected" : null,
+        "actual_value" : null,
+        "expected_value" : null,
         "pending" : false
       },
       "relationships" : {

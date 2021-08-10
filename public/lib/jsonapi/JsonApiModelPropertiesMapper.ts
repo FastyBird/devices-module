@@ -63,9 +63,9 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
             jsonAttributes = {}
 
             Object.keys(model[attrName]).forEach((subAttrName) => {
-              const kebabSubName = subAttrName.replace(/([a-z][A-Z0-9])/g, g => `${g[0]}_${g[1].toLowerCase()}`)
+              const snakeSubName = subAttrName.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
 
-              Object.assign(jsonAttributes, { [kebabSubName]: model[attrName][subAttrName] })
+              Object.assign(jsonAttributes, { [snakeSubName]: model[attrName][subAttrName] })
             })
           }
 

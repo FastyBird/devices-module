@@ -359,10 +359,35 @@ jobs:
       - name: "Check linter"
         run: "yarn lint:ts"
 
-  publish-npmjs:
+  js-test-build:
     name: "Build JS library and publish it to NPM"
     runs-on: "${{ matrix.operating-system }}"
     needs: ["jslint", "tslint"]
+
+    strategy:
+      matrix:
+        operating-system: ["ubuntu-latest"]
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install node"
+        uses: "actions/setup-node@v1"
+        with:
+          node-version: "12"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: "Install package dependencies"
+        run: "yarn install"
+
+      - name: "Build the project"
+        run: "yarn build"
+
+  publish-npmjs:
+    name: "Build JS library and publish it to NPM"
+    runs-on: "${{ matrix.operating-system }}"
+    needs: ["js-test-build"]
 
     strategy:
       matrix:

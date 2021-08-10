@@ -371,18 +371,20 @@ const moduleActions: ActionTree<ChannelConfigurationState, unknown> = {
           type: ChannelConfigurationEntityTypes.CONFIGURATION,
         }
 
+        const camelRegex = new RegExp('_([a-z0-9])', 'g')
+
         Object.keys(body)
           .forEach((attrName) => {
-            const kebabName = attrName.replace(/([a-z][A-Z0-9])/g, g => `${g[0]}_${g[1].toLowerCase()}`)
+            const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
-            if (kebabName === 'channel') {
+            if (camelName === 'channel') {
               const channel = Channel.query().where('channel', body[attrName]).first()
 
               if (channel !== null) {
                 entityData.channelId = channel.id
               }
             } else {
-              entityData[kebabName] = body[attrName]
+              entityData[camelName] = body[attrName]
             }
           })
 

@@ -248,7 +248,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
       throw new Error('devices-module.device-properties.transmit.failed')
     }
 
-    const backupValue = payload.property.value
+    const backupValue = payload.property.actualValue
 
     try {
       await DeviceProperty.update({
@@ -363,18 +363,20 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
           type: DevicePropertyEntityTypes.PROPERTY,
         }
 
+        const camelRegex = new RegExp('_([a-z0-9])', 'g')
+
         Object.keys(body)
           .forEach((attrName) => {
-            const kebabName = attrName.replace(/([a-z][A-Z0-9])/g, g => `${g[0]}_${g[1].toLowerCase()}`)
+            const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
-            if (kebabName === 'device') {
+            if (camelName === 'device') {
               const device = Device.query().where('identifier', body[attrName]).first()
 
               if (device !== null) {
                 entityData.deviceId = device.id
               }
             } else {
-              entityData[kebabName] = body[attrName]
+              entityData[camelName] = body[attrName]
             }
           })
 

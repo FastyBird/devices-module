@@ -360,7 +360,7 @@ jobs:
         run: "yarn lint:ts"
 
   js-test-build:
-    name: "Build JS library and publish it to NPM"
+    name: "Build JS library"
     runs-on: "${{ matrix.operating-system }}"
     needs: ["jslint", "tslint"]
 

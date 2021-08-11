@@ -415,6 +415,11 @@ jobs:
         uses: "battila7/get-version-action@v2"
         id: "get_version"
 
+      - name: "Set up git since we will later push to the repo"
+        run: |
+          git config --global user.name "GitHub CD bot"
+          git config --global user.email "code@fastybird.com"
+
       - name: "Upgrade npm version in package.json to the tag used in the release"
         run: npm version ${{ steps.get_version.outputs.version-without-v }} --allow-same-version
 
@@ -453,6 +458,11 @@ jobs:
       - name: "Extract version"
         uses: "battila7/get-version-action@v2"
         id: "get_version"
+
+      - name: "Set up git since we will later push to the repo"
+        run: |
+          git config --global user.name "GitHub CD bot"
+          git config --global user.email "code@fastybird.com"
 
       - name: "Upgrade npm version in package.json to the tag used in the release"
         run: npm version ${{ steps.get_version.outputs.version-without-v }} --allow-same-version

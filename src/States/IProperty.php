@@ -41,21 +41,21 @@ interface IProperty
 	public function setActualValue(?string $actual): void;
 
 	/**
-	 * @return bool|float|int|string|null
+	 * @return string|null
 	 */
-	public function getActualValue();
+	public function getActualValue(): ?string;
 
 	/**
-	 * @param bool|float|int|string|null $expected
+	 * @param string|null $expected
 	 *
 	 * @return void
 	 */
-	public function setExpectedValue($expected): void;
+	public function setExpectedValue(?string $expected): void;
 
 	/**
-	 * @return float|int|bool|string|null
+	 * @return string|null
 	 */
-	public function getExpectedValue();
+	public function getExpectedValue(): ?string;
 
 	/**
 	 * @param bool $pending

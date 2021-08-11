@@ -360,7 +360,7 @@ jobs:
         run: "yarn lint:ts"
 
   js-build:
-    name: "Build JS library"
+    name: "Build JS distribution"
     runs-on: "${{ matrix.operating-system }}"
     needs: ["jslint", "tslint"]
 
@@ -391,7 +391,7 @@ jobs:
           path: dist
 
   publish-npmjs:
-    name: "Build JS library and publish it to NPM"
+    name: "Publish JS distribution to NPM"
     runs-on: "${{ matrix.operating-system }}"
     needs: "js-build"
 
@@ -430,7 +430,7 @@ jobs:
         run: "npm publish --access public"
 
   publish-github:
-    name: "Build JS library and publish it to Github packages"
+    name: "Publish JS distribution to Github packages"
     runs-on: "${{ matrix.operating-system }}"
     needs: "publish-npmjs"
 
@@ -469,7 +469,7 @@ jobs:
         run: "npm publish --access public"
 
   build-python:
-    name: "Build python distribution"
+    name: "Build Python distribution"
     runs-on: "${{ matrix.operating-system }}"
 
     strategy:
@@ -506,11 +506,11 @@ jobs:
       - name: "Upload build result"
         uses: "actions/upload-artifact@v1"
         with:
-          name: dist
+          name: python-dist
           path: dist
 
   test-install-python:
-    name: "Test installation for Python code"
+    name: "Test installation of Python distribution"
     runs-on: "${{ matrix.operating-system }}"
     needs: "build-python"
 
@@ -524,7 +524,7 @@ jobs:
       - name: "Download build result"
         uses: "actions/download-artifact@v1"
         with:
-          name: dist
+          name: python-dist
           path: dist
 
       - name: "Set up Python ${{ matrix.python }}"
@@ -541,7 +541,7 @@ jobs:
         run: "pip install dist/fastybird-devices-module-*.tar.gz"
 
   publish-on-testpypi:
-    name: "Publish Python package on TestPyPI"
+    name: "Publish Python distribution on Test PyPI"
     runs-on: "${{ matrix.operating-system }}"
     needs: "test-install-python"
 
@@ -555,7 +555,7 @@ jobs:
       - name: "Download build result"
         uses: "actions/download-artifact@v1"
         with:
-          name: dist
+          name: python-dist
           path: dist
 
       - name: "Publish to index"
@@ -565,7 +565,7 @@ jobs:
           repository_url: "https://test.pypi.org/legacy/"
 
   publish-on-pypi:
-    name: "Publish Python package to PyPI"
+    name: "Publish Python distribution to PyPI"
     runs-on: "${{ matrix.operating-system }}"
     needs: "publish-on-testpypi"
 
@@ -579,7 +579,7 @@ jobs:
       - name: "Download build result"
         uses: "actions/download-artifact@v1"
         with:
-          name: dist
+          name: python-dist
           path: dist
 
       - name: "Publish to index"

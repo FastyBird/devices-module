@@ -35,7 +35,7 @@ final class PropertyHelper
 	 *
 	 * @return bool|float|int|string|null
 	 */
-	public function normalizeValue(
+	public static function normalizeValue(
 		Entities\IProperty $property,
 		$value
 	) {

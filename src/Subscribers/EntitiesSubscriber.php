@@ -70,7 +70,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		ApplicationExchangePublisher\IPublisher $publisher,
 		ORM\EntityManagerInterface $entityManager,
 		?Models\States\IPropertyRepository $propertyStateRepository = null
-	) {
+	)
+	{
 		$this->numberHashHelper = $numberHashHelper;
 		$this->dateTimeFactory = $dateTimeFactory;
 		$this->propertyStateRepository = $propertyStateRepository;
@@ -192,7 +193,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$this->publisher->publish(
 					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
 					$publishRoutingKey,
-					array_merge($state !== null ? $state->toArray() : [], $this->toArray($entity))
+					array_merge($state !== null ? [
+						'actual_value'   => Helpers\PropertyHelper::normalizeValue($entity, $state->getActualValue()),
+						'expected_value' => Helpers\PropertyHelper::normalizeValue($entity, $state->getExpectedValue()),
+						'pending'        => $state->isPending(),
+					] : [], $this->toArray($entity))
 				);
 			} else {
 				$this->publisher->publish(

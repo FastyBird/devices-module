@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
@@ -99,8 +100,8 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			'data_type'      => $property->getDataType() !== null ? $property->getDataType()->getValue() : null,
 			'unit'           => $property->getUnit(),
 			'format'         => is_array($property->getFormat()) ? implode(',', $property->getFormat()) : $property->getFormat(),
-			'actual_value'   => $state !== null ? $state->getActualValue() : null,
-			'expected_value' => $state !== null ? $state->getExpectedValue() : null,
+			'actual_value'   => $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getActualValue()) : null,
+			'expected_value' => $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getExpectedValue()) : null,
 			'pending'        => $state !== null && $state->isPending(),
 		];
 	}

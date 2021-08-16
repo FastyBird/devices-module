@@ -876,7 +876,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
 
         @author         Adam Kadlec <adam.kadlec@fastybird.com>
         """
-        _items: List[ChannelPropertyItem or DevicePropertyItem] or None = None
+        _items: Dict[str, ChannelPropertyItem or DevicePropertyItem] or None = None
 
         __iterator_index = 0
 
@@ -887,9 +887,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self._items is None:
                 self.initialize()
 
-            for record in self._items:
-                if record.property_id == property_id:
-                    return record
+            if property_id in self._items:
+                return self._items[property_id]
 
             return None
 
@@ -900,7 +899,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self._items is None:
                 self.initialize()
 
-            for record in self._items:
+            for record in self._items.values():
                 if record.key == property_key:
                     return record
 
@@ -932,7 +931,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self._items is None:
                 self.initialize()
 
-            return len(self._items)
+            return len(self._items.values())
 
         # -----------------------------------------------------------------------------
 
@@ -940,8 +939,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self._items is None:
                 self.initialize()
 
-            if self.__iterator_index < len(self._items):
-                result: ConnectorItem = self._items[self.__iterator_index]
+            if self.__iterator_index < len(self._items.values()):
+                result: ConnectorItem = self._items.values()[self.__iterator_index]
 
                 self.__iterator_index += 1
 
@@ -965,21 +964,19 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            self._items = []
+            self._items = dict()
 
             for entity in DevicePropertyEntity.select():
-                self._items.append(
-                    DevicePropertyItem(
-                        property_id=entity.property_id,
-                        property_identifier=entity.identifier,
-                        property_key=entity.key,
-                        property_settable=entity.settable,
-                        property_queryable=entity.queryable,
-                        property_data_type=entity.data_type,
-                        property_format=entity.format,
-                        property_unit=entity.unit,
-                        device_id=entity.device.device_id,
-                    )
+                self._items[entity.property_id.__str__()] = DevicePropertyItem(
+                    property_id=entity.property_id,
+                    property_identifier=entity.identifier,
+                    property_key=entity.key,
+                    property_settable=entity.settable,
+                    property_queryable=entity.queryable,
+                    property_data_type=entity.data_type,
+                    property_format=entity.format,
+                    property_unit=entity.unit,
+                    device_id=entity.device.device_id,
                 )
 
     class ChannelsPropertiesRepository(PropertiesRepository):
@@ -994,22 +991,20 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            self._items = []
+            self._items = dict()
 
             for entity in ChannelPropertyEntity.select():
-                self._items.append(
-                    ChannelPropertyItem(
-                        property_id=entity.property_id,
-                        property_identifier=entity.identifier,
-                        property_key=entity.key,
-                        property_settable=entity.settable,
-                        property_queryable=entity.queryable,
-                        property_data_type=entity.data_type,
-                        property_format=entity.format,
-                        property_unit=entity.unit,
-                        device_id=entity.channel.device.device_id,
-                        channel_id=entity.channel.channel_id,
-                    )
+                self._items[entity.property_id.__str__()] = ChannelPropertyItem(
+                    property_id=entity.property_id,
+                    property_identifier=entity.identifier,
+                    property_key=entity.key,
+                    property_settable=entity.settable,
+                    property_queryable=entity.queryable,
+                    property_data_type=entity.data_type,
+                    property_format=entity.format,
+                    property_unit=entity.unit,
+                    device_id=entity.channel.device.device_id,
+                    channel_id=entity.channel.channel_id,
                 )
 
     class ConnectorsRepository(ABC):

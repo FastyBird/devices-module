@@ -25,7 +25,10 @@ import uuid
 import datetime
 from abc import abstractmethod, ABC
 from typing import List, Dict
-from application_events.database import DatabaseEntityChangedEvent, EntityChangedType
+from application_events.database import (
+    DatabaseEntityCreatedEvent,
+    DatabaseEntityUpdatedEvent,
+)
 from application_events.dispatcher import app_dispatcher
 from modules_metadata.types import DataType, ModuleOrigin
 from pony.orm import core as orm, Database, PrimaryKey, Required, Optional, Set, Json
@@ -162,11 +165,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_insert(self) -> None:
             """After insert entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityCreatedEvent.EVENT_NAME,
+                DatabaseEntityCreatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_CREATED),
                 ),
             )
 
@@ -181,11 +183,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_update(self) -> None:
             """After update entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityUpdatedEvent.EVENT_NAME,
+                DatabaseEntityUpdatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_UPDATED),
                 ),
             )
 
@@ -244,11 +245,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_insert(self) -> None:
             """After insert entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityCreatedEvent.EVENT_NAME,
+                DatabaseEntityCreatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_CREATED),
                 ),
             )
 
@@ -259,11 +259,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_update(self) -> None:
             """After update entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityUpdatedEvent.EVENT_NAME,
+                DatabaseEntityUpdatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_UPDATED),
                 ),
             )
 
@@ -427,11 +426,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_insert(self) -> None:
             """After insert entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityCreatedEvent.EVENT_NAME,
+                DatabaseEntityCreatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_CREATED),
                 ),
             )
 
@@ -442,11 +440,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_update(self) -> None:
             """After update entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityUpdatedEvent.EVENT_NAME,
+                DatabaseEntityUpdatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_UPDATED),
                 ),
             )
 
@@ -556,11 +553,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_insert(self) -> None:
             """After insert entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityCreatedEvent.EVENT_NAME,
+                DatabaseEntityCreatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_CREATED),
                 ),
             )
 
@@ -571,11 +567,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_update(self) -> None:
             """After update entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityUpdatedEvent.EVENT_NAME,
+                DatabaseEntityUpdatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_UPDATED),
                 ),
             )
 
@@ -634,11 +629,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_insert(self) -> None:
             """After insert entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityCreatedEvent.EVENT_NAME,
+                DatabaseEntityCreatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_CREATED),
                 ),
             )
 
@@ -649,11 +643,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_update(self) -> None:
             """After update entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityUpdatedEvent.EVENT_NAME,
+                DatabaseEntityUpdatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_UPDATED),
                 ),
             )
 
@@ -818,11 +811,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_insert(self) -> None:
             """After insert entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityCreatedEvent.EVENT_NAME,
+                DatabaseEntityCreatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_CREATED),
                 ),
             )
 
@@ -833,11 +825,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         def after_update(self) -> None:
             """After update entity hook"""
             app_dispatcher.dispatch(
-                DatabaseEntityChangedEvent.EVENT_NAME,
-                DatabaseEntityChangedEvent(
+                DatabaseEntityUpdatedEvent.EVENT_NAME,
+                DatabaseEntityUpdatedEvent(
                     ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
                     self,
-                    EntityChangedType(EntityChangedType.ENTITY_UPDATED),
                 ),
             )
 

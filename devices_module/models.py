@@ -931,7 +931,9 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
                 self.initialize()
 
             if self.__iterator_index < len(self._items.values()):
-                result: ConnectorItem = self._items.values()[self.__iterator_index]
+                items: List[DevicePropertyItem or ChannelPropertyItem] = list(self._items.values())
+
+                result: DevicePropertyItem or ChannelPropertyItem = items[self.__iterator_index]
 
                 self.__iterator_index += 1
 
@@ -1082,7 +1084,9 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
                 self.initialize()
 
             if self.__iterator_index < len(self.__items.values()):
-                result: ConnectorItem = self.__items.values()[self.__iterator_index]
+                items: List[ConnectorItem] = list(self.__items.values())
+
+                result: ConnectorItem = items[self.__iterator_index]
 
                 self.__iterator_index += 1
 

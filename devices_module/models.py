@@ -878,8 +878,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self._items is None:
                 self.initialize()
 
-            if property_id in self._items:
-                return self._items[property_id]
+            if property_id.__str__() in self._items:
+                return self._items[property_id.__str__()]
 
             return None
 
@@ -1007,7 +1007,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
 
         @author         Adam Kadlec <adam.kadlec@fastybird.com>
         """
-        __items: List[ConnectorItem] or None = None
+        __items: Dict[str, ConnectorItem] or None = None
 
         __iterator_index = 0
 
@@ -1018,9 +1018,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self.__items is None:
                 self.initialize()
 
-            for record in self.__items:
-                if record.connector_id == connector_id:
-                    return record
+            if connector_id.__str__() in self.__items:
+                return self.__items[connector_id.__str__()]
 
             return None
 
@@ -1031,7 +1030,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self.__items is None:
                 self.initialize()
 
-            for record in self.__items:
+            for record in self.__items.values():
                 if record.key == connector_key:
                     return record
 
@@ -1048,18 +1047,16 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            self.__items = []
+            self.__items = dict()
 
             for entity in ConnectorEntity.select():
-                self.__items.append(
-                    ConnectorItem(
-                        connector_id=entity.connector_id,
-                        connector_name=entity.name,
-                        connector_key=entity.key,
-                        connector_enabled=entity.enabled,
-                        connector_type=entity.type,
-                        connector_params=entity.params,
-                    )
+                self.__items[entity.connector_id.__str__()] = ConnectorItem(
+                    connector_id=entity.connector_id,
+                    connector_name=entity.name,
+                    connector_key=entity.key,
+                    connector_enabled=entity.enabled,
+                    connector_type=entity.type,
+                    connector_params=entity.params,
                 )
 
         # -----------------------------------------------------------------------------
@@ -1076,7 +1073,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self.__items is None:
                 self.initialize()
 
-            return len(self.__items)
+            return len(self.__items.values())
 
         # -----------------------------------------------------------------------------
 
@@ -1084,8 +1081,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
             if self.__items is None:
                 self.initialize()
 
-            if self.__iterator_index < len(self.__items):
-                result: ConnectorItem = self.__items[self.__iterator_index]
+            if self.__iterator_index < len(self.__items.values()):
+                result: ConnectorItem = self.__items.values()[self.__iterator_index]
 
                 self.__iterator_index += 1
 

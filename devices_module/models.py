@@ -957,10 +957,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            self._items = dict()
+            items: Dict[str, DevicePropertyItem] = dict()
 
             for entity in DevicePropertyEntity.select():
-                self._items[entity.property_id.__str__()] = DevicePropertyItem(
+                items[entity.property_id.__str__()] = DevicePropertyItem(
                     property_id=entity.property_id,
                     property_identifier=entity.identifier,
                     property_key=entity.key,
@@ -971,6 +971,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
                     property_unit=entity.unit,
                     device_id=entity.device.device_id,
                 )
+
+            self._items = items
 
     class ChannelsPropertiesRepository(PropertiesRepository):
         """
@@ -984,10 +986,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            self._items = dict()
+            items: Dict[str, ChannelPropertyItem] = dict()
 
             for entity in ChannelPropertyEntity.select():
-                self._items[entity.property_id.__str__()] = ChannelPropertyItem(
+                items[entity.property_id.__str__()] = ChannelPropertyItem(
                     property_id=entity.property_id,
                     property_identifier=entity.identifier,
                     property_key=entity.key,
@@ -999,6 +1001,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
                     device_id=entity.channel.device.device_id,
                     channel_id=entity.channel.channel_id,
                 )
+
+            self._items = items
 
     class ConnectorsRepository(ABC):
         """
@@ -1049,10 +1053,10 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            self.__items = dict()
+            items: Dict[str, ConnectorItem] = dict()
 
             for entity in ConnectorEntity.select():
-                self.__items[entity.connector_id.__str__()] = ConnectorItem(
+                items[entity.connector_id.__str__()] = ConnectorItem(
                     connector_id=entity.connector_id,
                     connector_name=entity.name,
                     connector_key=entity.key,
@@ -1060,6 +1064,8 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
                     connector_type=entity.type,
                     connector_params=entity.params,
                 )
+
+            self.__items = items
 
         # -----------------------------------------------------------------------------
 

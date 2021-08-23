@@ -957,7 +957,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            items: Dict[str, DevicePropertyItem] = dict()
+            items: Dict[str, DevicePropertyItem] = {}
 
             for entity in DevicePropertyEntity.select():
                 items[entity.property_id.__str__()] = DevicePropertyItem(
@@ -986,7 +986,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            items: Dict[str, ChannelPropertyItem] = dict()
+            items: Dict[str, ChannelPropertyItem] = {}
 
             for entity in ChannelPropertyEntity.select():
                 items[entity.property_id.__str__()] = ChannelPropertyItem(
@@ -1053,7 +1053,7 @@ def define_entities(db: Database):  # pylint: disable=invalid-name
         @orm.db_session
         def initialize(self) -> None:
             """Initialize repository by fetching entities from database"""
-            items: Dict[str, ConnectorItem] = dict()
+            items: Dict[str, ConnectorItem] = {}
 
             for entity in ConnectorEntity.select():
                 items[entity.connector_id.__str__()] = ConnectorItem(

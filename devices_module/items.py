@@ -160,7 +160,7 @@ class PropertyItem(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def to_array(self) -> Dict[str, str or int or bool or None]:
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
         """Convert property item to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value

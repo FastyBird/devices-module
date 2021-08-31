@@ -24,7 +24,7 @@ Module models definitions
 import uuid
 import datetime
 from abc import abstractmethod, ABC
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from application_events.database import (
     DatabaseEntityCreatedEvent,
     DatabaseEntityUpdatedEvent,
@@ -124,7 +124,14 @@ class DeviceEntity(db.Entity):
     controls: List["DeviceControlEntity"] = Set("DeviceControlEntity", reverse="device")
     connector: "DeviceConnectorEntity" or None = Optional("DeviceConnectorEntity", reverse="device")
 
-    def to_dict(self) -> Dict[str, str or int or bool or None]:
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
         parent_id: str or None = self.parent.device_id.__str__() if self.parent is not None else None
 
@@ -217,7 +224,14 @@ class DevicePropertyEntity(db.Entity):
 
     device: DeviceEntity = Required("DeviceEntity", reverse="properties", column="device_id", nullable=False)
 
-    def to_dict(self) -> Dict[str, str or int or bool or None]:
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -370,7 +384,14 @@ class DeviceConfigurationEntity(db.Entity):
         """Set values for options"""
         self.params["select_values"] = select_values
 
-    def to_dict(self) -> Dict[str, str or int or bool or None]:
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -532,7 +553,14 @@ class ChannelEntity(db.Entity):
     configuration: List["ChannelConfigurationEntity"] = Set("ChannelConfigurationEntity", reverse="channel")
     controls: List["ChannelControlEntity"] = Set("ChannelControlEntity", reverse="channel")
 
-    def to_dict(self) -> Dict[str, str or int or bool or None]:
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
         return {
             "id": self.channel_id.__str__(),
@@ -607,7 +635,14 @@ class ChannelPropertyEntity(db.Entity):
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
 
-    def to_dict(self) -> Dict[str, str or int or bool or None]:
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -760,7 +795,14 @@ class ChannelConfigurationEntity(db.Entity):
         """Set values for options"""
         self.params["select_values"] = select_values
 
-    def to_dict(self) -> Dict[str, str or int or bool or None]:
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value

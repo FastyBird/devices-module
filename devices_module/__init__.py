@@ -16,4 +16,4 @@
 Devices module
 """
 
-__version__ = "0.2.22"
+__version__ = "0.2.23"

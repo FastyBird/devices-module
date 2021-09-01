@@ -270,8 +270,8 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
         routing_key: RoutingKeys.DEVICES_CONFIGURATION_DATA,
         origin: DeviceConfiguration.$devicesModuleOrigin,
         data: {
-          device: device.key,
-          configuration: payload.configuration.key,
+          device: device.id,
+          configuration: payload.configuration.id,
           expected_value: payload.value,
         },
       })

@@ -769,7 +769,7 @@ class DeviceConnectorEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, Ent
                 "configured_key_length": self.params.get("configured_key_length"),
             }}
 
-        elif isinstance(self.connector, FbMqttV1ConnectorEntity):
+        if isinstance(self.connector, FbMqttV1ConnectorEntity):
             return {**structure, **{
                 "username": self.params.get("username"),
             }}

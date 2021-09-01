@@ -277,9 +277,9 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
         routing_key: RoutingKeys.CHANNELS_PROPERTIES_DATA,
         origin: ChannelProperty.$devicesModuleOrigin,
         data: {
-          device: device.key,
-          channel: channel.key,
-          property: payload.property.key,
+          device: device.id,
+          channel: channel.id,
+          property: payload.property.id,
           expected_value: payload.value,
         },
       })

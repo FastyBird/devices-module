@@ -30,12 +30,12 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
     ) {
       exceptProps.push('deviceId')
       exceptProps.push('device')
-      exceptProps.push('device_backward')
+      exceptProps.push('deviceBackward')
 
       if (model.type === DeviceConnectorEntityTypes.CONNECTOR) {
         exceptProps.push('connectorId')
         exceptProps.push('connector')
-        exceptProps.push('connector_backward')
+        exceptProps.push('connectorBackward')
       }
     } else if (
       model.type === ChannelPropertyEntityTypes.PROPERTY ||
@@ -43,7 +43,7 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
     ) {
       exceptProps.push('channelId')
       exceptProps.push('channel')
-      exceptProps.push('channel_backward')
+      exceptProps.push('channelBackward')
     }
 
     if (Array.isArray(model[RELATIONSHIP_NAMES_PROP])) {

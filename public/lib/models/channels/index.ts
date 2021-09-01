@@ -363,7 +363,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'device') {
-              const device = Device.query().where('identifier', body[attrName]).first()
+              const device = Device.query().where('id', body[attrName]).first()
 
               if (device !== null) {
                 entityData.deviceId = device.id

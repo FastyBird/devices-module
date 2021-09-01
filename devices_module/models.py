@@ -28,10 +28,11 @@ from typing import List, Dict, Tuple
 from application_events.database import (
     DatabaseEntityCreatedEvent,
     DatabaseEntityUpdatedEvent,
+    DatabaseEntityDeletedEvent,
 )
 from application_events.dispatcher import app_dispatcher
 from modules_metadata.types import DataType, ModuleOrigin
-from pony.orm import core as orm, Database, PrimaryKey, Required, Optional, Set, Json
+from pony.orm import core as orm, Database, Discriminator, PrimaryKey, Required, Optional, Set, Json
 
 # Library libs
 from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPropertyItem
@@ -40,7 +41,321 @@ from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPrope
 db: Database = Database()
 
 
-class ConnectorEntity(db.Entity):
+class EntityCreatedMixin(orm.Entity):
+    """
+    Entity created field mixin
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+
+class EntityUpdatedMixin(orm.Entity):
+    """
+    Entity updated field mixin
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
+
+
+class EntityEventMixin(orm.Entity):
+    """
+    Entity event mixin
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        app_dispatcher.dispatch(
+            DatabaseEntityCreatedEvent.EVENT_NAME,
+            DatabaseEntityCreatedEvent(
+                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                self,
+            ),
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def after_update(self) -> None:
+        """After update entity hook"""
+        app_dispatcher.dispatch(
+            DatabaseEntityUpdatedEvent.EVENT_NAME,
+            DatabaseEntityUpdatedEvent(
+                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                self,
+            ),
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        app_dispatcher.dispatch(
+            DatabaseEntityDeletedEvent.EVENT_NAME,
+            DatabaseEntityDeletedEvent(
+                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                self,
+            ),
+        )
+
+
+class PropertyEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+    """
+    Base property entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
+    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
+    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
+    name: str = Optional(str, column="property_name", nullable=True)
+    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
+    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
+    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
+    unit: str or None = Optional(str, column="property_unit", nullable=True)
+    format: str or None = Optional(str, column="property_format", nullable=True)
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
+        """Transform entity to dictionary"""
+        if isinstance(self.data_type, DataType):
+            data_type = self.data_type.value
+
+        elif self.data_type is None:
+            data_type = None
+
+        else:
+            data_type = self.data_type
+
+        return {
+            "id": self.property_id.__str__(),
+            "key": self.key,
+            "identifier": self.identifier,
+            "name": self.name,
+            "settable": self.settable,
+            "queryable": self.queryable,
+            "data_type": data_type,
+            "unit": self.unit,
+            "format": self.format,
+        }
+
+
+class ConfigurationEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+    """
+    Base configuration entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
+    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
+    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
+    name: str or None = Optional(str, column="configuration_name", nullable=True)
+    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
+    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
+    default: str or None = Optional(str, column="configuration_default", nullable=True)
+    value: str or None = Optional(str, column="configuration_value", nullable=True)
+    params: Json or None = Optional(Json, column="params", nullable=True)
+
+    # -----------------------------------------------------------------------------
+
+    def has_min(self) -> bool:
+        """Has min value flag"""
+        return self.params is not None and self.params.get("min_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def has_max(self) -> bool:
+        """Has max value flag"""
+        return self.params is not None and self.params.get("max_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def has_step(self) -> bool:
+        """Has step value flag"""
+        return self.params is not None and self.params.get("step_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def get_value(self) -> float or int or str or None:
+        """Get configuration value"""
+        if self.value is None:
+            return None
+
+        if isinstance(self.data_type, DataType):
+            if (
+                self.data_type in [
+                    DataType.DATA_TYPE_CHAR,
+                    DataType.DATA_TYPE_UCHAR,
+                    DataType.DATA_TYPE_SHORT,
+                    DataType.DATA_TYPE_USHORT,
+                    DataType.DATA_TYPE_INT,
+                    DataType.DATA_TYPE_UINT,
+                ]
+            ):
+                return int(self.value)
+
+            if self.data_type == DataType.DATA_TYPE_FLOAT:
+                return float(self.value)
+
+        return self.value
+
+    # -----------------------------------------------------------------------------
+
+    def get_min(self) -> float or None:
+        """Get min value"""
+        if self.params is not None and self.params.get("min_value") is not None:
+            return float(self.params.get("min_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_min(self, min_value: float or None) -> None:
+        """Set min value"""
+        self.params["min_value"] = min_value
+
+    # -----------------------------------------------------------------------------
+
+    def get_max(self) -> float or None:
+        """Get max value"""
+        if self.params is not None and self.params.get("max_value") is not None:
+            return float(self.params.get("max_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_max(self, max_value: float or None) -> None:
+        """Set max value"""
+        self.params["max_value"] = max_value
+
+    # -----------------------------------------------------------------------------
+
+    def get_step(self) -> float or None:
+        """Get step value"""
+        if self.params is not None and self.params.get("step_value") is not None:
+            return float(self.params.get("step_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_step(self, step: float or None) -> None:
+        """Set step value"""
+        self.params["step_value"] = step
+
+    # -----------------------------------------------------------------------------
+
+    def get_values(self) -> List[Dict[str, str]]:
+        """Get values for options"""
+        return self.params.get("select_values", [])
+
+    # -----------------------------------------------------------------------------
+
+    def set_values(self, select_values: List[Dict[str, str]]) -> None:
+        """Set values for options"""
+        self.params["select_values"] = select_values
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
+        """Transform entity to dictionary"""
+        if isinstance(self.data_type, DataType):
+            data_type = self.data_type.value
+
+        elif self.data_type is None:
+            data_type = None
+
+        else:
+            data_type = self.data_type
+
+        structure: dict = {
+            "id": self.configuration_id.__str__(),
+            "key": self.key,
+            "identifier": self.identifier,
+            "name": self.name,
+            "comment": self.comment,
+            "data_type": data_type,
+            "default": self.default,
+            "value": self.get_value(),
+        }
+
+        if isinstance(self.data_type, DataType):
+            if (
+                self.data_type in [
+                    DataType.DATA_TYPE_CHAR,
+                    DataType.DATA_TYPE_UCHAR,
+                    DataType.DATA_TYPE_SHORT,
+                    DataType.DATA_TYPE_USHORT,
+                    DataType.DATA_TYPE_INT,
+                    DataType.DATA_TYPE_UINT,
+                    DataType.DATA_TYPE_FLOAT,
+                ]
+            ):
+                return {
+                    **structure,
+                    **{
+                        "min": self.get_min(),
+                        "max": self.get_max(),
+                        "step": self.get_step(),
+                    },
+                }
+
+            if self.data_type == DataType.DATA_TYPE_ENUM:
+                return {
+                    **structure,
+                    **{
+                        "values": self.get_values(),
+                    },
+                }
+
+        return structure
+
+
+class ConnectorEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Connector entity
 
@@ -51,27 +366,177 @@ class ConnectorEntity(db.Entity):
     """
     _table_: str = "fb_connectors"
 
+    type = Discriminator(str, column="connector_type")
+    _discriminator_: str = "connector"
+
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="connector_id")
     name: str or None = Required(str, column="connector_name", nullable=False)
     key: str = Required(str, column="connector_key", unique=True, max_len=50, nullable=False)
-    type: str or None = Required(str, column="connector_type", nullable=False)
     enabled: bool = Required(bool, column="connector_enabled", nullable=False, default=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     devices: List["DeviceConnectorEntity"] = Set("DeviceConnectorEntity", reverse="connector")
+    controls: List["ConnectorControlEntity"] = Set("ConnectorControlEntity", reverse="connector")
 
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
+    # -----------------------------------------------------------------------------
 
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
+        """Transform entity to dictionary"""
+        return {
+            "id": self.connector_id.__str__(),
+            "key": self.key,
+            "name": self.name,
+            "type": self.type,
+            "enabled": self.enabled,
+            "control": self.get_plain_controls(),
+        }
+
+    # -----------------------------------------------------------------------------
+
+    def get_plain_controls(self) -> List[str]:
+        """Get list of controls strings"""
+        controls: List[str] = []
+
+        for control in self.controls:
+            controls.append(control.name)
+
+        return controls
 
 
-class DeviceEntity(db.Entity):
+class FbBusConnectorEntity(ConnectorEntity):
+    """
+    FastyBird BUS connector entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    _discriminator_: str = "fb_bus"
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def address(self) -> int or None:
+        """Connector address"""
+        return int(self.params.get("address", None)) if self.params.get("address") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def serial_interface(self) -> str or None:
+        """Connector serial interface"""
+        return str(self.params.get("serial_interface", None)) \
+            if self.params.get("serial_interface") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def baud_rate(self) -> int or None:
+        """Connector communication baud rate"""
+        return int(self.params.get("baud_rate", None)) if self.params.get("baud_rate") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(
+        self,
+        only: Tuple = None,
+        exclude: Tuple = None,
+        with_collections: bool = False,
+        with_lazy: bool = False,
+        related_objects: bool = False,
+    ) -> Dict[str, str or int or bool or None]:
+        """Transform entity to dictionary"""
+        return {**{
+            "address": self.address,
+            "serial_interface": self.serial_interface,
+            "baud_rate": self.baud_rate,
+        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+
+
+class FbMqttV1ConnectorEntity(ConnectorEntity):
+    """
+    FastyBird MQTT v1 connector entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    _discriminator_: str = "fb_mqtt_v1"
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def server(self) -> str or None:
+        """Connector server address"""
+        return str(self.params.get("server", None)) if self.params.get("server") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def port(self) -> int or None:
+        """Connector server port"""
+        return int(self.params.get("port", None)) if self.params.get("port") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def secured_port(self) -> int or None:
+        """Connector server secured port"""
+        return int(self.params.get("secured_port", None)) if self.params.get("secured_port") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def username(self) -> str or None:
+        """Connector server username"""
+        return str(self.params.get("username", None)) if self.params.get("username") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(
+        self,
+        only: Tuple = None,
+        exclude: Tuple = None,
+        with_collections: bool = False,
+        with_lazy: bool = False,
+        related_objects: bool = False,
+    ) -> Dict[str, str or int or bool or None]:
+        """Transform entity to dictionary"""
+        return {**{
+            "server": self.server,
+            "port": self.port,
+            "secured_port": self.secured_port,
+            "username": self.username,
+        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+
+
+class ConnectorControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
+    """
+    Connector control entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    _table_: str = "fb_connectors_controls"
+
+    control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
+    name: str = Optional(str, column="control_name", nullable=False)
+
+    connector: ConnectorEntity = Required("ConnectorEntity", reverse="controls", column="connector_id", nullable=False)
+
+
+class DeviceEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Device entity
 
@@ -115,14 +580,14 @@ class DeviceEntity(db.Entity):
     )
     firmware_version: str or None = Optional(str, column="device_firmware_version", max_len=150, nullable=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channels: List["ChannelEntity"] = Set("ChannelEntity", reverse="device")
     properties: List["DevicePropertyEntity"] = Set("DevicePropertyEntity", reverse="device")
     configuration: List["DeviceConfigurationEntity"] = Set("DeviceConfigurationEntity", reverse="device")
     controls: List["DeviceControlEntity"] = Set("DeviceControlEntity", reverse="device")
     connector: "DeviceConnectorEntity" or None = Optional("DeviceConnectorEntity", reverse="device")
+
+    # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
@@ -153,6 +618,8 @@ class DeviceEntity(db.Entity):
             "params": self.params,
         }
 
+    # -----------------------------------------------------------------------------
+
     def get_plain_controls(self) -> List[str]:
         """Get list of controls strings"""
         controls: List[str] = []
@@ -162,44 +629,28 @@ class DeviceEntity(db.Entity):
 
         return controls
 
+    # -----------------------------------------------------------------------------
+
     def before_insert(self) -> None:
         """Before insert entity hook"""
+        super().before_insert()
+
         self.hardware_model = self.hardware_model.lower()
         self.hardware_manufacturer = self.hardware_manufacturer.lower()
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
-        self.created_at = datetime.datetime.now()
-
-    def after_insert(self) -> None:
-        """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+    # -----------------------------------------------------------------------------
 
     def before_update(self) -> None:
         """Before update entity hook"""
+        super().before_update()
+
         self.hardware_model = self.hardware_model.lower()
         self.hardware_manufacturer = self.hardware_manufacturer.lower()
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
-        self.updated_at = datetime.datetime.now()
 
-    def after_update(self) -> None:
-        """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
-
-
-class DevicePropertyEntity(db.Entity):
+class DevicePropertyEntity(PropertyEntity):
     """
     Device property entity
 
@@ -210,80 +661,25 @@ class DevicePropertyEntity(db.Entity):
     """
     _table_: str = "fb_devices_properties"
 
-    property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
-    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
-    name: str = Optional(str, column="property_name", nullable=True)
-    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
-    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
-    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
-    unit: str or None = Optional(str, column="property_unit", nullable=True)
-    format: str or None = Optional(str, column="property_format", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
-
     device: DeviceEntity = Required("DeviceEntity", reverse="properties", column="device_id", nullable=False)
+
+    # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
-        with_collections: bool = False,  # pylint: disable=unused-argument
-        with_lazy: bool = False,  # pylint: disable=unused-argument
-        related_objects: bool = False,  # pylint: disable=unused-argument
+        only: Tuple = None,
+        exclude: Tuple = None,
+        with_collections: bool = False,
+        with_lazy: bool = False,
+        related_objects: bool = False,
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
-
-        elif self.data_type is None:
-            data_type = None
-
-        else:
-            data_type = self.data_type
-
-        return {
-            "id": self.property_id.__str__(),
-            "key": self.key,
-            "identifier": self.identifier,
-            "name": self.name,
-            "settable": self.settable,
-            "queryable": self.queryable,
-            "data_type": data_type,
-            "unit": self.unit,
-            "format": self.format,
-        }
-
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
-
-    def after_insert(self) -> None:
-        """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
-
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
-
-    def after_update(self) -> None:
-        """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+        return {**{
+            "device": self.device.device_id.__str__(),
+        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class DeviceConfigurationEntity(db.Entity):
+class DeviceConfigurationEntity(ConfigurationEntity):
     """
     Device configuration entity
 
@@ -294,186 +690,25 @@ class DeviceConfigurationEntity(db.Entity):
     """
     _table_: str = "fb_devices_configuration"
 
-    configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
-    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
-    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
-    name: str or None = Optional(str, column="configuration_name", nullable=True)
-    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
-    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
-    default: str or None = Optional(str, column="configuration_default", nullable=True)
-    value: str or None = Optional(str, column="configuration_value", nullable=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
-
     device: DeviceEntity = Required("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
 
-    def has_min(self) -> bool:
-        """Has min value flag"""
-        return self.params is not None and self.params.get("min_value") is not None
-
-    def has_max(self) -> bool:
-        """Has max value flag"""
-        return self.params is not None and self.params.get("max_value") is not None
-
-    def has_step(self) -> bool:
-        """Has step value flag"""
-        return self.params is not None and self.params.get("step_value") is not None
-
-    def get_value(self) -> float or int or str or None:
-        """Get configuration value"""
-        if self.value is None:
-            return None
-
-        if isinstance(self.data_type, DataType):
-            if (
-                self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                ]
-            ):
-                return int(self.value)
-
-            if self.data_type == DataType.DATA_TYPE_FLOAT:
-                return float(self.value)
-
-        return self.value
-
-    def get_min(self) -> float or None:
-        """Get min value"""
-        if self.params is not None and self.params.get("min_value") is not None:
-            return float(self.params.get("min_value"))
-
-        return None
-
-    def set_min(self, min_value: float or None) -> None:
-        """Set min value"""
-        self.params["min_value"] = min_value
-
-    def get_max(self) -> float or None:
-        """Get max value"""
-        if self.params is not None and self.params.get("max_value") is not None:
-            return float(self.params.get("max_value"))
-
-        return None
-
-    def set_max(self, max_value: float or None) -> None:
-        """Set max value"""
-        self.params["max_value"] = max_value
-
-    def get_step(self) -> float or None:
-        """Get step value"""
-        if self.params is not None and self.params.get("step_value") is not None:
-            return float(self.params.get("step_value"))
-
-        return None
-
-    def set_step(self, step: float or None) -> None:
-        """Set step value"""
-        self.params["step_value"] = step
-
-    def get_values(self) -> List[Dict[str, str]]:
-        """Get values for options"""
-        return self.params.get("select_values", [])
-
-    def set_values(self, select_values: List[Dict[str, str]]) -> None:
-        """Set values for options"""
-        self.params["select_values"] = select_values
+    # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
-        with_collections: bool = False,  # pylint: disable=unused-argument
-        with_lazy: bool = False,  # pylint: disable=unused-argument
-        related_objects: bool = False,  # pylint: disable=unused-argument
+        only: Tuple = None,
+        exclude: Tuple = None,
+        with_collections: bool = False,
+        with_lazy: bool = False,
+        related_objects: bool = False,
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
-
-        elif self.data_type is None:
-            data_type = None
-
-        else:
-            data_type = self.data_type
-
-        structure: dict = {
-            "id": self.configuration_id.__str__(),
-            "key": self.key,
-            "identifier": self.identifier,
-            "name": self.name,
-            "comment": self.comment,
-            "data_type": data_type,
-            "default": self.default,
-            "value": self.get_value(),
-        }
-
-        if isinstance(self.data_type, DataType):
-            if (
-                self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                    DataType.DATA_TYPE_FLOAT,
-                ]
-            ):
-                return {
-                    **structure,
-                    **{
-                        "min": self.get_min(),
-                        "max": self.get_max(),
-                        "step": self.get_step(),
-                    },
-                }
-
-            if self.data_type == DataType.DATA_TYPE_ENUM:
-                return {
-                    **structure,
-                    **{
-                        "values": self.get_values(),
-                    },
-                }
-
-        return structure
-
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
-
-    def after_insert(self) -> None:
-        """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
-
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
-
-    def after_update(self) -> None:
-        """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+        return {**{
+            "device": self.device.device_id.__str__(),
+        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class DeviceControlEntity(db.Entity):
+class DeviceControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Device control entity
 
@@ -486,21 +721,11 @@ class DeviceControlEntity(db.Entity):
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
     name: str = Optional(str, column="control_name", nullable=False)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="controls", column="device_id", nullable=False)
 
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
 
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
-
-
-class DeviceConnectorEntity(db.Entity):
+class DeviceConnectorEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Device connector entity
 
@@ -513,22 +738,30 @@ class DeviceConnectorEntity(db.Entity):
 
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_connector_id")
     params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="connector", column="device_id", nullable=False)
-    connector: DeviceEntity = Required("ConnectorEntity", reverse="devices", column="connector_id", nullable=False)
+    connector: ConnectorEntity = Required("ConnectorEntity", reverse="devices", column="connector_id", nullable=False)
 
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
+    # -----------------------------------------------------------------------------
 
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
+    def to_dict(
+        self,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
+    ) -> Dict[str, str or int or bool or None]:
+        """Transform entity to dictionary"""
+        return {
+            "id": self.device_id.__str__(),
+            "params": self.params,
+            "connector": self.connector.connector_id.__str__(),
+            "device": self.device.connector_id.__str__(),
+        }
 
 
-class ChannelEntity(db.Entity):
+class ChannelEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Channel entity
 
@@ -545,13 +778,13 @@ class ChannelEntity(db.Entity):
     name: str or None = Optional(str, column="channel_name", nullable=True)
     comment: str or None = Optional(str, column="channel_comment", nullable=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="channels", column="device_id", nullable=False)
     properties: List["ChannelPropertyEntity"] = Set("ChannelPropertyEntity", reverse="channel")
     configuration: List["ChannelConfigurationEntity"] = Set("ChannelConfigurationEntity", reverse="channel")
     controls: List["ChannelControlEntity"] = Set("ChannelControlEntity", reverse="channel")
+
+    # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
@@ -570,7 +803,10 @@ class ChannelEntity(db.Entity):
             "comment": self.comment,
             "control": self.get_plain_controls(),
             "params": self.params,
+            "device": self.device.device_id.__str__(),
         }
+
+    # -----------------------------------------------------------------------------
 
     def get_plain_controls(self) -> List[str]:
         """Get list of controls strings"""
@@ -581,36 +817,8 @@ class ChannelEntity(db.Entity):
 
         return controls
 
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
 
-    def after_insert(self) -> None:
-        """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
-
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
-
-    def after_update(self) -> None:
-        """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
-
-
-class ChannelPropertyEntity(db.Entity):
+class ChannelPropertyEntity(PropertyEntity):
     """
     Channel property entity
 
@@ -621,80 +829,25 @@ class ChannelPropertyEntity(db.Entity):
     """
     _table_: str = "fb_channels_properties"
 
-    property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
-    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
-    name: str = Optional(str, column="property_name", nullable=True)
-    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
-    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
-    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
-    unit: str or None = Optional(str, column="property_unit", nullable=True)
-    format: str or None = Optional(str, column="property_format", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
-
     channel: ChannelEntity = Required("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
+
+    # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
-        with_collections: bool = False,  # pylint: disable=unused-argument
-        with_lazy: bool = False,  # pylint: disable=unused-argument
-        related_objects: bool = False,  # pylint: disable=unused-argument
+        only: Tuple = None,
+        exclude: Tuple = None,
+        with_collections: bool = False,
+        with_lazy: bool = False,
+        related_objects: bool = False,
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
-
-        elif self.data_type is None:
-            data_type = None
-
-        else:
-            data_type = self.data_type
-
-        return {
-            "id": self.property_id.__str__(),
-            "key": self.key,
-            "identifier": self.identifier,
-            "name": self.name,
-            "settable": self.settable,
-            "queryable": self.queryable,
-            "data_type": data_type,
-            "unit": self.unit,
-            "format": self.format,
-        }
-
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
-
-    def after_insert(self) -> None:
-        """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
-
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
-
-    def after_update(self) -> None:
-        """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+        return {**{
+            "channel": self.channel.channel_id.__str__(),
+        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class ChannelConfigurationEntity(db.Entity):
+class ChannelConfigurationEntity(ConfigurationEntity):
     """
     Channel configuration entity
 
@@ -705,186 +858,25 @@ class ChannelConfigurationEntity(db.Entity):
     """
     _table_: str = "fb_channels_configuration"
 
-    configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
-    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
-    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
-    name: str or None = Optional(str, column="configuration_name", nullable=True)
-    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
-    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
-    default: str or None = Optional(str, column="configuration_default", nullable=True)
-    value: str or None = Optional(str, column="configuration_value", nullable=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
-
     channel: ChannelEntity = Required("ChannelEntity", reverse="configuration", column="channel_id", nullable=False)
 
-    def has_min(self) -> bool:
-        """Has min value flag"""
-        return self.params is not None and self.params.get("min_value") is not None
-
-    def has_max(self) -> bool:
-        """Has max value flag"""
-        return self.params is not None and self.params.get("max_value") is not None
-
-    def has_step(self) -> bool:
-        """Has step value flag"""
-        return self.params is not None and self.params.get("step_value") is not None
-
-    def get_value(self) -> float or int or str or None:
-        """Get configuration value"""
-        if self.value is None:
-            return None
-
-        if isinstance(self.data_type, DataType):
-            if (
-                self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                ]
-            ):
-                return int(self.value)
-
-            if self.data_type == DataType.DATA_TYPE_FLOAT:
-                return float(self.value)
-
-        return self.value
-
-    def get_min(self) -> float or None:
-        """Get min value"""
-        if self.params is not None and self.params.get("min_value") is not None:
-            return float(self.params.get("min_value"))
-
-        return None
-
-    def set_min(self, min_value: float or None) -> None:
-        """Set min value"""
-        self.params["min_value"] = min_value
-
-    def get_max(self) -> float or None:
-        """Get max value"""
-        if self.params is not None and self.params.get("max_value") is not None:
-            return float(self.params.get("max_value"))
-
-        return None
-
-    def set_max(self, max_value: float or None) -> None:
-        """Set max value"""
-        self.params["max_value"] = max_value
-
-    def get_step(self) -> float or None:
-        """Get step value"""
-        if self.params is not None and self.params.get("step_value") is not None:
-            return float(self.params.get("step_value"))
-
-        return None
-
-    def set_step(self, step: float or None) -> None:
-        """Set step value"""
-        self.params["step_value"] = step
-
-    def get_values(self) -> List[Dict[str, str]]:
-        """Get values for options"""
-        return self.params.get("select_values", [])
-
-    def set_values(self, select_values: List[Dict[str, str]]) -> None:
-        """Set values for options"""
-        self.params["select_values"] = select_values
+    # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
-        with_collections: bool = False,  # pylint: disable=unused-argument
-        with_lazy: bool = False,  # pylint: disable=unused-argument
-        related_objects: bool = False,  # pylint: disable=unused-argument
+        only: Tuple = None,
+        exclude: Tuple = None,
+        with_collections: bool = False,
+        with_lazy: bool = False,
+        related_objects: bool = False,
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
-
-        elif self.data_type is None:
-            data_type = None
-
-        else:
-            data_type = self.data_type
-
-        structure: dict = {
-            "id": self.configuration_id.__str__(),
-            "key": self.key,
-            "identifier": self.identifier,
-            "name": self.name,
-            "comment": self.comment,
-            "data_type": data_type,
-            "default": self.default,
-            "value": self.get_value(),
-        }
-
-        if isinstance(self.data_type, DataType):
-            if (
-                self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                    DataType.DATA_TYPE_FLOAT,
-                ]
-            ):
-                return {
-                    **structure,
-                    **{
-                        "min": self.get_min(),
-                        "max": self.get_max(),
-                        "step": self.get_step(),
-                    },
-                }
-
-            if self.data_type == DataType.DATA_TYPE_ENUM:
-                return {
-                    **structure,
-                    **{
-                        "values": self.get_values(),
-                    },
-                }
-
-        return structure
-
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
-
-    def after_insert(self) -> None:
-        """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
-
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
-
-    def after_update(self) -> None:
-        """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+        return {**{
+            "channel": self.channel.channel_id.__str__(),
+        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class ChannelControlEntity(db.Entity):
+class ChannelControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Channel control entity
 
@@ -897,18 +889,8 @@ class ChannelControlEntity(db.Entity):
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
     name: str = Optional(str, column="control_name", nullable=False)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="controls", column="channel_id", nullable=False)
-
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
-
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
 
 
 class PropertiesRepository(ABC):

@@ -378,7 +378,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'channel') {
-              const channel = Channel.query().where('channel', body[attrName]).first()
+              const channel = Channel.query().where('id', body[attrName]).first()
 
               if (channel !== null) {
                 entityData.channelId = channel.id

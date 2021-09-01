@@ -76,7 +76,7 @@ class Row extends Entities\Row implements IRow
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
-			'owner' => $this->getDevice()->getOwnerId(),
+			'device' => $this->getDevice()->getPlainId(),
 		]);
 	}
 

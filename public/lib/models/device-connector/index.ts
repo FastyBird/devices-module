@@ -37,6 +37,7 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { DeviceConnectorJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
+import Connector from '@/lib/models/connectors/Connector'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
 
 interface SemaphoreFetchingState {
@@ -402,10 +403,16 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'device') {
-              const device = Device.query().where('identifier', body[attrName]).first()
+              const device = Device.query().where('id', body[attrName]).first()
 
               if (device !== null) {
                 entityData.deviceId = device.id
+              }
+            } else if (camelName === 'connector') {
+              const connector = Connector.query().where('id', body[attrName]).first()
+
+              if (connector !== null) {
+                entityData.connectorId = connector.id
               }
             } else {
               entityData[camelName] = body[attrName]

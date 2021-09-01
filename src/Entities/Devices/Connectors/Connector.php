@@ -233,8 +233,8 @@ class Connector implements IConnector
 	{
 		$baseProperties = [
 			'id'        => $this->getPlainId(),
-			'device'    => $this->getDevice()->getKey(),
-			'connector' => $this->getConnector()->getType(),
+			'device'    => $this->getDevice()->getPlainId(),
+			'connector' => $this->getConnector()->getPlainId(),
 		];
 
 		if ($this->getConnector() instanceof Entities\Connectors\FbBusConnector) {

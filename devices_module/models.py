@@ -121,7 +121,7 @@ class EntityEventMixin(db.Entity):
         )
 
 
-class PropertyEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+class PropertyEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Base property entity
 
@@ -173,7 +173,7 @@ class PropertyEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpda
         }
 
 
-class ConfigurationEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+class ConfigurationEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Base configuration entity
 
@@ -355,7 +355,7 @@ class ConfigurationEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, Entit
         return structure
 
 
-class ConnectorEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+class ConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Connector entity
 
@@ -519,7 +519,7 @@ class FbMqttV1ConnectorEntity(ConnectorEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class ConnectorControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
+class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Connector control entity
 
@@ -536,7 +536,7 @@ class ConnectorControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
     connector: ConnectorEntity = Required("ConnectorEntity", reverse="controls", column="connector_id", nullable=False)
 
 
-class DeviceEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+class DeviceEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Device entity
 
@@ -708,7 +708,7 @@ class DeviceConfigurationEntity(ConfigurationEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class DeviceControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
+class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Device control entity
 
@@ -725,7 +725,7 @@ class DeviceControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
     device: DeviceEntity = Required("DeviceEntity", reverse="controls", column="device_id", nullable=False)
 
 
-class DeviceConnectorEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+class DeviceConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Device connector entity
 
@@ -777,7 +777,7 @@ class DeviceConnectorEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, Ent
         return structure
 
 
-class ChannelEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
+class ChannelEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Channel entity
 
@@ -892,7 +892,7 @@ class ChannelConfigurationEntity(ConfigurationEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class ChannelControlEntity(db.Entity, EntityCreatedMixin, EntityUpdatedMixin):
+class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Channel control entity
 

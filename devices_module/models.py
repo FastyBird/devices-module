@@ -753,12 +753,28 @@ class DeviceConnectorEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, Ent
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        return {
-            "id": self.device_id.__str__(),
-            "params": self.params,
+        structure: dict = {
+            "id": self.connector_id.__str__(),
+            "type": self.connector.type,
             "connector": self.connector.connector_id.__str__(),
             "device": self.device.connector_id.__str__(),
         }
+
+        if isinstance(self.connector, FbBusConnectorEntity):
+            return {**structure, **{
+                "address": self.params.get("address"),
+                "max_packet_length": self.params.get("max_packet_length"),
+                "description_support": bool(self.params.get("description_support", False)),
+                "settings_support": bool(self.params.get("settings_support", False)),
+                "configured_key_length": self.params.get("configured_key_length"),
+            }}
+
+        elif isinstance(self.connector, FbMqttV1ConnectorEntity):
+            return {**structure, **{
+                "username": self.params.get("username"),
+            }}
+
+        return structure
 
 
 class ChannelEntity(db.Entity, EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):

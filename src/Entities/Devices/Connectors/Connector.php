@@ -233,6 +233,7 @@ class Connector implements IConnector
 	{
 		$baseProperties = [
 			'id'        => $this->getPlainId(),
+			'type'      => $this->getConnector()->getType(),
 			'device'    => $this->getDevice()->getPlainId(),
 			'connector' => $this->getConnector()->getPlainId(),
 		];

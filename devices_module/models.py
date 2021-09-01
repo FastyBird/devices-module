@@ -41,7 +41,7 @@ from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPrope
 db: Database = Database()
 
 
-class EntityCreatedMixin(db.Entity):
+class EntityCreatedMixin:
     """
     Entity created field mixin
 
@@ -59,7 +59,7 @@ class EntityCreatedMixin(db.Entity):
         self.created_at = datetime.datetime.now()
 
 
-class EntityUpdatedMixin(db.Entity):
+class EntityUpdatedMixin:
     """
     Entity updated field mixin
 
@@ -77,7 +77,7 @@ class EntityUpdatedMixin(db.Entity):
         self.updated_at = datetime.datetime.now()
 
 
-class EntityEventMixin(db.Entity):
+class EntityEventMixin:
     """
     Entity event mixin
 
@@ -88,37 +88,40 @@ class EntityEventMixin(db.Entity):
     """
     def after_insert(self) -> None:
         """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+        if isinstance(self, orm.Entity):
+            app_dispatcher.dispatch(
+                DatabaseEntityCreatedEvent.EVENT_NAME,
+                DatabaseEntityCreatedEvent(
+                    ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                    self,
+                ),
+            )
 
     # -----------------------------------------------------------------------------
 
     def after_update(self) -> None:
         """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+        if isinstance(self, orm.Entity):
+            app_dispatcher.dispatch(
+                DatabaseEntityUpdatedEvent.EVENT_NAME,
+                DatabaseEntityUpdatedEvent(
+                    ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                    self,
+                ),
+            )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityDeletedEvent.EVENT_NAME,
-            DatabaseEntityDeletedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                self,
-            ),
-        )
+        if isinstance(self, orm.Entity):
+            app_dispatcher.dispatch(
+                DatabaseEntityDeletedEvent.EVENT_NAME,
+                DatabaseEntityDeletedEvent(
+                    ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                    self,
+                ),
+            )
 
 
 class PropertyEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):

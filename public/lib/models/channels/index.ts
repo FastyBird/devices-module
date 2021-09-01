@@ -278,8 +278,8 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
         origin: Channel.$devicesModuleOrigin,
         data: {
           control: payload.command,
-          device: device.key,
-          channel: payload.channel.key,
+          device: device.id,
+          channel: payload.channel.id,
         },
       })
         .then((response: RpCallResponse<{ data: string }>): void => {

@@ -477,7 +477,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
         origin: Device.$devicesModuleOrigin,
         data: {
           control: payload.command,
-          device: payload.device.key,
+          device: payload.device.id,
         },
       })
         .then((response: RpCallResponse<{ data: string }>): void => {

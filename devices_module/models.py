@@ -867,6 +867,104 @@ class ChannelConfigurationEntity(db.Entity):
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="configuration", column="channel_id", nullable=False)
 
+    def has_min(self) -> bool:
+        """Has min value flag"""
+        return self.params is not None and self.params.get("min_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def has_max(self) -> bool:
+        """Has max value flag"""
+        return self.params is not None and self.params.get("max_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def has_step(self) -> bool:
+        """Has step value flag"""
+        return self.params is not None and self.params.get("step_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def get_value(self) -> float or int or str or None:
+        """Get configuration value"""
+        if self.value is None:
+            return None
+
+        if isinstance(self.data_type, DataType):
+            if (
+                self.data_type in [
+                    DataType.DATA_TYPE_CHAR,
+                    DataType.DATA_TYPE_UCHAR,
+                    DataType.DATA_TYPE_SHORT,
+                    DataType.DATA_TYPE_USHORT,
+                    DataType.DATA_TYPE_INT,
+                    DataType.DATA_TYPE_UINT,
+                ]
+            ):
+                return int(self.value)
+
+            if self.data_type == DataType.DATA_TYPE_FLOAT:
+                return float(self.value)
+
+        return self.value
+
+    # -----------------------------------------------------------------------------
+
+    def get_min(self) -> float or None:
+        """Get min value"""
+        if self.params is not None and self.params.get("min_value") is not None:
+            return float(self.params.get("min_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_min(self, min_value: float or None) -> None:
+        """Set min value"""
+        self.params["min_value"] = min_value
+
+    # -----------------------------------------------------------------------------
+
+    def get_max(self) -> float or None:
+        """Get max value"""
+        if self.params is not None and self.params.get("max_value") is not None:
+            return float(self.params.get("max_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_max(self, max_value: float or None) -> None:
+        """Set max value"""
+        self.params["max_value"] = max_value
+
+    # -----------------------------------------------------------------------------
+
+    def get_step(self) -> float or None:
+        """Get step value"""
+        if self.params is not None and self.params.get("step_value") is not None:
+            return float(self.params.get("step_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_step(self, step: float or None) -> None:
+        """Set step value"""
+        self.params["step_value"] = step
+
+    # -----------------------------------------------------------------------------
+
+    def get_values(self) -> List[Dict[str, str]]:
+        """Get values for options"""
+        return self.params.get("select_values", [])
+
+    # -----------------------------------------------------------------------------
+
+    def set_values(self, select_values: List[Dict[str, str]]) -> None:
+        """Set values for options"""
+        self.params["select_values"] = select_values
+
     # -----------------------------------------------------------------------------
 
     def to_dict(

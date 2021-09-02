@@ -720,7 +720,7 @@ class DeviceConnectorEntity(EntityEventMixin, db.Entity):
             "id": self.connector_id.__str__(),
             "type": self.connector.type,
             "connector": self.connector.connector_id.__str__(),
-            "device": self.device.connector_id.__str__(),
+            "device": self.device.device_id.__str__(),
         }
 
         if isinstance(self.connector, FbBusConnectorEntity):

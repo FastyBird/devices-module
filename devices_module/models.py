@@ -41,7 +41,7 @@ from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPrope
 db: Database = Database()
 
 
-class EntityCreatedMixin(object):
+class EntityCreatedMixin:
     """
     Entity created field mixin
 
@@ -56,7 +56,7 @@ class EntityCreatedMixin(object):
             self.set({"created_at": datetime.datetime.now()})
 
 
-class EntityUpdatedMixin(object):
+class EntityUpdatedMixin:
     """
     Entity updated field mixin
 
@@ -71,7 +71,7 @@ class EntityUpdatedMixin(object):
             self.set({"updated_at": datetime.datetime.now()})
 
 
-class EntityEventMixin(object):
+class EntityEventMixin:
     """
     Entity event mixin
 

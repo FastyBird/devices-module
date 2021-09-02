@@ -194,7 +194,7 @@ class DevicePropertyItem(PropertyItem):
     """
     def to_dict(self) -> Dict[str, str or int or bool or None]:
         return {**{
-            "device": self.device_id,
+            "device": self.device_id.__str__(),
         }, **super().to_dict()}
 
 
@@ -248,7 +248,7 @@ class ChannelPropertyItem(PropertyItem):
 
     def to_dict(self) -> Dict[str, str or int or bool or None]:
         return {**{
-            "channel": self.channel_id,
+            "channel": self.channel_id.__str__(),
         }, **super().to_dict()}
 
 

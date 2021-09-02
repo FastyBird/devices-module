@@ -124,240 +124,6 @@ class EntityEventMixin:
             )
 
 
-class PropertyEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
-    """
-    Base property entity
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
-    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
-    name: str = Optional(str, column="property_name", nullable=True)
-    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
-    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
-    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
-    unit: str or None = Optional(str, column="property_unit", nullable=True)
-    format: str or None = Optional(str, column="property_format", nullable=True)
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(
-        self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
-        with_collections: bool = False,  # pylint: disable=unused-argument
-        with_lazy: bool = False,  # pylint: disable=unused-argument
-        related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
-        """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
-
-        elif self.data_type is None:
-            data_type = None
-
-        else:
-            data_type = self.data_type
-
-        return {
-            "id": self.property_id.__str__(),
-            "key": self.key,
-            "identifier": self.identifier,
-            "name": self.name,
-            "settable": self.settable,
-            "queryable": self.queryable,
-            "data_type": data_type,
-            "unit": self.unit,
-            "format": self.format,
-        }
-
-
-class ConfigurationEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
-    """
-    Base configuration entity
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
-    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
-    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
-    name: str or None = Optional(str, column="configuration_name", nullable=True)
-    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
-    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
-    default: str or None = Optional(str, column="configuration_default", nullable=True)
-    value: str or None = Optional(str, column="configuration_value", nullable=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-
-    # -----------------------------------------------------------------------------
-
-    def has_min(self) -> bool:
-        """Has min value flag"""
-        return self.params is not None and self.params.get("min_value") is not None
-
-    # -----------------------------------------------------------------------------
-
-    def has_max(self) -> bool:
-        """Has max value flag"""
-        return self.params is not None and self.params.get("max_value") is not None
-
-    # -----------------------------------------------------------------------------
-
-    def has_step(self) -> bool:
-        """Has step value flag"""
-        return self.params is not None and self.params.get("step_value") is not None
-
-    # -----------------------------------------------------------------------------
-
-    def get_value(self) -> float or int or str or None:
-        """Get configuration value"""
-        if self.value is None:
-            return None
-
-        if isinstance(self.data_type, DataType):
-            if (
-                self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                ]
-            ):
-                return int(self.value)
-
-            if self.data_type == DataType.DATA_TYPE_FLOAT:
-                return float(self.value)
-
-        return self.value
-
-    # -----------------------------------------------------------------------------
-
-    def get_min(self) -> float or None:
-        """Get min value"""
-        if self.params is not None and self.params.get("min_value") is not None:
-            return float(self.params.get("min_value"))
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def set_min(self, min_value: float or None) -> None:
-        """Set min value"""
-        self.params["min_value"] = min_value
-
-    # -----------------------------------------------------------------------------
-
-    def get_max(self) -> float or None:
-        """Get max value"""
-        if self.params is not None and self.params.get("max_value") is not None:
-            return float(self.params.get("max_value"))
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def set_max(self, max_value: float or None) -> None:
-        """Set max value"""
-        self.params["max_value"] = max_value
-
-    # -----------------------------------------------------------------------------
-
-    def get_step(self) -> float or None:
-        """Get step value"""
-        if self.params is not None and self.params.get("step_value") is not None:
-            return float(self.params.get("step_value"))
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def set_step(self, step: float or None) -> None:
-        """Set step value"""
-        self.params["step_value"] = step
-
-    # -----------------------------------------------------------------------------
-
-    def get_values(self) -> List[Dict[str, str]]:
-        """Get values for options"""
-        return self.params.get("select_values", [])
-
-    # -----------------------------------------------------------------------------
-
-    def set_values(self, select_values: List[Dict[str, str]]) -> None:
-        """Set values for options"""
-        self.params["select_values"] = select_values
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(
-        self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
-        with_collections: bool = False,  # pylint: disable=unused-argument
-        with_lazy: bool = False,  # pylint: disable=unused-argument
-        related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
-        """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
-
-        elif self.data_type is None:
-            data_type = None
-
-        else:
-            data_type = self.data_type
-
-        structure: dict = {
-            "id": self.configuration_id.__str__(),
-            "key": self.key,
-            "identifier": self.identifier,
-            "name": self.name,
-            "comment": self.comment,
-            "data_type": data_type,
-            "default": self.default,
-            "value": self.get_value(),
-        }
-
-        if isinstance(self.data_type, DataType):
-            if (
-                self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                    DataType.DATA_TYPE_FLOAT,
-                ]
-            ):
-                return {
-                    **structure,
-                    **{
-                        "min": self.get_min(),
-                        "max": self.get_max(),
-                        "step": self.get_step(),
-                    },
-                }
-
-            if self.data_type == DataType.DATA_TYPE_ENUM:
-                return {
-                    **structure,
-                    **{
-                        "values": self.get_values(),
-                    },
-                }
-
-        return structure
-
-
 class ConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     """
     Connector entity
@@ -653,7 +419,7 @@ class DeviceEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
 
-class DevicePropertyEntity(PropertyEntity, db.Entity):
+class DevicePropertyEntity(db.Entity):
     """
     Device property entity
 
@@ -664,25 +430,53 @@ class DevicePropertyEntity(PropertyEntity, db.Entity):
     """
     _table_: str = "fb_devices_properties"
 
+    property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
+    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
+    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
+    name: str = Optional(str, column="property_name", nullable=True)
+    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
+    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
+    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
+    unit: str or None = Optional(str, column="property_unit", nullable=True)
+    format: str or None = Optional(str, column="property_format", nullable=True)
+
     device: DeviceEntity = Required("DeviceEntity", reverse="properties", column="device_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,
-        exclude: Tuple = None,
-        with_collections: bool = False,
-        with_lazy: bool = False,
-        related_objects: bool = False,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        return {**{
+        if isinstance(self.data_type, DataType):
+            data_type = self.data_type.value
+
+        elif self.data_type is None:
+            data_type = None
+
+        else:
+            data_type = self.data_type
+
+        return {
+            "id": self.property_id.__str__(),
+            "key": self.key,
+            "identifier": self.identifier,
+            "name": self.name,
+            "settable": self.settable,
+            "queryable": self.queryable,
+            "data_type": data_type,
+            "unit": self.unit,
+            "format": self.format,
             "device": self.device.device_id.__str__(),
-        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+        }
 
 
-class DeviceConfigurationEntity(ConfigurationEntity, db.Entity):
+class DeviceConfigurationEntity(db.Entity):
     """
     Device configuration entity
 
@@ -693,22 +487,178 @@ class DeviceConfigurationEntity(ConfigurationEntity, db.Entity):
     """
     _table_: str = "fb_devices_configuration"
 
+    configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
+    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
+    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
+    name: str or None = Optional(str, column="configuration_name", nullable=True)
+    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
+    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
+    default: str or None = Optional(str, column="configuration_default", nullable=True)
+    value: str or None = Optional(str, column="configuration_value", nullable=True)
+    params: Json or None = Optional(Json, column="params", nullable=True)
+
     device: DeviceEntity = Required("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
+
+    def has_min(self) -> bool:
+        """Has min value flag"""
+        return self.params is not None and self.params.get("min_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def has_max(self) -> bool:
+        """Has max value flag"""
+        return self.params is not None and self.params.get("max_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def has_step(self) -> bool:
+        """Has step value flag"""
+        return self.params is not None and self.params.get("step_value") is not None
+
+    # -----------------------------------------------------------------------------
+
+    def get_value(self) -> float or int or str or None:
+        """Get configuration value"""
+        if self.value is None:
+            return None
+
+        if isinstance(self.data_type, DataType):
+            if (
+                self.data_type in [
+                    DataType.DATA_TYPE_CHAR,
+                    DataType.DATA_TYPE_UCHAR,
+                    DataType.DATA_TYPE_SHORT,
+                    DataType.DATA_TYPE_USHORT,
+                    DataType.DATA_TYPE_INT,
+                    DataType.DATA_TYPE_UINT,
+                ]
+            ):
+                return int(self.value)
+
+            if self.data_type == DataType.DATA_TYPE_FLOAT:
+                return float(self.value)
+
+        return self.value
+
+    # -----------------------------------------------------------------------------
+
+    def get_min(self) -> float or None:
+        """Get min value"""
+        if self.params is not None and self.params.get("min_value") is not None:
+            return float(self.params.get("min_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_min(self, min_value: float or None) -> None:
+        """Set min value"""
+        self.params["min_value"] = min_value
+
+    # -----------------------------------------------------------------------------
+
+    def get_max(self) -> float or None:
+        """Get max value"""
+        if self.params is not None and self.params.get("max_value") is not None:
+            return float(self.params.get("max_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_max(self, max_value: float or None) -> None:
+        """Set max value"""
+        self.params["max_value"] = max_value
+
+    # -----------------------------------------------------------------------------
+
+    def get_step(self) -> float or None:
+        """Get step value"""
+        if self.params is not None and self.params.get("step_value") is not None:
+            return float(self.params.get("step_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def set_step(self, step: float or None) -> None:
+        """Set step value"""
+        self.params["step_value"] = step
+
+    # -----------------------------------------------------------------------------
+
+    def get_values(self) -> List[Dict[str, str]]:
+        """Get values for options"""
+        return self.params.get("select_values", [])
+
+    # -----------------------------------------------------------------------------
+
+    def set_values(self, select_values: List[Dict[str, str]]) -> None:
+        """Set values for options"""
+        self.params["select_values"] = select_values
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,
-        exclude: Tuple = None,
-        with_collections: bool = False,
-        with_lazy: bool = False,
-        related_objects: bool = False,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        return {**{
+        if isinstance(self.data_type, DataType):
+            data_type = self.data_type.value
+
+        elif self.data_type is None:
+            data_type = None
+
+        else:
+            data_type = self.data_type
+
+        structure: dict = {
+            "id": self.configuration_id.__str__(),
+            "key": self.key,
+            "identifier": self.identifier,
+            "name": self.name,
+            "comment": self.comment,
+            "data_type": data_type,
+            "default": self.default,
+            "value": self.get_value(),
             "device": self.device.device_id.__str__(),
-        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+        }
+
+        if isinstance(self.data_type, DataType):
+            if (
+                self.data_type in [
+                    DataType.DATA_TYPE_CHAR,
+                    DataType.DATA_TYPE_UCHAR,
+                    DataType.DATA_TYPE_SHORT,
+                    DataType.DATA_TYPE_USHORT,
+                    DataType.DATA_TYPE_INT,
+                    DataType.DATA_TYPE_UINT,
+                    DataType.DATA_TYPE_FLOAT,
+                ]
+            ):
+                return {
+                    **structure,
+                    **{
+                        "min": self.get_min(),
+                        "max": self.get_max(),
+                        "step": self.get_step(),
+                    },
+                }
+
+            if self.data_type == DataType.DATA_TYPE_ENUM:
+                return {
+                    **structure,
+                    **{
+                        "values": self.get_values(),
+                    },
+                }
+
+        return structure
 
 
 class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
@@ -837,7 +787,7 @@ class ChannelEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db
         return controls
 
 
-class ChannelPropertyEntity(PropertyEntity, db.Entity):
+class ChannelPropertyEntity(db.Entity):
     """
     Channel property entity
 
@@ -848,22 +798,50 @@ class ChannelPropertyEntity(PropertyEntity, db.Entity):
     """
     _table_: str = "fb_channels_properties"
 
+    property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
+    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
+    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
+    name: str = Optional(str, column="property_name", nullable=True)
+    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
+    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
+    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
+    unit: str or None = Optional(str, column="property_unit", nullable=True)
+    format: str or None = Optional(str, column="property_format", nullable=True)
+
     channel: ChannelEntity = Required("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,
-        exclude: Tuple = None,
-        with_collections: bool = False,
-        with_lazy: bool = False,
-        related_objects: bool = False,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        return {**{
+        if isinstance(self.data_type, DataType):
+            data_type = self.data_type.value
+
+        elif self.data_type is None:
+            data_type = None
+
+        else:
+            data_type = self.data_type
+
+        return {
+            "id": self.property_id.__str__(),
+            "key": self.key,
+            "identifier": self.identifier,
+            "name": self.name,
+            "settable": self.settable,
+            "queryable": self.queryable,
+            "data_type": data_type,
+            "unit": self.unit,
+            "format": self.format,
             "channel": self.channel.channel_id.__str__(),
-        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+        }
 
 
 class ChannelConfigurationEntity(ConfigurationEntity, db.Entity):
@@ -877,22 +855,80 @@ class ChannelConfigurationEntity(ConfigurationEntity, db.Entity):
     """
     _table_: str = "fb_channels_configuration"
 
+    configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
+    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
+    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
+    name: str or None = Optional(str, column="configuration_name", nullable=True)
+    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
+    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
+    default: str or None = Optional(str, column="configuration_default", nullable=True)
+    value: str or None = Optional(str, column="configuration_value", nullable=True)
+    params: Json or None = Optional(Json, column="params", nullable=True)
+
     channel: ChannelEntity = Required("ChannelEntity", reverse="configuration", column="channel_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,
-        exclude: Tuple = None,
-        with_collections: bool = False,
-        with_lazy: bool = False,
-        related_objects: bool = False,
+        only: Tuple = None,  # pylint: disable=unused-argument
+        exclude: Tuple = None,  # pylint: disable=unused-argument
+        with_collections: bool = False,  # pylint: disable=unused-argument
+        with_lazy: bool = False,  # pylint: disable=unused-argument
+        related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        return {**{
+        if isinstance(self.data_type, DataType):
+            data_type = self.data_type.value
+
+        elif self.data_type is None:
+            data_type = None
+
+        else:
+            data_type = self.data_type
+
+        structure: dict = {
+            "id": self.configuration_id.__str__(),
+            "key": self.key,
+            "identifier": self.identifier,
+            "name": self.name,
+            "comment": self.comment,
+            "data_type": data_type,
+            "default": self.default,
+            "value": self.get_value(),
             "channel": self.channel.channel_id.__str__(),
-        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+        }
+
+        if isinstance(self.data_type, DataType):
+            if (
+                self.data_type in [
+                    DataType.DATA_TYPE_CHAR,
+                    DataType.DATA_TYPE_UCHAR,
+                    DataType.DATA_TYPE_SHORT,
+                    DataType.DATA_TYPE_USHORT,
+                    DataType.DATA_TYPE_INT,
+                    DataType.DATA_TYPE_UINT,
+                    DataType.DATA_TYPE_FLOAT,
+                ]
+            ):
+                return {
+                    **structure,
+                    **{
+                        "min": self.get_min(),
+                        "max": self.get_max(),
+                        "step": self.get_step(),
+                    },
+                }
+
+            if self.data_type == DataType.DATA_TYPE_ENUM:
+                return {
+                    **structure,
+                    **{
+                        "values": self.get_values(),
+                    },
+                }
+
+        return structure
 
 
 class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):

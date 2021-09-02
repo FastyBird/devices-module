@@ -41,36 +41,6 @@ from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPrope
 db: Database = Database()
 
 
-class EntityCreatedMixin:
-    """
-    Entity created field mixin
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        if isinstance(self, orm.Entity):
-            self.set({"created_at": datetime.datetime.now()})
-
-
-class EntityUpdatedMixin:
-    """
-    Entity updated field mixin
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        if isinstance(self, orm.Entity):
-            self.set({"updated_at": datetime.datetime.now()})
-
-
 class EntityEventMixin:
     """
     Entity event mixin
@@ -118,7 +88,7 @@ class EntityEventMixin:
             )
 
 
-class ConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+class ConnectorEntity(EntityEventMixin, db.Entity):
     """
     Connector entity
 
@@ -173,6 +143,18 @@ class ConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, 
             controls.append(control.name)
 
         return controls
+
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
 
 
 class FbBusConnectorEntity(ConnectorEntity):
@@ -284,7 +266,7 @@ class FbMqttV1ConnectorEntity(ConnectorEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+class ConnectorControlEntity(db.Entity):
     """
     Connector control entity
 
@@ -302,8 +284,20 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
 
     connector: ConnectorEntity = Required("ConnectorEntity", reverse="controls", column="connector_id", nullable=False)
 
+    # -----------------------------------------------------------------------------
 
-class DeviceEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
+
+
+class DeviceEntity(EntityEventMixin, db.Entity):
     """
     Device entity
 
@@ -402,7 +396,7 @@ class DeviceEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.
 
     def before_insert(self) -> None:
         """Before insert entity hook"""
-        super().before_insert()
+        self.created_at = datetime.datetime.now()
 
         self.hardware_model = self.hardware_model.lower()
         self.hardware_manufacturer = self.hardware_manufacturer.lower()
@@ -412,7 +406,7 @@ class DeviceEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.
 
     def before_update(self) -> None:
         """Before update entity hook"""
-        super().before_update()
+        self.updated_at = datetime.datetime.now()
 
         self.hardware_model = self.hardware_model.lower()
         self.hardware_manufacturer = self.hardware_manufacturer.lower()
@@ -661,7 +655,7 @@ class DeviceConfigurationEntity(db.Entity):
         return structure
 
 
-class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+class DeviceControlEntity(db.Entity):
     """
     Device control entity
 
@@ -679,8 +673,20 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
 
     device: DeviceEntity = Required("DeviceEntity", reverse="controls", column="device_id", nullable=False)
 
+    # -----------------------------------------------------------------------------
 
-class DeviceConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
+
+
+class DeviceConnectorEntity(EntityEventMixin, db.Entity):
     """
     Device connector entity
 
@@ -733,8 +739,20 @@ class DeviceConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedM
 
         return structure
 
+    # -----------------------------------------------------------------------------
 
-class ChannelEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
+
+
+class ChannelEntity(EntityEventMixin, db.Entity):
     """
     Channel entity
 
@@ -791,6 +809,18 @@ class ChannelEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db
             controls.append(control.name)
 
         return controls
+
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
 
 
 class ChannelPropertyEntity(db.Entity):
@@ -1035,7 +1065,7 @@ class ChannelConfigurationEntity(db.Entity):
         return structure
 
 
-class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+class ChannelControlEntity(db.Entity):
     """
     Channel control entity
 
@@ -1052,6 +1082,18 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
     updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="controls", column="channel_id", nullable=False)
+
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
 
 
 class PropertiesRepository(ABC):

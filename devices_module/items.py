@@ -73,7 +73,7 @@ class PropertyItem(ABC):
     # -----------------------------------------------------------------------------
 
     @property
-    def device(self) -> uuid.UUID:
+    def device_id(self) -> uuid.UUID:
         """Property device identifier"""
         return self.__device_id
 
@@ -192,6 +192,10 @@ class DevicePropertyItem(PropertyItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        return {**{
+            "device": self.device_id,
+        }, **super().to_dict()}
 
 
 class ChannelPropertyItem(PropertyItem):
@@ -236,9 +240,16 @@ class ChannelPropertyItem(PropertyItem):
 
     # -----------------------------------------------------------------------------
 
-    def channel(self) -> uuid.UUID:
+    def channel_id(self) -> uuid.UUID:
         """Property channel identifier"""
         return self.__channel_id
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        return {**{
+            "channel": self.channel_id,
+        }, **super().to_dict()}
 
 
 class ConnectorItem:
@@ -314,3 +325,16 @@ class ConnectorItem:
     def params(self) -> dict:
         """Connector configuration params"""
         return self.__params
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert connector item to dictionary"""
+        return {
+            "id": self.connector_id.__str__(),
+            "key": self.key,
+            "name": self.name,
+            "enabled": self.enabled,
+            "type": self.type,
+            "params": self.params,
+        }

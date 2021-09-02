@@ -413,7 +413,7 @@ class DeviceEntity(EntityEventMixin, db.Entity):
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
 
-class DevicePropertyEntity(db.Entity):
+class DevicePropertyEntity(EntityEventMixin, db.Entity):
     """
     Device property entity
 
@@ -470,7 +470,7 @@ class DevicePropertyEntity(db.Entity):
         }
 
 
-class DeviceConfigurationEntity(db.Entity):
+class DeviceConfigurationEntity(EntityEventMixin, db.Entity):
     """
     Device configuration entity
 
@@ -823,7 +823,7 @@ class ChannelEntity(EntityEventMixin, db.Entity):
         self.updated_at = datetime.datetime.now()
 
 
-class ChannelPropertyEntity(db.Entity):
+class ChannelPropertyEntity(EntityEventMixin, db.Entity):
     """
     Channel property entity
 
@@ -880,7 +880,7 @@ class ChannelPropertyEntity(db.Entity):
         }
 
 
-class ChannelConfigurationEntity(db.Entity):
+class ChannelConfigurationEntity(EntityEventMixin, db.Entity):
     """
     Channel configuration entity
 

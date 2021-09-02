@@ -844,7 +844,7 @@ class ChannelPropertyEntity(db.Entity):
         }
 
 
-class ChannelConfigurationEntity(ConfigurationEntity, db.Entity):
+class ChannelConfigurationEntity(db.Entity):
     """
     Channel configuration entity
 

@@ -124,7 +124,7 @@ class EntityEventMixin:
             )
 
 
-class PropertyEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+class PropertyEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Base property entity
 
@@ -176,7 +176,7 @@ class PropertyEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, d
         }
 
 
-class ConfigurationEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
+class ConfigurationEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin):
     """
     Base configuration entity
 
@@ -653,7 +653,7 @@ class DeviceEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
 
-class DevicePropertyEntity(PropertyEntity):
+class DevicePropertyEntity(PropertyEntity, db.Entity):
     """
     Device property entity
 
@@ -682,7 +682,7 @@ class DevicePropertyEntity(PropertyEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class DeviceConfigurationEntity(ConfigurationEntity):
+class DeviceConfigurationEntity(ConfigurationEntity, db.Entity):
     """
     Device configuration entity
 
@@ -837,7 +837,7 @@ class ChannelEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db
         return controls
 
 
-class ChannelPropertyEntity(PropertyEntity):
+class ChannelPropertyEntity(PropertyEntity, db.Entity):
     """
     Channel property entity
 
@@ -866,7 +866,7 @@ class ChannelPropertyEntity(PropertyEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class ChannelConfigurationEntity(ConfigurationEntity):
+class ChannelConfigurationEntity(ConfigurationEntity, db.Entity):
     """
     Channel configuration entity
 

@@ -41,7 +41,7 @@ from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPrope
 db: Database = Database()
 
 
-class EntityCreatedMixin:
+class EntityCreatedMixin(object):
     """
     Entity created field mixin
 
@@ -50,16 +50,13 @@ class EntityCreatedMixin:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-
-    # -----------------------------------------------------------------------------
-
     def before_insert(self) -> None:
         """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
+        if isinstance(self, orm.Entity):
+            self.set({"created_at": datetime.datetime.now()})
 
 
-class EntityUpdatedMixin:
+class EntityUpdatedMixin(object):
     """
     Entity updated field mixin
 
@@ -68,16 +65,13 @@ class EntityUpdatedMixin:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
-
-    # -----------------------------------------------------------------------------
-
     def before_update(self) -> None:
         """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
+        if isinstance(self, orm.Entity):
+            self.set({"updated_at": datetime.datetime.now()})
 
 
-class EntityEventMixin:
+class EntityEventMixin(object):
     """
     Entity event mixin
 
@@ -143,6 +137,8 @@ class ConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, 
     key: str = Required(str, column="connector_key", unique=True, max_len=50, nullable=False)
     enabled: bool = Required(bool, column="connector_enabled", nullable=False, default=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     devices: List["DeviceConnectorEntity"] = Set("DeviceConnectorEntity", reverse="connector")
     controls: List["ConnectorControlEntity"] = Set("ConnectorControlEntity", reverse="connector")
@@ -301,6 +297,8 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
     name: str = Optional(str, column="control_name", nullable=False)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     connector: ConnectorEntity = Required("ConnectorEntity", reverse="controls", column="connector_id", nullable=False)
 
@@ -349,6 +347,8 @@ class DeviceEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db.
     )
     firmware_version: str or None = Optional(str, column="device_firmware_version", max_len=150, nullable=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channels: List["ChannelEntity"] = Set("ChannelEntity", reverse="device")
     properties: List["DevicePropertyEntity"] = Set("DevicePropertyEntity", reverse="device")
@@ -674,6 +674,8 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
     name: str = Optional(str, column="control_name", nullable=False)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="controls", column="device_id", nullable=False)
 
@@ -691,6 +693,8 @@ class DeviceConnectorEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedM
 
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_connector_id")
     params: Json or None = Optional(Json, column="params", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="connector", column="device_id", nullable=False)
     connector: ConnectorEntity = Required("ConnectorEntity", reverse="devices", column="connector_id", nullable=False)
@@ -747,6 +751,8 @@ class ChannelEntity(EntityEventMixin, EntityCreatedMixin, EntityUpdatedMixin, db
     name: str or None = Optional(str, column="channel_name", nullable=True)
     comment: str or None = Optional(str, column="channel_comment", nullable=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="channels", column="device_id", nullable=False)
     properties: List["ChannelPropertyEntity"] = Set("ChannelPropertyEntity", reverse="channel")
@@ -1042,6 +1048,8 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, db.Entity):
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
     name: str = Optional(str, column="control_name", nullable=False)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="controls", column="channel_id", nullable=False)
 

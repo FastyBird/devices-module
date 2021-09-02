@@ -240,6 +240,7 @@ class ChannelPropertyItem(PropertyItem):
 
     # -----------------------------------------------------------------------------
 
+    @property
     def channel_id(self) -> uuid.UUID:
         """Property channel identifier"""
         return self.__channel_id

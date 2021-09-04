@@ -21,6 +21,7 @@ Module models definitions
 """
 
 # Library dependencies
+import time
 import uuid
 import datetime
 from abc import abstractmethod, ABC
@@ -36,9 +37,14 @@ from pony.orm import core as orm, Database, Discriminator, PrimaryKey, Required,
 
 # Library libs
 from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPropertyItem
+from devices_module.utils import KeyHashUtils
 
 # Create devices module database accessor
 db: Database = Database()
+
+
+def generate_entity_key_hash() -> str:
+    return KeyHashUtils.encode(int(time.time_ns() / 1000))
 
 
 class EntityEventMixin:
@@ -149,6 +155,9 @@ class ConnectorEntity(EntityEventMixin, db.Entity):
     def before_insert(self) -> None:
         """Before insert entity hook"""
         self.created_at = datetime.datetime.now()
+
+        if self.key is None:
+            self.key = generate_entity_key_hash()
 
     # -----------------------------------------------------------------------------
 
@@ -402,6 +411,9 @@ class DeviceEntity(EntityEventMixin, db.Entity):
         self.hardware_manufacturer = self.hardware_manufacturer.lower()
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
+        if self.key is None:
+            self.key = generate_entity_key_hash()
+
     # -----------------------------------------------------------------------------
 
     def before_update(self) -> None:
@@ -433,6 +445,8 @@ class DevicePropertyEntity(EntityEventMixin, db.Entity):
     data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
     unit: str or None = Optional(str, column="property_unit", nullable=True)
     format: str or None = Optional(str, column="property_format", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="properties", column="device_id", nullable=False)
 
@@ -469,6 +483,21 @@ class DevicePropertyEntity(EntityEventMixin, db.Entity):
             "device": self.device.device_id.__str__(),
         }
 
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+        if self.key is None:
+            self.key = generate_entity_key_hash()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
+
 
 class DeviceConfigurationEntity(EntityEventMixin, db.Entity):
     """
@@ -490,6 +519,8 @@ class DeviceConfigurationEntity(EntityEventMixin, db.Entity):
     default: str or None = Optional(str, column="configuration_default", nullable=True)
     value: str or None = Optional(str, column="configuration_value", nullable=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
 
@@ -654,6 +685,21 @@ class DeviceConfigurationEntity(EntityEventMixin, db.Entity):
 
         return structure
 
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+        if self.key is None:
+            self.key = generate_entity_key_hash()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
+
 
 class DeviceControlEntity(db.Entity):
     """
@@ -816,6 +862,9 @@ class ChannelEntity(EntityEventMixin, db.Entity):
         """Before insert entity hook"""
         self.created_at = datetime.datetime.now()
 
+        if self.key is None:
+            self.key = generate_entity_key_hash()
+
     # -----------------------------------------------------------------------------
 
     def before_update(self) -> None:
@@ -843,6 +892,8 @@ class ChannelPropertyEntity(EntityEventMixin, db.Entity):
     data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
     unit: str or None = Optional(str, column="property_unit", nullable=True)
     format: str or None = Optional(str, column="property_format", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
 
@@ -879,6 +930,21 @@ class ChannelPropertyEntity(EntityEventMixin, db.Entity):
             "channel": self.channel.channel_id.__str__(),
         }
 
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+        if self.key is None:
+            self.key = generate_entity_key_hash()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
+
 
 class ChannelConfigurationEntity(EntityEventMixin, db.Entity):
     """
@@ -900,6 +966,8 @@ class ChannelConfigurationEntity(EntityEventMixin, db.Entity):
     default: str or None = Optional(str, column="configuration_default", nullable=True)
     value: str or None = Optional(str, column="configuration_value", nullable=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
+    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
+    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="configuration", column="channel_id", nullable=False)
 
@@ -1063,6 +1131,21 @@ class ChannelConfigurationEntity(EntityEventMixin, db.Entity):
                 }
 
         return structure
+
+    # -----------------------------------------------------------------------------
+
+    def before_insert(self) -> None:
+        """Before insert entity hook"""
+        self.created_at = datetime.datetime.now()
+
+        if self.key is None:
+            self.key = generate_entity_key_hash()
+
+    # -----------------------------------------------------------------------------
+
+    def before_update(self) -> None:
+        """Before update entity hook"""
+        self.updated_at = datetime.datetime.now()
 
 
 class ChannelControlEntity(db.Entity):

@@ -44,6 +44,7 @@ db: Database = Database()
 
 
 def generate_entity_key_hash() -> str:
+    """Generate unique entity hash used for PUB-SUB"""
     return KeyHashUtils.encode(int(time.time_ns() / 1000))
 
 

@@ -490,6 +490,13 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v2"
 
+      - name: "Setup MySQL"
+        uses: "mirromutth/mysql-action@v1.1"
+        with:
+          mysql version: "5.7"
+          mysql database: "testdb"
+          mysql root password: "root"
+
       - name: "Set up Python 3.7"
         uses: "actions/setup-python@v1"
         with:

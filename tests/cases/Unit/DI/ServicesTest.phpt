@@ -73,7 +73,7 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Subscribers\EntitiesSubscriber::class));
 
 		Assert::notNull($container->getByType(Helpers\PropertyHelper::class));
-		Assert::notNull($container->getByType(Helpers\EntityKey::class));
+		Assert::notNull($container->getByType(Helpers\EntityKeyHelper::class));
 	}
 
 	/**

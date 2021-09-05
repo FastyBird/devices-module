@@ -48,8 +48,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
-	/** @var Helpers\EntityKey */
-	private Helpers\EntityKey $entityKeyGenerator;
+	/** @var Helpers\EntityKeyHelper */
+	private Helpers\EntityKeyHelper $entityKeyGenerator;
 
 	/** @var Models\States\IPropertyRepository|null */
 	private ?Models\States\IPropertyRepository $propertyStateRepository;
@@ -61,7 +61,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	private ORM\EntityManagerInterface $entityManager;
 
 	public function __construct(
-		Helpers\EntityKey $entityKeyGenerator,
+		Helpers\EntityKeyHelper $entityKeyGenerator,
 		ApplicationExchangePublisher\IPublisher $publisher,
 		ORM\EntityManagerInterface $entityManager,
 		?Models\States\IPropertyRepository $propertyStateRepository = null

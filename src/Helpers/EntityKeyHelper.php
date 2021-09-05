@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * EntityKey.php
+ * EntityKeyHelper.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -39,7 +39,7 @@ use FastyBird\DevicesModule\Entities\IEntity;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class EntityKey
+final class EntityKeyHelper
 {
 
 	/** @var int */

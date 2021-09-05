@@ -27,7 +27,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,
@@ -72,7 +72,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager();
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,
@@ -128,7 +128,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager(true);
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,
@@ -205,7 +205,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->andReturn($uow)
 			->times(1);
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,

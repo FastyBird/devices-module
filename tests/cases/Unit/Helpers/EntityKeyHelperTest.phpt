@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../../bootstrap.php';
 /**
  * @testCase
  */
-final class EntityKeyTest extends BaseMockeryTestCase
+final class EntityKeyHelperTest extends BaseMockeryTestCase
 {
 
 	public function testGenerateDefault(): void
@@ -25,7 +25,7 @@ final class EntityKeyTest extends BaseMockeryTestCase
 			->shouldReceive('getNow')
 			->andReturn(new DateTimeImmutable('2020-04-01T12:00:00+00:00'));
 
-		$entityKeyHelper = new Helpers\EntityKey($dateTimeFactory);
+		$entityKeyHelper = new Helpers\EntityKeyHelper($dateTimeFactory);
 
 		$entity = Mockery::mock(Entities\IEntity::class);
 
@@ -36,7 +36,7 @@ final class EntityKeyTest extends BaseMockeryTestCase
 	{
 		$dateTimeFactory = Mockery::mock(DateTimeFactory\DateTimeFactory::class);
 
-		$entityKeyHelper = new Helpers\EntityKey($dateTimeFactory);
+		$entityKeyHelper = new Helpers\EntityKeyHelper($dateTimeFactory);
 		$entityKeyHelper->setCustomGenerator(function (): string {
 			return 'custom-generated';
 		});
@@ -48,5 +48,5 @@ final class EntityKeyTest extends BaseMockeryTestCase
 
 }
 
-$test_case = new EntityKeyTest();
+$test_case = new EntityKeyHelperTest();
 $test_case->run();

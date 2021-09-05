@@ -23,6 +23,7 @@ Module models definitions
 # Library dependencies
 import uuid
 import datetime
+from enum import Enum
 from abc import abstractmethod, ABC
 from typing import List, Dict, Tuple
 from application_events.database import (
@@ -33,13 +34,20 @@ from application_events.database import (
 from application_events.dispatcher import app_dispatcher
 from modules_metadata.types import DataType, ModuleOrigin
 from pony.orm import core as orm, Database, Discriminator, PrimaryKey, Required, Optional, Set, Json
+from pony.orm.dbproviders.mysql import MySQLProvider
+from pony.orm.dbproviders.sqlite import SQLiteProvider
 
 # Library libs
+from devices_module.converters import EnumConverter
 from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPropertyItem
 from devices_module.key import entity_key_generator
 
 # Create devices module database accessor
 db: Database = Database()
+
+# Add ENUM converter
+MySQLProvider.converter_classes.append((Enum, EnumConverter))
+SQLiteProvider.converter_classes.append((Enum, EnumConverter))
 
 
 class EntityEventMixin:
@@ -353,6 +361,8 @@ class DeviceEntity(EntityEventMixin, db.Entity):
     configuration: List["DeviceConfigurationEntity"] = Set("DeviceConfigurationEntity", reverse="device")
     controls: List["DeviceControlEntity"] = Set("DeviceControlEntity", reverse="device")
     connector: "DeviceConnectorEntity" or None = Optional("DeviceConnectorEntity", reverse="device")
+
+    owner: str or None = Optional(str, column="owner", max_len=15, nullable=True)
 
     # -----------------------------------------------------------------------------
 

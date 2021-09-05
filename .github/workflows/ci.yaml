@@ -513,6 +513,9 @@ jobs:
       - name: "Run code lint"
         run: "make python_qa"
 
+      - name: "Run tests"
+        run: "make python_tests"
+
       - name: "Upload build result"
         uses: "actions/upload-artifact@v1"
         with:

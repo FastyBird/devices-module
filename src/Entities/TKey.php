@@ -16,7 +16,7 @@
 namespace FastyBird\DevicesModule\Entities;
 
 /**
- * @property-read string $key
+ * @property-read string|null $key
  */
 trait TKey
 {
@@ -26,7 +26,7 @@ trait TKey
 		$this->key = $key;
 	}
 
-	public function getKey(): string
+	public function getKey(): ?string
 	{
 		return $this->key;
 	}

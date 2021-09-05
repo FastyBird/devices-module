@@ -60,11 +60,11 @@ class Channel implements IChannel
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 *
-	 * @ORM\Column(type="string", name="channel_key", length=50, nullable=false)
+	 * @ORM\Column(type="string", name="channel_key", length=50)
 	 */
-	private string $key;
+	private ?string $key = null;
 
 	/**
 	 * @var string

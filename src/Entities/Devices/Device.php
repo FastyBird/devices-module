@@ -75,11 +75,11 @@ class Device implements IDevice
 	private string $identifier;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 *
-	 * @ORM\Column(type="string", name="device_key", length=50, nullable=false)
+	 * @ORM\Column(type="string", name="device_key", length=50)
 	 */
-	private string $key;
+	private ?string $key = null;
 
 	/**
 	 * @var Entities\Devices\IDevice|null

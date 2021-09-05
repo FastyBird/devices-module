@@ -71,11 +71,11 @@ abstract class Connector implements IConnector
 	private string $name;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 *
-	 * @ORM\Column(type="string", name="connector_key", length=50, nullable=false)
+	 * @ORM\Column(type="string", name="connector_key", length=50)
 	 */
-	private string $key;
+	private ?string $key = null;
 
 	/**
 	 * @var bool

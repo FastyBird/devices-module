@@ -42,11 +42,11 @@ abstract class Property implements IProperty
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 *
-	 * @ORM\Column(type="string", name="property_key", length=50, nullable=false)
+	 * @ORM\Column(type="string", name="property_key", length=50)
 	 */
-	protected string $key;
+	protected ?string $key = null;
 
 	/**
 	 * @var string

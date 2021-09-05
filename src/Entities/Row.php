@@ -44,11 +44,11 @@ abstract class Row implements IRow
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 *
-	 * @ORM\Column(type="string", name="configuration_key", length=50, nullable=false)
+	 * @ORM\Column(type="string", name="configuration_key", length=50)
 	 */
-	protected string $key;
+	protected ?string $key = null;
 
 	/**
 	 * @var string

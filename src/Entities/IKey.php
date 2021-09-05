@@ -20,6 +20,6 @@ interface IKey
 
 	public function setKey(string $key): void;
 
-	public function getKey(): string;
+	public function getKey(): ?string;
 
 }

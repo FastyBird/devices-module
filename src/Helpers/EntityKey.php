@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * NumberHashHelper.php
+ * EntityKey.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -14,6 +14,10 @@
  */
 
 namespace FastyBird\DevicesModule\Helpers;
+
+use Closure;
+use FastyBird\DateTimeFactory;
+use FastyBird\DevicesModule\Entities\IEntity;
 
 /**
  * Translates a number to a short alphanumeric version
@@ -35,10 +39,45 @@ namespace FastyBird\DevicesModule\Helpers;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class NumberHashHelper
+final class EntityKey
 {
 
+	/** @var int */
+	private int $maxLen = 6;
+
+	/** @var Closure|null */
+	private ?Closure $customCallback = null;
+
+	/** @var DateTimeFactory\DateTimeFactory */
+	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
+
 	private const INDEX = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+	public function __construct(
+		DateTimeFactory\DateTimeFactory $dateTimeFactory
+	)
+	{
+		$this->dateTimeFactory = $dateTimeFactory;
+	}
+
+	public function setCustomGenerator(Closure $callback): void
+	{
+		$this->customCallback = $callback;
+	}
+
+	/**
+	 * @param IEntity $entity
+	 *
+	 * @return string
+	 */
+	public function generate(IEntity $entity): string
+	{
+		if (is_callable($this->customCallback)) {
+			return call_user_func($this->customCallback, $entity);
+		}
+
+		return $this->alphaIdToHash($this->dateTimeFactory->getNow()->getTimestamp());
+	}
 
 	/**
 	 * @param int $id

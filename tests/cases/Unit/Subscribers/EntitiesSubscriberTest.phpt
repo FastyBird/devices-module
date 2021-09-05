@@ -4,7 +4,6 @@ namespace Tests\Cases;
 
 use Doctrine\ORM;
 use FastyBird\ApplicationExchange\Publisher as ApplicationExchangePublisher;
-use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Subscribers;
@@ -28,13 +27,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 
-		$numberHashHelper = Mockery::mock(Helpers\NumberHashHelper::class);
-
-		$dateTimeFactory = Mockery::mock(DateTimeFactory\DateTimeFactory::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$numberHashHelper,
-			$dateTimeFactory,
+			$entityKeyHelper,
 			$publisher,
 			$entityManager
 		);
@@ -76,13 +72,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager();
 
-		$numberHashHelper = Mockery::mock(Helpers\NumberHashHelper::class);
-
-		$dateTimeFactory = Mockery::mock(DateTimeFactory\DateTimeFactory::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$numberHashHelper,
-			$dateTimeFactory,
+			$entityKeyHelper,
 			$publisher,
 			$entityManager
 		);
@@ -135,13 +128,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager(true);
 
-		$numberHashHelper = Mockery::mock(Helpers\NumberHashHelper::class);
-
-		$dateTimeFactory = Mockery::mock(DateTimeFactory\DateTimeFactory::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$numberHashHelper,
-			$dateTimeFactory,
+			$entityKeyHelper,
 			$publisher,
 			$entityManager
 		);
@@ -215,13 +205,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->andReturn($uow)
 			->times(1);
 
-		$numberHashHelper = Mockery::mock(Helpers\NumberHashHelper::class);
-
-		$dateTimeFactory = Mockery::mock(DateTimeFactory\DateTimeFactory::class);
+		$entityKeyHelper = Mockery::mock(Helpers\EntityKey::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$numberHashHelper,
-			$dateTimeFactory,
+			$entityKeyHelper,
 			$publisher,
 			$entityManager
 		);

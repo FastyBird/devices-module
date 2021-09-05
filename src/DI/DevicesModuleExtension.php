@@ -246,8 +246,8 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('helpers.property'))
 			->setType(Helpers\PropertyHelper::class);
 
-		$builder->addDefinition($this->prefix('helpers.hash'))
-			->setType(Helpers\NumberHashHelper::class);
+		$builder->addDefinition($this->prefix('helpers.entityKey'))
+			->setType(Helpers\EntityKey::class);
 	}
 
 	/**

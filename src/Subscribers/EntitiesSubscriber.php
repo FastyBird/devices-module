@@ -20,7 +20,6 @@ use Doctrine\Common;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\ApplicationExchange\Publisher as ApplicationExchangePublisher;
-use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
@@ -49,11 +48,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
-	/** @var Helpers\NumberHashHelper */
-	private Helpers\NumberHashHelper $numberHashHelper;
-
-	/** @var DateTimeFactory\DateTimeFactory */
-	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
+	/** @var Helpers\EntityKey */
+	private Helpers\EntityKey $entityKeyGenerator;
 
 	/** @var Models\States\IPropertyRepository|null */
 	private ?Models\States\IPropertyRepository $propertyStateRepository;
@@ -65,15 +61,13 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	private ORM\EntityManagerInterface $entityManager;
 
 	public function __construct(
-		Helpers\NumberHashHelper $numberHashHelper,
-		DateTimeFactory\DateTimeFactory $dateTimeFactory,
+		Helpers\EntityKey $entityKeyGenerator,
 		ApplicationExchangePublisher\IPublisher $publisher,
 		ORM\EntityManagerInterface $entityManager,
 		?Models\States\IPropertyRepository $propertyStateRepository = null
 	)
 	{
-		$this->numberHashHelper = $numberHashHelper;
-		$this->dateTimeFactory = $dateTimeFactory;
+		$this->entityKeyGenerator = $entityKeyGenerator;
 		$this->propertyStateRepository = $propertyStateRepository;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
@@ -109,8 +103,10 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			return;
 		}
 
-		if (method_exists($entity, 'setKey')) {
-			$entity->setKey($this->numberHashHelper->alphaIdToHash($this->dateTimeFactory->getNow()->getTimestamp()));
+		if (method_exists($entity, 'setKey') && method_exists($entity, 'getKey')) {
+			if ($entity->getKey() === null) {
+				$entity->setKey($this->entityKeyGenerator->generate($entity));
+			}
 		}
 	}
 

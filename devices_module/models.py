@@ -21,7 +21,6 @@ Module models definitions
 """
 
 # Library dependencies
-import time
 import uuid
 import datetime
 from abc import abstractmethod, ABC
@@ -37,15 +36,10 @@ from pony.orm import core as orm, Database, Discriminator, PrimaryKey, Required,
 
 # Library libs
 from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPropertyItem
-from devices_module.utils import KeyHashUtils
+from devices_module.key import entity_key_generator
 
 # Create devices module database accessor
 db: Database = Database()
-
-
-def generate_entity_key_hash() -> str:
-    """Generate unique entity hash used for PUB-SUB"""
-    return KeyHashUtils.encode(int(time.time_ns() / 1000))
 
 
 class EntityEventMixin:
@@ -158,7 +152,7 @@ class ConnectorEntity(EntityEventMixin, db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = generate_entity_key_hash()
+            self.key = entity_key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -413,7 +407,7 @@ class DeviceEntity(EntityEventMixin, db.Entity):
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
         if self.key is None:
-            self.key = generate_entity_key_hash()
+            self.key = entity_key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -491,7 +485,7 @@ class DevicePropertyEntity(EntityEventMixin, db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = generate_entity_key_hash()
+            self.key = entity_key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -693,7 +687,7 @@ class DeviceConfigurationEntity(EntityEventMixin, db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = generate_entity_key_hash()
+            self.key = entity_key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -864,7 +858,7 @@ class ChannelEntity(EntityEventMixin, db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = generate_entity_key_hash()
+            self.key = entity_key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -938,7 +932,7 @@ class ChannelPropertyEntity(EntityEventMixin, db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = generate_entity_key_hash()
+            self.key = entity_key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -1140,7 +1134,7 @@ class ChannelConfigurationEntity(EntityEventMixin, db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = generate_entity_key_hash()
+            self.key = entity_key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 

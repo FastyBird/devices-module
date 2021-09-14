@@ -131,7 +131,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
       }
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.devices.fetch.failed',
         e,
@@ -179,7 +179,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
       commit('SET_FIRST_LOAD', true)
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.devices.fetch.failed',
         e,
@@ -205,7 +205,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
       await Device.insert({
         data: Object.assign({}, payload.data, { id, draft }),
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.CREATING,
         id,
@@ -249,7 +249,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
         )
 
         return Device.find(id)
-      } catch (e) {
+      } catch (e: any) {
         // Entity could not be created on api, we have to remove it from database
         await Device.delete(id)
 
@@ -286,7 +286,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
         where: payload.device.id,
         data: payload.data,
       })
-    } catch (e) {
+    } catch (e: any) {
       throw new OrmError(
         'devices-module.devices.update.failed',
         e,
@@ -329,7 +329,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
         )
 
         return Device.find(payload.device.id)
-      } catch (e) {
+      } catch (e: any) {
         // Updating entity on api failed, we need to refresh entity
         await Device.get(
           payload.device.id,
@@ -385,7 +385,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
       )
 
       return Device.find(payload.device.id)
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.devices.save.failed',
         e,
@@ -415,7 +415,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.delete(payload.device.id)
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.DELETING,
         id: payload.device.id,
@@ -445,7 +445,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
         )
 
         return true
-      } catch (e) {
+      } catch (e: any) {
         // Deleting entity on api failed, we need to refresh entity
         await Device.get(
           payload.device.id,
@@ -515,9 +515,9 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     if (validate(body)) {
       if (
         !Device.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED || payload.routingKey === RoutingKeys.DEVICES_ENTITY_DELETED)
+        payload.routingKey === RoutingKeys.DEVICES_ENTITY_DELETED
       ) {
-        throw new Error('devices-module.devices.update.failed')
+        return true
       }
 
       if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_DELETED) {
@@ -528,7 +528,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
         try {
           await Device.delete(body.id)
-        } catch (e) {
+        } catch (e: any) {
           throw new OrmError(
             'devices-module.devices.delete.failed',
             e,
@@ -565,7 +565,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           await Device.insertOrUpdate({
             data: entityData,
           })
-        } catch (e) {
+        } catch (e: any) {
           // Updating entity on api failed, we need to refresh entity
           await Device.get(
             body.id,

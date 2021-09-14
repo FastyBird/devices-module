@@ -17,22 +17,31 @@ import uuid
 
 # Library libs
 from devices_module.items import DevicePropertyItem
-from devices_module.models import device_property_repository
+from devices_module.repositories import device_property_repository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestDevicesPropertiesRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
-        self.assertEqual(3, len(device_property_repository))
+class TestDevicePropertyItem(DbTestCase):
+    def test_transform_to_dict(self) -> None:
+        device_property_repository.initialize()
 
-    # -----------------------------------------------------------------------------
-
-    def test_get_item(self) -> None:
-        property_item = device_property_repository.get_property_by_id(
+        property_item = device_property_repository.get_by_id(
             uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
         )
 
         self.assertIsInstance(property_item, DevicePropertyItem)
-        self.assertEqual("bLikvh", property_item.key)
+
+        self.assertEqual({
+            "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
+            "name": "rssi",
+            "identifier": "rssi",
+            "key": "bLikvh",
+            "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
+            "queryable": True,
+            "settable": False,
+            "data_type": "int",
+            "format": None,
+            "unit": None,
+        }, property_item.to_dict())

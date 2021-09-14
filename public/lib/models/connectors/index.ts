@@ -6,7 +6,8 @@ import {
   ModuleOrigin,
   ConnectorControlAction,
   ConnectorEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys, ConnectorType,
+  DevicesModule as RoutingKeys,
+  ConnectorType,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -22,6 +23,7 @@ import uniq from 'lodash/uniq'
 
 import Connector from '@/lib/models/connectors/Connector'
 import {
+  ConnectorEntityTypes,
   ConnectorInterface,
   ConnectorResponseInterface,
   ConnectorsResponseInterface,
@@ -114,7 +116,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.connectors.fetch.failed',
         e,
@@ -146,7 +148,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
       commit('SET_FIRST_LOAD', true)
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.connectors.fetch.failed',
         e,
@@ -178,7 +180,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
         where: payload.connector.id,
         data: payload.data,
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.UPDATING,
         id: payload.connector.id,
@@ -217,7 +219,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
       )
 
       return Connector.find(payload.connector.id)
-    } catch (e) {
+    } catch (e: any) {
       // Updating entity on api failed, we need to refresh entity
       await Connector.get(
         payload.connector.id,
@@ -285,9 +287,9 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
     if (validate(body)) {
       if (
         !Connector.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED || payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_DELETED)
+        payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_DELETED
       ) {
-        throw new Error('devices-module.connectors.update.failed')
+        return true
       }
 
       if (payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_DELETED) {
@@ -298,7 +300,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
         try {
           await Connector.delete(body.id)
-        } catch (e) {
+        } catch (e: any) {
           throw new OrmError(
             'devices-module.connectors.delete.failed',
             e,
@@ -328,14 +330,29 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
           .forEach((attrName) => {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
-            entityData[camelName] = body[attrName]
+            if (camelName === 'type') {
+              switch (body[attrName]) {
+                case ConnectorType.FB_BUS:
+                  entityData[camelName] = ConnectorEntityTypes.FB_BUS
+                  break
+
+                case ConnectorType.FB_MQTT_V1:
+                  entityData[camelName] = ConnectorEntityTypes.FB_MQTT_V1
+                  break
+
+                default:
+                  entityData[camelName] = body[attrName]
+              }
+            } else {
+              entityData[camelName] = body[attrName]
+            }
           })
 
         try {
           await Connector.insertOrUpdate({
             data: entityData,
           })
-        } catch (e) {
+        } catch (e: any) {
           // Updating entity on api failed, we need to refresh entity
           await Connector.get(
             body.id,

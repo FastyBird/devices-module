@@ -104,4 +104,16 @@ class Control implements IControl
 		return $this->name;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id'        => $this->getPlainId(),
+			'name'      => $this->getName(),
+			'connector' => $this->getConnector()->getPlainId(),
+		];
+	}
+
 }

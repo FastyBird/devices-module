@@ -102,7 +102,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.device-connector.get.failed',
         e,
@@ -134,7 +134,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
           connectorId: payload.connector.id,
         }),
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.CREATING,
         id,
@@ -178,7 +178,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
         )
 
         return DeviceConnector.find(id)
-      } catch (e) {
+      } catch (e: any) {
         // Entity could not be created on api, we have to remove it from database
         await DeviceConnector.delete(id)
 
@@ -215,7 +215,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
         where: payload.connector.id,
         data: payload.data,
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.UPDATING,
         id: payload.connector.id,
@@ -264,7 +264,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
         )
 
         return DeviceConnector.find(payload.connector.id)
-      } catch (e) {
+      } catch (e: any) {
         const device = Device.find(payload.connector.deviceId)
 
         if (device !== null) {
@@ -321,7 +321,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
       )
 
       return DeviceConnector.find(payload.connector.id)
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.device-connector.save.failed',
         e,
@@ -357,9 +357,9 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
     if (validate(body)) {
       if (
         !DeviceConnector.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.DEVICES_CONNECTOR_ENTITY_UPDATED || payload.routingKey === RoutingKeys.DEVICES_CONNECTOR_ENTITY_DELETED)
+        payload.routingKey === RoutingKeys.DEVICES_CONNECTOR_ENTITY_DELETED
       ) {
-        throw new Error('devices-module.device-connector.update.failed')
+        return true
       }
 
       if (payload.routingKey === RoutingKeys.DEVICES_CONNECTOR_ENTITY_DELETED) {
@@ -370,7 +370,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
 
         try {
           await DeviceConnector.delete(body.id)
-        } catch (e) {
+        } catch (e: any) {
           throw new OrmError(
             'devices-module.device-connector.delete.failed',
             e,
@@ -423,7 +423,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
           await DeviceConnector.insertOrUpdate({
             data: entityData,
           })
-        } catch (e) {
+        } catch (e: any) {
           const failedEntity = DeviceConnector.query().with('device').where('id', body.id).first()
 
           if (failedEntity !== null && failedEntity.device !== null) {

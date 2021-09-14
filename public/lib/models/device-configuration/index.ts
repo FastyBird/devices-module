@@ -103,7 +103,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.device-configuration.fetch.failed',
         e,
@@ -134,7 +134,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.device-configuration.fetch.failed',
         e,
@@ -167,7 +167,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
         where: payload.configuration.id,
         data: payload.data,
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.UPDATING,
         id: payload.configuration.id,
@@ -217,7 +217,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
       )
 
       return DeviceConfiguration.find(payload.configuration.id)
-    } catch (e) {
+    } catch (e: any) {
       // Updating entity on api failed, we need to refresh entity
       await DeviceConfiguration.get(
         device,
@@ -257,7 +257,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
           value: payload.value,
         },
       })
-    } catch (e) {
+    } catch (e: any) {
       throw new OrmError(
         'devices-module.device-configuration.transmit.failed',
         e,
@@ -324,9 +324,9 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
     if (validate(body)) {
       if (
         !DeviceConfiguration.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.DEVICES_CONFIGURATION_ENTITY_UPDATED || payload.routingKey === RoutingKeys.DEVICES_CONFIGURATION_ENTITY_DELETED)
+        payload.routingKey === RoutingKeys.DEVICES_CONFIGURATION_ENTITY_DELETED
       ) {
-        throw new Error('devices-module.device-configuration.update.failed')
+        return true
       }
 
       if (payload.routingKey === RoutingKeys.DEVICES_CONFIGURATION_ENTITY_DELETED) {
@@ -337,7 +337,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
 
         try {
           await DeviceConfiguration.delete(body.id)
-        } catch (e) {
+        } catch (e: any) {
           throw new OrmError(
             'devices-module.device-configuration.delete.failed',
             e,
@@ -384,7 +384,7 @@ const moduleActions: ActionTree<DeviceConfigurationState, unknown> = {
           await DeviceConfiguration.insertOrUpdate({
             data: entityData,
           })
-        } catch (e) {
+        } catch (e: any) {
           const failedEntity = DeviceConfiguration.query().with('device').where('id', body.id).first()
 
           if (failedEntity !== null && failedEntity.device !== null) {

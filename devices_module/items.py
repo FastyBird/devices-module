@@ -21,7 +21,7 @@ Entities cache to prevent database overloading
 # Library dependencies
 import uuid
 from abc import ABC
-from typing import Dict, Set, Tuple
+from typing import Dict, Set, Tuple, List
 from modules_metadata.types import DataType
 
 
@@ -35,6 +35,7 @@ class PropertyItem(ABC):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
     __id: uuid.UUID
+    __name: str or None
     __key: str
     __identifier: str
     __settable: bool
@@ -51,6 +52,7 @@ class PropertyItem(ABC):
         self,
         property_id: uuid.UUID,
         property_key: str,
+        property_name: str or None,
         property_identifier: str,
         property_settable: bool,
         property_queryable: bool,
@@ -60,6 +62,7 @@ class PropertyItem(ABC):
         device_id: uuid.UUID,
     ) -> None:
         self.__id = property_id
+        self.__name = property_name
         self.__key = property_key
         self.__identifier = property_identifier
         self.__settable = property_settable
@@ -83,6 +86,13 @@ class PropertyItem(ABC):
     def property_id(self) -> uuid.UUID:
         """Property identifier"""
         return self.__id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def name(self) -> str or None:
+        """Property name"""
+        return self.__name
 
     # -----------------------------------------------------------------------------
 
@@ -173,6 +183,7 @@ class PropertyItem(ABC):
 
         return {
             "id": self.property_id.__str__(),
+            "name": self.name,
             "key": self.key,
             "identifier": self.identifier,
             "settable": self.settable,
@@ -214,6 +225,7 @@ class ChannelPropertyItem(PropertyItem):
     def __init__(
         self,
         property_id: uuid.UUID,
+        property_name: str or None,
         property_key: str,
         property_identifier: str,
         property_settable: bool,
@@ -225,15 +237,16 @@ class ChannelPropertyItem(PropertyItem):
         channel_id: uuid.UUID,
     ) -> None:
         super().__init__(
-            property_id,
-            property_key,
-            property_identifier,
-            property_settable,
-            property_queryable,
-            property_data_type,
-            property_unit,
-            property_format,
-            device_id,
+            property_id=property_id,
+            property_name=property_name,
+            property_key=property_key,
+            property_identifier=property_identifier,
+            property_settable=property_settable,
+            property_queryable=property_queryable,
+            property_data_type=property_data_type,
+            property_unit=property_unit,
+            property_format=property_format,
+            device_id=device_id,
         )
 
         self.__channel_id = channel_id
@@ -253,7 +266,7 @@ class ChannelPropertyItem(PropertyItem):
         }, **super().to_dict()}
 
 
-class ConnectorItem:
+class ConnectorItem(ABC):
     """
     Connector entity item
 
@@ -267,6 +280,7 @@ class ConnectorItem:
     __name: str
     __enabled: bool
     __type: str
+    __control: List[str]
     __params: dict
 
     def __init__(
@@ -276,14 +290,16 @@ class ConnectorItem:
         connector_key: str,
         connector_enabled: bool,
         connector_type: str,
-        connector_params: dict,
+        connector_control: List[str],
+        connector_params: dict or None,
     ) -> None:
         self.__id = connector_id
         self.__key = connector_key
         self.__name = connector_name
         self.__enabled = connector_enabled
         self.__type = connector_type
-        self.__params = connector_params
+        self.__control = connector_control
+        self.__params = connector_params if connector_params is not None else {}
 
     # -----------------------------------------------------------------------------
 
@@ -323,6 +339,13 @@ class ConnectorItem:
     # -----------------------------------------------------------------------------
 
     @property
+    def control(self) -> List[str]:
+        """Connector plain control"""
+        return self.__control
+
+    # -----------------------------------------------------------------------------
+
+    @property
     def params(self) -> dict:
         """Connector configuration params"""
         return self.__params
@@ -337,5 +360,98 @@ class ConnectorItem:
             "name": self.name,
             "enabled": self.enabled,
             "type": self.type,
-            "params": self.params,
+            "control": self.control,
         }
+
+
+class FbBusConnectorItem(ConnectorItem):
+    """
+    FastyBird BUS connector entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    @property
+    def address(self) -> int or None:
+        """Connector address"""
+        return int(self.params.get("address", None)) \
+            if self.params is not None and self.params.get("address") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def serial_interface(self) -> str or None:
+        """Connector serial interface"""
+        return str(self.params.get("serial_interface", None)) \
+            if self.params is not None and self.params.get("serial_interface") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def baud_rate(self) -> int or None:
+        """Connector communication baud rate"""
+        return int(self.params.get("baud_rate", None)) \
+            if self.params is not None and self.params.get("baud_rate") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert connector item to dictionary"""
+        return {**{
+            "address": self.address,
+            "serial_interface": self.serial_interface,
+            "baud_rate": self.baud_rate,
+        }, **super().to_dict()}
+
+
+class FbMqttV1ConnectorItem(ConnectorItem):
+    """
+    FastyBird MQTT v1 connector entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    @property
+    def server(self) -> str or None:
+        """Connector server address"""
+        return str(self.params.get("server", None)) \
+            if self.params is not None and self.params.get("server") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def port(self) -> int or None:
+        """Connector server port"""
+        return int(self.params.get("port", None)) \
+            if self.params is not None and self.params.get("port") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def secured_port(self) -> int or None:
+        """Connector server secured port"""
+        return int(self.params.get("secured_port", None)) \
+            if self.params is not None and self.params.get("secured_port") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def username(self) -> str or None:
+        """Connector server username"""
+        return str(self.params.get("username", None)) \
+            if self.params is not None and self.params.get("username") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert connector item to dictionary"""
+        return {**{
+            "server": self.server,
+            "port": self.port,
+            "secured_port": self.secured_port,
+            "username": self.username,
+        }, **super().to_dict()}

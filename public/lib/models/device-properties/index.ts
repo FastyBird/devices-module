@@ -103,7 +103,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.device-properties.fetch.failed',
         e,
@@ -134,7 +134,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.device-properties.fetch.failed',
         e,
@@ -167,7 +167,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
         where: payload.property.id,
         data: payload.data,
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.UPDATING,
         id: payload.property.id,
@@ -217,7 +217,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
       )
 
       return DeviceProperty.find(payload.property.id)
-    } catch (e) {
+    } catch (e: any) {
       // Updating entity on api failed, we need to refresh entity
       await DeviceProperty.get(
         device,
@@ -257,7 +257,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
           value: payload.value,
         },
       })
-    } catch (e) {
+    } catch (e: any) {
       throw new OrmError(
         'devices-module.device-properties.transmit.failed',
         e,
@@ -324,9 +324,9 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
     if (validate(body)) {
       if (
         !DeviceProperty.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_UPDATED || payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_DELETED)
+        payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_DELETED
       ) {
-        throw new Error('devices-module.device-properties.update.failed')
+        return true
       }
 
       if (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_DELETED) {
@@ -337,7 +337,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
 
         try {
           await DeviceProperty.delete(body.id)
-        } catch (e) {
+        } catch (e: any) {
           throw new OrmError(
             'devices-module.device-properties.delete.failed',
             e,
@@ -384,7 +384,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
           await DeviceProperty.insertOrUpdate({
             data: entityData,
           })
-        } catch (e) {
+        } catch (e: any) {
           const failedEntity = DeviceProperty.query().with('device').where('id', body.id).first()
 
           if (failedEntity !== null && failedEntity.device !== null) {

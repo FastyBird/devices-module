@@ -24,7 +24,6 @@ Module models definitions
 import uuid
 import datetime
 from enum import Enum
-from abc import abstractmethod, ABC
 from typing import List, Dict, Tuple
 from application_events.database import (
     DatabaseEntityCreatedEvent,
@@ -39,7 +38,6 @@ from pony.orm.dbproviders.sqlite import SQLiteProvider
 
 # Library libs
 from devices_module.converters import EnumConverter
-from devices_module.items import ConnectorItem, DevicePropertyItem, ChannelPropertyItem
 from devices_module.key import entity_key_generator
 
 # Create devices module database accessor
@@ -178,14 +176,15 @@ class FbBusConnectorEntity(ConnectorEntity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    _discriminator_: str = "fb_bus"
+    _discriminator_: str = "fb-bus"
 
     # -----------------------------------------------------------------------------
 
     @property
     def address(self) -> int or None:
         """Connector address"""
-        return int(self.params.get("address", None)) if self.params.get("address") is not None else None
+        return int(self.params.get("address", None)) \
+            if self.params is not None and self.params.get("address") is not None else None
 
     # -----------------------------------------------------------------------------
 
@@ -193,14 +192,15 @@ class FbBusConnectorEntity(ConnectorEntity):
     def serial_interface(self) -> str or None:
         """Connector serial interface"""
         return str(self.params.get("serial_interface", None)) \
-            if self.params.get("serial_interface") is not None else None
+            if self.params is not None and self.params.get("serial_interface") is not None else None
 
     # -----------------------------------------------------------------------------
 
     @property
     def baud_rate(self) -> int or None:
         """Connector communication baud rate"""
-        return int(self.params.get("baud_rate", None)) if self.params.get("baud_rate") is not None else None
+        return int(self.params.get("baud_rate", None)) \
+            if self.params is not None and self.params.get("baud_rate") is not None else None
 
     # -----------------------------------------------------------------------------
 
@@ -229,35 +229,39 @@ class FbMqttV1ConnectorEntity(ConnectorEntity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    _discriminator_: str = "fb_mqtt_v1"
+    _discriminator_: str = "fb-mqtt-v1"
 
     # -----------------------------------------------------------------------------
 
     @property
     def server(self) -> str or None:
         """Connector server address"""
-        return str(self.params.get("server", None)) if self.params.get("server") is not None else None
+        return str(self.params.get("server", None)) \
+            if self.params is not None and self.params.get("server") is not None else None
 
     # -----------------------------------------------------------------------------
 
     @property
     def port(self) -> int or None:
         """Connector server port"""
-        return int(self.params.get("port", None)) if self.params.get("port") is not None else None
+        return int(self.params.get("port", None)) \
+            if self.params is not None and self.params.get("port") is not None else None
 
     # -----------------------------------------------------------------------------
 
     @property
     def secured_port(self) -> int or None:
         """Connector server secured port"""
-        return int(self.params.get("secured_port", None)) if self.params.get("secured_port") is not None else None
+        return int(self.params.get("secured_port", None)) \
+            if self.params is not None and self.params.get("secured_port") is not None else None
 
     # -----------------------------------------------------------------------------
 
     @property
     def username(self) -> str or None:
         """Connector server username"""
-        return str(self.params.get("username", None)) if self.params.get("username") is not None else None
+        return str(self.params.get("username", None)) \
+            if self.params is not None and self.params.get("username") is not None else None
 
     # -----------------------------------------------------------------------------
 
@@ -1182,258 +1186,3 @@ class ChannelControlEntity(db.Entity):
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
-
-
-class PropertiesRepository(ABC):
-    """
-    Base properties repository
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    _items: Dict[str, ChannelPropertyItem or DevicePropertyItem] or None = None
-
-    __iterator_index = 0
-
-    # -----------------------------------------------------------------------------
-
-    def get_property_by_id(self, property_id: uuid.UUID) -> DevicePropertyItem or ChannelPropertyItem or None:
-        """Find property in cache by provided identifier"""
-        if self._items is None:
-            self.initialize()
-
-        if property_id.__str__() in self._items:
-            return self._items[property_id.__str__()]
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def get_property_by_key(self, property_key: str) -> DevicePropertyItem or ChannelPropertyItem or None:
-        """Find property in cache by provided key"""
-        if self._items is None:
-            self.initialize()
-
-        for record in self._items.values():
-            if record.key == property_key:
-                return record
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def clear(self) -> None:
-        """Clear items cache"""
-        self._items = None
-
-    # -----------------------------------------------------------------------------
-
-    @abstractmethod
-    def initialize(self) -> None:
-        """Initialize repository by fetching entities from database"""
-
-    # -----------------------------------------------------------------------------
-
-    def __iter__(self) -> "PropertiesRepository":
-        # Reset index for nex iteration
-        self.__iterator_index = 0
-
-        return self
-
-    # -----------------------------------------------------------------------------
-
-    def __len__(self):
-        if self._items is None:
-            self.initialize()
-
-        return len(self._items.values())
-
-    # -----------------------------------------------------------------------------
-
-    def __next__(self) -> DevicePropertyItem or ChannelPropertyItem:
-        if self._items is None:
-            self.initialize()
-
-        if self.__iterator_index < len(self._items.values()):
-            items: List[DevicePropertyItem or ChannelPropertyItem] = list(self._items.values())
-
-            result: DevicePropertyItem or ChannelPropertyItem = items[self.__iterator_index]
-
-            self.__iterator_index += 1
-
-            return result
-
-        # Reset index for nex iteration
-        self.__iterator_index = 0
-
-        # End of iteration
-        raise StopIteration
-
-
-class DevicesPropertiesRepository(PropertiesRepository):
-    """
-    Devices properties repository
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    @orm.db_session
-    def initialize(self) -> None:
-        """Initialize repository by fetching entities from database"""
-        items: Dict[str, DevicePropertyItem] = {}
-
-        for entity in DevicePropertyEntity.select():
-            items[entity.property_id.__str__()] = DevicePropertyItem(
-                property_id=entity.property_id,
-                property_identifier=entity.identifier,
-                property_key=entity.key,
-                property_settable=entity.settable,
-                property_queryable=entity.queryable,
-                property_data_type=entity.data_type,
-                property_format=entity.format,
-                property_unit=entity.unit,
-                device_id=entity.device.device_id,
-            )
-
-        self._items = items
-
-
-class ChannelsPropertiesRepository(PropertiesRepository):
-    """
-    Channels properties repository
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    @orm.db_session
-    def initialize(self) -> None:
-        """Initialize repository by fetching entities from database"""
-        items: Dict[str, ChannelPropertyItem] = {}
-
-        for entity in ChannelPropertyEntity.select():
-            items[entity.property_id.__str__()] = ChannelPropertyItem(
-                property_id=entity.property_id,
-                property_identifier=entity.identifier,
-                property_key=entity.key,
-                property_settable=entity.settable,
-                property_queryable=entity.queryable,
-                property_data_type=entity.data_type,
-                property_format=entity.format,
-                property_unit=entity.unit,
-                device_id=entity.channel.device.device_id,
-                channel_id=entity.channel.channel_id,
-            )
-
-        self._items = items
-
-
-class ConnectorsRepository(ABC):
-    """
-    Connectors repository
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    __items: Dict[str, ConnectorItem] or None = None
-
-    __iterator_index = 0
-
-    # -----------------------------------------------------------------------------
-
-    def get_connector_by_id(self, connector_id: uuid.UUID) -> ConnectorItem or None:
-        """Find connector in cache by provided identifier"""
-        if self.__items is None:
-            self.initialize()
-
-        if connector_id.__str__() in self.__items:
-            return self.__items[connector_id.__str__()]
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def get_connector_by_key(self, connector_key: str) -> ConnectorItem or None:
-        """Find connector in cache by provided key"""
-        if self.__items is None:
-            self.initialize()
-
-        for record in self.__items.values():
-            if record.key == connector_key:
-                return record
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def clear(self) -> None:
-        """Clear items cache"""
-        self.__items = None
-
-    # -----------------------------------------------------------------------------
-
-    @orm.db_session
-    def initialize(self) -> None:
-        """Initialize repository by fetching entities from database"""
-        items: Dict[str, ConnectorItem] = {}
-
-        for entity in ConnectorEntity.select():
-            items[entity.connector_id.__str__()] = ConnectorItem(
-                connector_id=entity.connector_id,
-                connector_name=entity.name,
-                connector_key=entity.key,
-                connector_enabled=entity.enabled,
-                connector_type=entity.type,
-                connector_params=entity.params,
-            )
-
-        self.__items = items
-
-    # -----------------------------------------------------------------------------
-
-    def __iter__(self) -> "ConnectorsRepository":
-        # Reset index for nex iteration
-        self.__iterator_index = 0
-
-        return self
-
-    # -----------------------------------------------------------------------------
-
-    def __len__(self):
-        if self.__items is None:
-            self.initialize()
-
-        return len(self.__items.values())
-
-    # -----------------------------------------------------------------------------
-
-    def __next__(self) -> ConnectorItem:
-        if self.__items is None:
-            self.initialize()
-
-        if self.__iterator_index < len(self.__items.values()):
-            items: List[ConnectorItem] = list(self.__items.values())
-
-            result: ConnectorItem = items[self.__iterator_index]
-
-            self.__iterator_index += 1
-
-            return result
-
-        # Reset index for nex iteration
-        self.__iterator_index = 0
-
-        # End of iteration
-        raise StopIteration
-
-
-connector_repository = ConnectorsRepository()
-device_property_repository = DevicesPropertiesRepository()
-channel_property_repository = ChannelsPropertiesRepository()

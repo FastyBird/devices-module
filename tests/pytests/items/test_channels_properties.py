@@ -17,22 +17,31 @@ import uuid
 
 # Library libs
 from devices_module.items import ChannelPropertyItem
-from devices_module.models import channel_property_repository
+from devices_module.repositories import channel_property_repository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestChannelsPropertiesRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
-        self.assertEqual(3, len(channel_property_repository))
+class TestChannelPropertyItem(DbTestCase):
+    def test_transform_to_dict(self) -> None:
+        channel_property_repository.initialize()
 
-    # -----------------------------------------------------------------------------
-
-    def test_get_item(self) -> None:
-        property_item = channel_property_repository.get_property_by_id(
+        property_item = channel_property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )
 
         self.assertIsInstance(property_item, ChannelPropertyItem)
-        self.assertEqual("bLikx4", property_item.key)
+
+        self.assertEqual({
+            "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+            "name": "switch",
+            "identifier": "switch",
+            "key": "bLikx4",
+            "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
+            "queryable": True,
+            "settable": True,
+            "data_type": "enum",
+            "format": "on,off,toggle",
+            "unit": None,
+        }, property_item.to_dict())

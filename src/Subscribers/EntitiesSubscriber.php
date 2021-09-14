@@ -15,19 +15,16 @@
 
 namespace FastyBird\DevicesModule\Subscribers;
 
-use Consistence;
 use Doctrine\Common;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\ApplicationExchange\Publisher as ApplicationExchangePublisher;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\ModulesMetadata;
 use Nette;
-use Ramsey\Uuid;
 use ReflectionClass;
 use ReflectionException;
 
@@ -87,284 +84,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			ORM\Events::postPersist,
 			ORM\Events::postUpdate,
 		];
-	}
-
-	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 */
-	public function prePersist(ORM\Event\LifecycleEventArgs $eventArgs): void
-	{
-		$entity = $eventArgs->getObject();
-
-		// Check for valid entity
-		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
-			return;
-		}
-
-		if (method_exists($entity, 'setKey') && method_exists($entity, 'getKey')) {
-			if ($entity->getKey() === null) {
-				$entity->setKey($this->entityKeyGenerator->generate($entity));
-			}
-		}
-	}
-
-	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 */
-	public function postPersist(ORM\Event\LifecycleEventArgs $eventArgs): void
-	{
-		// onFlush was executed before, everything already initialized
-		$entity = $eventArgs->getObject();
-
-		// Check for valid entity
-		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
-			return;
-		}
-
-		$this->processEntityAction($entity, self::ACTION_CREATED);
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param string $action
-	 *
-	 * @return void
-	 */
-	private function processEntityAction(Entities\IEntity $entity, string $action): void
-	{
-		if ($entity instanceof Entities\Devices\Controls\IControl) {
-			$entity = $entity->getDevice();
-			$action = self::ACTION_UPDATED;
-		}
-
-		if ($entity instanceof Entities\Channels\Controls\IControl) {
-			$entity = $entity->getChannel();
-			$action = self::ACTION_UPDATED;
-		}
-
-		$publishRoutingKey = null;
-
-		switch ($action) {
-			case self::ACTION_CREATED:
-				foreach (DevicesModule\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = $routingKey;
-					}
-				}
-
-				break;
-
-			case self::ACTION_UPDATED:
-				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = $routingKey;
-					}
-				}
-
-				break;
-
-			case self::ACTION_DELETED:
-				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = $routingKey;
-					}
-				}
-
-				break;
-		}
-
-		if ($publishRoutingKey !== null) {
-			if (
-				(
-					$entity instanceof Entities\Devices\Properties\IProperty
-					|| $entity instanceof Entities\Channels\Properties\IProperty
-				) && $this->propertyStateRepository !== null
-			) {
-				$state = $this->propertyStateRepository->findOne($entity->getId());
-
-				$this->publisher->publish(
-					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
-					$publishRoutingKey,
-					array_merge($state !== null ? [
-						'actual_value'   => Helpers\PropertyHelper::normalizeValue($entity, $state->getActualValue()),
-						'expected_value' => Helpers\PropertyHelper::normalizeValue($entity, $state->getExpectedValue()),
-						'pending'        => $state->isPending(),
-					] : [], $this->toArray($entity))
-				);
-			} else {
-				$this->publisher->publish(
-					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
-					$publishRoutingKey,
-					$this->toArray($entity)
-				);
-			}
-		}
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param string $class
-	 *
-	 * @return bool
-	 */
-	private function validateEntity(Entities\IEntity $entity, string $class): bool
-	{
-		$result = false;
-
-		if (get_class($entity) === $class) {
-			$result = true;
-		}
-
-		if (is_subclass_of($entity, $class)) {
-			$result = true;
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 *
-	 * @return mixed[]
-	 */
-	private function toArray(Entities\IEntity $entity): array
-	{
-		if (method_exists($entity, 'toArray')) {
-			return $entity->toArray();
-		}
-
-		$metadata = $this->entityManager->getClassMetadata(get_class($entity));
-
-		$fields = [];
-
-		foreach ($metadata->fieldMappings as $field) {
-			if (isset($field['fieldName'])) {
-				$fields[] = $field['fieldName'];
-			}
-		}
-
-		try {
-			$rc = new ReflectionClass(get_class($entity));
-
-			foreach ($rc->getProperties() as $property) {
-				$fields[] = $property->getName();
-			}
-		} catch (ReflectionException $ex) {
-			// Nothing to do, reflection could not be loaded
-		}
-
-		$fields = array_unique($fields);
-
-		$values = [];
-
-		foreach ($fields as $field) {
-			try {
-				$value = $this->getPropertyValue($entity, $field);
-
-				if ($value instanceof Consistence\Enum\Enum) {
-					$value = $value->getValue();
-				} elseif ($value instanceof Uuid\UuidInterface) {
-					$value = $value->toString();
-				}
-
-				if (is_object($value)) {
-					continue;
-				}
-
-				$key = preg_replace('/(?<!^)[A-Z]/', '_$0', $field);
-
-				if ($key !== null) {
-					$values[strtolower($key)] = $value;
-				}
-			} catch (Exceptions\PropertyNotExistsException $ex) {
-				// No need to do anything
-			}
-		}
-
-		return $values;
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param string $property
-	 *
-	 * @return mixed
-	 *
-	 * @throws Exceptions\PropertyNotExistsException
-	 */
-	private function getPropertyValue(Entities\IEntity $entity, string $property)
-	{
-		$ucFirst = ucfirst($property);
-
-		$methods = [
-			'get' . $ucFirst,
-			'is' . $ucFirst,
-			'has' . $ucFirst,
-		];
-
-		foreach ($methods as $method) {
-			$callable = [$entity, $method];
-
-			if (is_callable($callable)) {
-				return call_user_func($callable);
-			}
-		}
-
-		if (!property_exists($entity, $property)) {
-			throw new Exceptions\PropertyNotExistsException(sprintf('Property "%s" does not exists on entity', $property));
-		}
-
-		return $entity->{$property};
-	}
-
-	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 */
-	public function postUpdate(ORM\Event\LifecycleEventArgs $eventArgs): void
-	{
-		$uow = $this->entityManager->getUnitOfWork();
-
-		// onFlush was executed before, everything already initialized
-		$entity = $eventArgs->getObject();
-
-		// Get changes => should be already computed here (is a listener)
-		$changeset = $uow->getEntityChangeSet($entity);
-
-		// If we have no changes left => don't create revision log
-		if (count($changeset) === 0) {
-			return;
-		}
-
-		// Check for valid entity
-		if (
-			!$entity instanceof Entities\IEntity
-			|| !$this->validateNamespace($entity)
-			|| $uow->isScheduledForDelete($entity)
-		) {
-			return;
-		}
-
-		if (
-			$entity instanceof Entities\Channels\Controls\IControl
-			&& $uow->isScheduledForUpdate($entity->getChannel())
-		) {
-			return;
-		}
-
-		if (
-			$entity instanceof Entities\Devices\Controls\IControl
-			&& $uow->isScheduledForUpdate($entity->getDevice())
-		) {
-			return;
-		}
-
-		$this->processEntityAction($entity, self::ACTION_UPDATED);
 	}
 
 	/**
@@ -453,6 +172,189 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 			$this->processEntityAction($entity, self::ACTION_DELETED);
 		}
+	}
+
+	/**
+	 * @param ORM\Event\LifecycleEventArgs $eventArgs
+	 *
+	 * @return void
+	 */
+	public function prePersist(ORM\Event\LifecycleEventArgs $eventArgs): void
+	{
+		$entity = $eventArgs->getObject();
+
+		// Check for valid entity
+		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
+			return;
+		}
+
+		if (method_exists($entity, 'setKey') && method_exists($entity, 'getKey')) {
+			if ($entity->getKey() === null) {
+				$entity->setKey($this->entityKeyGenerator->generate($entity));
+			}
+		}
+	}
+
+	/**
+	 * @param ORM\Event\LifecycleEventArgs $eventArgs
+	 *
+	 * @return void
+	 */
+	public function postPersist(ORM\Event\LifecycleEventArgs $eventArgs): void
+	{
+		// onFlush was executed before, everything already initialized
+		$entity = $eventArgs->getObject();
+
+		// Check for valid entity
+		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
+			return;
+		}
+
+		$this->processEntityAction($entity, self::ACTION_CREATED);
+	}
+
+	/**
+	 * @param ORM\Event\LifecycleEventArgs $eventArgs
+	 *
+	 * @return void
+	 */
+	public function postUpdate(ORM\Event\LifecycleEventArgs $eventArgs): void
+	{
+		$uow = $this->entityManager->getUnitOfWork();
+
+		// onFlush was executed before, everything already initialized
+		$entity = $eventArgs->getObject();
+
+		// Get changes => should be already computed here (is a listener)
+		$changeset = $uow->getEntityChangeSet($entity);
+
+		// If we have no changes left => don't create revision log
+		if (count($changeset) === 0) {
+			return;
+		}
+
+		// Check for valid entity
+		if (
+			!$entity instanceof Entities\IEntity
+			|| !$this->validateNamespace($entity)
+			|| $uow->isScheduledForDelete($entity)
+		) {
+			return;
+		}
+
+		if (
+			$entity instanceof Entities\Channels\Controls\IControl
+			&& $uow->isScheduledForUpdate($entity->getChannel())
+		) {
+			return;
+		}
+
+		if (
+			$entity instanceof Entities\Devices\Controls\IControl
+			&& $uow->isScheduledForUpdate($entity->getDevice())
+		) {
+			return;
+		}
+
+		$this->processEntityAction($entity, self::ACTION_UPDATED);
+	}
+
+	/**
+	 * @param Entities\IEntity $entity
+	 * @param string $action
+	 *
+	 * @return void
+	 */
+	private function processEntityAction(Entities\IEntity $entity, string $action): void
+	{
+		if ($entity instanceof Entities\Devices\Controls\IControl) {
+			$entity = $entity->getDevice();
+			$action = self::ACTION_UPDATED;
+		}
+
+		if ($entity instanceof Entities\Channels\Controls\IControl) {
+			$entity = $entity->getChannel();
+			$action = self::ACTION_UPDATED;
+		}
+
+		$publishRoutingKey = null;
+
+		switch ($action) {
+			case self::ACTION_CREATED:
+				foreach (DevicesModule\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = $routingKey;
+					}
+				}
+
+				break;
+
+			case self::ACTION_UPDATED:
+				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = $routingKey;
+					}
+				}
+
+				break;
+
+			case self::ACTION_DELETED:
+				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = $routingKey;
+					}
+				}
+
+				break;
+		}
+
+		if ($publishRoutingKey !== null) {
+			if (
+				(
+					$entity instanceof Entities\Devices\Properties\IProperty
+					|| $entity instanceof Entities\Channels\Properties\IProperty
+				) && $this->propertyStateRepository !== null
+			) {
+				$state = $this->propertyStateRepository->findOne($entity->getId());
+
+				$this->publisher->publish(
+					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
+					$publishRoutingKey,
+					array_merge($state !== null ? [
+						'actual_value'   => Helpers\PropertyHelper::normalizeValue($entity, $state->getActualValue()),
+						'expected_value' => Helpers\PropertyHelper::normalizeValue($entity, $state->getExpectedValue()),
+						'pending'        => $state->isPending(),
+					] : [], $entity->toArray())
+				);
+			} else {
+				$this->publisher->publish(
+					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
+					$publishRoutingKey,
+					$entity->toArray()
+				);
+			}
+		}
+	}
+
+	/**
+	 * @param Entities\IEntity $entity
+	 * @param string $class
+	 *
+	 * @return bool
+	 */
+	private function validateEntity(Entities\IEntity $entity, string $class): bool
+	{
+		$result = false;
+
+		if (get_class($entity) === $class) {
+			$result = true;
+		}
+
+		if (is_subclass_of($entity, $class)) {
+			$result = true;
+		}
+
+		return $result;
 	}
 
 	/**

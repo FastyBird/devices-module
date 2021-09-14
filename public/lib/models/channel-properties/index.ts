@@ -104,7 +104,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.channel-properties.fetch.failed',
         e,
@@ -135,7 +135,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.channel-properties.fetch.failed',
         e,
@@ -168,7 +168,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
         where: payload.property.id,
         data: payload.data,
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.UPDATING,
         id: payload.property.id,
@@ -218,7 +218,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
       )
 
       return ChannelProperty.find(payload.property.id)
-    } catch (e) {
+    } catch (e: any) {
       // Updating entity on api failed, we need to refresh entity
       await ChannelProperty.get(
         channel,
@@ -264,7 +264,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
           value: payload.value,
         },
       })
-    } catch (e) {
+    } catch (e: any) {
       throw new OrmError(
         'devices-module.channel-properties.transmit.failed',
         e,
@@ -332,9 +332,9 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
     if (validate(body)) {
       if (
         !ChannelProperty.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.CHANNELS_PROPERTY_ENTITY_UPDATED || payload.routingKey === RoutingKeys.CHANNELS_PROPERTY_ENTITY_DELETED)
+        payload.routingKey === RoutingKeys.CHANNELS_PROPERTY_ENTITY_DELETED
       ) {
-        throw new Error('devices-module.channel-properties.update.failed')
+        return true
       }
 
       if (payload.routingKey === RoutingKeys.CHANNELS_PROPERTY_ENTITY_DELETED) {
@@ -345,7 +345,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
 
         try {
           await ChannelProperty.delete(body.id)
-        } catch (e) {
+        } catch (e: any) {
           throw new OrmError(
             'devices-module.channel-properties.delete.failed',
             e,
@@ -392,7 +392,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
           await ChannelProperty.insertOrUpdate({
             data: entityData,
           })
-        } catch (e) {
+        } catch (e: any) {
           const failedEntity = ChannelProperty.query().with('channel').where('id', body.id).first()
 
           if (failedEntity !== null && failedEntity.channel !== null) {

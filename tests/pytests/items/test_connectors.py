@@ -17,22 +17,31 @@ import uuid
 
 # Library libs
 from devices_module.items import ConnectorItem
-from devices_module.models import connector_repository
+from devices_module.repositories import connector_repository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestConnectorsRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
-        self.assertEqual(1, len(connector_repository))
+class TestConnectorItem(DbTestCase):
+    def test_transform_to_dict(self) -> None:
+        connector_repository.initialize()
 
-    # -----------------------------------------------------------------------------
-
-    def test_get_item(self) -> None:
-        connector_item = connector_repository.get_connector_by_id(
+        connector_item = connector_repository.get_by_id(
             uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
         self.assertIsInstance(connector_item, ConnectorItem)
-        self.assertEqual("bLikvZ", connector_item.key)
+
+        self.assertEqual({
+            "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
+            "type": "fb-mqtt-v1",
+            "key": "bLikvZ",
+            "name": "FB MQTT v1",
+            "enabled": True,
+            "control": [],
+            "server": None,
+            "port": None,
+            "secured_port": None,
+            "username": None,
+        }, connector_item.to_dict())

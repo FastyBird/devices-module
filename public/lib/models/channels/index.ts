@@ -125,7 +125,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
       )
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.channels.get.failed',
         e,
@@ -160,7 +160,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
       })
 
       return true
-    } catch (e) {
+    } catch (e: any) {
       throw new ApiError(
         'devices-module.channels.fetch.failed',
         e,
@@ -193,7 +193,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
         where: payload.channel.id,
         data: payload.data,
       })
-    } catch (e) {
+    } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
         type: SemaphoreTypes.UPDATING,
         id: payload.channel.id,
@@ -237,7 +237,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
       )
 
       return Channel.find(payload.channel.id)
-    } catch (e) {
+    } catch (e: any) {
       const device = Device.find(payload.channel.deviceId)
 
       if (device !== null) {
@@ -317,9 +317,9 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     if (validate(body)) {
       if (
         !Channel.query().where('id', body.id).exists() &&
-        (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED || payload.routingKey === RoutingKeys.CHANNELS_ENTITY_DELETED)
+        payload.routingKey === RoutingKeys.CHANNELS_ENTITY_DELETED
       ) {
-        throw new Error('devices-module.channels.update.failed')
+        return true
       }
 
       if (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_DELETED) {
@@ -330,7 +330,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
         try {
           await Channel.delete(body.id)
-        } catch (e) {
+        } catch (e: any) {
           throw new OrmError(
             'devices-module.channels.delete.failed',
             e,
@@ -377,7 +377,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
           await Channel.insertOrUpdate({
             data: entityData,
           })
-        } catch (e) {
+        } catch (e: any) {
           const failedEntity = Channel.query().with('device').where('id', body.id).first()
 
           if (failedEntity !== null && failedEntity.device !== null) {

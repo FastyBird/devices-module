@@ -441,6 +441,31 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
+    def get_by_id(self, connector_id: uuid.UUID) -> ConnectorItem or None:
+        """Find connector in cache by provided identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        if connector_id.__str__() in self.__items:
+            return self.__items[connector_id.__str__()]
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_key(self, connector_key: str) -> ConnectorItem or None:
+        """Find connector in cache by provided key"""
+        if self.__items is None:
+            self.initialize()
+
+        for record in self.__items.values():
+            if record.key == connector_key:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
     @orm.db_session
     def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received connector message from exchange when entity was created"""
@@ -516,31 +541,6 @@ class ConnectorsRepository(ABC):
             return True
 
         return False
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_id(self, connector_id: uuid.UUID) -> ConnectorItem or None:
-        """Find connector in cache by provided identifier"""
-        if self.__items is None:
-            self.initialize()
-
-        if connector_id.__str__() in self.__items:
-            return self.__items[connector_id.__str__()]
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_key(self, connector_key: str) -> ConnectorItem or None:
-        """Find connector in cache by provided key"""
-        if self.__items is None:
-            self.initialize()
-
-        for record in self.__items.values():
-            if record.key == connector_key:
-                return record
-
-        return None
 
     # -----------------------------------------------------------------------------
 

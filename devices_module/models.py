@@ -57,45 +57,45 @@ class EntityEventMixin:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def after_insert(self) -> None:
+    @staticmethod
+    def after_insert(entity: orm.Entity) -> None:
         """After insert entity hook"""
-        if isinstance(self, orm.Entity):
-            app_dispatcher.dispatch(
-                DatabaseEntityCreatedEvent.EVENT_NAME,
-                DatabaseEntityCreatedEvent(
-                    ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                    self,
-                ),
-            )
+        app_dispatcher.dispatch(
+            DatabaseEntityCreatedEvent.EVENT_NAME,
+            DatabaseEntityCreatedEvent(
+                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                entity,
+            ),
+        )
 
     # -----------------------------------------------------------------------------
 
-    def after_update(self) -> None:
+    @staticmethod
+    def after_update(entity: orm.Entity) -> None:
         """After update entity hook"""
-        if isinstance(self, orm.Entity):
-            app_dispatcher.dispatch(
-                DatabaseEntityUpdatedEvent.EVENT_NAME,
-                DatabaseEntityUpdatedEvent(
-                    ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                    self,
-                ),
-            )
+        app_dispatcher.dispatch(
+            DatabaseEntityUpdatedEvent.EVENT_NAME,
+            DatabaseEntityUpdatedEvent(
+                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                entity,
+            ),
+        )
 
     # -----------------------------------------------------------------------------
 
-    def after_delete(self) -> None:
+    @staticmethod
+    def after_delete(entity: orm.Entity) -> None:
         """After delete entity hook"""
-        if isinstance(self, orm.Entity):
-            app_dispatcher.dispatch(
-                DatabaseEntityDeletedEvent.EVENT_NAME,
-                DatabaseEntityDeletedEvent(
-                    ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                    self,
-                ),
-            )
+        app_dispatcher.dispatch(
+            DatabaseEntityDeletedEvent.EVENT_NAME,
+            DatabaseEntityDeletedEvent(
+                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
+                entity,
+            ),
+        )
 
 
-class ConnectorEntity(EntityEventMixin, db.Entity):
+class ConnectorEntity(db.Entity):
     """
     Connector entity
 
@@ -162,9 +162,27 @@ class ConnectorEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
 
 
 class FbBusConnectorEntity(ConnectorEntity):
@@ -313,7 +331,7 @@ class ConnectorControlEntity(db.Entity):
         self.updated_at = datetime.datetime.now()
 
 
-class DeviceEntity(EntityEventMixin, db.Entity):
+class DeviceEntity(db.Entity):
     """
     Device entity
 
@@ -425,6 +443,12 @@ class DeviceEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
@@ -433,8 +457,20 @@ class DeviceEntity(EntityEventMixin, db.Entity):
         self.hardware_manufacturer = self.hardware_manufacturer.lower()
         self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
+    # -----------------------------------------------------------------------------
 
-class DevicePropertyEntity(EntityEventMixin, db.Entity):
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
+
+
+class DevicePropertyEntity(db.Entity):
     """
     Device property entity
 
@@ -503,12 +539,30 @@ class DevicePropertyEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
 
+    # -----------------------------------------------------------------------------
 
-class DeviceConfigurationEntity(EntityEventMixin, db.Entity):
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
+
+
+class DeviceConfigurationEntity(db.Entity):
     """
     Device configuration entity
 
@@ -705,9 +759,27 @@ class DeviceConfigurationEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
 
 
 class DeviceControlEntity(db.Entity):
@@ -741,7 +813,7 @@ class DeviceControlEntity(db.Entity):
         self.updated_at = datetime.datetime.now()
 
 
-class DeviceConnectorEntity(EntityEventMixin, db.Entity):
+class DeviceConnectorEntity(db.Entity):
     """
     Device connector entity
 
@@ -802,12 +874,30 @@ class DeviceConnectorEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
 
+    # -----------------------------------------------------------------------------
 
-class ChannelEntity(EntityEventMixin, db.Entity):
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
+
+
+class ChannelEntity(db.Entity):
     """
     Channel entity
 
@@ -876,12 +966,30 @@ class ChannelEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
 
+    # -----------------------------------------------------------------------------
 
-class ChannelPropertyEntity(EntityEventMixin, db.Entity):
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
+
+
+class ChannelPropertyEntity(db.Entity):
     """
     Channel property entity
 
@@ -950,12 +1058,30 @@ class ChannelPropertyEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
 
+    # -----------------------------------------------------------------------------
 
-class ChannelConfigurationEntity(EntityEventMixin, db.Entity):
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
+
+
+class ChannelConfigurationEntity(db.Entity):
     """
     Channel configuration entity
 
@@ -1152,9 +1278,27 @@ class ChannelConfigurationEntity(EntityEventMixin, db.Entity):
 
     # -----------------------------------------------------------------------------
 
+    def after_insert(self) -> None:
+        """After insert entity hook"""
+        EntityEventMixin.after_insert(self)
+
+    # -----------------------------------------------------------------------------
+
     def before_update(self) -> None:
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
+
+    # -----------------------------------------------------------------------------
+
+    def after_update(self) -> None:
+        """After update entity hook"""
+        EntityEventMixin.after_update(self)
+
+    # -----------------------------------------------------------------------------
+
+    def after_delete(self) -> None:
+        """After delete entity hook"""
+        EntityEventMixin.after_delete(self)
 
 
 class ChannelControlEntity(db.Entity):

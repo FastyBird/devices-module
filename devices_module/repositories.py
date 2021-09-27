@@ -38,17 +38,479 @@ from devices_module.items import (
     ConnectorItem,
     FbBusConnectorItem,
     FbMqttV1ConnectorItem,
+    DeviceItem,
+    ChannelItem,
     PropertyItem,
     DevicePropertyItem,
     ChannelPropertyItem,
 )
 from devices_module.models import (
+    DeviceEntity,
+    ChannelEntity,
     DevicePropertyEntity,
     ChannelPropertyEntity,
     ConnectorEntity,
     FbBusConnectorEntity,
     FbMqttV1ConnectorEntity,
 )
+
+
+class DevicesRepository:
+    """
+    Devices repository
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __items: Dict[str, DeviceItem] or None = None
+
+    __iterator_index = 0
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, device_id: uuid.UUID) -> DeviceItem or None:
+        """Find device in cache by provided identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        if device_id.__str__() in self.__items:
+            return self.__items[device_id.__str__()]
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_key(self, device_key: str) -> DeviceItem or None:
+        """Find device in cache by provided key"""
+        if self.__items is None:
+            self.initialize()
+
+        for record in self.__items.values():
+            if record.key == device_key:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_parent(self, device_id: uuid.UUID) -> List[DeviceItem]:
+        """Find all devices in cache for parent device identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[DeviceItem] = []
+
+        for record in self.__items.values():
+            if record.parent is not None and record.parent.__eq__(device_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
+    def clear(self) -> None:
+        """Clear items cache"""
+        self.__items = None
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device message from exchange when entity was created"""
+        if routing_key != RoutingKey.DEVICES_ENTITY_CREATED:
+            return False
+
+        if self.__items is None:
+            self.initialize()
+
+            return True
+
+        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        entity: DeviceEntity or None = DeviceEntity.get(
+            device_id=uuid.UUID(data.get("id"), version=4),
+        )
+
+        if entity is not None:
+            self.__items[entity.device_id.__str__()] = self._create_item(entity)
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device message from exchange when entity was updated"""
+        if routing_key != RoutingKey.DEVICES_ENTITY_UPDATED:
+            return False
+
+        if self.__items is None:
+            self.initialize()
+
+            return True
+
+        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        if validated_data.get("id") not in self.__items:
+            entity: DeviceEntity or None = DeviceEntity.get(
+                device_id=uuid.UUID(validated_data.get("id"), version=4)
+            )
+
+            if entity is not None:
+                self.__items[entity.device_id.__str__()] = self._create_item(entity)
+
+                return True
+
+            return False
+
+        item = self._update_item(
+            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
+            validated_data,
+        )
+
+        if item is not None:
+            self.__items[validated_data.get("id")] = item
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device message from exchange when entity was updated"""
+        if routing_key != RoutingKey.DEVICES_ENTITY_DELETED:
+            return False
+
+        if data.get("id") in self.__items:
+            del self.__items[data.get("id")]
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def initialize(self) -> None:
+        """Initialize devices properties repository by fetching entities from database"""
+        items: Dict[str, DeviceItem] = {}
+
+        for entity in DeviceEntity.select():
+            if self.__items is None or entity.device_id.__str__() not in self.__items:
+                item = self._create_item(entity)
+
+            else:
+                item = self._update_item(self.get_by_id(entity.device_id), entity.to_dict())
+
+            if item is not None:
+                items[entity.device_id.__str__()] = item
+
+        self.__items = items
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _create_item(entity: DeviceEntity) -> DeviceItem or None:
+        return DeviceItem(
+            device_id=entity.device_id,
+            device_identifier=entity.identifier,
+            device_key=entity.key,
+            device_name=entity.name,
+            device_comment=entity.comment,
+            device_enabled=entity.enabled,
+            hardware_manufacturer=entity.hardware_manufacturer,
+            hardware_model=entity.hardware_model,
+            hardware_version=entity.hardware_version,
+            hardware_mac_address=entity.mac_address,
+            firmware_manufacturer=entity.firmware_manufacturer,
+            firmware_version=entity.firmware_version,
+            parent_device=entity.parent.device_id if entity.parent is not None else None,
+        )
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _update_item(item: DeviceItem, data: Dict) -> DeviceItem or None:
+        return DeviceItem(
+            device_id=item.device_id,
+            device_identifier=item.identifier,
+            device_key=item.key,
+            device_name=data.get("name", item.name),
+            device_comment=data.get("comment", item.comment),
+            device_enabled=data.get("enabled", item.enabled),
+            hardware_manufacturer=data.get("hardware_manufacturer", item.hardware_manufacturer),
+            hardware_model=data.get("hardware_model", item.hardware_model),
+            hardware_version=data.get("hardware_version", item.hardware_version),
+            hardware_mac_address=data.get("mac_address", item.hardware_mac_address),
+            firmware_manufacturer=data.get("firmware_manufacturer", item.firmware_manufacturer),
+            firmware_version=data.get("firmware_version", item.firmware_version),
+            parent_device=item.parent,
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def __iter__(self) -> "DevicesRepository":
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        return self
+
+    # -----------------------------------------------------------------------------
+
+    def __len__(self):
+        if self.__items is None:
+            self.initialize()
+
+        return len(self.__items.values())
+
+    # -----------------------------------------------------------------------------
+
+    def __next__(self) -> DeviceItem:
+        if self.__items is None:
+            self.initialize()
+
+        if self.__iterator_index < len(self.__items.values()):
+            items: List[DeviceItem] = list(self.__items.values())
+
+            result: DeviceItem = items[self.__iterator_index]
+
+            self.__iterator_index += 1
+
+            return result
+
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        # End of iteration
+        raise StopIteration
+
+
+class ChannelsRepository:
+    """
+    Devices channels repository
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __items: Dict[str, ChannelItem] or None = None
+
+    __iterator_index = 0
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, channel_id: uuid.UUID) -> ChannelItem or None:
+        """Find channel in cache by provided identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        if channel_id.__str__() in self.__items:
+            return self.__items[channel_id.__str__()]
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_key(self, channel_key: str) -> ChannelItem or None:
+        """Find channel in cache by provided key"""
+        if self.__items is None:
+            self.initialize()
+
+        for record in self.__items.values():
+            if record.key == channel_key:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_device(self, device_id: uuid.UUID) -> List[ChannelItem]:
+        """Find all channels in cache for device identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[ChannelItem] = []
+
+        for record in self.__items.values():
+            if record.device_id.__eq__(device_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
+    def clear(self) -> None:
+        """Clear items cache"""
+        self.__items = None
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel message from exchange when entity was created"""
+        if routing_key != RoutingKey.CHANNELS_ENTITY_CREATED:
+            return False
+
+        if self.__items is None:
+            self.initialize()
+
+            return True
+
+        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        entity: ChannelEntity or None = ChannelEntity.get(
+            channel_id=uuid.UUID(data.get("id"), version=4),
+        )
+
+        if entity is not None:
+            self.__items[entity.channel_id.__str__()] = self._create_item(entity)
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CHANNELS_ENTITY_UPDATED:
+            return False
+
+        if self.__items is None:
+            self.initialize()
+
+            return True
+
+        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        if validated_data.get("id") not in self.__items:
+            entity: ChannelEntity or None = ChannelEntity.get(
+                channel_id=uuid.UUID(validated_data.get("id"), version=4)
+            )
+
+            if entity is not None:
+                self.__items[entity.channel_id.__str__()] = self._create_item(entity)
+
+                return True
+
+            return False
+
+        item = self._update_item(
+            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
+            validated_data,
+        )
+
+        if item is not None:
+            self.__items[validated_data.get("id")] = item
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CHANNELS_ENTITY_DELETED:
+            return False
+
+        if data.get("id") in self.__items:
+            del self.__items[data.get("id")]
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def initialize(self) -> None:
+        """Initialize channels properties repository by fetching entities from database"""
+        items: Dict[str, ChannelItem] = {}
+
+        for entity in ChannelEntity.select():
+            if self.__items is None or entity.channel_id.__str__() not in self.__items:
+                item = self._create_item(entity)
+
+            else:
+                item = self._update_item(self.get_by_id(entity.channel_id), entity.to_dict())
+
+            if item is not None:
+                items[entity.channel_id.__str__()] = item
+
+        self.__items = items
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _create_item(entity: ChannelEntity) -> ChannelItem or None:
+        return ChannelItem(
+            channel_id=entity.channel_id,
+            channel_identifier=entity.identifier,
+            channel_key=entity.key,
+            channel_name=entity.name,
+            channel_comment=entity.comment,
+            device_id=entity.device.device_id,
+        )
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _update_item(item: ChannelItem, data: Dict) -> ChannelItem or None:
+        return ChannelItem(
+            channel_id=item.channel_id,
+            channel_identifier=item.identifier,
+            channel_key=item.key,
+            channel_name=data.get("name", item.name),
+            channel_comment=data.get("comment", item.comment),
+            device_id=item.device_id,
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def __iter__(self) -> "ChannelsRepository":
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        return self
+
+    # -----------------------------------------------------------------------------
+
+    def __len__(self):
+        if self.__items is None:
+            self.initialize()
+
+        return len(self.__items.values())
+
+    # -----------------------------------------------------------------------------
+
+    def __next__(self) -> ChannelItem:
+        if self.__items is None:
+            self.initialize()
+
+        if self.__iterator_index < len(self.__items.values()):
+            items: List[ChannelItem] = list(self.__items.values())
+
+            result: ChannelItem = items[self.__iterator_index]
+
+            self.__iterator_index += 1
+
+            return result
+
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        # End of iteration
+        raise StopIteration
 
 
 class PropertiesRepository(ABC):
@@ -699,5 +1161,7 @@ def validate_exchange_data(origin: ModuleOrigin, routing_key: RoutingKey, data: 
 
 
 connector_repository = ConnectorsRepository()
+device_repository = DevicesRepository()
+channel_repository = ChannelsRepository()
 device_property_repository = DevicesPropertiesRepository()
 channel_property_repository = ChannelsPropertiesRepository()

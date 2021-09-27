@@ -25,6 +25,238 @@ from typing import Dict, Set, Tuple, List
 from modules_metadata.types import DataType
 
 
+class DeviceItem:
+    """
+    Device entity base item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __id: uuid.UUID
+    __identifier: str
+    __key: str
+    __name: str or None
+    __comment: str or None
+    __enabled: bool
+    __hardware_manufacturer: str or None
+    __hardware_model: str or None
+    __hardware_version: str or None
+    __hardware_mac_address: str or None
+    __firmware_manufacturer: str or None
+    __firmware_version: str or None
+
+    __parent: uuid.UUID or None = None
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        device_id: uuid.UUID,
+        device_identifier: str,
+        device_key: str,
+        device_name: str or None,
+        device_comment: str or None,
+        device_enabled: bool,
+        hardware_manufacturer: str or None,
+        hardware_model: str or None,
+        hardware_version: str or None,
+        hardware_mac_address: str or None,
+        firmware_manufacturer: str or None,
+        firmware_version: str or None,
+        parent_device: uuid.UUID or None = None,
+    ) -> None:
+        self.__id = device_id
+        self.__identifier = device_identifier
+        self.__key = device_key
+
+        self.__name = device_name
+        self.__comment = device_comment
+        self.__enabled = device_enabled
+
+        self.__hardware_manufacturer = hardware_manufacturer
+        self.__hardware_model = hardware_model
+        self.__hardware_version = hardware_version
+        self.__hardware_mac_address = hardware_mac_address
+
+        self.__firmware_manufacturer = firmware_manufacturer
+        self.__firmware_version = firmware_version
+
+        self.__parent = parent_device
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def device_id(self) -> uuid.UUID:
+        """Device identifier"""
+        return self.__id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def identifier(self) -> str:
+        """Device human readable identifier"""
+        return self.__identifier
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def key(self) -> str:
+        """Device unique human readable key"""
+        return self.__key
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def name(self) -> str or None:
+        """Device user defined name"""
+        return self.__name
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def comment(self) -> str or None:
+        """Device user defined description"""
+        return self.__comment
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def enabled(self) -> bool:
+        """Device is enabled flag"""
+        return self.__enabled
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def hardware_manufacturer(self) -> str or None:
+        """Device hardware manufacturer name"""
+        return self.__hardware_manufacturer
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def hardware_model(self) -> str or None:
+        """Device hardware model name"""
+        return self.__hardware_model
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def hardware_version(self) -> str or None:
+        """Device hardware version"""
+        return self.__hardware_version
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def hardware_mac_address(self) -> str or None:
+        """Device hardware MAC address"""
+        return self.__hardware_mac_address
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def firmware_manufacturer(self) -> str or None:
+        """Device firmware manufacturer name"""
+        return self.__firmware_manufacturer
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def firmware_version(self) -> str or None:
+        """Device firmware version"""
+        return self.__firmware_version
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def parent(self) -> uuid.UUID or None:
+        """Device parent device identifier"""
+        return self.__parent
+
+
+class ChannelItem:
+    """
+    Device channel entity base item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __id: uuid.UUID
+    __identifier: str
+    __key: str
+    __name: str or None
+    __comment: str or None
+
+    __device_id: uuid.UUID
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        channel_id: uuid.UUID,
+        channel_identifier: str,
+        channel_key: str,
+        channel_name: str or None,
+        channel_comment: str or None,
+        device_id: uuid.UUID,
+    ) -> None:
+        self.__id = channel_id
+        self.__identifier = channel_identifier
+        self.__key = channel_key
+
+        self.__name = channel_name
+        self.__comment = channel_comment
+
+        self.__device_id = device_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def channel_id(self) -> uuid.UUID:
+        """Device identifier"""
+        return self.__id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def device_id(self) -> uuid.UUID:
+        """Device identifier"""
+        return self.__device_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def identifier(self) -> str:
+        """Device human readable identifier"""
+        return self.__identifier
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def key(self) -> str:
+        """Device unique human readable key"""
+        return self.__key
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def name(self) -> str or None:
+        """Device user defined name"""
+        return self.__name
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def comment(self) -> str or None:
+        """Device user defined description"""
+        return self.__comment
+
+
 class PropertyItem(ABC):
     """
     Property entity base item

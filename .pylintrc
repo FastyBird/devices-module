@@ -15,7 +15,7 @@ max-locals=20
 max-args=15
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=10
+max-attributes=15
 
 # Maximum number of statements in function / method body
 max-statements=300

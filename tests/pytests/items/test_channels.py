@@ -34,10 +34,11 @@ class TestChannelItem(DbTestCase):
         self.assertIsInstance(channel_item, ChannelItem)
 
         self.assertEqual({
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
+            "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
             "identifier": "channel-one",
             "key": "bLikxh",
             "name": "Channel one",
             "comment": None,
+            "control": ["configure"],
             "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
         }, channel_item.to_dict())

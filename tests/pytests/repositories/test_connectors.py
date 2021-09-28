@@ -65,12 +65,12 @@ class TestConnectorsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = connector_repository.get_by_id(
+        connector_item = connector_repository.get_by_id(
             uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
-        self.assertIsInstance(property_item, ConnectorItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", property_item.connector_id.__str__())
+        self.assertIsInstance(connector_item, ConnectorItem)
+        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
         self.assertEqual({
             "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
             "type": "fb-mqtt-v1",
@@ -82,7 +82,7 @@ class TestConnectorsRepository(DbTestCase):
             "port": None,
             "secured_port": None,
             "username": None,
-        }, property_item.to_dict())
+        }, connector_item.to_dict())
 
     # -----------------------------------------------------------------------------
 
@@ -107,12 +107,12 @@ class TestConnectorsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = connector_repository.get_by_id(
+        connector_item = connector_repository.get_by_id(
             uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
-        self.assertIsInstance(property_item, ConnectorItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", property_item.connector_id.__str__())
+        self.assertIsInstance(connector_item, ConnectorItem)
+        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
         self.assertEqual({
             "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
             "type": "fb-mqtt-v1",
@@ -124,19 +124,19 @@ class TestConnectorsRepository(DbTestCase):
             "port": 1883,
             "secured_port": None,
             "username": "username",
-        }, property_item.to_dict())
+        }, connector_item.to_dict())
 
     # -----------------------------------------------------------------------------
 
     def test_delete_from_exchange(self) -> None:
         connector_repository.initialize()
 
-        property_item = connector_repository.get_by_id(
+        connector_item = connector_repository.get_by_id(
             uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
-        self.assertIsInstance(property_item, ConnectorItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", property_item.connector_id.__str__())
+        self.assertIsInstance(connector_item, ConnectorItem)
+        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
 
         result: bool = connector_repository.delete_from_exchange(
             RoutingKey(RoutingKey.CONNECTOR_ENTITY_DELETED),
@@ -156,8 +156,8 @@ class TestConnectorsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = connector_repository.get_by_id(
+        connector_item = connector_repository.get_by_id(
             uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
-        self.assertIsNone(property_item)
+        self.assertIsNone(connector_item)

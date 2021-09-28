@@ -40,6 +40,7 @@ class TestDeviceItem(DbTestCase):
             "name": "First device",
             "comment": None,
             "enabled": True,
+            "control": ["configure"],
             "hardware_manufacturer": "itead",
             "hardware_model": "sonoff_basic",
             "hardware_version": "rev1",

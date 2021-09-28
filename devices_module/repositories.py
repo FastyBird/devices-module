@@ -224,6 +224,7 @@ class DevicesRepository:
             device_name=entity.name,
             device_comment=entity.comment,
             device_enabled=entity.enabled,
+            device_control=entity.get_plain_controls(),
             hardware_manufacturer=entity.hardware_manufacturer,
             hardware_model=entity.hardware_model,
             hardware_version=entity.hardware_version,
@@ -244,6 +245,7 @@ class DevicesRepository:
             device_name=data.get("name", item.name),
             device_comment=data.get("comment", item.comment),
             device_enabled=data.get("enabled", item.enabled),
+            device_control=data.get("control", item.control),
             hardware_manufacturer=data.get("hardware_manufacturer", item.hardware_manufacturer),
             hardware_model=data.get("hardware_model", item.hardware_model),
             hardware_version=data.get("hardware_version", item.hardware_version),
@@ -459,6 +461,7 @@ class ChannelsRepository:
             channel_key=entity.key,
             channel_name=entity.name,
             channel_comment=entity.comment,
+            channel_control=entity.get_plain_controls(),
             device_id=entity.device.device_id,
         )
 
@@ -472,6 +475,7 @@ class ChannelsRepository:
             channel_key=item.key,
             channel_name=data.get("name", item.name),
             channel_comment=data.get("comment", item.comment),
+            channel_control=data.get("control", item.control),
             device_id=item.device_id,
         )
 

@@ -15,7 +15,7 @@ on:
 env:
   extensions: "json"
   cache-version: "1"
-  composer-version: "v1"
+  composer-version: "v2"
   composer-install: "composer update --no-interaction --no-progress --no-suggest --prefer-dist --prefer-stable"
   coverage: "none"
 
@@ -143,15 +143,15 @@ jobs:
     needs: ["php-qa", "php-static-analysis"]
 
     strategy:
+      fail-fast: false
       matrix:
         php-version: ["7.4"]
         operating-system: ["ubuntu-latest"]
         experimental: [false]
         include:
-          - php-version: "8.0"
-            operating-system: "ubuntu-latest"
-            experimental: true
-      fail-fast: false
+          - php-version: ["8.0"]
+            operating-system: ["ubuntu-latest"]
+            experimental: [true]
 
     steps:
       - name: "Checkout"

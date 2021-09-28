@@ -176,6 +176,26 @@ class DeviceItem:
         """Device parent device identifier"""
         return self.__parent
 
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert property item to dictionary"""
+        return {
+            "id": self.device_id.__str__(),
+            "identifier": self.identifier,
+            "key": self.key,
+            "name": self.name,
+            "comment": self.comment,
+            "enabled": self.enabled,
+            "hardware_manufacturer": self.hardware_manufacturer,
+            "hardware_model": self.hardware_model,
+            "hardware_version": self.hardware_version,
+            "mac_address": self.hardware_mac_address,
+            "firmware_version": self.firmware_version,
+            "firmware_manufacturer": self.firmware_manufacturer,
+            "parent": self.parent.__str__() if self.parent is not None else None,
+        }
+
 
 class ChannelItem:
     """
@@ -255,6 +275,19 @@ class ChannelItem:
     def comment(self) -> str or None:
         """Device user defined description"""
         return self.__comment
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert property item to dictionary"""
+        return {
+            "id": self.device_id.__str__(),
+            "identifier": self.identifier,
+            "key": self.key,
+            "name": self.name,
+            "comment": self.comment,
+            "device": self.device_id.__str__(),
+        }
 
 
 class PropertyItem(ABC):

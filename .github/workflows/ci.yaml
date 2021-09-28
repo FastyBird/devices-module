@@ -149,7 +149,7 @@ jobs:
         experimental: [false]
         include:
           - php-version: "8.0"
-            os: "ubuntu-latest"
+            operating-system: "ubuntu-latest"
             experimental: true
       fail-fast: false
 

@@ -149,9 +149,9 @@ jobs:
         operating-system: ["ubuntu-latest"]
         experimental: [false]
         include:
-          - php-version: ["8.0"]
-            operating-system: ["ubuntu-latest"]
-            experimental: [true]
+          - php-version: "8.0"
+            operating-system: "ubuntu-latest"
+            experimental: true
 
     steps:
       - name: "Checkout"

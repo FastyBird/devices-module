@@ -201,7 +201,7 @@ class DeviceItem:
             "hardware_manufacturer": self.hardware_manufacturer,
             "hardware_model": self.hardware_model,
             "hardware_version": self.hardware_version,
-            "mac_address": self.hardware_mac_address,
+            "hardware_mac_address": self.hardware_mac_address,
             "firmware_version": self.firmware_version,
             "firmware_manufacturer": self.firmware_manufacturer,
             "parent": self.parent.__str__() if self.parent is not None else None,

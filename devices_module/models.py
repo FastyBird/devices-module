@@ -365,7 +365,7 @@ class DeviceEntity(db.Entity):
         nullable=False,
     )
     hardware_version: str or None = Optional(str, column="device_hardware_version", max_len=150, nullable=True)
-    mac_address: str or None = Optional(str, column="device_mac_address", max_len=15, nullable=True)
+    hardware_mac_address: str or None = Optional(str, column="device_hardware_mac_address", max_len=15, nullable=True)
     firmware_manufacturer: str or None = Optional(
         str,
         column="device_firmware_manufacturer",
@@ -410,7 +410,7 @@ class DeviceEntity(db.Entity):
             "hardware_version": self.hardware_version,
             "hardware_manufacturer": self.hardware_manufacturer,
             "hardware_model": self.hardware_model,
-            "mac_address": self.mac_address,
+            "hardware_mac_address": self.hardware_mac_address,
             "firmware_manufacturer": self.firmware_manufacturer,
             "firmware_version": self.firmware_version,
             "control": self.get_plain_controls(),

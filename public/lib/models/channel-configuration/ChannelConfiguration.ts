@@ -237,7 +237,7 @@ export default class ChannelConfiguration extends Configuration implements Chann
     })
   }
 
-  static reset(): void {
-    ChannelConfiguration.dispatch('reset')
+  static reset(): Promise<void> {
+    return ChannelConfiguration.dispatch('reset')
   }
 }

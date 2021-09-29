@@ -2,13 +2,14 @@
 
 [![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/actions)
 [![Licence](https://badgen.net/github/license/FastyBird/devices-module?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
+[![Code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flat-square)](https://coveralls.io/r/FastyBird/devices-module)
 
 ![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flat-square)
-[![PHP code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flat-square)](https://coveralls.io/r/FastyBird/devices-module)
 [![PHP latest stable](https://badgen.net/packagist/v/FastyBird/devices-module/latest?cache=300&style=flat-square)](https://packagist.org/packages/FastyBird/devices-module)
 [![PHP downloads total](https://badgen.net/packagist/dt/FastyBird/devices-module?cache=300&style=flat-square)](https://packagist.org/packages/FastyBird/devices-module)
 [![PHPStan](https://img.shields.io/badge/phpstan-enabled-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
 
+![JS](https://img.shields.io/badge/js-es6-blue.svg?style=flat-square)
 [![JS latest stable](https://badgen.net/npm/v/@fastybird/devices-module?cache=300&style=flat-square)](https://www.npmjs.com/package/@fastybird/devices-module)
 [![JS downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flat-square)](https://www.npmjs.com/package/@fastybird/devices-module)
 ![Types](https://badgen.net/npm/types/@fastybird/devices-module?cache=300&style=flat-square)

@@ -21,7 +21,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
-use FastyBird\ModulesMetadata;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message;
@@ -84,12 +84,9 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		// & channel
 		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
-		if (!$channel->hasControl(ModulesMetadata\Constants::CONTROL_CONFIG)) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
+		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+			return $response
+				->withEntity(WebServerHttp\ScalarEntity::from([]));
 		}
 
 		$findQuery = new Queries\FindChannelConfigurationQuery();
@@ -119,7 +116,7 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		// & channel
 		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
-		if (!$channel->hasControl(ModulesMetadata\Constants::CONTROL_CONFIG)) {
+		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
@@ -166,7 +163,7 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		// & channel
 		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
-		if (!$channel->hasControl(ModulesMetadata\Constants::CONTROL_CONFIG)) {
+		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),

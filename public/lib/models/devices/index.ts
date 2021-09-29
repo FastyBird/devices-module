@@ -1,9 +1,7 @@
 import { Item } from '@vuex-orm/core'
-import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.json'
 import {
   ModuleOrigin,
-  DeviceControlAction,
   DeviceEntity as ExchangeEntity,
   DevicesModule as RoutingKeys, DeviceConnectionState, HardwareManufacturer, DeviceModel, FirmwareManufacturer,
 } from '@fastybird/modules-metadata'
@@ -39,6 +37,10 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { DeviceJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
+import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
+import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfiguration'
+import DeviceControl from '@/lib/models/device-controls/DeviceControl'
+import DeviceConnector from '@/lib/models/device-connector/DeviceConnector'
 
 interface SemaphoreFetchingState {
   items: boolean
@@ -116,7 +118,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().get(
-        `${ModuleApiPrefix}/v1/devices/${payload.id}?include=properties,configuration,connector`,
+        `${ModuleApiPrefix}/v1/devices/${payload.id}?include=properties,configuration,controls,connector`,
         apiOptions,
       )
 
@@ -156,7 +158,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().get(
-        `${ModuleApiPrefix}/v1/devices?include=properties,configuration,connector`,
+        `${ModuleApiPrefix}/v1/devices?include=properties,configuration,controls,connector`,
         apiOptions,
       )
 
@@ -241,7 +243,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     } else {
       try {
         await Device.api().post(
-          `${ModuleApiPrefix}/v1/devices?include=properties,configuration,connector`,
+          `${ModuleApiPrefix}/v1/devices?include=properties,configuration,controls,connector`,
           jsonApiFormatter.serialize({
             stuff: createdEntity,
           }),
@@ -321,7 +323,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     } else {
       try {
         await Device.api().patch(
-          `${ModuleApiPrefix}/v1/devices/${updatedEntity.id}?include=properties,configuration,connector`,
+          `${ModuleApiPrefix}/v1/devices/${updatedEntity.id}?include=properties,configuration,controls,connector`,
           jsonApiFormatter.serialize({
             stuff: updatedEntity,
           }),
@@ -377,7 +379,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().post(
-        `${ModuleApiPrefix}/v1/devices?include=properties,configuration,connector`,
+        `${ModuleApiPrefix}/v1/devices?include=properties,configuration,controls,connector`,
         jsonApiFormatter.serialize({
           stuff: entityToSave,
         }),
@@ -464,33 +466,6 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
         })
       }
     }
-  },
-
-  transmitCommand(_store, payload: { device: DeviceInterface, command: DeviceControlAction }): Promise<boolean> {
-    if (!Device.query().where('id', payload.device.id).exists()) {
-      throw new Error('devices-module.device.transmit.failed')
-    }
-
-    return new Promise((resolve, reject) => {
-      Device.wamp().call<{ data: string }>({
-        routing_key: RoutingKeys.DEVICES_CONTROLS,
-        origin: Device.$devicesModuleOrigin,
-        data: {
-          control: payload.command,
-          device: payload.device.id,
-        },
-      })
-        .then((response: RpCallResponse<{ data: string }>): void => {
-          if (get(response.data, 'response') === 'accepted') {
-            resolve(true)
-          } else {
-            reject(new Error('devices-module.device.transmit.failed'))
-          }
-        })
-        .catch((): void => {
-          reject(new Error('devices-module.device.transmit.failed'))
-        })
-    })
   },
 
   async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
@@ -593,6 +568,11 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
   reset({ commit }): void {
     commit('RESET_STATE')
+
+    DeviceProperty.reset()
+    DeviceConfiguration.reset()
+    DeviceControl.reset()
+    DeviceConnector.reset()
 
     Channel.reset()
   },

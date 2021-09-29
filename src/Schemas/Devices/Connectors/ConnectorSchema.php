@@ -82,7 +82,7 @@ final class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public function getAttributes($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		if ($connector->getConnector() instanceof Entities\Connectors\FbMqttV1Connector) {
+		if ($connector->getConnector() instanceof Entities\Connectors\FbMqttConnector) {
 			return [
 				'username' => $connector->getUsername(),
 				'password' => $connector->getPassword(),

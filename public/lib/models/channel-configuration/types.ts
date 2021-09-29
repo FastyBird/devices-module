@@ -9,6 +9,7 @@ import {
 } from 'jsona/lib/JsonaTypes'
 
 import {
+  ChannelDataResponseInterface,
   ChannelEntityTypes,
   ChannelInterface,
 } from '@/lib/models/channels/types'
@@ -77,7 +78,7 @@ interface ChannelRelationshipsResponseInterface extends TJsonApiRelation {
 }
 
 interface ChannelConfigurationRelationshipsResponseInterface extends TJsonApiRelationships {
-  device: ChannelRelationshipsResponseInterface
+  channel: ChannelRelationshipsResponseInterface
 }
 
 export interface ChannelConfigurationDataResponseInterface extends TJsonApiData {
@@ -89,10 +90,12 @@ export interface ChannelConfigurationDataResponseInterface extends TJsonApiData 
 
 export interface ChannelConfigurationResponseInterface extends TJsonApiBody {
   data: ChannelConfigurationDataResponseInterface
+  included?: (ChannelDataResponseInterface)[]
 }
 
 export interface ChannelConfigurationsResponseInterface extends TJsonApiBody {
   data: ChannelConfigurationDataResponseInterface[]
+  included?: (ChannelDataResponseInterface)[]
 }
 
 // UPDATE ENTITY INTERFACES

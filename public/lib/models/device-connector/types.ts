@@ -7,10 +7,11 @@ import {
 } from 'jsona/lib/JsonaTypes'
 
 import {
+  DeviceDataResponseInterface,
   DeviceEntityTypes,
   DeviceInterface,
 } from '@/lib/models/devices/types'
-import { ConnectorInterface } from '@/lib/models/connectors/types'
+import { ConnectorEntityTypes, ConnectorInterface } from '@/lib/models/connectors/types'
 
 // ENTITY TYPES
 // ============
@@ -86,8 +87,18 @@ interface DeviceRelationshipsResponseInterface extends TJsonApiRelation {
   data: DeviceRelationshipResponseInterface
 }
 
+interface ConnectorRelationshipResponseInterface extends TJsonApiRelationshipData {
+  id: string
+  type: ConnectorEntityTypes
+}
+
+interface ConnectorRelationshipsResponseInterface extends TJsonApiRelation {
+  data: ConnectorRelationshipResponseInterface
+}
+
 interface DeviceConnectorRelationshipsResponseInterface extends TJsonApiRelationships {
   device: DeviceRelationshipsResponseInterface
+  connector: ConnectorRelationshipsResponseInterface
 }
 
 export interface DeviceConnectorDataResponseInterface extends TJsonApiData {
@@ -99,6 +110,7 @@ export interface DeviceConnectorDataResponseInterface extends TJsonApiData {
 
 export interface DeviceConnectorResponseInterface extends TJsonApiBody {
   data: DeviceConnectorDataResponseInterface
+  included?: (DeviceDataResponseInterface)[]
 }
 
 // UPDATE ENTITY INTERFACES

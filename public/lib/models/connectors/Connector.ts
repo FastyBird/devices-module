@@ -3,7 +3,6 @@ import {
   Item,
   Model,
 } from '@vuex-orm/core'
-import { ConnectorControlAction } from '@fastybird/modules-metadata'
 
 import {
   ConnectorEntityTypes,
@@ -53,8 +52,6 @@ export default class Connector extends Model implements ConnectorInterface {
   name!: string
   enabled!: boolean
 
-  control!: string[]
-
   relationshipNames!: string[]
 
   devices!: DeviceConnectorInterface[]
@@ -94,14 +91,7 @@ export default class Connector extends Model implements ConnectorInterface {
     })
   }
 
-  static transmitCommand(connector: ConnectorInterface, command: ConnectorControlAction): Promise<boolean> {
-    return Connector.dispatch('transmitCommand', {
-      connector,
-      command,
-    })
-  }
-
-  static reset(): void {
-    Connector.dispatch('reset')
+  static reset(): Promise<void> {
+    return Connector.dispatch('reset')
   }
 }

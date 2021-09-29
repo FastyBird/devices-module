@@ -57,7 +57,7 @@ export interface PropertyInterface {
   name: string | null
   settable: boolean
   queryable: boolean
-  dataType: DataType
+  dataType: DataType | null
   unit: string | null
   format: string | null
 

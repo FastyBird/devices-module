@@ -5,11 +5,14 @@ import { TJsonaModel } from 'jsona/lib/JsonaTypes'
 import { DeviceEntityTypes } from '@/lib/models/devices/types'
 import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
 import { DeviceConfigurationEntityTypes } from '@/lib/models/device-configuration/types'
+import { DeviceControlEntityTypes } from '@/lib/models/device-controls/types'
 import { DeviceConnectorEntityTypes } from '@/lib/models/device-connector/types'
 import { ChannelEntityTypes } from '@/lib/models/channels/types'
 import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
 import { ChannelConfigurationEntityTypes } from '@/lib/models/channel-configuration/types'
+import { ChannelControlEntityTypes } from '@/lib/models/channel-controls/types'
 import { ConnectorEntityTypes } from '@/lib/models/connectors/types'
+import { ConnectorControlEntityTypes } from '@/lib/models/connector-controls/types'
 
 export interface DeviceJsonModelInterface extends TJsonaModel {
   id: string
@@ -24,6 +27,11 @@ export interface DevicePropertyJsonModelInterface extends TJsonaModel {
 export interface DeviceConfigurationJsonModelInterface extends TJsonaModel {
   id: string
   type: DeviceConfigurationEntityTypes
+}
+
+export interface DeviceControlJsonModelInterface extends TJsonaModel {
+  id: string
+  type: DeviceControlEntityTypes
 }
 
 export interface DeviceConnectorJsonModelInterface extends TJsonaModel {
@@ -46,14 +54,24 @@ export interface ChannelConfigurationJsonModelInterface extends TJsonaModel {
   type: ChannelConfigurationEntityTypes
 }
 
+export interface ChannelControlJsonModelInterface extends TJsonaModel {
+  id: string
+  type: ChannelControlEntityTypes
+}
+
 export interface ConnectorJsonModelInterface extends TJsonaModel {
   id: string
   type: ConnectorEntityTypes
 }
 
+export interface ConnectorControlJsonModelInterface extends TJsonaModel {
+  id: string
+  type: ConnectorControlEntityTypes
+}
+
 export interface RelationInterface extends TJsonaModel {
   id: string
-  type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceConfigurationEntityTypes | DeviceConnectorEntityTypes | ChannelPropertyEntityTypes | ChannelConfigurationEntityTypes | ConnectorEntityTypes
+  type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceConfigurationEntityTypes | DeviceControlEntityTypes | DeviceConnectorEntityTypes | ChannelPropertyEntityTypes | ChannelConfigurationEntityTypes | ChannelControlEntityTypes | ConnectorEntityTypes | ConnectorControlEntityTypes
 }
 
 export const ModuleApiPrefix = `/${ModulePrefix.MODULE_DEVICES_PREFIX}`

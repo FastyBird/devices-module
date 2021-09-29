@@ -8,13 +8,17 @@ import {
 
 import { DeviceEntityTypes } from '@/lib/models/devices/types'
 import { DeviceConnectorInterface } from '@/lib/models/device-connector/types'
+import {
+  ConnectorControlDataResponseInterface,
+  ConnectorControlEntityTypes,
+} from '@/lib/models/connector-controls/types'
 
 // ENTITY TYPES
 // ============
 
 export enum ConnectorEntityTypes {
   FB_BUS = 'devices-module/connector-fb-bus',
-  FB_MQTT_V1 = 'devices-module/connector-fb-mqtt-v1',
+  FB_MQTT = 'devices-module/connector-fb-mqtt',
 }
 
 // ENTITY INTERFACE
@@ -26,8 +30,6 @@ export interface ConnectorInterface {
 
   name: string
   enabled: boolean
-
-  control: string[]
 
   // FB bus
   address: number | null
@@ -57,8 +59,6 @@ export interface ConnectorInterface {
 interface ConnectorAttributesResponseInterface {
   name: string
   enabled: boolean
-
-  control: string[]
 }
 
 interface FbBusConnectorAttributesResponseInterface extends ConnectorAttributesResponseInterface {
@@ -67,7 +67,7 @@ interface FbBusConnectorAttributesResponseInterface extends ConnectorAttributesR
   baud_rate: number | null
 }
 
-interface FbMqttV1ConnectorAttributesResponseInterface extends ConnectorAttributesResponseInterface {
+interface FbMqttConnectorAttributesResponseInterface extends ConnectorAttributesResponseInterface {
   server: string | null
   port: number | null
   secured_port: number | null
@@ -84,23 +84,35 @@ interface ConnectorDevicesRelationshipsResponseInterface extends TJsonApiRelatio
   data: ConnectorDeviceRelationshipResponseInterface[]
 }
 
+interface ConnectorControlRelationshipResponseInterface extends TJsonApiRelationshipData {
+  id: string
+  type: ConnectorControlEntityTypes
+}
+
+interface ConnectorControlsRelationshipsResponseInterface extends TJsonApiRelation {
+  data: ConnectorControlRelationshipResponseInterface[]
+}
+
 interface ConnectorRelationshipsResponseInterface extends TJsonApiRelationships {
   devices: ConnectorDevicesRelationshipsResponseInterface
+  controls: ConnectorControlsRelationshipsResponseInterface
 }
 
 export interface ConnectorDataResponseInterface extends TJsonApiData {
   id: string
   type: ConnectorEntityTypes
-  attributes: FbBusConnectorAttributesResponseInterface | FbMqttV1ConnectorAttributesResponseInterface
+  attributes: FbBusConnectorAttributesResponseInterface | FbMqttConnectorAttributesResponseInterface
   relationships: ConnectorRelationshipsResponseInterface
 }
 
 export interface ConnectorResponseInterface extends TJsonApiBody {
   data: ConnectorDataResponseInterface
+  included?: (ConnectorControlDataResponseInterface)[]
 }
 
 export interface ConnectorsResponseInterface extends TJsonApiBody {
   data: ConnectorDataResponseInterface[]
+  included?: (ConnectorControlDataResponseInterface)[]
 }
 
 // UPDATE ENTITY INTERFACES

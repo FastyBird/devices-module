@@ -20,6 +20,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -48,6 +49,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 
 	public const RELATIONSHIPS_PROPERTIES = 'properties';
 	public const RELATIONSHIPS_CONFIGURATION = 'configuration';
+	public const RELATIONSHIPS_CONTROLS = 'controls';
 
 	/** @var Routing\IRouter */
 	private Routing\IRouter $router;
@@ -88,25 +90,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 			'identifier' => $channel->getIdentifier(),
 			'name'       => $channel->getName(),
 			'comment'    => $channel->getComment(),
-
-			'control' => $this->formatControls($channel->getControls()),
 		];
-	}
-
-	/**
-	 * @param Entities\Channels\Controls\IControl[] $controls
-	 *
-	 * @return string[]
-	 */
-	private function formatControls(array $controls): array
-	{
-		$return = [];
-
-		foreach ($controls as $control) {
-			$return[] = $control->getName();
-		}
-
-		return $return;
 	}
 
 	/**
@@ -157,6 +141,11 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
+			self::RELATIONSHIPS_CONTROLS => [
+				self::RELATIONSHIP_DATA          => $channel->getControls(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
 		];
 	}
 
@@ -198,7 +187,23 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				),
 				true,
 				[
-					'count' => count($channel->getConfiguration()),
+					'count' => $channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE) ? count($channel->getConfiguration()) : 0,
+				]
+			);
+
+		} elseif ($name === self::RELATIONSHIPS_CONTROLS) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROLS,
+					[
+						Router\Routes::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID => $channel->getPlainId(),
+					]
+				),
+				true,
+				[
+					'count' => count($channel->getControls()),
 				]
 			);
 
@@ -231,6 +236,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 		if (
 			$name === self::RELATIONSHIPS_PROPERTIES
 			|| $name === self::RELATIONSHIPS_CONFIGURATION
+			|| $name === self::RELATIONSHIPS_CONTROLS
 		) {
 			return new JsonApi\Schema\Link(
 				false,

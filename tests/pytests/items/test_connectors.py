@@ -35,9 +35,9 @@ class TestConnectorItem(DbTestCase):
 
         self.assertEqual({
             "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "type": "fb-mqtt-v1",
+            "type": "fb-mqtt",
             "key": "bLikvZ",
-            "name": "FB MQTT v1",
+            "name": "FB MQTT",
             "enabled": True,
             "control": [],
             "server": None,

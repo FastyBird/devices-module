@@ -21,7 +21,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
-use FastyBird\ModulesMetadata;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message;
@@ -75,12 +75,9 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
-		if (!$device->hasControl(ModulesMetadata\Constants::CONTROL_CONFIG)) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
+		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+			return $response
+				->withEntity(WebServerHttp\ScalarEntity::from([]));
 		}
 
 		$findQuery = new Queries\FindDeviceConfigurationQuery();
@@ -107,7 +104,7 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
-		if (!$device->hasControl(ModulesMetadata\Constants::CONTROL_CONFIG)) {
+		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
@@ -151,7 +148,7 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
-		if (!$device->hasControl(ModulesMetadata\Constants::CONTROL_CONFIG)) {
+		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),

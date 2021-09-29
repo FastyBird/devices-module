@@ -51,9 +51,9 @@ class TestConnectorsRepository(DbTestCase):
             RoutingKey(RoutingKey.CONNECTOR_ENTITY_CREATED),
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "type": "fb-mqtt-v1",
+                "type": "fb-mqtt",
                 "key": "bLikvZ",
-                "name": "FB MQTT v1",
+                "name": "FB MQTT",
                 "enabled": True,
                 "control": [],
                 "server": None,
@@ -73,9 +73,9 @@ class TestConnectorsRepository(DbTestCase):
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
         self.assertEqual({
             "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "type": "fb-mqtt-v1",
+            "type": "fb-mqtt",
             "key": "bLikvZ",
-            "name": "FB MQTT v1",
+            "name": "FB MQTT",
             "enabled": True,
             "control": [],
             "server": None,
@@ -93,7 +93,7 @@ class TestConnectorsRepository(DbTestCase):
             RoutingKey(RoutingKey.CONNECTOR_ENTITY_UPDATED),
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "type": "fb-mqtt-v1",
+                "type": "fb-mqtt",
                 "key": "bLikvZ",
                 "name": "Renamed",
                 "enabled": False,
@@ -115,7 +115,7 @@ class TestConnectorsRepository(DbTestCase):
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
         self.assertEqual({
             "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "type": "fb-mqtt-v1",
+            "type": "fb-mqtt",
             "key": "bLikvZ",
             "name": "Renamed",
             "enabled": False,
@@ -142,9 +142,9 @@ class TestConnectorsRepository(DbTestCase):
             RoutingKey(RoutingKey.CONNECTOR_ENTITY_DELETED),
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "type": "fb-mqtt-v1",
+                "type": "fb-mqtt",
                 "key": "bLikvZ",
-                "name": "FB MQTT v1",
+                "name": "FB MQTT",
                 "enabled": True,
                 "control": [],
                 "server": None,

@@ -8,7 +8,11 @@ import {
   TJsonApiRelationships,
 } from 'jsona/lib/JsonaTypes'
 
-import { DeviceEntityTypes, DeviceInterface } from '@/lib/models/devices/types'
+import {
+  DeviceDataResponseInterface,
+  DeviceEntityTypes,
+  DeviceInterface,
+} from '@/lib/models/devices/types'
 import { PropertyInterface } from '@/lib/models/properties/types'
 
 // ENTITY TYPES
@@ -73,10 +77,12 @@ export interface DevicePropertyDataResponseInterface extends TJsonApiData {
 
 export interface DevicePropertyResponseInterface extends TJsonApiBody {
   data: DevicePropertyDataResponseInterface
+  included?: (DeviceDataResponseInterface)[]
 }
 
 export interface DevicePropertiesResponseInterface extends TJsonApiBody {
   data: DevicePropertyDataResponseInterface[]
+  included?: (DeviceDataResponseInterface)[]
 }
 
 // UPDATE ENTITY INTERFACES

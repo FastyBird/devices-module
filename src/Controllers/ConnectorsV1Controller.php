@@ -55,19 +55,19 @@ class ConnectorsV1Controller extends BaseV1Controller
 	/** @var Hydrators\Connectors\FbBusConnectorHydrator */
 	private Hydrators\Connectors\FbBusConnectorHydrator $fbBusConnectorHydrator;
 
-	/** @var Hydrators\Connectors\FbMqttV1ConnectorHydrator */
-	private Hydrators\Connectors\FbMqttV1ConnectorHydrator $fbMqttV1ConnectorHydrator;
+	/** @var Hydrators\Connectors\FbMqttConnectorHydrator */
+	private Hydrators\Connectors\FbMqttConnectorHydrator $fbMqttConnectorHydrator;
 
 	public function __construct(
 		Models\Connectors\IConnectorRepository $connectorRepository,
 		Models\Connectors\IConnectorsManager $connectorsManager,
 		Hydrators\Connectors\FbBusConnectorHydrator $fbBusConnectorHydrator,
-		Hydrators\Connectors\FbMqttV1ConnectorHydrator $fbMqttV1ConnectorHydrator
+		Hydrators\Connectors\FbMqttConnectorHydrator $fbMqttConnectorHydrator
 	) {
 		$this->connectorRepository = $connectorRepository;
 		$this->connectorsManager = $connectorsManager;
 		$this->fbBusConnectorHydrator = $fbBusConnectorHydrator;
-		$this->fbMqttV1ConnectorHydrator = $fbMqttV1ConnectorHydrator;
+		$this->fbMqttConnectorHydrator = $fbMqttConnectorHydrator;
 	}
 
 	/**
@@ -139,10 +139,10 @@ class ConnectorsV1Controller extends BaseV1Controller
 				$updateConnectorData = $this->fbBusConnectorHydrator->hydrate($document, $connector);
 
 			} elseif (
-				$document->getResource()->getType() === Schemas\Connectors\FbMqttV1ConnectorSchema::SCHEMA_TYPE
-				&& $connector instanceof Entities\Connectors\IFbMqttV1Connector
+				$document->getResource()->getType() === Schemas\Connectors\FbMqttConnectorSchema::SCHEMA_TYPE
+				&& $connector instanceof Entities\Connectors\IFbMqttConnector
 			) {
-				$updateConnectorData = $this->fbMqttV1ConnectorHydrator->hydrate($document, $connector);
+				$updateConnectorData = $this->fbMqttConnectorHydrator->hydrate($document, $connector);
 
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(

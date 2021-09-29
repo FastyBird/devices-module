@@ -151,9 +151,9 @@ class Device implements IDevice
 	 * @var string|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_mac_address", length=150, nullable=true, options={"default": null})
+	 * @ORM\Column(type="string", name="device_hardware_mac_address", length=150, nullable=true, options={"default": null})
 	 */
-	private ?string $macAddress = null;
+	private ?string $hardwareMacAddress = null;
 
 	/**
 	 * @var ModulesMetadataTypes\FirmwareManufacturerType
@@ -599,12 +599,10 @@ class Device implements IDevice
 			'hardware_version'      => $this->getHardwareVersion(),
 			'hardware_manufacturer' => $this->getHardwareManufacturer()->getValue(),
 			'hardware_model'        => $this->getHardwareModel()->getValue(),
-			'mac_address'           => $this->getMacAddress(),
+			'hardware_mac_address'  => $this->getHardwareMacAddress(),
 
 			'firmware_manufacturer' => $this->getFirmwareManufacturer()->getValue(),
 			'firmware_version'      => $this->getFirmwareVersion(),
-
-			'control' => $this->getPlainControls(),
 
 			'params' => (array) $this->getParams(),
 
@@ -745,25 +743,25 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacAddress(string $separator = ':'): ?string
+	public function getHardwareMacAddress(string $separator = ':'): ?string
 	{
-		return $this->macAddress !== null ? implode($separator, str_split($this->macAddress, 2)) : null;
+		return $this->hardwareMacAddress !== null ? implode($separator, str_split($this->hardwareMacAddress, 2)) : null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setMacAddress(?string $macAddress): void
+	public function setHardwareMacAddress(?string $hardwareMacAddress): void
 	{
 		if (
-			$macAddress !== null
-			&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $macAddress) === 0
-			&& preg_match('/^([0-9A-Fa-f]{12})$/', $macAddress) === 0
+			$hardwareMacAddress !== null
+			&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $hardwareMacAddress) === 0
+			&& preg_match('/^([0-9A-Fa-f]{12})$/', $hardwareMacAddress) === 0
 		) {
 			throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
 		}
 
-		$this->macAddress = $macAddress !== null ? strtolower(str_replace([':', '-'], '', $macAddress)) : null;
+		$this->hardwareMacAddress = $hardwareMacAddress !== null ? strtolower(str_replace([':', '-'], '', $hardwareMacAddress)) : null;
 	}
 
 	/**

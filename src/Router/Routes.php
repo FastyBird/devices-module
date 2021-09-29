@@ -38,6 +38,7 @@ class Routes implements WebServerRouter\IRoutes
 
 	public const URL_DEVICE_ID = 'device';
 	public const URL_CHANNEL_ID = 'channel';
+	public const URL_CONNECTOR_ID = 'connector';
 
 	public const RELATION_ENTITY = 'relationEntity';
 
@@ -56,6 +57,9 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\DeviceConfigurationV1Controller */
 	private Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller;
 
+	/** @var Controllers\DeviceControlsV1Controller */
+	private Controllers\DeviceControlsV1Controller $deviceControlsV1Controller;
+
 	/** @var Controllers\DeviceConnectorV1Controller */
 	private Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller;
 
@@ -68,8 +72,14 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\ChannelConfigurationV1Controller */
 	private Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller;
 
+	/** @var Controllers\ChannelControlsV1Controller */
+	private Controllers\ChannelControlsV1Controller $channelControlsV1Controller;
+
 	/** @var Controllers\ConnectorsV1Controller */
 	private Controllers\ConnectorsV1Controller $connectorsV1Controller;
+
+	/** @var Controllers\ConnectorControlsV1Controller */
+	private Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller;
 
 	/** @var Middleware\AccessMiddleware */
 	private Middleware\AccessMiddleware $devicesAccessControlMiddleware;
@@ -86,11 +96,14 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller,
 		Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller,
 		Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller,
+		Controllers\DeviceControlsV1Controller $deviceControlsV1Controller,
 		Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller,
 		Controllers\ChannelsV1Controller $channelsV1Controller,
 		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
 		Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller,
+		Controllers\ChannelControlsV1Controller $channelControlsV1Controller,
 		Controllers\ConnectorsV1Controller $connectorsV1Controller,
+		Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller,
 		Middleware\AccessMiddleware $devicesAccessControlMiddleware,
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
 		SimpleAuthMiddleware\UserMiddleware $userMiddleware
@@ -101,11 +114,14 @@ class Routes implements WebServerRouter\IRoutes
 		$this->deviceChildrenV1Controller = $deviceChildrenV1Controller;
 		$this->devicePropertiesV1Controller = $devicePropertiesV1Controller;
 		$this->deviceConfigurationV1Controller = $deviceConfigurationV1Controller;
+		$this->deviceControlsV1Controller = $deviceControlsV1Controller;
 		$this->deviceConnectorV1Controller = $deviceConnectorV1Controller;
 		$this->channelsV1Controller = $channelsV1Controller;
 		$this->channelPropertiesV1Controller = $channelPropertiesV1Controller;
 		$this->channelConfigurationV1Controller = $channelConfigurationV1Controller;
+		$this->channelControlsV1Controller = $channelControlsV1Controller;
 		$this->connectorsV1Controller = $connectorsV1Controller;
+		$this->connectorControlsV1Controller = $connectorControlsV1Controller;
 
 		$this->devicesAccessControlMiddleware = $devicesAccessControlMiddleware;
 		$this->accessControlMiddleware = $accessControlMiddleware;
@@ -208,6 +224,24 @@ class Routes implements WebServerRouter\IRoutes
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONFIGURATION_ROW_RELATIONSHIP);
 
 				/**
+				 * DEVICE CONTROLS
+				 */
+				$route = $group->get('/controls', [$this->deviceControlsV1Controller, 'index']);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONTROLS);
+
+				$route = $group->get('/controls/{' . self::URL_ITEM_ID . '}', [
+					$this->deviceControlsV1Controller,
+					'read',
+				]);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONTROL);
+
+				$route = $group->get('/controls/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+					$this->deviceControlsV1Controller,
+					'readRelationship',
+				]);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONTROL_RELATIONSHIP);
+
+				/**
 				 * DEVICE CONNECTOR
 				 */
 				$route = $group->get('/connector', [$this->deviceConnectorV1Controller, 'read']);
@@ -277,6 +311,24 @@ class Routes implements WebServerRouter\IRoutes
 							'readRelationship',
 						]);
 						$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROW_RELATIONSHIP);
+
+						/**
+						 * CHANNEL CONTROLS
+						 */
+						$route = $group->get('/controls', [$this->channelControlsV1Controller, 'index']);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROLS);
+
+						$route = $group->get('/controls/{' . self::URL_ITEM_ID . '}', [
+							$this->channelControlsV1Controller,
+							'read',
+						]);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROL);
+
+						$route = $group->get('/controls/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+							$this->channelControlsV1Controller,
+							'readRelationship',
+						]);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROL_RELATIONSHIP);
 					});
 				});
 			});
@@ -298,6 +350,26 @@ class Routes implements WebServerRouter\IRoutes
 					'readRelationship',
 				]);
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_RELATIONSHIP);
+			});
+
+			$group->group('/connectors/{' . self::URL_CONNECTOR_ID . '}', function (Routing\RouteCollector $group): void {
+				/**
+				 * CONNECTOR CONTROLS
+				 */
+				$route = $group->get('/controls', [$this->connectorControlsV1Controller, 'index']);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_CONTROLS);
+
+				$route = $group->get('/controls/{' . self::URL_ITEM_ID . '}', [
+					$this->connectorControlsV1Controller,
+					'read',
+				]);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_CONTROL);
+
+				$route = $group->get('/controls/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+					$this->connectorControlsV1Controller,
+					'readRelationship',
+				]);
+				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_CONTROL_RELATIONSHIP);
 			});
 		});
 	}

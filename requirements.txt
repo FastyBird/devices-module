@@ -1,5 +1,5 @@
 fastybird-application-events>=0.1
-fastybird-modules-metadata>=0.5
+fastybird-modules-metadata>=0.7
 pony>=0.7
 setuptools>=57.4
 mysqlclient>=2.0

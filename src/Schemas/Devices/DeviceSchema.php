@@ -22,6 +22,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -50,11 +51,12 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 	public const RELATIONSHIPS_PROPERTIES = 'properties';
 	public const RELATIONSHIPS_CONFIGURATION = 'configuration';
+	public const RELATIONSHIPS_CONTROLS = 'controls';
+
+	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
 	public const RELATIONSHIPS_PARENT = 'parent';
 	public const RELATIONSHIPS_CHILDREN = 'children';
-
-	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
@@ -113,31 +115,13 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			'hardware_model'        => $device->getHardwareModel()->getValue(),
 			'hardware_manufacturer' => $device->getHardwareManufacturer()->getValue(),
 			'hardware_version'      => $device->getHardwareVersion(),
-			'mac_address'           => $device->getMacAddress(),
+			'hardware_mac_address'  => $device->getHardwareMacAddress(),
 
 			'firmware_manufacturer' => $device->getFirmwareManufacturer()->getValue(),
 			'firmware_version'      => $device->getFirmwareVersion(),
 
-			'control' => $this->formatControls($device->getControls()),
-
 			'owner' => $device->getOwnerId(),
 		];
-	}
-
-	/**
-	 * @param Entities\Devices\Controls\IControl[] $controls
-	 *
-	 * @return string[]
-	 */
-	private function formatControls(array $controls): array
-	{
-		$return = [];
-
-		foreach ($controls as $control) {
-			$return[] = $control->getName();
-		}
-
-		return $return;
 	}
 
 	/**
@@ -182,6 +166,11 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
+			self::RELATIONSHIPS_CONTROLS => [
+				self::RELATIONSHIP_DATA          => $device->getControls(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
 			self::RELATIONSHIPS_CHANNELS      => [
 				self::RELATIONSHIP_DATA          => $this->getChannels($device),
 				self::RELATIONSHIP_LINKS_SELF    => true,
@@ -208,32 +197,6 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		}
 
 		return $relationships;
-	}
-
-	/**
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Channels\IChannel[]
-	 */
-	private function getChannels(Entities\Devices\IDevice $device): array
-	{
-		$findQuery = new Queries\FindChannelsQuery();
-		$findQuery->forDevice($device);
-
-		return $this->channelRepository->findAllBy($findQuery);
-	}
-
-	/**
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Devices\IDevice[]
-	 */
-	private function getChildren(Entities\Devices\IDevice $device): array
-	{
-		$findQuery = new Queries\FindDevicesQuery();
-		$findQuery->forParent($device);
-
-		return $this->deviceRepository->findAllBy($findQuery);
 	}
 
 	/**
@@ -272,7 +235,22 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				),
 				true,
 				[
-					'count' => count($device->getConfiguration()),
+					'count' => $device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE) ? count($device->getConfiguration()) : 0,
+				]
+			);
+
+		} elseif ($name === self::RELATIONSHIPS_CONTROLS) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_DEVICE_CONTROLS,
+					[
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+					]
+				),
+				true,
+				[
+					'count' => count($device->getControls()),
 				]
 			);
 
@@ -347,6 +325,7 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		if (
 			$name === self::RELATIONSHIPS_PROPERTIES
 			|| $name === self::RELATIONSHIPS_CONFIGURATION
+			|| $name === self::RELATIONSHIPS_CONTROLS
 			|| $name === self::RELATIONSHIPS_CHANNELS
 			|| $name === self::RELATIONSHIPS_CHILDREN
 			|| ($name === self::RELATIONSHIPS_PARENT && $device->getParent() !== null)
@@ -367,6 +346,32 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		}
 
 		return parent::getRelationshipSelfLink($device, $name);
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Devices\IDevice[]
+	 */
+	private function getChildren(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery->forParent($device);
+
+		return $this->deviceRepository->findAllBy($findQuery);
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Channels\IChannel[]
+	 */
+	private function getChannels(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindChannelsQuery();
+		$findQuery->forDevice($device);
+
+		return $this->channelRepository->findAllBy($findQuery);
 	}
 
 }

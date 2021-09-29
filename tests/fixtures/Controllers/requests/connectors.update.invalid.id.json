@@ -1,7 +1,7 @@
 {
   "data" : {
     "id" : "6821f8e9-ae69-4d5c-9b7c-d2b213f1ae0a",
-    "type" : "devices-module/connector-fb-mqtt-v1",
+    "type" : "devices-module/connector-fb-mqtt",
     "attributes" : {
       "server" : "updated.server.com"
     }

@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * IFbMqttV1Connector.php
+ * IFbMqttConnector.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -16,14 +16,14 @@
 namespace FastyBird\DevicesModule\Entities\Connectors;
 
 /**
- * FB MQTT v1 connector entity interface
+ * FB MQTT connector entity interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Entities
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IFbMqttV1Connector extends IConnector
+interface IFbMqttConnector extends IConnector
 {
 
 	/**

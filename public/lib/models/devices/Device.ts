@@ -5,7 +5,6 @@ import {
 } from '@vuex-orm/core'
 import {
   DeviceModel,
-  DeviceControlAction,
   FirmwareManufacturer,
   HardwareManufacturer,
   DeviceConnectionState,
@@ -53,12 +52,10 @@ export default class Device extends Model implements DeviceInterface {
       hardwareModel: this.string(DeviceModel.CUSTOM),
       hardwareManufacturer: this.string(HardwareManufacturer.GENERIC),
       hardwareVersion: this.string(null).nullable(),
-      macAddress: this.string(null).nullable(),
+      hardwareMacAddress: this.string(null).nullable(),
 
       firmwareManufacturer: this.string(FirmwareManufacturer.GENERIC),
       firmwareVersion: this.string(null).nullable(),
-
-      control: this.attr([]),
 
       owner: this.string(null).nullable(),
 
@@ -93,8 +90,6 @@ export default class Device extends Model implements DeviceInterface {
 
   firmwareManufacturer!: FirmwareManufacturer
   firmwareVersion!: string | null
-
-  control!: string[]
 
   owner!: string | null
 
@@ -207,14 +202,7 @@ export default class Device extends Model implements DeviceInterface {
     })
   }
 
-  static transmitCommand(device: DeviceInterface, command: DeviceControlAction): Promise<boolean> {
-    return Device.dispatch('transmitCommand', {
-      device,
-      command,
-    })
-  }
-
-  static reset(): void {
-    Device.dispatch('reset')
+  static reset(): Promise<void> {
+    return Device.dispatch('reset')
   }
 }

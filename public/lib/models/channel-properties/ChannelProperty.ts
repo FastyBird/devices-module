@@ -136,7 +136,7 @@ export default class ChannelProperty extends Property implements ChannelProperty
     })
   }
 
-  static reset(): void {
-    ChannelProperty.dispatch('reset')
+  static reset(): Promise<void> {
+    return ChannelProperty.dispatch('reset')
   }
 }

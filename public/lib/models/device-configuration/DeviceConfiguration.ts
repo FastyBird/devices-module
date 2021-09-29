@@ -166,7 +166,7 @@ export default class DeviceConfiguration extends Configuration implements Device
     })
   }
 
-  static reset(): void {
-    DeviceConfiguration.dispatch('reset')
+  static reset(): Promise<void> {
+    return DeviceConfiguration.dispatch('reset')
   }
 }

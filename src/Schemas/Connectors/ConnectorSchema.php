@@ -41,6 +41,7 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 * Define relationships names
 	 */
 	public const RELATIONSHIPS_DEVICES = 'devices';
+	public const RELATIONSHIPS_CONTROLS = 'controls';
 
 	/** @var Routing\IRouter */
 	private Routing\IRouter $router;
@@ -65,24 +66,7 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 		return [
 			'name'    => $connector->getName(),
 			'enabled' => $connector->isEnabled(),
-			'control' => $this->formatControls($connector->getControls()),
 		];
-	}
-
-	/**
-	 * @param Entities\Connectors\Controls\IControl[] $controls
-	 *
-	 * @return string[]
-	 */
-	private function formatControls(array $controls): array
-	{
-		$return = [];
-
-		foreach ($controls as $control) {
-			$return[] = $control->getName();
-		}
-
-		return $return;
 	}
 
 	/**
@@ -126,7 +110,73 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => false,
 			],
+			self::RELATIONSHIPS_CONTROLS => [
+				self::RELATIONSHIP_DATA          => $connector->getControls(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
 		];
+	}
+
+	/**
+	 * @param Entities\Connectors\IConnector $connector
+	 * @param string $name
+	 *
+	 * @return JsonApi\Contracts\Schema\LinkInterface
+	 *
+	 * @phpstan-param T $connector
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+	 */
+	public function getRelationshipRelatedLink($connector, string $name): JsonApi\Contracts\Schema\LinkInterface
+	{
+		if ($name === self::RELATIONSHIPS_CONTROLS) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_CONNECTOR_CONTROLS,
+					[
+						Router\Routes::URL_CONNECTOR_ID => $connector->getPlainId(),
+					]
+				),
+				true,
+				[
+					'count' => count($connector->getControls()),
+				]
+			);
+		}
+
+		return parent::getRelationshipRelatedLink($connector, $name);
+	}
+
+	/**
+	 * @param Entities\Connectors\IConnector $connector
+	 * @param string $name
+	 *
+	 * @return JsonApi\Contracts\Schema\LinkInterface
+	 *
+	 * @phpstan-param T $connector
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+	 */
+	public function getRelationshipSelfLink($connector, string $name): JsonApi\Contracts\Schema\LinkInterface
+	{
+		if ($name === self::RELATIONSHIPS_CONTROLS) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_CONNECTOR_RELATIONSHIP,
+					[
+						Router\Routes::URL_ITEM_ID     => $connector->getPlainId(),
+						Router\Routes::RELATION_ENTITY => $name,
+
+					]
+				),
+				false
+			);
+		}
+
+		return parent::getRelationshipSelfLink($connector, $name);
 	}
 
 }

@@ -13,8 +13,8 @@
     "type": "devices-module/device-connector",
     "id": "7c055b2b-60c3-4017-93db-e9478d8aa662",
     "attributes": {
-      "password": "supersecretpassword",
-      "username": "newusername"
+      "username": "newusername",
+      "password": "supersecretpassword"
     },
     "relationships": {
       "device": {
@@ -31,7 +31,7 @@
           "related": "/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         },
         "data": {
-          "type": "devices-module/connector-fb-mqtt-v1",
+          "type": "devices-module/connector-fb-mqtt",
           "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
       }

@@ -247,7 +247,7 @@ class Connector implements IConnector
 				'configured_key_length' => $this->getConfiguredKeyLength(),
 			]);
 
-		} elseif ($this->getConnector() instanceof Entities\Connectors\FbMqttV1Connector) {
+		} elseif ($this->getConnector() instanceof Entities\Connectors\FbMqttConnector) {
 			return array_merge($baseProperties, [
 				'username' => $this->getUsername(),
 			]);

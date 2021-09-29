@@ -155,14 +155,14 @@ interface IDevice extends Entities\IEntity,
 	 *
 	 * @return void
 	 */
-	public function setMacAddress(?string $macAddress): void;
+	public function setHardwareMacAddress(?string $macAddress): void;
 
 	/**
 	 * @param string $separator
 	 *
 	 * @return string|null
 	 */
-	public function getMacAddress(string $separator = ':'): ?string;
+	public function getHardwareMacAddress(string $separator = ':'): ?string;
 
 	/**
 	 * @param string|null $manufacturer

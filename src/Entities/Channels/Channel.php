@@ -396,8 +396,6 @@ class Channel implements IChannel
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),
 
-			'control' => $this->getPlainControls(),
-
 			'params' => (array) $this->getParams(),
 
 			'device'  => $this->getDevice()->getPlainId(),

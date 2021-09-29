@@ -24,6 +24,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\ModulesMetadata;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use Nette;
 use ReflectionClass;
 use ReflectionException;
@@ -104,7 +105,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$entity instanceof Entities\Devices\Controls\IControl
 					|| $entity instanceof Entities\Channels\Controls\IControl
 				)
-				&& $entity->getName() === ModulesMetadata\Constants::CONTROL_CONFIG
+				&& $entity->getName() === ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE
 			) {
 				if ($entity instanceof Entities\Devices\Controls\IControl) {
 					foreach ($entity->getDevice()->getConfiguration() as $row) {
@@ -146,20 +147,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			}
 
 			$processedEntities[] = $hash;
-
-			if (
-				$entity instanceof Entities\Devices\Controls\IControl
-				&& $uow->isScheduledForDelete($entity->getDevice())
-			) {
-				continue;
-			}
-
-			if (
-				$entity instanceof Entities\Channels\Controls\IControl
-				&& $uow->isScheduledForDelete($entity->getChannel())
-			) {
-				continue;
-			}
 
 			$processEntities[] = $entity;
 		}
@@ -242,20 +229,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			return;
 		}
 
-		if (
-			$entity instanceof Entities\Channels\Controls\IControl
-			&& $uow->isScheduledForUpdate($entity->getChannel())
-		) {
-			return;
-		}
-
-		if (
-			$entity instanceof Entities\Devices\Controls\IControl
-			&& $uow->isScheduledForUpdate($entity->getDevice())
-		) {
-			return;
-		}
-
 		$this->processEntityAction($entity, self::ACTION_UPDATED);
 	}
 
@@ -267,16 +240,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 */
 	private function processEntityAction(Entities\IEntity $entity, string $action): void
 	{
-		if ($entity instanceof Entities\Devices\Controls\IControl) {
-			$entity = $entity->getDevice();
-			$action = self::ACTION_UPDATED;
-		}
-
-		if ($entity instanceof Entities\Channels\Controls\IControl) {
-			$entity = $entity->getChannel();
-			$action = self::ACTION_UPDATED;
-		}
-
 		$publishRoutingKey = null;
 
 		switch ($action) {

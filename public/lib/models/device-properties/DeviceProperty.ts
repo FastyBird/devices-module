@@ -91,7 +91,7 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
     })
   }
 
-  static reset(): void {
-    DeviceProperty.dispatch('reset')
+  static reset(): Promise<void> {
+    return DeviceProperty.dispatch('reset')
   }
 }

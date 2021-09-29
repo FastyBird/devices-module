@@ -59,10 +59,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'hardware_version'      => null,
 					'hardware_manufacturer' => 'generic',
 					'hardware_model'        => 'custom',
-					'mac_address'           => null,
+					'hardware_mac_address'  => null,
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
-					'control'               => [],
 					'params'                => [],
 				], $data);
 
@@ -115,10 +114,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'hardware_version'      => null,
 					'hardware_manufacturer' => 'generic',
 					'hardware_model'        => 'custom',
-					'mac_address'           => null,
+					'hardware_mac_address'  => null,
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
-					'control'               => [],
 					'params'                => [],
 				], $data);
 
@@ -170,10 +168,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'hardware_version'      => null,
 					'hardware_manufacturer' => 'generic',
 					'hardware_model'        => 'custom',
-					'mac_address'           => null,
+					'hardware_mac_address'  => null,
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
-					'control'               => [],
 					'params'                => [],
 				], $data);
 

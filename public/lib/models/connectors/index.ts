@@ -1,10 +1,8 @@
 import { Item } from '@vuex-orm/core'
-import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema
   from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.connector.json'
 import {
   ModuleOrigin,
-  ConnectorControlAction,
   ConnectorEntity as ExchangeEntity,
   DevicesModule as RoutingKeys,
   ConnectorType,
@@ -39,6 +37,7 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { ModuleApiPrefix, ConnectorJsonModelInterface, SemaphoreTypes } from '@/lib/types'
+import ConnectorControl from '@/lib/models/connector-controls/ConnectorControl'
 
 interface SemaphoreFetchingState {
   items: boolean
@@ -111,7 +110,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
     try {
       await Connector.api().get(
-        `${ModuleApiPrefix}/v1/connectors/${payload.id}`,
+        `${ModuleApiPrefix}/v1/connectors/${payload.id}?include=controls`,
         apiOptions,
       )
 
@@ -141,7 +140,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
     try {
       await Connector.api().get(
-        `${ModuleApiPrefix}/v1/connectors`,
+        `${ModuleApiPrefix}/v1/connectors?include=controls`,
         apiOptions,
       )
 
@@ -211,7 +210,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
     try {
       await Connector.api().patch(
-        `${ModuleApiPrefix}/v1/connectors/${updatedEntity.id}`,
+        `${ModuleApiPrefix}/v1/connectors/${updatedEntity.id}?include=controls`,
         jsonApiFormatter.serialize({
           stuff: updatedEntity,
         }),
@@ -238,33 +237,6 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
     }
   },
 
-  transmitCommand(_store, payload: { connector: ConnectorInterface, command: ConnectorControlAction }): Promise<boolean> {
-    if (!Connector.query().where('id', payload.connector.id).exists()) {
-      throw new Error('devices-module.connector.transmit.failed')
-    }
-
-    return new Promise((resolve, reject) => {
-      Connector.wamp().call<{ data: string }>({
-        routing_key: RoutingKeys.CONNECTOR_CONTROLS,
-        origin: Connector.$devicesModuleOrigin,
-        data: {
-          control: payload.command,
-          connector: payload.connector.id,
-        },
-      })
-        .then((response: RpCallResponse<{ data: string }>): void => {
-          if (get(response.data, 'response') === 'accepted') {
-            resolve(true)
-          } else {
-            reject(new Error('devices-module.connector.transmit.failed'))
-          }
-        })
-        .catch((): void => {
-          reject(new Error('devices-module.connector.transmit.failed'))
-        })
-    })
-  },
-
   async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
     if (payload.origin !== ModuleOrigin.MODULE_DEVICES_ORIGIN) {
       return false
@@ -272,9 +244,9 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
     if (
       ![
-        RoutingKeys.CONNECTOR_ENTITY_CREATED,
-        RoutingKeys.CONNECTOR_ENTITY_UPDATED,
-        RoutingKeys.CONNECTOR_ENTITY_DELETED,
+        RoutingKeys.CONNECTORS_ENTITY_CREATED,
+        RoutingKeys.CONNECTORS_ENTITY_UPDATED,
+        RoutingKeys.CONNECTORS_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -287,12 +259,12 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
     if (validate(body)) {
       if (
         !Connector.query().where('id', body.id).exists() &&
-        payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_DELETED
+        payload.routingKey === RoutingKeys.CONNECTORS_ENTITY_DELETED
       ) {
         return true
       }
 
-      if (payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_DELETED) {
+      if (payload.routingKey === RoutingKeys.CONNECTORS_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -313,12 +285,12 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.CONNECTORS_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.CONNECTORS_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
           id: body.id,
         })
 
@@ -336,8 +308,8 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
                   entityData[camelName] = ConnectorEntityTypes.FB_BUS
                   break
 
-                case ConnectorType.FB_MQTT_V1:
-                  entityData[camelName] = ConnectorEntityTypes.FB_MQTT_V1
+                case ConnectorType.FB_MQTT:
+                  entityData[camelName] = ConnectorEntityTypes.FB_MQTT
                   break
 
                 default:
@@ -365,7 +337,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.CONNECTOR_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.CONNECTORS_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }
@@ -379,6 +351,8 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
   reset({ commit }): void {
     commit('RESET_STATE')
+
+    ConnectorControl.reset()
   },
 }
 

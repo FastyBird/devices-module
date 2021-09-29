@@ -12,7 +12,7 @@
           "related" : "/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         },
         "data" : {
-          "type" : "devices-module/connector-fb-mqtt-v1",
+          "type" : "devices-module/connector-fb-mqtt",
           "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
       }

@@ -34,37 +34,50 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Models\Devices\DeviceRepository::class));
 		Assert::notNull($container->getByType(Models\Devices\Properties\PropertyRepository::class));
 		Assert::notNull($container->getByType(Models\Devices\Configuration\RowRepository::class));
+		Assert::notNull($container->getByType(Models\Devices\Controls\ControlRepository::class));
 		Assert::notNull($container->getByType(Models\Channels\ChannelRepository::class));
 		Assert::notNull($container->getByType(Models\Channels\Properties\PropertyRepository::class));
 		Assert::notNull($container->getByType(Models\Channels\Configuration\RowRepository::class));
+		Assert::notNull($container->getByType(Models\Channels\Controls\ControlRepository::class));
+		Assert::notNull($container->getByType(Models\Connectors\ConnectorRepository::class));
+		Assert::notNull($container->getByType(Models\Connectors\Controls\ControlRepository::class));
 
 		Assert::notNull($container->getByType(Models\Devices\DevicesManager::class));
-		Assert::notNull($container->getByType(Models\Devices\Controls\ControlsManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Properties\PropertiesManager::class));
+		Assert::notNull($container->getByType(Models\Devices\Configuration\RowsManager::class));
+		Assert::notNull($container->getByType(Models\Devices\Controls\ControlsManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Connectors\ConnectorsManager::class));
 		Assert::notNull($container->getByType(Models\Channels\ChannelsManager::class));
-		Assert::notNull($container->getByType(Models\Channels\Controls\ControlsManager::class));
 		Assert::notNull($container->getByType(Models\Channels\Properties\PropertiesManager::class));
 		Assert::notNull($container->getByType(Models\Channels\Configuration\RowsManager::class));
+		Assert::notNull($container->getByType(Models\Channels\Controls\ControlsManager::class));
+		Assert::notNull($container->getByType(Models\Connectors\ConnectorsManager::class));
+		Assert::notNull($container->getByType(Models\Connectors\Controls\ControlsManager::class));
 
 		Assert::notNull($container->getByType(Controllers\DevicesV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceChildrenV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DevicePropertiesV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceConfigurationV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\DeviceControlsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceConnectorV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelPropertiesV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelConfigurationV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\ChannelControlsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ConnectorsV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\ConnectorControlsV1Controller::class));
 
 		Assert::notNull($container->getByType(Schemas\Devices\DeviceSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Properties\PropertySchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Configuration\RowSchema::class));
+		Assert::notNull($container->getByType(Schemas\Devices\Controls\ControlSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\ChannelSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Properties\PropertySchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Configuration\RowSchema::class));
+		Assert::notNull($container->getByType(Schemas\Channels\Controls\ControlSchema::class));
 		Assert::notNull($container->getByType(Schemas\Connectors\FbBusConnectorSchema::class));
-		Assert::notNull($container->getByType(Schemas\Connectors\FbMqttV1ConnectorSchema::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\FbMqttConnectorSchema::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\Controls\ControlSchema::class));
 
 		Assert::notNull($container->getByType(Hydrators\Devices\DeviceHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Devices\Connectors\ConnectorHydrator::class));

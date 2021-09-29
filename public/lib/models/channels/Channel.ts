@@ -3,7 +3,6 @@ import {
   Item,
   Model,
 } from '@vuex-orm/core'
-import { ChannelControlAction } from '@fastybird/modules-metadata'
 
 import capitalize from 'lodash/capitalize'
 
@@ -37,8 +36,6 @@ export default class Channel extends Model implements ChannelInterface {
       name: this.string(null).nullable(),
       comment: this.string(null).nullable(),
 
-      control: this.attr([]),
-
       // Relations
       relationshipNames: this.attr([]),
 
@@ -59,8 +56,6 @@ export default class Channel extends Model implements ChannelInterface {
   identifier!: string
   name!: string | null
   comment!: string | null
-
-  control!: string[]
 
   relationshipNames!: string[]
 
@@ -142,14 +137,7 @@ export default class Channel extends Model implements ChannelInterface {
     })
   }
 
-  static transmitCommand(channel: ChannelInterface, command: ChannelControlAction): Promise<boolean> {
-    return Channel.dispatch('transmitCommand', {
-      channel,
-      command,
-    })
-  }
-
-  static reset(): void {
-    Channel.dispatch('reset')
+  static reset(): Promise<void> {
+    return Channel.dispatch('reset')
   }
 }

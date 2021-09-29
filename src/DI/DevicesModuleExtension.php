@@ -104,6 +104,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('models.deviceConfigurationRepository'))
 			->setType(Models\Devices\Configuration\RowRepository::class);
 
+		$builder->addDefinition($this->prefix('models.deviceControlRepository'))
+			->setType(Models\Devices\Controls\ControlRepository::class);
+
 		$builder->addDefinition($this->prefix('models.channelRepository'))
 			->setType(Models\Channels\ChannelRepository::class);
 
@@ -113,16 +116,18 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('models.channelConfigurationRepository'))
 			->setType(Models\Channels\Configuration\RowRepository::class);
 
+		$builder->addDefinition($this->prefix('models.channelControlRepository'))
+			->setType(Models\Channels\Controls\ControlRepository::class);
+
 		$builder->addDefinition($this->prefix('models.connectorRepository'))
 			->setType(Models\Connectors\ConnectorRepository::class);
+
+		$builder->addDefinition($this->prefix('models.connectorControlRepository'))
+			->setType(Models\Connectors\Controls\ControlRepository::class);
 
 		// Database managers
 		$builder->addDefinition($this->prefix('models.devicesManager'))
 			->setType(Models\Devices\DevicesManager::class)
-			->setArgument('entityCrud', '__placeholder__');
-
-		$builder->addDefinition($this->prefix('models.devicesControlsManager'))
-			->setType(Models\Devices\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		$builder->addDefinition($this->prefix('models.devicesPropertiesManager'))
@@ -133,16 +138,16 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Models\Devices\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
+		$builder->addDefinition($this->prefix('models.devicesControlsManager'))
+			->setType(Models\Devices\Controls\ControlsManager::class)
+			->setArgument('entityCrud', '__placeholder__');
+
 		$builder->addDefinition($this->prefix('models.devicesConnectorManager'))
 			->setType(Models\Devices\Connectors\ConnectorsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		$builder->addDefinition($this->prefix('models.channelsManager'))
 			->setType(Models\Channels\ChannelsManager::class)
-			->setArgument('entityCrud', '__placeholder__');
-
-		$builder->addDefinition($this->prefix('models.channelsControlsManager'))
-			->setType(Models\Channels\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		$builder->addDefinition($this->prefix('models.channelsPropertiesManager'))
@@ -153,8 +158,16 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Models\Channels\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
+		$builder->addDefinition($this->prefix('models.channelsControlsManager'))
+			->setType(Models\Channels\Controls\ControlsManager::class)
+			->setArgument('entityCrud', '__placeholder__');
+
 		$builder->addDefinition($this->prefix('models.connectorsManager'))
 			->setType(Models\Connectors\ConnectorsManager::class)
+			->setArgument('entityCrud', '__placeholder__');
+
+		$builder->addDefinition($this->prefix('models.connectorsControlsManager'))
+			->setType(Models\Connectors\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		// Events subscribers
@@ -178,6 +191,10 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Controllers\DeviceConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
+		$builder->addDefinition($this->prefix('controllers.deviceControls'))
+			->setType(Controllers\DeviceControlsV1Controller::class)
+			->addTag('nette.inject');
+
 		$builder->addDefinition($this->prefix('controllers.deviceConnector'))
 			->setType(Controllers\DeviceConnectorV1Controller::class)
 			->addTag('nette.inject');
@@ -194,8 +211,16 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Controllers\ChannelConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
+		$builder->addDefinition($this->prefix('controllers.channelControls'))
+			->setType(Controllers\ChannelControlsV1Controller::class)
+			->addTag('nette.inject');
+
 		$builder->addDefinition($this->prefix('controllers.connectors'))
 			->setType(Controllers\ConnectorsV1Controller::class)
+			->addTag('nette.inject');
+
+		$builder->addDefinition($this->prefix('controllers.connectorsControls'))
+			->setType(Controllers\ConnectorControlsV1Controller::class)
 			->addTag('nette.inject');
 
 		// API schemas
@@ -211,6 +236,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.device.configuration'))
 			->setType(Schemas\Devices\Configuration\RowSchema::class);
 
+		$builder->addDefinition($this->prefix('schemas.device.controls'))
+			->setType(Schemas\Devices\Controls\ControlSchema::class);
+
 		$builder->addDefinition($this->prefix('schemas.channel'))
 			->setType(Schemas\Channels\ChannelSchema::class);
 
@@ -220,11 +248,17 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.configuration'))
 			->setType(Schemas\Channels\Configuration\RowSchema::class);
 
+		$builder->addDefinition($this->prefix('schemas.controls'))
+			->setType(Schemas\Channels\Controls\ControlSchema::class);
+
 		$builder->addDefinition($this->prefix('schemas.connector.fbBus'))
 			->setType(Schemas\Connectors\FbBusConnectorSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.connector.fbMqttV1'))
-			->setType(Schemas\Connectors\FbMqttV1ConnectorSchema::class);
+		$builder->addDefinition($this->prefix('schemas.connector.fbMqtt'))
+			->setType(Schemas\Connectors\FbMqttConnectorSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.connector.controls'))
+			->setType(Schemas\Connectors\Controls\ControlSchema::class);
 
 		// API hydrators
 		$builder->addDefinition($this->prefix('hydrators.device'))
@@ -239,8 +273,8 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'))
 			->setType(Hydrators\Connectors\FbBusConnectorHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.connectors.fbMqttV1'))
-			->setType(Hydrators\Connectors\FbMqttV1ConnectorHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.connectors.fbMqtt'))
+			->setType(Hydrators\Connectors\FbMqttConnectorHydrator::class);
 
 		// Helpers
 		$builder->addDefinition($this->prefix('helpers.property'))
@@ -318,6 +352,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$connectorsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsManager');
 		$connectorsManagerService->setBody('return new ' . Models\Connectors\ConnectorsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Connector::class . '\'));');
+
+		$connectorsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsControlsManager');
+		$connectorsControlsManagerService->setBody('return new ' . Models\Connectors\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Controls\Control::class . '\'));');
 	}
 
 	/**

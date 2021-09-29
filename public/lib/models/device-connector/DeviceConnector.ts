@@ -127,7 +127,7 @@ export default class DeviceConnector extends Model implements DeviceConnectorInt
     })
   }
 
-  static reset(): void {
-    DeviceConnector.dispatch('reset')
+  static reset(): Promise<void> {
+    return DeviceConnector.dispatch('reset')
   }
 }

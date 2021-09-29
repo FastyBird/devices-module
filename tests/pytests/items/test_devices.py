@@ -44,7 +44,7 @@ class TestDeviceItem(DbTestCase):
             "hardware_manufacturer": "itead",
             "hardware_model": "sonoff_basic",
             "hardware_version": "rev1",
-            "mac_address": "807d3a3dbe6d",
+            "hardware_mac_address": "807d3a3dbe6d",
             "firmware_manufacturer": "fastybird",
             "firmware_version": None,
             "parent": None,

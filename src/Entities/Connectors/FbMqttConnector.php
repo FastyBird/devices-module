@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FbMqttV1Connector.php
+ * FbMqttConnector.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -22,11 +22,11 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 /**
  * @ORM\Entity
  */
-class FbMqttV1Connector extends Entities\Connectors\Connector implements IFbMqttV1Connector
+class FbMqttConnector extends Entities\Connectors\Connector implements IFbMqttConnector
 {
 
 	/** @var string */
-	protected string $type = 'fb-mqtt-v1';
+	protected string $type = 'fb-mqtt';
 
 	/**
 	 * @var string|null

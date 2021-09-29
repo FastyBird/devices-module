@@ -9,6 +9,7 @@ import {
 } from 'jsona/lib/JsonaTypes'
 
 import {
+  DeviceDataResponseInterface,
   DeviceEntityTypes,
   DeviceInterface,
 } from '@/lib/models/devices/types'
@@ -86,10 +87,12 @@ export interface DeviceConfigurationDataResponseInterface extends TJsonApiData {
 
 export interface DeviceConfigurationResponseInterface extends TJsonApiBody {
   data: DeviceConfigurationDataResponseInterface
+  included?: (DeviceDataResponseInterface)[]
 }
 
 export interface DeviceConfigurationsResponseInterface extends TJsonApiBody {
   data: DeviceConfigurationDataResponseInterface[]
+  included?: (DeviceDataResponseInterface)[]
 }
 
 // UPDATE ENTITY INTERFACES

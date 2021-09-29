@@ -2,9 +2,6 @@
   "data" : {
     "attributes" : {
       "comment" : null,
-      "control" : [
-        "configure"
-      ],
       "identifier" : "updated-device",
       "enabled" : true,
       "name" : "First device",

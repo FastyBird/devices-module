@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FbMqttV1ConnectorSchema.php
+ * FbMqttConnectorSchema.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -27,22 +27,22 @@ use Neomerx\JsonApi;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends ConnectorSchema<Entities\Connectors\IFbMqttV1Connector>
+ * @phpstan-extends ConnectorSchema<Entities\Connectors\IFbMqttConnector>
  */
-final class FbMqttV1ConnectorSchema extends ConnectorSchema
+final class FbMqttConnectorSchema extends ConnectorSchema
 {
 
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/connector-fb-mqtt-v1';
+	public const SCHEMA_TYPE = 'devices-module/connector-fb-mqtt';
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function getEntityClass(): string
 	{
-		return Entities\Connectors\FbMqttV1Connector::class;
+		return Entities\Connectors\FbMqttConnector::class;
 	}
 
 	/**
@@ -54,7 +54,7 @@ final class FbMqttV1ConnectorSchema extends ConnectorSchema
 	}
 
 	/**
-	 * @param Entities\Connectors\IFbMqttV1Connector $connector
+	 * @param Entities\Connectors\IFbMqttConnector $connector
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
 	 * @return iterable<string, mixed>

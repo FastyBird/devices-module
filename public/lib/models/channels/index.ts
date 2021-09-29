@@ -1,9 +1,7 @@
 import { Item } from '@vuex-orm/core'
-import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.json'
 import {
   ModuleOrigin,
-  ChannelControlAction,
   ChannelEntity as ExchangeEntity,
   DevicesModule as RoutingKeys,
 } from '@fastybird/modules-metadata'
@@ -16,7 +14,6 @@ import {
 import Jsona from 'jsona'
 import Ajv from 'ajv'
 import { AxiosResponse } from 'axios'
-import get from 'lodash/get'
 import uniq from 'lodash/uniq'
 
 import Device from '@/lib/models/devices/Device'
@@ -39,6 +36,9 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { ChannelJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
+import ChannelProperty from '@/lib/models/channel-properties/ChannelProperty'
+import ChannelConfiguration from '@/lib/models/channel-configuration/ChannelConfiguration'
+import ChannelControl from '@/lib/models/channel-controls/ChannelControl'
 
 interface SemaphoreFetchingState {
   items: string[]
@@ -120,7 +120,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     try {
       await Channel.api().get(
-        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels/${payload.id}?include=properties,configuration`,
+        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels/${payload.id}?include=properties,configuration,controls`,
         apiOptions,
       )
 
@@ -151,7 +151,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     try {
       await Channel.api().get(
-        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels?include=properties,configuration`,
+        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels?include=properties,configuration,controls`,
         apiOptions,
       )
 
@@ -229,7 +229,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     try {
       await Channel.api().patch(
-        `${ModuleApiPrefix}/v1/devices/${updatedEntity.deviceId}/channels/${updatedEntity.id}?include=properties,configuration`,
+        `${ModuleApiPrefix}/v1/devices/${updatedEntity.deviceId}/channels/${updatedEntity.id}?include=properties,configuration,controls`,
         jsonApiFormatter.serialize({
           stuff: updatedEntity,
         }),
@@ -259,40 +259,6 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
         id: payload.channel.id,
       })
     }
-  },
-
-  transmitCommand(_store, payload: { channel: ChannelInterface, command: ChannelControlAction }): Promise<boolean> {
-    if (!Channel.query().where('id', payload.channel.id).exists()) {
-      throw new Error('devices-module.channel.transmit.failed')
-    }
-
-    const device = Device.find(payload.channel.deviceId)
-
-    if (device === null) {
-      throw new Error('devices-module.channel.transmit.failed')
-    }
-
-    return new Promise((resolve, reject) => {
-      Channel.wamp().call<{ data: string }>({
-        routing_key: RoutingKeys.CHANNELS_CONTROLS,
-        origin: Channel.$devicesModuleOrigin,
-        data: {
-          control: payload.command,
-          device: device.id,
-          channel: payload.channel.id,
-        },
-      })
-        .then((response: RpCallResponse<{ data: string }>): void => {
-          if (get(response.data, 'response') === 'accepted') {
-            resolve(true)
-          } else {
-            reject(new Error('devices-module.channel.transmit.failed'))
-          }
-        })
-        .catch((): void => {
-          reject(new Error('devices-module.channel.transmit.failed'))
-        })
-    })
   },
 
   async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
@@ -409,6 +375,10 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
   reset({ commit }): void {
     commit('RESET_STATE')
+
+    ChannelProperty.reset()
+    ChannelConfiguration.reset()
+    ChannelControl.reset()
   },
 }
 

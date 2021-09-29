@@ -25,7 +25,7 @@ export default class Property extends Model implements PropertyInterface {
       name: this.string(null).nullable(),
       settable: this.boolean(false),
       queryable: this.boolean(false),
-      dataType: this.string(''),
+      dataType: this.string(null).nullable(),
       unit: this.string(null).nullable(),
       format: this.string(null).nullable(),
 
@@ -45,7 +45,7 @@ export default class Property extends Model implements PropertyInterface {
   name!: string | null
   settable!: boolean
   queryable!: boolean
-  dataType!: DataType
+  dataType!: DataType | null
   unit!: string | null
   format!: string | null
 
@@ -64,22 +64,22 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get isAnalogSensor(): boolean {
-    return !this.isSettable &&
+    return !this.isSettable && this.dataType !== null &&
       Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
   }
 
   get isBinarySensor(): boolean {
-    return !this.isSettable &&
+    return !this.isSettable && this.dataType !== null &&
       [DataType.BOOLEAN].includes(this.dataType)
   }
 
   get isAnalogActor(): boolean {
-    return this.isSettable &&
+    return this.isSettable && this.dataType !== null &&
       Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
   }
 
   get isBinaryActor(): boolean {
-    return this.isSettable &&
+    return this.isSettable && this.dataType !== null &&
       [DataType.BOOLEAN].includes(this.dataType)
   }
 
@@ -88,31 +88,31 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get isInteger(): boolean {
-    return Object.values(PropertyIntegerDatatypeTypes).includes(this.dataType)
+    return this.dataType !== null && Object.values(PropertyIntegerDatatypeTypes).includes(this.dataType)
   }
 
   get isFloat(): boolean {
-    return this.dataType === DataType.FLOAT
+    return this.dataType !== null && this.dataType === DataType.FLOAT
   }
 
   get isNumber(): boolean {
-    return Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
+    return this.dataType !== null && Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
   }
 
   get isBoolean(): boolean {
-    return this.dataType === DataType.BOOLEAN
+    return this.dataType !== null && this.dataType === DataType.BOOLEAN
   }
 
   get isString(): boolean {
-    return this.dataType === DataType.STRING
+    return this.dataType !== null && this.dataType === DataType.STRING
   }
 
   get isEnum(): boolean {
-    return this.dataType === DataType.ENUM
+    return this.dataType !== null && this.dataType === DataType.ENUM
   }
 
   get isColor(): boolean {
-    return this.dataType === DataType.COLOR
+    return this.dataType !== null && this.dataType === DataType.COLOR
   }
 
   get isSettable(): boolean {

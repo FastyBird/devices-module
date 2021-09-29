@@ -40,7 +40,6 @@ class DeviceItem:
     __name: str or None
     __comment: str or None
     __enabled: bool
-    __control: List[str]
     __hardware_manufacturer: str or None
     __hardware_model: str or None
     __hardware_version: str or None
@@ -60,7 +59,6 @@ class DeviceItem:
         device_name: str or None,
         device_comment: str or None,
         device_enabled: bool,
-        device_control: List[str],
         hardware_manufacturer: str or None,
         hardware_model: str or None,
         hardware_version: str or None,
@@ -76,7 +74,6 @@ class DeviceItem:
         self.__name = device_name
         self.__comment = device_comment
         self.__enabled = device_enabled
-        self.__control = device_control
 
         self.__hardware_manufacturer = hardware_manufacturer
         self.__hardware_model = hardware_model
@@ -129,13 +126,6 @@ class DeviceItem:
     def enabled(self) -> bool:
         """Device is enabled flag"""
         return self.__enabled
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def control(self) -> List[str]:
-        """Device plain control strings"""
-        return self.__control
 
     # -----------------------------------------------------------------------------
 
@@ -197,7 +187,6 @@ class DeviceItem:
             "name": self.name,
             "comment": self.comment,
             "enabled": self.enabled,
-            "control": self.control,
             "hardware_manufacturer": self.hardware_manufacturer,
             "hardware_model": self.hardware_model,
             "hardware_version": self.hardware_version,
@@ -222,7 +211,6 @@ class ChannelItem:
     __key: str
     __name: str or None
     __comment: str or None
-    __control: List[str]
 
     __device_id: uuid.UUID
 
@@ -235,7 +223,6 @@ class ChannelItem:
         channel_key: str,
         channel_name: str or None,
         channel_comment: str or None,
-        channel_control: List[str],
         device_id: uuid.UUID,
     ) -> None:
         self.__id = channel_id
@@ -244,7 +231,6 @@ class ChannelItem:
 
         self.__name = channel_name
         self.__comment = channel_comment
-        self.__control = channel_control
 
         self.__device_id = device_id
 
@@ -292,13 +278,6 @@ class ChannelItem:
 
     # -----------------------------------------------------------------------------
 
-    @property
-    def control(self) -> List[str]:
-        """Device plain control strings"""
-        return self.__control
-
-    # -----------------------------------------------------------------------------
-
     def to_dict(self) -> Dict[str, str or int or bool or None]:
         """Convert property item to dictionary"""
         return {
@@ -307,7 +286,6 @@ class ChannelItem:
             "key": self.key,
             "name": self.name,
             "comment": self.comment,
-            "control": self.control,
             "device": self.device_id.__str__(),
         }
 
@@ -567,7 +545,6 @@ class ConnectorItem(ABC):
     __name: str
     __enabled: bool
     __type: str
-    __control: List[str]
     __params: dict
 
     def __init__(
@@ -577,7 +554,6 @@ class ConnectorItem(ABC):
         connector_key: str,
         connector_enabled: bool,
         connector_type: str,
-        connector_control: List[str],
         connector_params: dict or None,
     ) -> None:
         self.__id = connector_id
@@ -585,7 +561,6 @@ class ConnectorItem(ABC):
         self.__name = connector_name
         self.__enabled = connector_enabled
         self.__type = connector_type
-        self.__control = connector_control
         self.__params = connector_params if connector_params is not None else {}
 
     # -----------------------------------------------------------------------------
@@ -626,13 +601,6 @@ class ConnectorItem(ABC):
     # -----------------------------------------------------------------------------
 
     @property
-    def control(self) -> List[str]:
-        """Connector plain control"""
-        return self.__control
-
-    # -----------------------------------------------------------------------------
-
-    @property
     def params(self) -> dict:
         """Connector configuration params"""
         return self.__params
@@ -647,7 +615,6 @@ class ConnectorItem(ABC):
             "name": self.name,
             "enabled": self.enabled,
             "type": self.type,
-            "control": self.control,
         }
 
 

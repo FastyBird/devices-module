@@ -247,7 +247,7 @@ class FbMqttV1ConnectorEntity(ConnectorEntity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    _discriminator_: str = "fb-mqtt-v1"
+    _discriminator_: str = "fb-mqtt"
 
     # -----------------------------------------------------------------------------
 

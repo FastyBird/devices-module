@@ -39,7 +39,6 @@ class TestConnectorItem(DbTestCase):
             "key": "bLikvZ",
             "name": "FB MQTT",
             "enabled": True,
-            "control": [],
             "server": None,
             "port": None,
             "secured_port": None,

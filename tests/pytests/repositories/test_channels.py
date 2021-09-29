@@ -55,7 +55,6 @@ class TestChannelsRepository(DbTestCase):
                 "key": "bLikxh",
                 "name": "Channel one",
                 "comment": None,
-                "control": ["configure"],
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
             },
         )
@@ -74,7 +73,6 @@ class TestChannelsRepository(DbTestCase):
             "key": "bLikxh",
             "name": "Channel one",
             "comment": None,
-            "control": ["configure"],
             "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
         }, channel_item.to_dict())
 
@@ -91,7 +89,6 @@ class TestChannelsRepository(DbTestCase):
                 "key": "bLikxh",
                 "name": "Edited channel one",
                 "comment": None,
-                "control": ["reset", "configure"],
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
             },
         )
@@ -110,7 +107,6 @@ class TestChannelsRepository(DbTestCase):
             "key": "bLikxh",
             "name": "Edited channel one",
             "comment": None,
-            "control": ["reset", "configure"],
             "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
         }, channel_item.to_dict())
 
@@ -134,7 +130,6 @@ class TestChannelsRepository(DbTestCase):
                 "key": "bLikxh",
                 "name": "Channel one",
                 "comment": None,
-                "control": ["configure"],
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
             },
         )

@@ -48,14 +48,13 @@ class TestConnectorsRepository(DbTestCase):
         connector_repository.initialize()
 
         result: bool = connector_repository.create_from_exchange(
-            RoutingKey(RoutingKey.CONNECTOR_ENTITY_CREATED),
+            RoutingKey(RoutingKey.CONNECTORS_ENTITY_CREATED),
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "type": "fb-mqtt",
                 "key": "bLikvZ",
                 "name": "FB MQTT",
                 "enabled": True,
-                "control": [],
                 "server": None,
                 "port": None,
                 "secured_port": None,
@@ -77,7 +76,6 @@ class TestConnectorsRepository(DbTestCase):
             "key": "bLikvZ",
             "name": "FB MQTT",
             "enabled": True,
-            "control": [],
             "server": None,
             "port": None,
             "secured_port": None,
@@ -90,14 +88,13 @@ class TestConnectorsRepository(DbTestCase):
         connector_repository.initialize()
 
         result: bool = connector_repository.update_from_exchange(
-            RoutingKey(RoutingKey.CONNECTOR_ENTITY_UPDATED),
+            RoutingKey(RoutingKey.CONNECTORS_ENTITY_UPDATED),
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "type": "fb-mqtt",
                 "key": "bLikvZ",
                 "name": "Renamed",
                 "enabled": False,
-                "control": ["reset"],
                 "server": "127.0.0.1",
                 "port": 1883,
                 "secured_port": None,
@@ -119,7 +116,6 @@ class TestConnectorsRepository(DbTestCase):
             "key": "bLikvZ",
             "name": "Renamed",
             "enabled": False,
-            "control": ["reset"],
             "server": "127.0.0.1",
             "port": 1883,
             "secured_port": None,
@@ -139,14 +135,13 @@ class TestConnectorsRepository(DbTestCase):
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
 
         result: bool = connector_repository.delete_from_exchange(
-            RoutingKey(RoutingKey.CONNECTOR_ENTITY_DELETED),
+            RoutingKey(RoutingKey.CONNECTORS_ENTITY_DELETED),
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "type": "fb-mqtt",
                 "key": "bLikvZ",
                 "name": "FB MQTT",
                 "enabled": True,
-                "control": [],
                 "server": None,
                 "port": None,
                 "secured_port": None,

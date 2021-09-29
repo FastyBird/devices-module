@@ -935,7 +935,7 @@ class ConnectorsRepository(ABC):
     @orm.db_session
     def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received connector message from exchange when entity was created"""
-        if routing_key != RoutingKey.CONNECTOR_ENTITY_CREATED:
+        if routing_key != RoutingKey.CONNECTORS_ENTITY_CREATED:
             return False
 
         if self.__items is None:
@@ -959,7 +959,7 @@ class ConnectorsRepository(ABC):
     @orm.db_session
     def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received connector message from exchange when entity was updated"""
-        if routing_key != RoutingKey.CONNECTOR_ENTITY_UPDATED:
+        if routing_key != RoutingKey.CONNECTORS_ENTITY_UPDATED:
             return False
 
         if self.__items is None:
@@ -998,7 +998,7 @@ class ConnectorsRepository(ABC):
     @orm.db_session
     def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received connector message from exchange when entity was updated"""
-        if routing_key != RoutingKey.CONNECTOR_ENTITY_DELETED:
+        if routing_key != RoutingKey.CONNECTORS_ENTITY_DELETED:
             return False
 
         if data.get("id") in self.__items:

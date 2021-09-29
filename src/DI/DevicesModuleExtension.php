@@ -83,204 +83,204 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$configuration = $this->getConfig();
 
 		// Http router
-		$builder->addDefinition($this->prefix('middleware.access'))
+		$builder->addDefinition($this->prefix('middleware.access'), new DI\Definitions\ServiceDefinition())
 			->setType(Middleware\AccessMiddleware::class);
 
-		$builder->addDefinition($this->prefix('router.routes'))
+		$builder->addDefinition($this->prefix('router.routes'), new DI\Definitions\ServiceDefinition())
 			->setType(Router\Routes::class)
 			->setArguments(['usePrefix' => $configuration->apiPrefix]);
 
 		// Console commands
-		$builder->addDefinition($this->prefix('commands.initialize'))
+		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())
 			->setType(Commands\InitializeCommand::class);
 
 		// Database repositories
-		$builder->addDefinition($this->prefix('models.deviceRepository'))
+		$builder->addDefinition($this->prefix('models.deviceRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\DeviceRepository::class);
 
-		$builder->addDefinition($this->prefix('models.devicePropertyRepository'))
+		$builder->addDefinition($this->prefix('models.devicePropertyRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Properties\PropertyRepository::class);
 
-		$builder->addDefinition($this->prefix('models.deviceConfigurationRepository'))
+		$builder->addDefinition($this->prefix('models.deviceConfigurationRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Configuration\RowRepository::class);
 
-		$builder->addDefinition($this->prefix('models.deviceControlRepository'))
+		$builder->addDefinition($this->prefix('models.deviceControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Controls\ControlRepository::class);
 
-		$builder->addDefinition($this->prefix('models.channelRepository'))
+		$builder->addDefinition($this->prefix('models.channelRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\ChannelRepository::class);
 
-		$builder->addDefinition($this->prefix('models.channelPropertyRepository'))
+		$builder->addDefinition($this->prefix('models.channelPropertyRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Properties\PropertyRepository::class);
 
-		$builder->addDefinition($this->prefix('models.channelConfigurationRepository'))
+		$builder->addDefinition($this->prefix('models.channelConfigurationRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Configuration\RowRepository::class);
 
-		$builder->addDefinition($this->prefix('models.channelControlRepository'))
+		$builder->addDefinition($this->prefix('models.channelControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Controls\ControlRepository::class);
 
-		$builder->addDefinition($this->prefix('models.connectorRepository'))
+		$builder->addDefinition($this->prefix('models.connectorRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\ConnectorRepository::class);
 
-		$builder->addDefinition($this->prefix('models.connectorControlRepository'))
+		$builder->addDefinition($this->prefix('models.connectorControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\Controls\ControlRepository::class);
 
 		// Database managers
-		$builder->addDefinition($this->prefix('models.devicesManager'))
+		$builder->addDefinition($this->prefix('models.devicesManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\DevicesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.devicesPropertiesManager'))
+		$builder->addDefinition($this->prefix('models.devicesPropertiesManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Properties\PropertiesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.devicesConfigurationManager'))
+		$builder->addDefinition($this->prefix('models.devicesConfigurationManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.devicesControlsManager'))
+		$builder->addDefinition($this->prefix('models.devicesControlsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.devicesConnectorManager'))
+		$builder->addDefinition($this->prefix('models.devicesConnectorManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Connectors\ConnectorsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.channelsManager'))
+		$builder->addDefinition($this->prefix('models.channelsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\ChannelsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.channelsPropertiesManager'))
+		$builder->addDefinition($this->prefix('models.channelsPropertiesManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Properties\PropertiesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.channelsConfigurationManager'))
+		$builder->addDefinition($this->prefix('models.channelsConfigurationManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.channelsControlsManager'))
+		$builder->addDefinition($this->prefix('models.channelsControlsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.connectorsManager'))
+		$builder->addDefinition($this->prefix('models.connectorsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\ConnectorsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.connectorsControlsManager'))
+		$builder->addDefinition($this->prefix('models.connectorsControlsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		// Events subscribers
-		$builder->addDefinition($this->prefix('subscribers.entities'))
+		$builder->addDefinition($this->prefix('subscribers.entities'), new DI\Definitions\ServiceDefinition())
 			->setType(Subscribers\EntitiesSubscriber::class);
 
 		// API controllers
-		$builder->addDefinition($this->prefix('controllers.devices'))
+		$builder->addDefinition($this->prefix('controllers.devices'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DevicesV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceChildren'))
+		$builder->addDefinition($this->prefix('controllers.deviceChildren'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DeviceChildrenV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceProperties'))
+		$builder->addDefinition($this->prefix('controllers.deviceProperties'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DevicePropertiesV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceConfiguration'))
+		$builder->addDefinition($this->prefix('controllers.deviceConfiguration'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DeviceConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceControls'))
+		$builder->addDefinition($this->prefix('controllers.deviceControls'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DeviceControlsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceConnector'))
+		$builder->addDefinition($this->prefix('controllers.deviceConnector'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DeviceConnectorV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.channels'))
+		$builder->addDefinition($this->prefix('controllers.channels'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ChannelsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.channelProperties'))
+		$builder->addDefinition($this->prefix('controllers.channelProperties'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ChannelPropertiesV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.channelConfiguration'))
+		$builder->addDefinition($this->prefix('controllers.channelConfiguration'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ChannelConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.channelControls'))
+		$builder->addDefinition($this->prefix('controllers.channelControls'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ChannelControlsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.connectors'))
+		$builder->addDefinition($this->prefix('controllers.connectors'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ConnectorsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.connectorsControls'))
+		$builder->addDefinition($this->prefix('controllers.connectorsControls'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ConnectorControlsV1Controller::class)
 			->addTag('nette.inject');
 
 		// API schemas
-		$builder->addDefinition($this->prefix('schemas.device'))
+		$builder->addDefinition($this->prefix('schemas.device'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\DeviceSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.properties'))
+		$builder->addDefinition($this->prefix('schemas.device.properties'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Properties\PropertySchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.connector'))
+		$builder->addDefinition($this->prefix('schemas.device.connector'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Connectors\ConnectorSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.configuration'))
+		$builder->addDefinition($this->prefix('schemas.device.configuration'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Configuration\RowSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.controls'))
+		$builder->addDefinition($this->prefix('schemas.device.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Controls\ControlSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.channel'))
+		$builder->addDefinition($this->prefix('schemas.channel'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\ChannelSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.channel.property'))
+		$builder->addDefinition($this->prefix('schemas.channel.property'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Properties\PropertySchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.configuration'))
+		$builder->addDefinition($this->prefix('schemas.configuration'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Configuration\RowSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.controls'))
+		$builder->addDefinition($this->prefix('schemas.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Controls\ControlSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.connector.fbBus'))
+		$builder->addDefinition($this->prefix('schemas.connector.fbBus'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\FbBusConnectorSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.connector.fbMqtt'))
+		$builder->addDefinition($this->prefix('schemas.connector.fbMqtt'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\FbMqttConnectorSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.connector.controls'))
+		$builder->addDefinition($this->prefix('schemas.connector.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\Controls\ControlSchema::class);
 
 		// API hydrators
-		$builder->addDefinition($this->prefix('hydrators.device'))
+		$builder->addDefinition($this->prefix('hydrators.device'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Devices\DeviceHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.channel'))
+		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Channels\ChannelHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.connectors'))
+		$builder->addDefinition($this->prefix('hydrators.connectors'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Devices\Connectors\ConnectorHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'))
+		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\FbBusConnectorHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.connectors.fbMqtt'))
+		$builder->addDefinition($this->prefix('hydrators.connectors.fbMqtt'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\FbMqttConnectorHydrator::class);
 
 		// Helpers
-		$builder->addDefinition($this->prefix('helpers.property'))
+		$builder->addDefinition($this->prefix('helpers.property'), new DI\Definitions\ServiceDefinition())
 			->setType(Helpers\PropertyHelper::class);
 
-		$builder->addDefinition($this->prefix('helpers.entityKey'))
+		$builder->addDefinition($this->prefix('helpers.entityKey'), new DI\Definitions\ServiceDefinition())
 			->setType(Helpers\EntityKeyHelper::class);
 	}
 

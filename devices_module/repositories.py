@@ -1152,7 +1152,10 @@ class ControlsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_id(self, control_id: uuid.UUID) -> DeviceControlItem or ChannelControlItem or ConnectorControlItem or None:
+    def get_by_id(
+        self,
+        control_id: uuid.UUID,
+    ) -> DeviceControlItem or ChannelControlItem or ConnectorControlItem or None:
         """Find control in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -1218,7 +1221,7 @@ class ControlsRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _update_item(item: ControlItem, data: Dict) -> ControlItem or None:
+    def _update_item(item: ControlItem) -> ControlItem or None:
         if isinstance(item, DeviceControlItem):
             return DeviceControlItem(
                 control_id=item.control_id,
@@ -1341,10 +1344,7 @@ class DevicesControlsRepository(ControlsRepository):
 
             return False
 
-        item = self._update_item(
-            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
-            validated_data,
-        )
+        item = self._update_item(self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)))
 
         if item is not None:
             self._items[validated_data.get("id")] = item
@@ -1380,7 +1380,7 @@ class DevicesControlsRepository(ControlsRepository):
                 item = self._create_item(entity)
 
             else:
-                item = self._update_item(self.get_by_id(entity.control_id), entity.to_dict())
+                item = self._update_item(self.get_by_id(entity.control_id))
 
             if item is not None:
                 items[entity.control_id.__str__()] = item
@@ -1448,10 +1448,7 @@ class ChannelsControlsRepository(ControlsRepository):
 
             return False
 
-        item = self._update_item(
-            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
-            validated_data,
-        )
+        item = self._update_item(self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)))
 
         if item is not None:
             self._items[validated_data.get("id")] = item
@@ -1487,7 +1484,7 @@ class ChannelsControlsRepository(ControlsRepository):
                 item = self._create_item(entity)
 
             else:
-                item = self._update_item(self.get_by_id(entity.control_id), entity.to_dict())
+                item = self._update_item(self.get_by_id(entity.control_id))
 
             if item is not None:
                 items[entity.control_id.__str__()] = item
@@ -1555,10 +1552,7 @@ class ConnectorsControlsRepository(ControlsRepository):
 
             return False
 
-        item = self._update_item(
-            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
-            validated_data,
-        )
+        item = self._update_item(self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)))
 
         if item is not None:
             self._items[validated_data.get("id")] = item
@@ -1594,7 +1588,7 @@ class ConnectorsControlsRepository(ControlsRepository):
                 item = self._create_item(entity)
 
             else:
-                item = self._update_item(self.get_by_id(entity.control_id), entity.to_dict())
+                item = self._update_item(self.get_by_id(entity.control_id))
 
             if item is not None:
                 items[entity.control_id.__str__()] = item

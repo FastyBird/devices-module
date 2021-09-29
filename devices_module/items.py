@@ -21,7 +21,7 @@ Entities cache to prevent database overloading
 # Library dependencies
 import uuid
 from abc import ABC
-from typing import Dict, Set, Tuple, List
+from typing import Dict, Set, Tuple
 from modules_metadata.types import DataType
 
 

@@ -43,6 +43,10 @@ from devices_module.items import (
     PropertyItem,
     DevicePropertyItem,
     ChannelPropertyItem,
+    ControlItem,
+    ConnectorControlItem,
+    DeviceControlItem,
+    ChannelControlItem,
 )
 from devices_module.models import (
     DeviceEntity,
@@ -52,6 +56,9 @@ from devices_module.models import (
     ConnectorEntity,
     FbBusConnectorEntity,
     FbMqttV1ConnectorEntity,
+    ConnectorControlEntity,
+    DeviceControlEntity,
+    ChannelControlEntity,
 )
 
 
@@ -1130,6 +1137,471 @@ class ConnectorsRepository(ABC):
         raise StopIteration
 
 
+class ControlsRepository(ABC):
+    """
+    Base controls repository
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    _items: Dict[str, ChannelControlItem or DeviceControlItem] or None = None
+
+    __iterator_index = 0
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, control_id: uuid.UUID) -> DeviceControlItem or ChannelControlItem or ConnectorControlItem or None:
+        """Find control in cache by provided identifier"""
+        if self._items is None:
+            self.initialize()
+
+        if control_id.__str__() in self._items:
+            return self._items[control_id.__str__()]
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_key(self, control_key: str) -> DeviceControlItem or ChannelControlItem or ConnectorControlItem or None:
+        """Find control in cache by provided key"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.key == control_key:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def clear(self) -> None:
+        """Clear items cache"""
+        self._items = None
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def initialize(self) -> None:
+        """Initialize repository by fetching entities from database"""
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _create_item(entity: DeviceControlEntity or ChannelControlEntity) -> ControlItem or None:
+        if isinstance(entity, DeviceControlEntity):
+            return DeviceControlItem(
+                control_id=entity.control_id,
+                control_name=entity.name,
+                device_id=entity.device.device_id,
+            )
+
+        if isinstance(entity, ChannelControlEntity):
+            return ChannelControlItem(
+                control_id=entity.control_id,
+                control_name=entity.name,
+                device_id=entity.channel.device.device_id,
+                channel_id=entity.channel.channel_id,
+            )
+
+        if isinstance(entity, ConnectorControlEntity):
+            return ConnectorControlItem(
+                control_id=entity.control_id,
+                control_name=entity.name,
+                connector_id=entity.connector.connector_id,
+            )
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _update_item(item: ControlItem, data: Dict) -> ControlItem or None:
+        if isinstance(item, DeviceControlItem):
+            return DeviceControlItem(
+                control_id=item.control_id,
+                control_name=item.name,
+                device_id=item.device_id,
+            )
+
+        if isinstance(item, ChannelControlItem):
+            return ChannelControlItem(
+                control_id=item.control_id,
+                control_name=item.name,
+                device_id=item.device_id,
+                channel_id=item.channel_id,
+            )
+
+        if isinstance(item, ConnectorControlItem):
+            return ConnectorControlItem(
+                control_id=item.control_id,
+                control_name=item.name,
+                connector_id=item.connector_id,
+            )
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def __iter__(self) -> "ControlsRepository":
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        return self
+
+    # -----------------------------------------------------------------------------
+
+    def __len__(self):
+        if self._items is None:
+            self.initialize()
+
+        return len(self._items.values())
+
+    # -----------------------------------------------------------------------------
+
+    def __next__(self) -> DeviceControlItem or ChannelControlItem:
+        if self._items is None:
+            self.initialize()
+
+        if self.__iterator_index < len(self._items.values()):
+            items: List[DeviceControlItem or ChannelControlItem or ConnectorControlItem] = list(self._items.values())
+
+            result: DeviceControlItem or ChannelControlItem or ConnectorControlItem = items[self.__iterator_index]
+
+            self.__iterator_index += 1
+
+            return result
+
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        # End of iteration
+        raise StopIteration
+
+
+class DevicesControlsRepository(ControlsRepository):
+    """
+    Devices controls repository
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    @orm.db_session
+    def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device control message from exchange when entity was created"""
+        if routing_key != RoutingKey.DEVICES_CONTROL_ENTITY_CREATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        entity: DeviceControlEntity or None = DeviceControlEntity.get(
+            control_id=uuid.UUID(data.get("id"), version=4),
+        )
+
+        if entity is not None:
+            self._items[entity.control_id.__str__()] = self._create_item(entity)
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device control message from exchange when entity was updated"""
+        if routing_key != RoutingKey.DEVICES_CONTROL_ENTITY_UPDATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        if validated_data.get("id") not in self._items:
+            entity: DeviceControlEntity or None = DeviceControlEntity.get(
+                control_id=uuid.UUID(validated_data.get("id"), version=4)
+            )
+
+            if entity is not None:
+                self._items[entity.control_id.__str__()] = self._create_item(entity)
+
+                return True
+
+            return False
+
+        item = self._update_item(
+            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
+            validated_data,
+        )
+
+        if item is not None:
+            self._items[validated_data.get("id")] = item
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device control message from exchange when entity was updated"""
+        if routing_key != RoutingKey.DEVICES_CONTROL_ENTITY_DELETED:
+            return False
+
+        if data.get("id") in self._items:
+            del self._items[data.get("id")]
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def initialize(self) -> None:
+        """Initialize devices controls repository by fetching entities from database"""
+        items: Dict[str, DeviceControlItem] = {}
+
+        for entity in DeviceControlEntity.select():
+            if self._items is None or entity.control_id.__str__() not in self._items:
+                item = self._create_item(entity)
+
+            else:
+                item = self._update_item(self.get_by_id(entity.control_id), entity.to_dict())
+
+            if item is not None:
+                items[entity.control_id.__str__()] = item
+
+        self._items = items
+
+
+class ChannelsControlsRepository(ControlsRepository):
+    """
+    Channels controls repository
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    @orm.db_session
+    def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel control message from exchange when entity was created"""
+        if routing_key != RoutingKey.CHANNELS_CONTROL_ENTITY_CREATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        entity: ChannelControlEntity or None = ChannelControlEntity.get(
+            control_id=uuid.UUID(data.get("id"), version=4),
+        )
+
+        if entity is not None:
+            self._items[entity.control_id.__str__()] = self._create_item(entity)
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel control message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CHANNELS_CONTROL_ENTITY_UPDATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        if validated_data.get("id") not in self._items:
+            entity: ChannelControlEntity or None = ChannelControlEntity.get(
+                control_id=uuid.UUID(validated_data.get("id"), version=4)
+            )
+
+            if entity is not None:
+                self._items[entity.control_id.__str__()] = self._create_item(entity)
+
+                return True
+
+            return False
+
+        item = self._update_item(
+            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
+            validated_data,
+        )
+
+        if item is not None:
+            self._items[validated_data.get("id")] = item
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel control message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CHANNELS_CONTROL_ENTITY_DELETED:
+            return False
+
+        if data.get("id") in self._items:
+            del self._items[data.get("id")]
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def initialize(self) -> None:
+        """Initialize channel controls repository by fetching entities from database"""
+        items: Dict[str, ChannelControlItem] = {}
+
+        for entity in ChannelControlEntity.select():
+            if self._items is None or entity.control_id.__str__() not in self._items:
+                item = self._create_item(entity)
+
+            else:
+                item = self._update_item(self.get_by_id(entity.control_id), entity.to_dict())
+
+            if item is not None:
+                items[entity.control_id.__str__()] = item
+
+        self._items = items
+
+
+class ConnectorsControlsRepository(ControlsRepository):
+    """
+    Connectors controls repository
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    @orm.db_session
+    def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received connector control message from exchange when entity was created"""
+        if routing_key != RoutingKey.CONNECTORS_CONTROL_ENTITY_CREATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        entity: ConnectorControlEntity or None = ConnectorControlEntity.get(
+            control_id=uuid.UUID(data.get("id"), version=4),
+        )
+
+        if entity is not None:
+            self._items[entity.control_id.__str__()] = self._create_item(entity)
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received connector control message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CONNECTORS_CONTROL_ENTITY_UPDATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        if validated_data.get("id") not in self._items:
+            entity: ConnectorControlEntity or None = ConnectorControlEntity.get(
+                control_id=uuid.UUID(validated_data.get("id"), version=4)
+            )
+
+            if entity is not None:
+                self._items[entity.control_id.__str__()] = self._create_item(entity)
+
+                return True
+
+            return False
+
+        item = self._update_item(
+            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
+            validated_data,
+        )
+
+        if item is not None:
+            self._items[validated_data.get("id")] = item
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received connector control message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CONNECTORS_CONTROL_ENTITY_DELETED:
+            return False
+
+        if data.get("id") in self._items:
+            del self._items[data.get("id")]
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def initialize(self) -> None:
+        """Initialize connector controls repository by fetching entities from database"""
+        items: Dict[str, ConnectorControlItem] = {}
+
+        for entity in ConnectorControlEntity.select():
+            if self._items is None or entity.control_id.__str__() not in self._items:
+                item = self._create_item(entity)
+
+            else:
+                item = self._update_item(self.get_by_id(entity.control_id), entity.to_dict())
+
+            if item is not None:
+                items[entity.control_id.__str__()] = item
+
+        self._items = items
+
+
 def validate_exchange_data(origin: ModuleOrigin, routing_key: RoutingKey, data: Dict) -> Dict:
     """
     Validate received RPC message against defined schema
@@ -1161,3 +1633,6 @@ device_repository = DevicesRepository()
 channel_repository = ChannelsRepository()
 device_property_repository = DevicesPropertiesRepository()
 channel_property_repository = ChannelsPropertiesRepository()
+connector_control_repository = ConnectorsControlsRepository()
+device_control_repository = DevicesControlsRepository()
+channel_control_repository = ChannelsControlsRepository()

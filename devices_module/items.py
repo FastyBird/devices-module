@@ -709,3 +709,185 @@ class FbMqttV1ConnectorItem(ConnectorItem):
             "secured_port": self.secured_port,
             "username": self.username,
         }, **super().to_dict()}
+
+
+class ControlItem(ABC):
+    """
+    Control entity base item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __id: uuid.UUID
+    __name: str
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        control_id: uuid.UUID,
+        control_name: str,
+    ) -> None:
+        self.__id = control_id
+        self.__name = control_name
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def control_id(self) -> uuid.UUID:
+        """Control identifier"""
+        return self.__id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def name(self) -> str:
+        """Control name"""
+        return self.__name
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str]:
+        """Convert control item to dictionary"""
+        return {
+            "id": self.control_id.__str__(),
+            "name": self.name,
+        }
+
+
+class DeviceControlItem(ControlItem):
+    """
+    Device control entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __device_id: uuid.UUID
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        device_id: uuid.UUID,
+        control_id: uuid.UUID,
+        control_name: str,
+    ) -> None:
+        super().__init__(
+            control_id=control_id,
+            control_name=control_name,
+        )
+
+        self.__device_id = device_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def device_id(self) -> uuid.UUID:
+        """Control device identifier"""
+        return self.__device_id
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str]:
+        """Convert device control item to dictionary"""
+        return {**{
+            "device": self.device_id.__str__(),
+        }, **super().to_dict()}
+
+
+class ChannelControlItem(ControlItem):
+    """
+    Channel control entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __channel_id: uuid.UUID
+    __device_id: uuid.UUID
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        device_id: uuid.UUID,
+        channel_id: uuid.UUID,
+        control_id: uuid.UUID,
+        control_name: str,
+    ) -> None:
+        super().__init__(
+            control_id=control_id,
+            control_name=control_name,
+        )
+
+        self.__device_id = device_id
+        self.__channel_id = channel_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def device_id(self) -> uuid.UUID:
+        """Control device identifier"""
+        return self.__device_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def channel_id(self) -> uuid.UUID:
+        """Control channel identifier"""
+        return self.__channel_id
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str]:
+        """Convert channel control item to dictionary"""
+        return {**{
+            "channel": self.channel_id.__str__(),
+        }, **super().to_dict()}
+
+
+class ConnectorControlItem(ControlItem):
+    """
+    Connector control entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __connector_id: uuid.UUID
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        connector_id: uuid.UUID,
+        control_id: uuid.UUID,
+        control_name: str,
+    ) -> None:
+        super().__init__(
+            control_id=control_id,
+            control_name=control_name,
+        )
+
+        self.__connector_id = connector_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def connector_id(self) -> uuid.UUID:
+        """Control connector identifier"""
+        return self.__connector_id
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str]:
+        """Convert connector control item to dictionary"""
+        return {**{
+            "connector": self.connector_id.__str__(),
+        }, **super().to_dict()}

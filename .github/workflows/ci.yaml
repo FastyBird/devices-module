@@ -541,11 +541,46 @@ jobs:
       - name: "Run tests"
         run: "make python_tests"
 
+      - name: "Install code coverage"
+        run: "pip install coverage"
+
+      - name: "Run code coverage"
+        run: "make python_tests"
+
+      - name: "Report code coverage"
+        run: "coverage report"
+
       - name: "Upload build result"
         uses: "actions/upload-artifact@v1"
         with:
           name: python-dist
           path: dist
+
+  python-qa:
+    name: "Test installation of Python distribution"
+    runs-on: "${{ matrix.operating-system }}"
+    needs: "build-python"
+
+    strategy:
+      matrix:
+        python: ["3.9"]
+        operating-system: ["ubuntu-latest"]
+        installable: ["wheel", "sdist"]
+
+    steps:
+      - name: "Download build result"
+        uses: "actions/download-artifact@v1"
+        with:
+          name: python-dist
+          path: dist
+
+      - name: "Set up Python ${{ matrix.python }}"
+        uses: "actions/setup-python@v1"
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: "Run code lint"
+        run: "make python_qa"
 
   test-install-python:
     name: "Test installation of Python distribution"

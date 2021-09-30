@@ -545,7 +545,7 @@ jobs:
         run: "pip install coverage"
 
       - name: "Run code coverage"
-        run: "make python_tests"
+        run: "make python_coverage"
 
       - name: "Report code coverage"
         run: "coverage report"
@@ -565,19 +565,20 @@ jobs:
       matrix:
         python: ["3.9"]
         operating-system: ["ubuntu-latest"]
-        installable: ["wheel", "sdist"]
 
     steps:
-      - name: "Download build result"
-        uses: "actions/download-artifact@v1"
-        with:
-          name: python-dist
-          path: dist
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
 
       - name: "Set up Python ${{ matrix.python }}"
         uses: "actions/setup-python@v1"
         with:
           python-version: ${{ matrix.python }}
+
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: "Run code lint"
         run: "make python_qa"

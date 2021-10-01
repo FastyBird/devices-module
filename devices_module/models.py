@@ -25,12 +25,12 @@ import uuid
 import datetime
 from enum import Enum
 from typing import List, Dict, Tuple
-from application_events.database import (
+from application_exchange.database import (
     DatabaseEntityCreatedEvent,
     DatabaseEntityUpdatedEvent,
     DatabaseEntityDeletedEvent,
 )
-from application_events.dispatcher import app_dispatcher
+from application_exchange.dispatcher import app_dispatcher
 from modules_metadata.types import DataType, ModuleOrigin
 from pony.orm import core as orm, Database, Discriminator, PrimaryKey, Required, Optional, Set, Json
 from pony.orm.dbproviders.mysql import MySQLProvider

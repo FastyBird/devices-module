@@ -160,7 +160,7 @@ const moduleActions: ActionTree<ConnectorControlState, unknown> = {
     return new Promise((resolve, reject) => {
       ConnectorControl.wamp().call<{ data: string }>({
         routing_key: RoutingKeys.CONNECTORS_CONTROL_DATA,
-        origin: Connector.$devicesModuleOrigin,
+        origin: ConnectorControl.$devicesModuleOrigin,
         data: {
           connector: connector.id,
           control: payload.control.id,

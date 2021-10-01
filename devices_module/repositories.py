@@ -1146,7 +1146,7 @@ class ControlsRepository(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    _items: Dict[str, ChannelControlItem or DeviceControlItem] or None = None
+    _items: Dict[str, ControlItem] or None = None
 
     __iterator_index = 0
 
@@ -1167,19 +1167,6 @@ class ControlsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, control_key: str) -> DeviceControlItem or ChannelControlItem or ConnectorControlItem or None:
-        """Find control in cache by provided key"""
-        if self._items is None:
-            self.initialize()
-
-        for record in self._items.values():
-            if record.key == control_key:
-                return record
-
-        return None
-
-    # -----------------------------------------------------------------------------
-
     def clear(self) -> None:
         """Clear items cache"""
         self._items = None
@@ -1193,7 +1180,9 @@ class ControlsRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _create_item(entity: DeviceControlEntity or ChannelControlEntity) -> ControlItem or None:
+    def _create_item(
+        entity: DeviceControlEntity or ChannelControlEntity or ConnectorControlEntity
+    ) -> ControlItem or None:
         if isinstance(entity, DeviceControlEntity):
             return DeviceControlItem(
                 control_id=entity.control_id,
@@ -1264,14 +1253,14 @@ class ControlsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __next__(self) -> DeviceControlItem or ChannelControlItem:
+    def __next__(self) -> ControlItem:
         if self._items is None:
             self.initialize()
 
         if self.__iterator_index < len(self._items.values()):
-            items: List[DeviceControlItem or ChannelControlItem or ConnectorControlItem] = list(self._items.values())
+            items: List[ControlItem] = list(self._items.values())
 
-            result: DeviceControlItem or ChannelControlItem or ConnectorControlItem = items[self.__iterator_index]
+            result: ControlItem = items[self.__iterator_index]
 
             self.__iterator_index += 1
 

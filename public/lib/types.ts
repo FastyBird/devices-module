@@ -74,7 +74,7 @@ export interface RelationInterface extends TJsonaModel {
   type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceConfigurationEntityTypes | DeviceControlEntityTypes | DeviceConnectorEntityTypes | ChannelPropertyEntityTypes | ChannelConfigurationEntityTypes | ChannelControlEntityTypes | ConnectorEntityTypes | ConnectorControlEntityTypes
 }
 
-export const ModuleApiPrefix = `/${ModulePrefix.MODULE_DEVICES_PREFIX}`
+export const ModuleApiPrefix = `/${ModulePrefix.MODULE_DEVICES}`
 
 // STORE
 // =====

@@ -416,19 +416,19 @@ class PropertyItem(ABC):
             return None
 
         if self.__data_type is not None:
-            if self.__data_type == DataType.DATA_TYPE_INT:
+            if self.__data_type == DataType.INT:
                 min_value, max_value, *rest = self.__format.split(":") + [None, None]  # pylint: disable=unused-variable
 
                 if min_value is not None and max_value is not None and int(min_value) <= int(max_value):
                     return int(min_value), int(max_value)
 
-            elif self.__data_type == DataType.DATA_TYPE_FLOAT:
+            elif self.__data_type == DataType.FLOAT:
                 min_value, max_value, *rest = self.__format.split(":") + [None, None]
 
                 if min_value is not None and max_value is not None and float(min_value) <= float(max_value):
                     return float(min_value), float(max_value)
 
-            elif self.__data_type == DataType.DATA_TYPE_ENUM:
+            elif self.__data_type == DataType.ENUM:
                 return {x.strip() for x in self.__format.split(",")}
 
         return None

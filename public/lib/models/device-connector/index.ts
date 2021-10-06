@@ -336,7 +336,7 @@ const moduleActions: ActionTree<DeviceConnectorState, unknown> = {
   },
 
   async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
-    if (payload.origin !== ModuleOrigin.MODULE_DEVICES_ORIGIN) {
+    if (payload.origin !== ModuleOrigin.MODULE_DEVICES) {
       return false
     }
 

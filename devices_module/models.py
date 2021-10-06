@@ -631,17 +631,17 @@ class DeviceConfigurationEntity(db.Entity):
         if isinstance(self.data_type, DataType):
             if (
                 self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
+                    DataType.CHAR,
+                    DataType.UCHAR,
+                    DataType.SHORT,
+                    DataType.USHORT,
+                    DataType.INT,
+                    DataType.UINT,
                 ]
             ):
                 return int(self.value)
 
-            if self.data_type == DataType.DATA_TYPE_FLOAT:
+            if self.data_type == DataType.FLOAT:
                 return float(self.value)
 
         return self.value
@@ -738,13 +738,13 @@ class DeviceConfigurationEntity(db.Entity):
         if isinstance(self.data_type, DataType):
             if (
                 self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                    DataType.DATA_TYPE_FLOAT,
+                    DataType.CHAR,
+                    DataType.UCHAR,
+                    DataType.SHORT,
+                    DataType.USHORT,
+                    DataType.INT,
+                    DataType.UINT,
+                    DataType.FLOAT,
                 ]
             ):
                 return {
@@ -756,7 +756,7 @@ class DeviceConfigurationEntity(db.Entity):
                     },
                 }
 
-            if self.data_type == DataType.DATA_TYPE_ENUM:
+            if self.data_type == DataType.ENUM:
                 return {
                     **structure,
                     **{
@@ -1168,17 +1168,17 @@ class ChannelConfigurationEntity(db.Entity):
         if isinstance(self.data_type, DataType):
             if (
                 self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
+                    DataType.CHAR,
+                    DataType.UCHAR,
+                    DataType.SHORT,
+                    DataType.USHORT,
+                    DataType.INT,
+                    DataType.UINT,
                 ]
             ):
                 return int(self.value)
 
-            if self.data_type == DataType.DATA_TYPE_FLOAT:
+            if self.data_type == DataType.FLOAT:
                 return float(self.value)
 
         return self.value
@@ -1275,13 +1275,13 @@ class ChannelConfigurationEntity(db.Entity):
         if isinstance(self.data_type, DataType):
             if (
                 self.data_type in [
-                    DataType.DATA_TYPE_CHAR,
-                    DataType.DATA_TYPE_UCHAR,
-                    DataType.DATA_TYPE_SHORT,
-                    DataType.DATA_TYPE_USHORT,
-                    DataType.DATA_TYPE_INT,
-                    DataType.DATA_TYPE_UINT,
-                    DataType.DATA_TYPE_FLOAT,
+                    DataType.CHAR,
+                    DataType.UCHAR,
+                    DataType.SHORT,
+                    DataType.USHORT,
+                    DataType.INT,
+                    DataType.UINT,
+                    DataType.FLOAT,
                 ]
             ):
                 return {
@@ -1293,7 +1293,7 @@ class ChannelConfigurationEntity(db.Entity):
                     },
                 }
 
-            if self.data_type == DataType.DATA_TYPE_ENUM:
+            if self.data_type == DataType.ENUM:
                 return {
                     **structure,
                     **{

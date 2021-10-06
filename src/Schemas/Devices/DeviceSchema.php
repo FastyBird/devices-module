@@ -235,7 +235,7 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				),
 				true,
 				[
-					'count' => $device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE) ? count($device->getConfiguration()) : 0,
+					'count' => $device->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($device->getConfiguration()) : 0,
 				]
 			);
 

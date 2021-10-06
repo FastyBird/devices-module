@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Commands;
 
-use FastyBird\Database;
+use FastyBird\DatabasePlugin\Helpers as DatabasePluginHelpers;
 use RuntimeException;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
@@ -34,11 +34,11 @@ use Throwable;
 class InitializeCommand extends Console\Command\Command
 {
 
-	/** @var Database\Helpers\Database */
-	private Database\Helpers\Database $database;
+	/** @var DatabasePluginHelpers\Database */
+	private DatabasePluginHelpers\Database $database;
 
 	public function __construct(
-		Database\Helpers\Database $database,
+		DatabasePluginHelpers\Database $database,
 		?string $name = null
 	) {
 		parent::__construct($name);

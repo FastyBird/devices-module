@@ -75,7 +75,7 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
-		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE)) {
 			return $response
 				->withEntity(WebServerHttp\ScalarEntity::from([]));
 		}
@@ -104,7 +104,7 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
-		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
@@ -148,7 +148,7 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
-		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+		if (!$device->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),

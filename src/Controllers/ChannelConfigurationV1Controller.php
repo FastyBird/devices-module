@@ -84,7 +84,7 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		// & channel
 		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
-		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE)) {
 			return $response
 				->withEntity(WebServerHttp\ScalarEntity::from([]));
 		}
@@ -116,7 +116,7 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		// & channel
 		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
-		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
@@ -163,7 +163,7 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 		// & channel
 		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
 
-		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE)) {
+		if (!$channel->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE)) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),

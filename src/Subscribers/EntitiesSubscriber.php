@@ -18,12 +18,11 @@ namespace FastyBird\DevicesModule\Subscribers;
 use Doctrine\Common;
 use Doctrine\ORM;
 use Doctrine\Persistence;
-use FastyBird\ApplicationExchange\Publisher as ApplicationExchangePublisher;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
-use FastyBird\ModulesMetadata;
+use FastyBird\ExchangePlugin\Publisher as ExchangePluginPublisher;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use Nette;
 use ReflectionClass;
@@ -52,15 +51,15 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/** @var Models\States\IPropertyRepository|null */
 	private ?Models\States\IPropertyRepository $propertyStateRepository;
 
-	/** @var ApplicationExchangePublisher\IPublisher */
-	private ApplicationExchangePublisher\IPublisher $publisher;
+	/** @var ExchangePluginPublisher\IPublisher */
+	private ExchangePluginPublisher\IPublisher $publisher;
 
 	/** @var ORM\EntityManagerInterface */
 	private ORM\EntityManagerInterface $entityManager;
 
 	public function __construct(
 		Helpers\EntityKeyHelper $entityKeyGenerator,
-		ApplicationExchangePublisher\IPublisher $publisher,
+		ExchangePluginPublisher\IPublisher $publisher,
 		ORM\EntityManagerInterface $entityManager,
 		?Models\States\IPropertyRepository $propertyStateRepository = null
 	)
@@ -105,7 +104,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$entity instanceof Entities\Devices\Controls\IControl
 					|| $entity instanceof Entities\Channels\Controls\IControl
 				)
-				&& $entity->getName() === ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE
+				&& $entity->getName() === ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE
 			) {
 				if ($entity instanceof Entities\Devices\Controls\IControl) {
 					foreach ($entity->getDevice()->getConfiguration() as $row) {
@@ -246,7 +245,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			case self::ACTION_CREATED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = $routingKey;
+						$publishRoutingKey = ModulesMetadataTypes\RoutingKeyType::get($routingKey);
 					}
 				}
 
@@ -255,7 +254,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			case self::ACTION_UPDATED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = $routingKey;
+						$publishRoutingKey = ModulesMetadataTypes\RoutingKeyType::get($routingKey);
 					}
 				}
 
@@ -264,7 +263,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			case self::ACTION_DELETED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = $routingKey;
+						$publishRoutingKey = ModulesMetadataTypes\RoutingKeyType::get($routingKey);
 					}
 				}
 
@@ -281,7 +280,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$state = $this->propertyStateRepository->findOne($entity->getId());
 
 				$this->publisher->publish(
-					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
+					ModulesMetadataTypes\ModuleOriginType::get(ModulesMetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
 					array_merge($state !== null ? [
 						'actual_value'   => Helpers\PropertyHelper::normalizeValue($entity, $state->getActualValue()),
@@ -291,7 +290,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				);
 			} else {
 				$this->publisher->publish(
-					ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN,
+					ModulesMetadataTypes\ModuleOriginType::get(ModulesMetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
 					$entity->toArray()
 				);

@@ -28,12 +28,13 @@ extensions:
     ipubDoctrineCrud                    : IPub\DoctrineCrud\DI\DoctrineCrudExtension
     ipubDoctrineTimestampable           : IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
     ipubDoctrineDynamicDiscriminatorMap : IPub\DoctrineDynamicDiscriminatorMap\DI\DoctrineDynamicDiscriminatorMapExtension
-    fbApplicationExchange               : FastyBird\ApplicationExchange\DI\ApplicationExchangeExtension
-    fbDatabase                          : FastyBird\Database\DI\DatabaseExtension
     fbDateTimeFactory                   : FastyBird\DateTimeFactory\DI\DateTimeFactoryExtension
     fbJsonApi                           : FastyBird\JsonApi\DI\JsonApiExtension
     fbSimpleAuth                        : FastyBird\SimpleAuth\DI\SimpleAuthExtension
+    fbSocketServerFactory               : FastyBird\SocketServerFactory\DI\SocketServerFactoryExtension
     fbWebServer                         : FastyBird\WebServer\DI\WebServerExtension(%consoleMode%)
+    fbExchangePlugin                    : FastyBird\ExchangePlugin\DI\ExchangePluginExtension
+    fbDatabasePlugin                    : FastyBird\DatabasePlugin\DI\DatabasePluginExtension
 
 contributteConsole:
     name: FastyBird:DevicesModule!

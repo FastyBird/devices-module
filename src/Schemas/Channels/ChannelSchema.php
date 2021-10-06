@@ -187,7 +187,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				),
 				true,
 				[
-					'count' => $channel->hasControl(ModulesMetadataTypes\ControlNameType::TYPE_CONFIGURE) ? count($channel->getConfiguration()) : 0,
+					'count' => $channel->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($channel->getConfiguration()) : 0,
 				]
 			);
 

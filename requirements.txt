@@ -1,4 +1,4 @@
-fastybird-application-exchange>=0.2
+fastybird-exchange-plugin>=0.3
 fastybird-modules-metadata>=0.7
 pony>=0.7
 setuptools>=57.4

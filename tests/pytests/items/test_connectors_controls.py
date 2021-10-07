@@ -14,20 +14,22 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import ConnectorControlItem
-from devices_module.repositories import connector_control_repository
+from devices_module.repositories import ConnectorControlRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
 class TestConnectorControlItem(DbTestCase):
-    def test_transform_to_dict(self) -> None:
-        connector_control_repository.initialize()
+    @inject
+    def test_transform_to_dict(self, control_repository: ConnectorControlRepository) -> None:
+        control_repository.initialize()
 
-        control_item = connector_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4)
         )
 

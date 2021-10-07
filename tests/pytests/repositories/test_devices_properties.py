@@ -14,10 +14,11 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import DevicePropertyItem
-from devices_module.repositories import device_property_repository
+from devices_module.repositories import DevicePropertyRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -25,17 +26,19 @@ from tests.pytests.tests import DbTestCase
 
 
 class TestDevicesPropertiesRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
-        device_property_repository.initialize()
+    @inject
+    def test_repository_iterator(self, property_repository: DevicePropertyRepository) -> None:
+        property_repository.initialize()
 
-        self.assertEqual(3, len(device_property_repository))
+        self.assertEqual(3, len(property_repository))
 
     # -----------------------------------------------------------------------------
 
-    def test_get_item(self) -> None:
-        device_property_repository.initialize()
+    @inject
+    def test_get_item(self, property_repository: DevicePropertyRepository) -> None:
+        property_repository.initialize()
 
-        property_item = device_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
         )
 
@@ -44,10 +47,11 @@ class TestDevicesPropertiesRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_create_from_exchange(self) -> None:
-        device_property_repository.initialize()
+    @inject
+    def test_create_from_exchange(self, property_repository: DevicePropertyRepository) -> None:
+        property_repository.initialize()
 
-        result: bool = device_property_repository.create_from_exchange(
+        result: bool = property_repository.create_from_exchange(
             RoutingKey(RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED),
             {
                 "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
@@ -65,7 +69,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = device_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
         )
 
@@ -86,10 +90,11 @@ class TestDevicesPropertiesRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_update_from_exchange(self) -> None:
-        device_property_repository.initialize()
+    @inject
+    def test_update_from_exchange(self, property_repository: DevicePropertyRepository) -> None:
+        property_repository.initialize()
 
-        result: bool = device_property_repository.update_from_exchange(
+        result: bool = property_repository.update_from_exchange(
             RoutingKey(RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED),
             {
                 "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
@@ -107,7 +112,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = device_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
         )
 
@@ -128,17 +133,18 @@ class TestDevicesPropertiesRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_delete_from_exchange(self) -> None:
-        device_property_repository.initialize()
+    @inject
+    def test_delete_from_exchange(self, property_repository: DevicePropertyRepository) -> None:
+        property_repository.initialize()
 
-        property_item = device_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
         )
 
         self.assertIsInstance(property_item, DevicePropertyItem)
         self.assertEqual("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", property_item.property_id.__str__())
 
-        result: bool = device_property_repository.delete_from_exchange(
+        result: bool = property_repository.delete_from_exchange(
             RoutingKey(RoutingKey.DEVICES_PROPERTY_ENTITY_DELETED),
             {
                 "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
@@ -156,7 +162,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = device_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
         )
 

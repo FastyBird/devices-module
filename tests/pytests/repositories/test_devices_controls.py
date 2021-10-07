@@ -14,10 +14,11 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import DeviceControlItem
-from devices_module.repositories import device_control_repository
+from devices_module.repositories import DeviceControlRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -25,17 +26,19 @@ from tests.pytests.tests import DbTestCase
 
 
 class TestDevicesControlsRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
-        device_control_repository.initialize()
+    @inject
+    def test_repository_iterator(self, control_repository: DeviceControlRepository) -> None:
+        control_repository.initialize()
 
-        self.assertEqual(1, len(device_control_repository))
+        self.assertEqual(1, len(control_repository))
 
     # -----------------------------------------------------------------------------
 
-    def test_get_item(self) -> None:
-        device_control_repository.initialize()
+    @inject
+    def test_get_item(self, control_repository: DeviceControlRepository) -> None:
+        control_repository.initialize()
 
-        control_item = device_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4)
         )
 
@@ -44,10 +47,11 @@ class TestDevicesControlsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_create_from_exchange(self) -> None:
-        device_control_repository.initialize()
+    @inject
+    def test_create_from_exchange(self, control_repository: DeviceControlRepository) -> None:
+        control_repository.initialize()
 
-        result: bool = device_control_repository.create_from_exchange(
+        result: bool = control_repository.create_from_exchange(
             RoutingKey(RoutingKey.DEVICES_CONTROL_ENTITY_CREATED),
             {
                 "id": "7c055b2b-60c3-4017-93db-e9478d8aa662",
@@ -58,7 +62,7 @@ class TestDevicesControlsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        control_item = device_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4)
         )
 
@@ -72,10 +76,11 @@ class TestDevicesControlsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_update_from_exchange(self) -> None:
-        device_control_repository.initialize()
+    @inject
+    def test_update_from_exchange(self, control_repository: DeviceControlRepository) -> None:
+        control_repository.initialize()
 
-        result: bool = device_control_repository.update_from_exchange(
+        result: bool = control_repository.update_from_exchange(
             RoutingKey(RoutingKey.DEVICES_CONTROL_ENTITY_UPDATED),
             {
                 "id": "7c055b2b-60c3-4017-93db-e9478d8aa662",
@@ -86,7 +91,7 @@ class TestDevicesControlsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        control_item = device_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4)
         )
 
@@ -100,17 +105,18 @@ class TestDevicesControlsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_delete_from_exchange(self) -> None:
-        device_control_repository.initialize()
+    @inject
+    def test_delete_from_exchange(self, control_repository: DeviceControlRepository) -> None:
+        control_repository.initialize()
 
-        control_item = device_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4)
         )
 
         self.assertIsInstance(control_item, DeviceControlItem)
         self.assertEqual("7c055b2b-60c3-4017-93db-e9478d8aa662", control_item.control_id.__str__())
 
-        result: bool = device_control_repository.delete_from_exchange(
+        result: bool = control_repository.delete_from_exchange(
             RoutingKey(RoutingKey.DEVICES_CONTROL_ENTITY_DELETED),
             {
                 "id": "7c055b2b-60c3-4017-93db-e9478d8aa662",
@@ -121,7 +127,7 @@ class TestDevicesControlsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        control_item = device_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4)
         )
 

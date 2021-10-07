@@ -14,20 +14,22 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import ChannelPropertyItem
-from devices_module.repositories import channel_property_repository
+from devices_module.repositories import ChannelPropertyRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
 class TestChannelPropertyItem(DbTestCase):
-    def test_transform_to_dict(self) -> None:
-        channel_property_repository.initialize()
+    @inject
+    def test_transform_to_dict(self, property_repository: ChannelPropertyRepository) -> None:
+        property_repository.initialize()
 
-        property_item = channel_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )
 

@@ -25,7 +25,10 @@ import json
 import uuid
 from abc import abstractmethod, ABC
 from typing import List, Dict
+from kink import inject
 import modules_metadata.exceptions as metadata_exceptions
+from exchange_plugin.dispatcher import EventDispatcher
+from exchange_plugin.events.event import IEvent
 from modules_metadata.loader import load_schema
 from modules_metadata.routing import RoutingKey
 from modules_metadata.validator import validate
@@ -33,6 +36,7 @@ from modules_metadata.types import ModuleOrigin, DataType
 from pony.orm import core as orm
 
 # Library libs
+from devices_module.events import ModelEntityCreatedEvent, ModelEntityUpdatedEvent, ModelEntityDeletedEvent
 from devices_module.exceptions import HandleExchangeDataException
 from devices_module.items import (
     ConnectorItem,
@@ -55,16 +59,17 @@ from devices_module.models import (
     ChannelPropertyEntity,
     ConnectorEntity,
     FbBusConnectorEntity,
-    FbMqttV1ConnectorEntity,
+    FbMqttConnectorEntity,
     ConnectorControlEntity,
     DeviceControlEntity,
     ChannelControlEntity,
 )
 
 
-class DevicesRepository:
+@inject
+class DeviceRepository:
     """
-    Devices repository
+    Device repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -74,6 +79,31 @@ class DevicesRepository:
     __items: Dict[str, DeviceItem] or None = None
 
     __iterator_index = 0
+
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        event_dispatcher: EventDispatcher,
+    ) -> None:
+        self.__event_dispatcher = event_dispatcher
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityCreatedEvent.EVENT_NAME,
+            listener=self.__entity_created,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityUpdatedEvent.EVENT_NAME,
+            listener=self.__entity_updated,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityDeletedEvent.EVENT_NAME,
+            listener=self.__entity_deleted,
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -141,7 +171,7 @@ class DevicesRepository:
         )
 
         if entity is not None:
-            self.__items[entity.device_id.__str__()] = self._create_item(entity)
+            self.__items[entity.device_id.__str__()] = self.__create_item(entity)
 
             return True
 
@@ -168,13 +198,13 @@ class DevicesRepository:
             )
 
             if entity is not None:
-                self.__items[entity.device_id.__str__()] = self._create_item(entity)
+                self.__items[entity.device_id.__str__()] = self.__create_item(entity)
 
                 return True
 
             return False
 
-        item = self._update_item(
+        item = self.__update_item(
             self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
             validated_data,
         )
@@ -210,10 +240,10 @@ class DevicesRepository:
 
         for entity in DeviceEntity.select():
             if self.__items is None or entity.device_id.__str__() not in self.__items:
-                item = self._create_item(entity)
+                item = self.__create_item(entity)
 
             else:
-                item = self._update_item(self.get_by_id(entity.device_id), entity.to_dict())
+                item = self.__update_item(self.get_by_id(entity.device_id), entity.to_dict())
 
             if item is not None:
                 items[entity.device_id.__str__()] = item
@@ -223,7 +253,7 @@ class DevicesRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _create_item(entity: DeviceEntity) -> DeviceItem or None:
+    def __create_item(entity: DeviceEntity) -> DeviceItem or None:
         return DeviceItem(
             device_id=entity.device_id,
             device_identifier=entity.identifier,
@@ -243,7 +273,7 @@ class DevicesRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _update_item(item: DeviceItem, data: Dict) -> DeviceItem or None:
+    def __update_item(item: DeviceItem, data: Dict) -> DeviceItem or None:
         return DeviceItem(
             device_id=item.device_id,
             device_identifier=item.identifier,
@@ -262,7 +292,31 @@ class DevicesRepository:
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "DevicesRepository":
+    def __entity_created(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityCreatedEvent) or not isinstance(event.entity, DeviceEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def __entity_updated(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityUpdatedEvent) or not isinstance(event.entity, DeviceEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def __entity_deleted(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityDeletedEvent) or not isinstance(event.entity, DeviceEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def __iter__(self) -> "DeviceRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -298,9 +352,10 @@ class DevicesRepository:
         raise StopIteration
 
 
-class ChannelsRepository:
+@inject
+class ChannelRepository:
     """
-    Devices channels repository
+    Channel repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -310,6 +365,31 @@ class ChannelsRepository:
     __items: Dict[str, ChannelItem] or None = None
 
     __iterator_index = 0
+
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        event_dispatcher: EventDispatcher,
+    ) -> None:
+        self.__event_dispatcher = event_dispatcher
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityCreatedEvent.EVENT_NAME,
+            listener=self.__entity_created,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityUpdatedEvent.EVENT_NAME,
+            listener=self.__entity_updated,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityDeletedEvent.EVENT_NAME,
+            listener=self.__entity_deleted,
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -377,7 +457,7 @@ class ChannelsRepository:
         )
 
         if entity is not None:
-            self.__items[entity.channel_id.__str__()] = self._create_item(entity)
+            self.__items[entity.channel_id.__str__()] = self.__create_item(entity)
 
             return True
 
@@ -404,13 +484,13 @@ class ChannelsRepository:
             )
 
             if entity is not None:
-                self.__items[entity.channel_id.__str__()] = self._create_item(entity)
+                self.__items[entity.channel_id.__str__()] = self.__create_item(entity)
 
                 return True
 
             return False
 
-        item = self._update_item(
+        item = self.__update_item(
             self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
             validated_data,
         )
@@ -446,10 +526,10 @@ class ChannelsRepository:
 
         for entity in ChannelEntity.select():
             if self.__items is None or entity.channel_id.__str__() not in self.__items:
-                item = self._create_item(entity)
+                item = self.__create_item(entity)
 
             else:
-                item = self._update_item(self.get_by_id(entity.channel_id), entity.to_dict())
+                item = self.__update_item(self.get_by_id(entity.channel_id), entity.to_dict())
 
             if item is not None:
                 items[entity.channel_id.__str__()] = item
@@ -458,8 +538,32 @@ class ChannelsRepository:
 
     # -----------------------------------------------------------------------------
 
+    def __entity_created(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityCreatedEvent) or not isinstance(event.entity, ChannelEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def __entity_updated(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityUpdatedEvent) or not isinstance(event.entity, ChannelEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def __entity_deleted(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityDeletedEvent) or not isinstance(event.entity, ChannelEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
     @staticmethod
-    def _create_item(entity: ChannelEntity) -> ChannelItem or None:
+    def __create_item(entity: ChannelEntity) -> ChannelItem or None:
         return ChannelItem(
             channel_id=entity.channel_id,
             channel_identifier=entity.identifier,
@@ -472,7 +576,7 @@ class ChannelsRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _update_item(item: ChannelItem, data: Dict) -> ChannelItem or None:
+    def __update_item(item: ChannelItem, data: Dict) -> ChannelItem or None:
         return ChannelItem(
             channel_id=item.channel_id,
             channel_identifier=item.identifier,
@@ -484,7 +588,7 @@ class ChannelsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "ChannelsRepository":
+    def __iter__(self) -> "ChannelRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -520,9 +624,10 @@ class ChannelsRepository:
         raise StopIteration
 
 
-class PropertiesRepository(ABC):
+@inject
+class PropertyRepository(ABC):
     """
-    Base properties repository
+    Base property repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -532,6 +637,31 @@ class PropertiesRepository(ABC):
     _items: Dict[str, ChannelPropertyItem or DevicePropertyItem] or None = None
 
     __iterator_index = 0
+
+    _event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        event_dispatcher: EventDispatcher,
+    ) -> None:
+        self.__event_dispatcher = event_dispatcher
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityCreatedEvent.EVENT_NAME,
+            listener=self._entity_created,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityUpdatedEvent.EVENT_NAME,
+            listener=self._entity_updated,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityDeletedEvent.EVENT_NAME,
+            listener=self._entity_deleted,
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -569,6 +699,39 @@ class PropertiesRepository(ABC):
     @abstractmethod
     def initialize(self) -> None:
         """Initialize repository by fetching entities from database"""
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_created(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityCreatedEvent)
+            or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
+        ):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_updated(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityUpdatedEvent)
+            or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
+        ):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_deleted(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityDeletedEvent)
+            or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
+        ):
+            return
+
+        self.initialize()
 
     # -----------------------------------------------------------------------------
 
@@ -645,7 +808,7 @@ class PropertiesRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "PropertiesRepository":
+    def __iter__(self) -> "PropertyRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -681,12 +844,12 @@ class PropertiesRepository(ABC):
         raise StopIteration
 
 
-class DevicesPropertiesRepository(PropertiesRepository):
+class DevicePropertyRepository(PropertyRepository):
     """
-    Devices properties repository
+    Device property repository
 
     @package        FastyBird:DevicesModule!
-    @module         models
+    @module         repositories
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -788,12 +951,12 @@ class DevicesPropertiesRepository(PropertiesRepository):
         self._items = items
 
 
-class ChannelsPropertiesRepository(PropertiesRepository):
+class ChannelPropertyRepository(PropertyRepository):
     """
-    Channels properties repository
+    Channel property repository
 
     @package        FastyBird:DevicesModule!
-    @module         models
+    @module         repositories
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -895,18 +1058,44 @@ class ChannelsPropertiesRepository(PropertiesRepository):
         self._items = items
 
 
-class ConnectorsRepository(ABC):
+@inject
+class ConnectorRepository(ABC):
     """
-    Connectors repository
+    Connector repository
 
     @package        FastyBird:DevicesModule!
-    @module         models
+    @module         repositories
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
     __items: Dict[str, ConnectorItem] or None = None
 
     __iterator_index = 0
+
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        event_dispatcher: EventDispatcher,
+    ) -> None:
+        self.__event_dispatcher = event_dispatcher
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityCreatedEvent.EVENT_NAME,
+            listener=self.__entity_created,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityUpdatedEvent.EVENT_NAME,
+            listener=self.__entity_updated,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityDeletedEvent.EVENT_NAME,
+            listener=self.__entity_deleted,
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1038,6 +1227,30 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
+    def __entity_created(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityCreatedEvent) or not isinstance(event.entity, ConnectorEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def __entity_updated(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityUpdatedEvent) or not isinstance(event.entity, ConnectorEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def __entity_deleted(self, event: IEvent) -> None:
+        if not isinstance(event, ModelEntityDeletedEvent) or not isinstance(event.entity, ConnectorEntity):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
     @staticmethod
     def __create_item(entity: ConnectorEntity) -> ConnectorItem or None:
         if isinstance(entity, FbBusConnectorEntity):
@@ -1050,7 +1263,7 @@ class ConnectorsRepository(ABC):
                 connector_params=entity.params,
             )
 
-        if isinstance(entity, FbMqttV1ConnectorEntity):
+        if isinstance(entity, FbMqttConnectorEntity):
             return FbMqttV1ConnectorItem(
                 connector_id=entity.connector_id,
                 connector_name=entity.name,
@@ -1101,7 +1314,7 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "ConnectorsRepository":
+    def __iter__(self) -> "ConnectorRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -1137,9 +1350,10 @@ class ConnectorsRepository(ABC):
         raise StopIteration
 
 
-class ControlsRepository(ABC):
+@inject
+class ControlRepository(ABC):
     """
-    Base controls repository
+    Base control repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -1149,6 +1363,31 @@ class ControlsRepository(ABC):
     _items: Dict[str, ControlItem] or None = None
 
     __iterator_index = 0
+
+    _event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        event_dispatcher: EventDispatcher,
+    ) -> None:
+        self._event_dispatcher = event_dispatcher
+
+        self._event_dispatcher.add_listener(
+            event_id=ModelEntityCreatedEvent.EVENT_NAME,
+            listener=self._entity_created,
+        )
+
+        self._event_dispatcher.add_listener(
+            event_id=ModelEntityUpdatedEvent.EVENT_NAME,
+            listener=self._entity_updated,
+        )
+
+        self._event_dispatcher.add_listener(
+            event_id=ModelEntityDeletedEvent.EVENT_NAME,
+            listener=self._entity_deleted,
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1176,6 +1415,39 @@ class ControlsRepository(ABC):
     @abstractmethod
     def initialize(self) -> None:
         """Initialize repository by fetching entities from database"""
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_created(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityCreatedEvent)
+            or not isinstance(event.entity, (DeviceControlRepository, ChannelControlEntity, ConnectorControlEntity))
+        ):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_updated(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityUpdatedEvent)
+            or not isinstance(event.entity, (DeviceControlRepository, ChannelControlEntity, ConnectorControlEntity))
+        ):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_deleted(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityDeletedEvent)
+            or not isinstance(event.entity, (DeviceControlRepository, ChannelControlEntity, ConnectorControlEntity))
+        ):
+            return
+
+        self.initialize()
 
     # -----------------------------------------------------------------------------
 
@@ -1237,7 +1509,7 @@ class ControlsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "ControlsRepository":
+    def __iter__(self) -> "ControlRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -1273,12 +1545,12 @@ class ControlsRepository(ABC):
         raise StopIteration
 
 
-class DevicesControlsRepository(ControlsRepository):
+class DeviceControlRepository(ControlRepository):
     """
-    Devices controls repository
+    Device control repository
 
     @package        FastyBird:DevicesModule!
-    @module         models
+    @module         repositories
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -1377,12 +1649,12 @@ class DevicesControlsRepository(ControlsRepository):
         self._items = items
 
 
-class ChannelsControlsRepository(ControlsRepository):
+class ChannelControlRepository(ControlRepository):
     """
-    Channels controls repository
+    Channel control repository
 
     @package        FastyBird:DevicesModule!
-    @module         models
+    @module         repositories
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -1481,12 +1753,12 @@ class ChannelsControlsRepository(ControlsRepository):
         self._items = items
 
 
-class ConnectorsControlsRepository(ControlsRepository):
+class ConnectorControlRepository(ControlRepository):
     """
-    Connectors controls repository
+    Connector control repository
 
     @package        FastyBird:DevicesModule!
-    @module         models
+    @module         repositories
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -1609,13 +1881,3 @@ def validate_exchange_data(origin: ModuleOrigin, routing_key: RoutingKey, data: 
 
     except metadata_exceptions.InvalidDataException as ex:
         raise HandleExchangeDataException("Provided data are not valid") from ex
-
-
-connector_repository = ConnectorsRepository()
-device_repository = DevicesRepository()
-channel_repository = ChannelsRepository()
-device_property_repository = DevicesPropertiesRepository()
-channel_property_repository = ChannelsPropertiesRepository()
-connector_control_repository = ConnectorsControlsRepository()
-device_control_repository = DevicesControlsRepository()
-channel_control_repository = ChannelsControlsRepository()

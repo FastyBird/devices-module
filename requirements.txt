@@ -1,5 +1,6 @@
 fastybird-exchange-plugin>=0.3
 fastybird-modules-metadata>=0.7
+kink>=0.6
 pony>=0.7
 setuptools>=57.4
 mysqlclient>=2.0

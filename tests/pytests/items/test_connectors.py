@@ -14,17 +14,19 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import ConnectorItem
-from devices_module.repositories import connector_repository
+from devices_module.repositories import ConnectorRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
 class TestConnectorItem(DbTestCase):
-    def test_transform_to_dict(self) -> None:
+    @inject
+    def test_transform_to_dict(self, connector_repository: ConnectorRepository) -> None:
         connector_repository.initialize()
 
         connector_item = connector_repository.get_by_id(

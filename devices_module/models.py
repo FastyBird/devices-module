@@ -23,78 +23,21 @@ Module models definitions
 # Library dependencies
 import uuid
 import datetime
-from enum import Enum
 from typing import List, Dict, Tuple
-from exchange_plugin.database import (
-    DatabaseEntityCreatedEvent,
-    DatabaseEntityUpdatedEvent,
-    DatabaseEntityDeletedEvent,
-)
-from exchange_plugin.dispatcher import app_dispatcher
-from modules_metadata.types import DataType, ModuleOrigin
-from pony.orm import core as orm, Database, Discriminator, PrimaryKey, Required, Optional, Set, Json
-from pony.orm.dbproviders.mysql import MySQLProvider
-from pony.orm.dbproviders.sqlite import SQLiteProvider
+from exchange_plugin.dispatcher import EventDispatcher
+from kink import inject
+from modules_metadata.types import DataType
+from pony.orm import Database, Discriminator, PrimaryKey, Required, Optional, Set, Json
 
 # Library libs
-from devices_module.converters import EnumConverter
-from devices_module.key import entity_key_generator
+from devices_module.events import ModelEntityCreatedEvent, ModelEntityUpdatedEvent, ModelEntityDeletedEvent
+from devices_module.key import EntityKey
 
 # Create devices module database accessor
 db: Database = Database()
 
-# Add ENUM converter
-MySQLProvider.converter_classes.append((Enum, EnumConverter))
-SQLiteProvider.converter_classes.append((Enum, EnumConverter))
 
-
-class EntityEventMixin:
-    """
-    Entity event mixin
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-    @staticmethod
-    def after_insert(entity: orm.Entity) -> None:
-        """After insert entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityCreatedEvent.EVENT_NAME,
-            DatabaseEntityCreatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                entity,
-            ),
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @staticmethod
-    def after_update(entity: orm.Entity) -> None:
-        """After update entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityUpdatedEvent.EVENT_NAME,
-            DatabaseEntityUpdatedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                entity,
-            ),
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @staticmethod
-    def after_delete(entity: orm.Entity) -> None:
-        """After delete entity hook"""
-        app_dispatcher.dispatch(
-            DatabaseEntityDeletedEvent.EVENT_NAME,
-            DatabaseEntityDeletedEvent(
-                ModuleOrigin(ModuleOrigin.DEVICES_MODULE),
-                entity,
-            ),
-        )
-
-
+@inject
 class ConnectorEntity(db.Entity):
     """
     Connector entity
@@ -112,13 +55,24 @@ class ConnectorEntity(db.Entity):
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="connector_id")
     name: str or None = Required(str, column="connector_name", nullable=False)
     key: str = Required(str, column="connector_key", unique=True, max_len=50, nullable=False)
-    enabled: bool = Required(bool, column="connector_enabled", nullable=False, default=True)
+    enabled: bool = Optional(bool, column="connector_enabled", nullable=True, default=True)
     params: Json or None = Optional(Json, column="params", nullable=True)
     created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
     updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     devices: List["DeviceConnectorEntity"] = Set("DeviceConnectorEntity", reverse="connector")
     controls: List["ConnectorControlEntity"] = Set("ConnectorControlEntity", reverse="connector")
+
+    __key_generator: EntityKey
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__key_generator = key_generator
+        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -158,13 +112,16 @@ class ConnectorEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = entity_key_generator.generate_key(self)
+            self.key = self.__key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -176,13 +133,19 @@ class ConnectorEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
 class FbBusConnectorEntity(ConnectorEntity):
@@ -238,7 +201,7 @@ class FbBusConnectorEntity(ConnectorEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-class FbMqttV1ConnectorEntity(ConnectorEntity):
+class FbMqttConnectorEntity(ConnectorEntity):
     """
     FastyBird MQTT v1 connector entity
 
@@ -300,6 +263,7 @@ class FbMqttV1ConnectorEntity(ConnectorEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
+@inject
 class ConnectorControlEntity(db.Entity):
     """
     Connector control entity
@@ -318,6 +282,15 @@ class ConnectorControlEntity(db.Entity):
 
     connector: ConnectorEntity = Required("ConnectorEntity", reverse="controls", column="connector_id", nullable=False)
 
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__event_dispatcher = event_dispatcher
+
     # -----------------------------------------------------------------------------
 
     def before_insert(self) -> None:
@@ -328,7 +301,10 @@ class ConnectorControlEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -340,15 +316,22 @@ class ConnectorControlEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class DeviceEntity(db.Entity):
     """
     Device entity
@@ -362,12 +345,12 @@ class DeviceEntity(db.Entity):
 
     device_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_id")
     identifier: str = Required(str, column="device_identifier", unique=True, max_len=50, nullable=False)
-    key: str = Required(str, column="device_key", unique=True, max_len=50, nullable=False)
+    key: str = Optional(str, column="device_key", unique=True, max_len=50, nullable=True)
     parent: "DeviceEntity" = Optional("DeviceEntity", reverse="children", column="parent_id", nullable=True)
     children: List["DeviceEntity"] = Set("DeviceEntity", reverse="parent")
     name: str or None = Optional(str, column="device_name", nullable=True)
     comment: str or None = Optional(str, column="device_comment", nullable=True)
-    enabled: bool = Required(bool, column="device_enabled", default=False, nullable=False)
+    enabled: bool = Optional(bool, column="device_enabled", default=False, nullable=True)
     hardware_manufacturer: str or None = Optional(
         str,
         column="device_hardware_manufacturer",
@@ -403,6 +386,17 @@ class DeviceEntity(db.Entity):
     connector: "DeviceConnectorEntity" or None = Optional("DeviceConnectorEntity", reverse="device")
 
     owner: str or None = Optional(str, column="owner", max_len=15, nullable=True)
+
+    __key_generator: EntityKey
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__key_generator = key_generator
+        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -452,18 +446,26 @@ class DeviceEntity(db.Entity):
         """Before insert entity hook"""
         self.created_at = datetime.datetime.now()
 
-        self.hardware_model = self.hardware_model.lower()
-        self.hardware_manufacturer = self.hardware_manufacturer.lower()
-        self.firmware_manufacturer = self.firmware_manufacturer.lower()
+        if self.hardware_model is not None:
+            self.hardware_model = self.hardware_model.lower()
+
+        if self.hardware_manufacturer is not None:
+            self.hardware_manufacturer = self.hardware_manufacturer.lower()
+
+        if self.firmware_manufacturer is not None:
+            self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
         if self.key is None:
-            self.key = entity_key_generator.generate_key(self)
+            self.key = self.__key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -479,15 +481,22 @@ class DeviceEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class DevicePropertyEntity(db.Entity):
     """
     Device property entity
@@ -500,11 +509,11 @@ class DevicePropertyEntity(db.Entity):
     _table_: str = "fb_devices_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
+    key: str = Optional(str, column="property_key", unique=True, max_len=50, nullable=True)
     identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
     name: str = Optional(str, column="property_name", nullable=True)
-    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
-    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
+    settable: bool = Optional(bool, column="property_settable", default=False, nullable=True)
+    queryable: bool = Optional(bool, column="property_queryable", default=False, nullable=True)
     data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
     unit: str or None = Optional(str, column="property_unit", nullable=True)
     format: str or None = Optional(str, column="property_format", nullable=True)
@@ -512,6 +521,17 @@ class DevicePropertyEntity(db.Entity):
     updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="properties", column="device_id", nullable=False)
+
+    __key_generator: EntityKey
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__key_generator = key_generator
+        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -553,13 +573,16 @@ class DevicePropertyEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = entity_key_generator.generate_key(self)
+            self.key = self.__key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -571,15 +594,22 @@ class DevicePropertyEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class DeviceConfigurationEntity(db.Entity):
     """
     Device configuration entity
@@ -592,7 +622,7 @@ class DeviceConfigurationEntity(db.Entity):
     _table_: str = "fb_devices_configuration"
 
     configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
-    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
+    key: str = Optional(str, column="configuration_key", unique=True, max_len=50, nullable=True)
     identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
     name: str or None = Optional(str, column="configuration_name", nullable=True)
     comment: str or None = Optional(str, column="configuration_comment", nullable=True)
@@ -604,6 +634,19 @@ class DeviceConfigurationEntity(db.Entity):
     updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = Required("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
+
+    __key_generator: EntityKey
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__key_generator = key_generator
+        self.__event_dispatcher = event_dispatcher
+
+    # -----------------------------------------------------------------------------
 
     def has_min(self) -> bool:
         """Has min value flag"""
@@ -773,13 +816,16 @@ class DeviceConfigurationEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = entity_key_generator.generate_key(self)
+            self.key = self.__key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -791,15 +837,22 @@ class DeviceConfigurationEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class DeviceControlEntity(db.Entity):
     """
     Device control entity
@@ -818,6 +871,15 @@ class DeviceControlEntity(db.Entity):
 
     device: DeviceEntity = Required("DeviceEntity", reverse="controls", column="device_id", nullable=False)
 
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__event_dispatcher = event_dispatcher
+
     # -----------------------------------------------------------------------------
 
     def before_insert(self) -> None:
@@ -828,7 +890,10 @@ class DeviceControlEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -840,15 +905,22 @@ class DeviceControlEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class DeviceConnectorEntity(db.Entity):
     """
     Device connector entity
@@ -867,6 +939,15 @@ class DeviceConnectorEntity(db.Entity):
 
     device: DeviceEntity = Required("DeviceEntity", reverse="connector", column="device_id", nullable=False)
     connector: ConnectorEntity = Required("ConnectorEntity", reverse="devices", column="connector_id", nullable=False)
+
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -895,7 +976,7 @@ class DeviceConnectorEntity(db.Entity):
                 "configured_key_length": self.params.get("configured_key_length"),
             }}
 
-        if isinstance(self.connector, FbMqttV1ConnectorEntity):
+        if isinstance(self.connector, FbMqttConnectorEntity):
             return {**structure, **{
                 "username": self.params.get("username"),
             }}
@@ -912,7 +993,10 @@ class DeviceConnectorEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -924,15 +1008,22 @@ class DeviceConnectorEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class ChannelEntity(db.Entity):
     """
     Channel entity
@@ -945,7 +1036,7 @@ class ChannelEntity(db.Entity):
     _table_: str = "fb_channels"
 
     channel_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="channel_id")
-    key: str = Required(str, column="channel_key", unique=True, max_len=50, nullable=False)
+    key: str = Optional(str, column="channel_key", unique=True, max_len=50, nullable=True)
     identifier: str = Required(str, column="channel_identifier", max_len=40, nullable=False)
     name: str or None = Optional(str, column="channel_name", nullable=True)
     comment: str or None = Optional(str, column="channel_comment", nullable=True)
@@ -957,6 +1048,17 @@ class ChannelEntity(db.Entity):
     properties: List["ChannelPropertyEntity"] = Set("ChannelPropertyEntity", reverse="channel")
     configuration: List["ChannelConfigurationEntity"] = Set("ChannelConfigurationEntity", reverse="channel")
     controls: List["ChannelControlEntity"] = Set("ChannelControlEntity", reverse="channel")
+
+    __key_generator: EntityKey
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__key_generator = key_generator
+        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -998,13 +1100,16 @@ class ChannelEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = entity_key_generator.generate_key(self)
+            self.key = self.__key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1016,15 +1121,22 @@ class ChannelEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class ChannelPropertyEntity(db.Entity):
     """
     Channel property entity
@@ -1037,11 +1149,11 @@ class ChannelPropertyEntity(db.Entity):
     _table_: str = "fb_channels_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    key: str = Required(str, column="property_key", unique=True, max_len=50, nullable=False)
+    key: str = Optional(str, column="property_key", unique=True, max_len=50, nullable=True)
     identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
     name: str = Optional(str, column="property_name", nullable=True)
-    settable: bool = Required(bool, column="property_settable", default=False, nullable=False)
-    queryable: bool = Required(bool, column="property_queryable", default=False, nullable=False)
+    settable: bool = Optional(bool, column="property_settable", default=False, nullable=True)
+    queryable: bool = Optional(bool, column="property_queryable", default=False, nullable=True)
     data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
     unit: str or None = Optional(str, column="property_unit", nullable=True)
     format: str or None = Optional(str, column="property_format", nullable=True)
@@ -1049,6 +1161,17 @@ class ChannelPropertyEntity(db.Entity):
     updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
+
+    __key_generator: EntityKey
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__key_generator = key_generator
+        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -1090,13 +1213,16 @@ class ChannelPropertyEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = entity_key_generator.generate_key(self)
+            self.key = self.__key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1108,15 +1234,22 @@ class ChannelPropertyEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class ChannelConfigurationEntity(db.Entity):
     """
     Channel configuration entity
@@ -1129,7 +1262,7 @@ class ChannelConfigurationEntity(db.Entity):
     _table_: str = "fb_channels_configuration"
 
     configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
-    key: str = Required(str, column="configuration_key", unique=True, max_len=50, nullable=False)
+    key: str = Optional(str, column="configuration_key", unique=True, max_len=50, nullable=True)
     identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
     name: str or None = Optional(str, column="configuration_name", nullable=True)
     comment: str or None = Optional(str, column="configuration_comment", nullable=True)
@@ -1141,6 +1274,19 @@ class ChannelConfigurationEntity(db.Entity):
     updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="configuration", column="channel_id", nullable=False)
+
+    __key_generator: EntityKey
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__key_generator = key_generator
+        self.__event_dispatcher = event_dispatcher
+
+    # -----------------------------------------------------------------------------
 
     def has_min(self) -> bool:
         """Has min value flag"""
@@ -1310,13 +1456,16 @@ class ChannelConfigurationEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = entity_key_generator.generate_key(self)
+            self.key = self.__key_generator.generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1328,15 +1477,22 @@ class ChannelConfigurationEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )
 
 
+@inject
 class ChannelControlEntity(db.Entity):
     """
     Channel control entity
@@ -1355,6 +1511,15 @@ class ChannelControlEntity(db.Entity):
 
     channel: ChannelEntity = Required("ChannelEntity", reverse="controls", column="channel_id", nullable=False)
 
+    __event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
+        db.Entity.__init__(self, *args, **kwargs)
+
+        self.__event_dispatcher = event_dispatcher
+
     # -----------------------------------------------------------------------------
 
     def before_insert(self) -> None:
@@ -1365,7 +1530,10 @@ class ChannelControlEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        EntityEventMixin.after_insert(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityCreatedEvent.EVENT_NAME,
+            ModelEntityCreatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1377,10 +1545,16 @@ class ChannelControlEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        EntityEventMixin.after_update(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityUpdatedEvent.EVENT_NAME,
+            ModelEntityUpdatedEvent(self),
+        )
 
     # -----------------------------------------------------------------------------
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        EntityEventMixin.after_delete(self)
+        self.__event_dispatcher.dispatch(
+            ModelEntityDeletedEvent.EVENT_NAME,
+            ModelEntityDeletedEvent(self),
+        )

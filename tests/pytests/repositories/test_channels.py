@@ -14,10 +14,11 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import ChannelItem
-from devices_module.repositories import channel_repository
+from devices_module.repositories import ChannelRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -25,14 +26,16 @@ from tests.pytests.tests import DbTestCase
 
 
 class TestChannelsRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
+    @inject
+    def test_repository_iterator(self, channel_repository: ChannelRepository) -> None:
         channel_repository.initialize()
 
         self.assertEqual(3, len(channel_repository))
 
     # -----------------------------------------------------------------------------
 
-    def test_get_item(self) -> None:
+    @inject
+    def test_get_item(self, channel_repository: ChannelRepository) -> None:
         channel_repository.initialize()
 
         channel_item = channel_repository.get_by_id(
@@ -44,7 +47,8 @@ class TestChannelsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_create_from_exchange(self) -> None:
+    @inject
+    def test_create_from_exchange(self, channel_repository: ChannelRepository) -> None:
         channel_repository.initialize()
 
         result: bool = channel_repository.create_from_exchange(
@@ -78,7 +82,8 @@ class TestChannelsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_update_from_exchange(self) -> None:
+    @inject
+    def test_update_from_exchange(self, channel_repository: ChannelRepository) -> None:
         channel_repository.initialize()
 
         result: bool = channel_repository.update_from_exchange(
@@ -112,7 +117,8 @@ class TestChannelsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_delete_from_exchange(self) -> None:
+    @inject
+    def test_delete_from_exchange(self, channel_repository: ChannelRepository) -> None:
         channel_repository.initialize()
 
         channel_item = channel_repository.get_by_id(

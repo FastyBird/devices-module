@@ -60,6 +60,7 @@ setup(
     install_requires=[
         "fastybird-application-exchange",
         "fastybird-modules-metadata",
+        "kink",
         "pony",
         "setuptools",
     ],

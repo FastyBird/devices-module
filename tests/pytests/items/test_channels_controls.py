@@ -14,20 +14,22 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import ChannelControlItem
-from devices_module.repositories import channel_control_repository
+from devices_module.repositories import ChannelControlRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
 class TestChannelControlItem(DbTestCase):
-    def test_transform_to_dict(self) -> None:
-        channel_control_repository.initialize()
+    @inject
+    def test_transform_to_dict(self, control_repository: ChannelControlRepository) -> None:
+        control_repository.initialize()
 
-        control_item = channel_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4)
         )
 

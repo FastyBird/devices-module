@@ -19,8 +19,10 @@ import MySQLdb
 from operator import attrgetter
 from MySQLdb import OperationalError
 from MySQLdb.cursors import Cursor
+from exchange_plugin.bootstrap import create_container as exchange_plugin_create_container
 
 # Library libs
+from devices_module.bootstrap import create_container
 from devices_module.models import db
 
 
@@ -37,6 +39,16 @@ class DbTestCase(unittest.TestCase):
 
         cls.__setup_database()
         cls.__setup_orm()
+
+        exchange_plugin_create_container()
+        create_container({
+            "provider": "mysql",
+            "host": "127.0.0.1",
+            "user": "root",
+            "passwd": "root",
+            "db": cls.__db_name,
+            "create_tables": True,
+        })
 
     # -----------------------------------------------------------------------------
 
@@ -89,15 +101,6 @@ class DbTestCase(unittest.TestCase):
                 if table_name is not None:
                     # ...and reset table name to base value
                     entity._table_ = None
-
-        db.bind(
-            provider="mysql",
-            host="127.0.0.1",
-            user="root",
-            passwd="root",
-            db=cls.__db_name,
-        )
-        db.generate_mapping(create_tables=True)
 
     # -----------------------------------------------------------------------------
 

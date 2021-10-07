@@ -14,10 +14,11 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import ChannelPropertyItem
-from devices_module.repositories import channel_property_repository
+from devices_module.repositories import ChannelPropertyRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -25,17 +26,19 @@ from tests.pytests.tests import DbTestCase
 
 
 class TestChannelsPropertiesRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
-        channel_property_repository.initialize()
+    @inject
+    def test_repository_iterator(self, property_repository: ChannelPropertyRepository) -> None:
+        property_repository.initialize()
 
-        self.assertEqual(3, len(channel_property_repository))
+        self.assertEqual(3, len(property_repository))
 
     # -----------------------------------------------------------------------------
 
-    def test_get_item(self) -> None:
-        channel_property_repository.initialize()
+    @inject
+    def test_get_item(self, property_repository: ChannelPropertyRepository) -> None:
+        property_repository.initialize()
 
-        property_item = channel_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )
 
@@ -44,10 +47,11 @@ class TestChannelsPropertiesRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_create_from_exchange(self) -> None:
-        channel_property_repository.initialize()
+    @inject
+    def test_create_from_exchange(self, property_repository: ChannelPropertyRepository) -> None:
+        property_repository.initialize()
 
-        result: bool = channel_property_repository.create_from_exchange(
+        result: bool = property_repository.create_from_exchange(
             RoutingKey(RoutingKey.CHANNELS_PROPERTY_ENTITY_CREATED),
             {
                 "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
@@ -65,7 +69,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = channel_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )
 
@@ -86,10 +90,11 @@ class TestChannelsPropertiesRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_update_from_exchange(self) -> None:
-        channel_property_repository.initialize()
+    @inject
+    def test_update_from_exchange(self, property_repository: ChannelPropertyRepository) -> None:
+        property_repository.initialize()
 
-        result: bool = channel_property_repository.update_from_exchange(
+        result: bool = property_repository.update_from_exchange(
             RoutingKey(RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED),
             {
                 "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
@@ -107,7 +112,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = channel_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )
 
@@ -128,17 +133,18 @@ class TestChannelsPropertiesRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_delete_from_exchange(self) -> None:
-        channel_property_repository.initialize()
+    @inject
+    def test_delete_from_exchange(self, property_repository: ChannelPropertyRepository) -> None:
+        property_repository.initialize()
 
-        property_item = channel_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )
 
         self.assertIsInstance(property_item, ChannelPropertyItem)
         self.assertEqual("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", property_item.property_id.__str__())
 
-        result: bool = channel_property_repository.delete_from_exchange(
+        result: bool = property_repository.delete_from_exchange(
             RoutingKey(RoutingKey.CHANNELS_PROPERTY_ENTITY_DELETED),
             {
                 "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
@@ -156,7 +162,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        property_item = channel_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )
 

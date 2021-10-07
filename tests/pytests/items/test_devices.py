@@ -14,17 +14,19 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import DeviceItem
-from devices_module.repositories import device_repository
+from devices_module.repositories import DeviceRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
 class TestDeviceItem(DbTestCase):
-    def test_transform_to_dict(self) -> None:
+    @inject
+    def test_transform_to_dict(self, device_repository: DeviceRepository) -> None:
         device_repository.initialize()
 
         device_item = device_repository.get_by_id(

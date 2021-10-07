@@ -199,7 +199,7 @@ class DeviceItem:
 
 class ChannelItem:
     """
-    Device channel entity base item
+    Channel entity base item
 
     @package        FastyBird:DevicesModule!
     @module         items
@@ -662,7 +662,7 @@ class FbBusConnectorItem(ConnectorItem):
 
 class FbMqttV1ConnectorItem(ConnectorItem):
     """
-    FastyBird MQTT v1 connector entity item
+    FastyBird MQTT connector entity item
 
     @package        FastyBird:DevicesModule!
     @module         items

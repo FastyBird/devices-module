@@ -24,9 +24,11 @@ Key generator & utils
 import math
 import time
 from typing import Callable
+from kink import inject
 from pony.orm import core as orm
 
 
+@inject
 class EntityKey:
     """
     Entity key generator & parser
@@ -107,6 +109,3 @@ class EntityKey:
         result = int(result - pow(self.__BASE, pad))
 
         return int(result)
-
-
-entity_key_generator = EntityKey(6)

@@ -14,20 +14,22 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import DevicePropertyItem
-from devices_module.repositories import device_property_repository
+from devices_module.repositories import DevicePropertyRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
 class TestDevicePropertyItem(DbTestCase):
-    def test_transform_to_dict(self) -> None:
-        device_property_repository.initialize()
+    @inject
+    def test_transform_to_dict(self, property_repository: DevicePropertyRepository) -> None:
+        property_repository.initialize()
 
-        property_item = device_property_repository.get_by_id(
+        property_item = property_repository.get_by_id(
             uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
         )
 

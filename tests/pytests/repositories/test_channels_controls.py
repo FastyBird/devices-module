@@ -14,10 +14,11 @@
 
 # Test dependencies
 import uuid
+from kink import inject
 
 # Library libs
 from devices_module.items import ChannelControlItem
-from devices_module.repositories import channel_control_repository
+from devices_module.repositories import ChannelControlRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -25,17 +26,19 @@ from tests.pytests.tests import DbTestCase
 
 
 class TestChannelsControlsRepository(DbTestCase):
-    def test_repository_iterator(self) -> None:
-        channel_control_repository.initialize()
+    @inject
+    def test_repository_iterator(self, control_repository: ChannelControlRepository) -> None:
+        control_repository.initialize()
 
-        self.assertEqual(2, len(channel_control_repository))
+        self.assertEqual(2, len(control_repository))
 
     # -----------------------------------------------------------------------------
 
-    def test_get_item(self) -> None:
-        channel_control_repository.initialize()
+    @inject
+    def test_get_item(self, control_repository: ChannelControlRepository) -> None:
+        control_repository.initialize()
 
-        control_item = channel_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4)
         )
 
@@ -44,10 +47,11 @@ class TestChannelsControlsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_create_from_exchange(self) -> None:
-        channel_control_repository.initialize()
+    @inject
+    def test_create_from_exchange(self, control_repository: ChannelControlRepository) -> None:
+        control_repository.initialize()
 
-        result: bool = channel_control_repository.create_from_exchange(
+        result: bool = control_repository.create_from_exchange(
             RoutingKey(RoutingKey.CHANNELS_CONTROL_ENTITY_CREATED),
             {
                 "id": "15db9bef-3b57-4a87-bf67-e3c19fc3ba34",
@@ -58,7 +62,7 @@ class TestChannelsControlsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        control_item = channel_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4)
         )
 
@@ -72,10 +76,11 @@ class TestChannelsControlsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_update_from_exchange(self) -> None:
-        channel_control_repository.initialize()
+    @inject
+    def test_update_from_exchange(self, control_repository: ChannelControlRepository) -> None:
+        control_repository.initialize()
 
-        result: bool = channel_control_repository.update_from_exchange(
+        result: bool = control_repository.update_from_exchange(
             RoutingKey(RoutingKey.CHANNELS_CONTROL_ENTITY_UPDATED),
             {
                 "id": "15db9bef-3b57-4a87-bf67-e3c19fc3ba34",
@@ -86,7 +91,7 @@ class TestChannelsControlsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        control_item = channel_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4)
         )
 
@@ -100,17 +105,18 @@ class TestChannelsControlsRepository(DbTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_delete_from_exchange(self) -> None:
-        channel_control_repository.initialize()
+    @inject
+    def test_delete_from_exchange(self, control_repository: ChannelControlRepository) -> None:
+        control_repository.initialize()
 
-        control_item = channel_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4)
         )
 
         self.assertIsInstance(control_item, ChannelControlItem)
         self.assertEqual("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", control_item.control_id.__str__())
 
-        result: bool = channel_control_repository.delete_from_exchange(
+        result: bool = control_repository.delete_from_exchange(
             RoutingKey(RoutingKey.CHANNELS_CONTROL_ENTITY_DELETED),
             {
                 "id": "15db9bef-3b57-4a87-bf67-e3c19fc3ba34",
@@ -121,7 +127,7 @@ class TestChannelsControlsRepository(DbTestCase):
 
         self.assertTrue(result)
 
-        control_item = channel_control_repository.get_by_id(
+        control_item = control_repository.get_by_id(
             uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4)
         )
 

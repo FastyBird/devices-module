@@ -1,4 +1,4 @@
-fastybird-exchange-plugin>=0.3
+fastybird-exchange-plugin>=0.4
 fastybird-modules-metadata>=0.7
 kink>=0.6
 pony>=0.7

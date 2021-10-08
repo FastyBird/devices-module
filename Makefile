@@ -36,4 +36,4 @@ python_tests:
 	python -m unittest
 
 python_coverage:
-	coverage run -m unittest discover
+	coverage run --source=devices_module -m unittest

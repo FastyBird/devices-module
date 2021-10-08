@@ -34,7 +34,7 @@ class ModelEntityCreatedEvent(IEvent):
     """
     __entity: orm.Entity
 
-    EVENT_NAME: str = "devicesModule.entityCreated"
+    EVENT_NAME: str = "devices-module.entityCreated"
 
     # -----------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ class ModelEntityUpdatedEvent(IEvent):
     """
     __entity: orm.Entity
 
-    EVENT_NAME: str = "devicesModule.entityUpdated"
+    EVENT_NAME: str = "devices-module.entityUpdated"
 
     # -----------------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ class ModelEntityDeletedEvent(IEvent):
     """
     __entity: orm.Entity
 
-    EVENT_NAME: str = "devicesModule.entityDeleted"
+    EVENT_NAME: str = "devices-module.entityDeleted"
 
     # -----------------------------------------------------------------------------
 

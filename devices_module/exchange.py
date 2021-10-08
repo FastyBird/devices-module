@@ -98,11 +98,6 @@ class ModuleExchange:
         ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_DELETED,
     }
 
-    DATA_ROUTING_KEYS_MAPPING: Dict[Type[orm.Entity], RoutingKey] = {
-        DevicePropertyEntity: RoutingKey.DEVICES_PROPERTIES_DATA,
-        ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTIES_DATA,
-    }
-
     __publisher: Publisher
     __event_dispatcher: EventDispatcher
 

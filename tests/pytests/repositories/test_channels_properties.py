@@ -18,7 +18,7 @@ from kink import inject
 
 # Library libs
 from devices_module.items import ChannelPropertyItem
-from devices_module.repositories import ChannelPropertyRepository
+from devices_module.repositories import ChannelsPropertiesRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -27,7 +27,7 @@ from tests.pytests.tests import DbTestCase
 
 class TestChannelsPropertiesRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, property_repository: ChannelPropertyRepository) -> None:
+    def test_repository_iterator(self, property_repository: ChannelsPropertiesRepository) -> None:
         property_repository.initialize()
 
         self.assertEqual(3, len(property_repository))
@@ -35,7 +35,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, property_repository: ChannelPropertyRepository) -> None:
+    def test_get_item(self, property_repository: ChannelsPropertiesRepository) -> None:
         property_repository.initialize()
 
         property_item = property_repository.get_by_id(
@@ -48,7 +48,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, property_repository: ChannelPropertyRepository) -> None:
+    def test_create_from_exchange(self, property_repository: ChannelsPropertiesRepository) -> None:
         property_repository.initialize()
 
         result: bool = property_repository.create_from_exchange(
@@ -91,7 +91,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_update_from_exchange(self, property_repository: ChannelPropertyRepository) -> None:
+    def test_update_from_exchange(self, property_repository: ChannelsPropertiesRepository) -> None:
         property_repository.initialize()
 
         result: bool = property_repository.update_from_exchange(
@@ -134,7 +134,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_delete_from_exchange(self, property_repository: ChannelPropertyRepository) -> None:
+    def test_delete_from_exchange(self, property_repository: ChannelsPropertiesRepository) -> None:
         property_repository.initialize()
 
         property_item = property_repository.get_by_id(

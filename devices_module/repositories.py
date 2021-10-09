@@ -17,7 +17,7 @@
 # pylint: disable=too-many-lines
 
 """
-Module repositories definitions
+Devices module repositories
 """
 
 # Library dependencies
@@ -67,9 +67,9 @@ from devices_module.models import (
 
 
 @inject
-class DeviceRepository:
+class DevicesRepository:
     """
-    Device repository
+    Devices repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -316,7 +316,7 @@ class DeviceRepository:
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "DeviceRepository":
+    def __iter__(self) -> "DevicesRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -353,9 +353,9 @@ class DeviceRepository:
 
 
 @inject
-class ChannelRepository:
+class ChannelsRepository:
     """
-    Channel repository
+    Channels repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -588,7 +588,7 @@ class ChannelRepository:
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "ChannelRepository":
+    def __iter__(self) -> "ChannelsRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -625,9 +625,9 @@ class ChannelRepository:
 
 
 @inject
-class PropertyRepository(ABC):
+class PropertiesRepository(ABC):
     """
-    Base property repository
+    Base properties repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -808,7 +808,7 @@ class PropertyRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "PropertyRepository":
+    def __iter__(self) -> "PropertiesRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -844,9 +844,9 @@ class PropertyRepository(ABC):
         raise StopIteration
 
 
-class DevicePropertyRepository(PropertyRepository):
+class DevicesPropertiesRepository(PropertiesRepository):
     """
-    Device property repository
+    Devices properties repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -951,7 +951,7 @@ class DevicePropertyRepository(PropertyRepository):
         self._items = items
 
 
-class ChannelPropertyRepository(PropertyRepository):
+class ChannelsPropertiesRepository(PropertiesRepository):
     """
     Channel property repository
 
@@ -1059,9 +1059,9 @@ class ChannelPropertyRepository(PropertyRepository):
 
 
 @inject
-class ConnectorRepository(ABC):
+class ConnectorsRepository(ABC):
     """
-    Connector repository
+    Connectors repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -1314,7 +1314,7 @@ class ConnectorRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "ConnectorRepository":
+    def __iter__(self) -> "ConnectorsRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -1351,9 +1351,9 @@ class ConnectorRepository(ABC):
 
 
 @inject
-class ControlRepository(ABC):
+class ControlsRepository(ABC):
     """
-    Base control repository
+    Base controls repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -1421,7 +1421,7 @@ class ControlRepository(ABC):
     def _entity_created(self, event: IEvent) -> None:
         if (
             not isinstance(event, ModelEntityCreatedEvent)
-            or not isinstance(event.entity, (DeviceControlRepository, ChannelControlEntity, ConnectorControlEntity))
+            or not isinstance(event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity))
         ):
             return
 
@@ -1432,7 +1432,7 @@ class ControlRepository(ABC):
     def _entity_updated(self, event: IEvent) -> None:
         if (
             not isinstance(event, ModelEntityUpdatedEvent)
-            or not isinstance(event.entity, (DeviceControlRepository, ChannelControlEntity, ConnectorControlEntity))
+            or not isinstance(event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity))
         ):
             return
 
@@ -1443,7 +1443,7 @@ class ControlRepository(ABC):
     def _entity_deleted(self, event: IEvent) -> None:
         if (
             not isinstance(event, ModelEntityDeletedEvent)
-            or not isinstance(event.entity, (DeviceControlRepository, ChannelControlEntity, ConnectorControlEntity))
+            or not isinstance(event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity))
         ):
             return
 
@@ -1509,7 +1509,7 @@ class ControlRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __iter__(self) -> "ControlRepository":
+    def __iter__(self) -> "ControlsRepository":
         # Reset index for nex iteration
         self.__iterator_index = 0
 
@@ -1545,9 +1545,9 @@ class ControlRepository(ABC):
         raise StopIteration
 
 
-class DeviceControlRepository(ControlRepository):
+class DevicesControlsRepository(ControlsRepository):
     """
-    Device control repository
+    Devices controls repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -1649,9 +1649,9 @@ class DeviceControlRepository(ControlRepository):
         self._items = items
 
 
-class ChannelControlRepository(ControlRepository):
+class ChannelsControlsRepository(ControlsRepository):
     """
-    Channel control repository
+    Channels controls repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories
@@ -1753,9 +1753,9 @@ class ChannelControlRepository(ControlRepository):
         self._items = items
 
 
-class ConnectorControlRepository(ControlRepository):
+class ConnectorsControlsRepository(ControlsRepository):
     """
-    Connector control repository
+    Connectors controls repository
 
     @package        FastyBird:DevicesModule!
     @module         repositories

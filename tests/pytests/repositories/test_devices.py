@@ -18,7 +18,7 @@ from kink import inject
 
 # Library libs
 from devices_module.items import DeviceItem
-from devices_module.repositories import DeviceRepository
+from devices_module.repositories import DevicesRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -27,7 +27,7 @@ from tests.pytests.tests import DbTestCase
 
 class TestDevicesRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, device_repository: DeviceRepository) -> None:
+    def test_repository_iterator(self, device_repository: DevicesRepository) -> None:
         device_repository.initialize()
 
         self.assertEqual(4, len(device_repository))
@@ -35,7 +35,7 @@ class TestDevicesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, device_repository: DeviceRepository) -> None:
+    def test_get_item(self, device_repository: DevicesRepository) -> None:
         device_repository.initialize()
 
         device_item = device_repository.get_by_id(
@@ -48,7 +48,7 @@ class TestDevicesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, device_repository: DeviceRepository) -> None:
+    def test_create_from_exchange(self, device_repository: DevicesRepository) -> None:
         device_repository.initialize()
 
         result: bool = device_repository.create_from_exchange(
@@ -97,7 +97,7 @@ class TestDevicesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_update_from_exchange(self, device_repository: DeviceRepository) -> None:
+    def test_update_from_exchange(self, device_repository: DevicesRepository) -> None:
         device_repository.initialize()
 
         result: bool = device_repository.update_from_exchange(
@@ -146,7 +146,7 @@ class TestDevicesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_delete_from_exchange(self, device_repository: DeviceRepository) -> None:
+    def test_delete_from_exchange(self, device_repository: DevicesRepository) -> None:
         device_repository.initialize()
 
         device_item = device_repository.get_by_id(

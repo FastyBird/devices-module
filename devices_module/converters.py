@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Database converters
+Devices module database converters
 """
 
 # App dependencies

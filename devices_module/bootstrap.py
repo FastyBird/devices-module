@@ -33,14 +33,14 @@ from devices_module.exchange import ModuleExchange
 from devices_module.key import EntityKey
 from devices_module.models import db
 from devices_module.repositories import (
-    ConnectorRepository,
-    ConnectorControlRepository,
-    DeviceRepository,
-    DevicePropertyRepository,
-    DeviceControlRepository,
-    ChannelRepository,
-    ChannelPropertyRepository,
-    ChannelControlRepository,
+    ConnectorsRepository,
+    ConnectorsControlsRepository,
+    DevicesRepository,
+    DevicesPropertiesRepository,
+    DevicesControlsRepository,
+    ChannelsRepository,
+    ChannelsPropertiesRepository,
+    ChannelsControlsRepository,
 )
 
 
@@ -52,22 +52,22 @@ def create_container(settings: Dict) -> None:
 
     di["fb-devices-module_database"] = db
 
-    di[ConnectorRepository] = ConnectorRepository()
-    di["fb-devices-module_connector-repository"] = di[ConnectorRepository]
-    di[ConnectorControlRepository] = ConnectorControlRepository()
-    di["fb-devices-module_connector-control-repository"] = di[ConnectorControlRepository]
-    di[DeviceRepository] = DeviceRepository()
-    di["fb-devices-module_device-repository"] = di[DeviceRepository]
-    di[DevicePropertyRepository] = DevicePropertyRepository()
-    di["fb-devices-module_device-property-repository"] = di[DevicePropertyRepository]
-    di[DeviceControlRepository] = DeviceControlRepository()
-    di["fb-devices-module_device-control-repository"] = di[DeviceControlRepository]
-    di[ChannelRepository] = ChannelRepository()
-    di["fb-devices-module_channel-repository"] = di[ChannelRepository]
-    di[ChannelPropertyRepository] = ChannelPropertyRepository()
-    di["fb-devices-module_channel-property-repository"] = di[ChannelPropertyRepository]
-    di[ChannelControlRepository] = ChannelControlRepository()
-    di["fb-devices-module_channel-control-repository"] = di[ChannelControlRepository]
+    di[ConnectorsRepository] = ConnectorsRepository()
+    di["fb-devices-module_connector-repository"] = di[ConnectorsRepository]
+    di[ConnectorsControlsRepository] = ConnectorsControlsRepository()
+    di["fb-devices-module_connector-control-repository"] = di[ConnectorsControlsRepository]
+    di[DevicesRepository] = DevicesRepository()
+    di["fb-devices-module_device-repository"] = di[DevicesRepository]
+    di[DevicesPropertiesRepository] = DevicesPropertiesRepository()
+    di["fb-devices-module_device-property-repository"] = di[DevicesPropertiesRepository]
+    di[DevicesControlsRepository] = DevicesControlsRepository()
+    di["fb-devices-module_device-control-repository"] = di[DevicesControlsRepository]
+    di[ChannelsRepository] = ChannelsRepository()
+    di["fb-devices-module_channel-repository"] = di[ChannelsRepository]
+    di[ChannelsPropertiesRepository] = ChannelsPropertiesRepository()
+    di["fb-devices-module_channel-property-repository"] = di[ChannelsPropertiesRepository]
+    di[ChannelsControlsRepository] = ChannelsControlsRepository()
+    di["fb-devices-module_channel-control-repository"] = di[ChannelsControlsRepository]
 
     di[ModuleExchange] = ModuleExchange()
     di["fb-devices-module_exchange"] = di[ModuleExchange]

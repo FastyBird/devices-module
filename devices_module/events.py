@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Models events
+Devices module models events
 """
 
 # Library dependencies

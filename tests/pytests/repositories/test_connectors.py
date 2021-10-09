@@ -18,7 +18,7 @@ from kink import inject
 
 # Library libs
 from devices_module.items import ConnectorItem
-from devices_module.repositories import ConnectorRepository
+from devices_module.repositories import ConnectorsRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -27,7 +27,7 @@ from tests.pytests.tests import DbTestCase
 
 class TestConnectorsRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, connector_repository: ConnectorRepository) -> None:
+    def test_repository_iterator(self, connector_repository: ConnectorsRepository) -> None:
         connector_repository.initialize()
 
         self.assertEqual(1, len(connector_repository))
@@ -35,7 +35,7 @@ class TestConnectorsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, connector_repository: ConnectorRepository) -> None:
+    def test_get_item(self, connector_repository: ConnectorsRepository) -> None:
         connector_repository.initialize()
 
         connector_item = connector_repository.get_by_id(
@@ -48,7 +48,7 @@ class TestConnectorsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, connector_repository: ConnectorRepository) -> None:
+    def test_create_from_exchange(self, connector_repository: ConnectorsRepository) -> None:
         connector_repository.initialize()
 
         result: bool = connector_repository.create_from_exchange(
@@ -89,7 +89,7 @@ class TestConnectorsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_update_from_exchange(self, connector_repository: ConnectorRepository) -> None:
+    def test_update_from_exchange(self, connector_repository: ConnectorsRepository) -> None:
         connector_repository.initialize()
 
         result: bool = connector_repository.update_from_exchange(
@@ -130,7 +130,7 @@ class TestConnectorsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_delete_from_exchange(self, connector_repository: ConnectorRepository) -> None:
+    def test_delete_from_exchange(self, connector_repository: ConnectorsRepository) -> None:
         connector_repository.initialize()
 
         connector_item = connector_repository.get_by_id(

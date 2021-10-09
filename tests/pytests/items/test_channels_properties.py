@@ -18,7 +18,7 @@ from kink import inject
 
 # Library libs
 from devices_module.items import ChannelPropertyItem
-from devices_module.repositories import ChannelPropertyRepository
+from devices_module.repositories import ChannelsPropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -26,7 +26,7 @@ from tests.pytests.tests import DbTestCase
 
 class TestChannelPropertyItem(DbTestCase):
     @inject
-    def test_transform_to_dict(self, property_repository: ChannelPropertyRepository) -> None:
+    def test_transform_to_dict(self, property_repository: ChannelsPropertiesRepository) -> None:
         property_repository.initialize()
 
         property_item = property_repository.get_by_id(

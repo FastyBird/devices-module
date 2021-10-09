@@ -17,7 +17,7 @@
 # pylint: disable=too-many-lines
 
 """
-Module models definitions
+Devices module models
 """
 
 # Library dependencies

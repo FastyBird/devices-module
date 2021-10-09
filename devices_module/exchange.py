@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Module data exchange utilities
+Devices module data exchange
 """
 
 # Library dependencies

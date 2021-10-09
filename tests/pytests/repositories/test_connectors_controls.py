@@ -18,7 +18,7 @@ from kink import inject
 
 # Library libs
 from devices_module.items import ConnectorControlItem
-from devices_module.repositories import ConnectorControlRepository
+from devices_module.repositories import ConnectorsControlsRepository
 from modules_metadata.routing import RoutingKey
 
 # Tests libs
@@ -27,7 +27,7 @@ from tests.pytests.tests import DbTestCase
 
 class TestConnectorsControlsRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, control_repository: ConnectorControlRepository) -> None:
+    def test_repository_iterator(self, control_repository: ConnectorsControlsRepository) -> None:
         control_repository.initialize()
 
         self.assertEqual(1, len(control_repository))
@@ -35,7 +35,7 @@ class TestConnectorsControlsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, control_repository: ConnectorControlRepository) -> None:
+    def test_get_item(self, control_repository: ConnectorsControlsRepository) -> None:
         control_repository.initialize()
 
         control_item = control_repository.get_by_id(
@@ -48,7 +48,7 @@ class TestConnectorsControlsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, control_repository: ConnectorControlRepository) -> None:
+    def test_create_from_exchange(self, control_repository: ConnectorsControlsRepository) -> None:
         control_repository.initialize()
 
         result: bool = control_repository.create_from_exchange(
@@ -77,7 +77,7 @@ class TestConnectorsControlsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_update_from_exchange(self, control_repository: ConnectorControlRepository) -> None:
+    def test_update_from_exchange(self, control_repository: ConnectorsControlsRepository) -> None:
         control_repository.initialize()
 
         result: bool = control_repository.update_from_exchange(
@@ -106,7 +106,7 @@ class TestConnectorsControlsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_delete_from_exchange(self, control_repository: ConnectorControlRepository) -> None:
+    def test_delete_from_exchange(self, control_repository: ConnectorsControlsRepository) -> None:
         control_repository.initialize()
 
         control_item = control_repository.get_by_id(

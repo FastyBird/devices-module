@@ -17,7 +17,7 @@
 # pylint: disable=too-many-lines
 
 """
-Key generator & utils
+Devices module entities key generator & utils
 """
 
 # Library dependencies

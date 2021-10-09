@@ -18,7 +18,7 @@ from kink import inject
 
 # Library libs
 from devices_module.items import ChannelControlItem
-from devices_module.repositories import ChannelControlRepository
+from devices_module.repositories import ChannelsControlsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -26,7 +26,7 @@ from tests.pytests.tests import DbTestCase
 
 class TestChannelControlItem(DbTestCase):
     @inject
-    def test_transform_to_dict(self, control_repository: ChannelControlRepository) -> None:
+    def test_transform_to_dict(self, control_repository: ChannelsControlsRepository) -> None:
         control_repository.initialize()
 
         control_item = control_repository.get_by_id(

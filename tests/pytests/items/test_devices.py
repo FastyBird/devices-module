@@ -18,7 +18,7 @@ from kink import inject
 
 # Library libs
 from devices_module.items import DeviceItem
-from devices_module.repositories import DeviceRepository
+from devices_module.repositories import DevicesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -26,7 +26,7 @@ from tests.pytests.tests import DbTestCase
 
 class TestDeviceItem(DbTestCase):
     @inject
-    def test_transform_to_dict(self, device_repository: DeviceRepository) -> None:
+    def test_transform_to_dict(self, device_repository: DevicesRepository) -> None:
         device_repository.initialize()
 
         device_item = device_repository.get_by_id(

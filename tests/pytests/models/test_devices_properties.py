@@ -22,7 +22,7 @@ from exchange_plugin.publisher import Publisher
 # Library libs
 from devices_module.items import DevicePropertyItem
 from devices_module.models import DeviceEntity, DevicePropertyEntity
-from devices_module.repositories import DevicePropertyRepository
+from devices_module.repositories import DevicesPropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -31,7 +31,7 @@ from tests.pytests.tests import DbTestCase
 class TestDevicePropertyEntity(DbTestCase):
 
     @inject
-    def test_create_entity(self, property_repository: DevicePropertyRepository) -> None:
+    def test_create_entity(self, property_repository: DevicesPropertiesRepository) -> None:
         property_item = property_repository.get_by_id(
             property_id=uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),
         )

@@ -38,9 +38,11 @@ from devices_module.repositories import (
     DevicesRepository,
     DevicesPropertiesRepository,
     DevicesControlsRepository,
+    DevicesConfigurationRepository,
     ChannelsRepository,
     ChannelsPropertiesRepository,
     ChannelsControlsRepository,
+    ChannelsConfigurationRepository,
 )
 
 
@@ -62,12 +64,16 @@ def create_container(settings: Dict) -> None:
     di["fb-devices-module_device-property-repository"] = di[DevicesPropertiesRepository]
     di[DevicesControlsRepository] = DevicesControlsRepository()
     di["fb-devices-module_device-control-repository"] = di[DevicesControlsRepository]
+    di[DevicesConfigurationRepository] = DevicesConfigurationRepository()
+    di["fb-devices-module_device-configuration-repository"] = di[DevicesConfigurationRepository]
     di[ChannelsRepository] = ChannelsRepository()
     di["fb-devices-module_channel-repository"] = di[ChannelsRepository]
     di[ChannelsPropertiesRepository] = ChannelsPropertiesRepository()
     di["fb-devices-module_channel-property-repository"] = di[ChannelsPropertiesRepository]
     di[ChannelsControlsRepository] = ChannelsControlsRepository()
     di["fb-devices-module_channel-control-repository"] = di[ChannelsControlsRepository]
+    di[ChannelsConfigurationRepository] = ChannelsConfigurationRepository()
+    di["fb-devices-module_channel-configuration-repository"] = di[ChannelsConfigurationRepository]
 
     di[ModuleExchange] = ModuleExchange()
     di["fb-devices-module_exchange"] = di[ModuleExchange]

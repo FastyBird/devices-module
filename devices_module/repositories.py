@@ -51,6 +51,9 @@ from devices_module.items import (
     ConnectorControlItem,
     DeviceControlItem,
     ChannelControlItem,
+    ConfigurationItem,
+    DeviceConfigurationItem,
+    ChannelConfigurationItem,
 )
 from devices_module.models import (
     DeviceEntity,
@@ -63,6 +66,8 @@ from devices_module.models import (
     ConnectorControlEntity,
     DeviceControlEntity,
     ChannelControlEntity,
+    DeviceConfigurationEntity,
+    ChannelConfigurationEntity,
 )
 
 
@@ -894,7 +899,7 @@ class DevicesPropertiesRepository(PropertiesRepository):
 
     def get_all_by_device(self, device_id: uuid.UUID) -> List[DevicePropertyItem]:
         """Find all devices properties in cache for device identifier"""
-        if self.__items is None:
+        if self._items is None:
             self.initialize()
 
         items: List[DevicePropertyItem] = []
@@ -1029,7 +1034,7 @@ class ChannelsPropertiesRepository(PropertiesRepository):
 
     def get_all_by_channel(self, channel_id: uuid.UUID) -> List[ChannelPropertyItem]:
         """Find all channels properties in cache for channel identifier"""
-        if self.__items is None:
+        if self._items is None:
             self.initialize()
 
         items: List[ChannelPropertyItem] = []
@@ -1651,7 +1656,7 @@ class DevicesControlsRepository(ControlsRepository):
 
     def get_all_by_device(self, device_id: uuid.UUID) -> List[DeviceControlItem]:
         """Find all devices controls in cache for device identifier"""
-        if self.__items is None:
+        if self._items is None:
             self.initialize()
 
         items: List[DeviceControlItem] = []
@@ -1783,7 +1788,7 @@ class ChannelsControlsRepository(ControlsRepository):
 
     def get_all_by_channel(self, channel_id: uuid.UUID) -> List[ChannelControlItem]:
         """Find all channels controls in cache for channel identifier"""
-        if self.__items is None:
+        if self._items is None:
             self.initialize()
 
         items: List[ChannelControlItem] = []
@@ -1915,7 +1920,7 @@ class ConnectorsControlsRepository(ControlsRepository):
 
     def get_all_by_channel(self, connector_id: uuid.UUID) -> List[ConnectorControlItem]:
         """Find all connectors controls in cache for connector identifier"""
-        if self.__items is None:
+        if self._items is None:
             self.initialize()
 
         items: List[ConnectorControlItem] = []
@@ -2019,6 +2024,519 @@ class ConnectorsControlsRepository(ControlsRepository):
 
             if item is not None:
                 items[entity.control_id.__str__()] = item
+
+        self._items = items
+
+
+
+
+
+
+
+@inject
+class ConfigurationRepository(ABC):
+    """
+    Base configuration repository
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    _items: Dict[str, DeviceConfigurationItem or ChannelConfigurationItem] or None = None
+
+    __iterator_index = 0
+
+    _event_dispatcher: EventDispatcher
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        event_dispatcher: EventDispatcher,
+    ) -> None:
+        self.__event_dispatcher = event_dispatcher
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityCreatedEvent.EVENT_NAME,
+            listener=self._entity_created,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityUpdatedEvent.EVENT_NAME,
+            listener=self._entity_updated,
+        )
+
+        self.__event_dispatcher.add_listener(
+            event_id=ModelEntityDeletedEvent.EVENT_NAME,
+            listener=self._entity_deleted,
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, configuration_id: uuid.UUID) -> DeviceConfigurationItem or ChannelConfigurationItem or None:
+        """Find configuration in cache by provided identifier"""
+        if self._items is None:
+            self.initialize()
+
+        if configuration_id.__str__() in self._items:
+            return self._items[configuration_id.__str__()]
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_key(self, configuration_key: str) -> DeviceConfigurationItem or ChannelConfigurationItem or None:
+        """Find configuration in cache by provided key"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.key == configuration_key:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def clear(self) -> None:
+        """Clear items cache"""
+        self._items = None
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def initialize(self) -> None:
+        """Initialize repository by fetching entities from database"""
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_created(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityCreatedEvent)
+            or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
+        ):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_updated(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityUpdatedEvent)
+            or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
+        ):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    def _entity_deleted(self, event: IEvent) -> None:
+        if (
+            not isinstance(event, ModelEntityDeletedEvent)
+            or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
+        ):
+            return
+
+        self.initialize()
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _create_item(entity: DeviceConfigurationEntity or ChannelConfigurationEntity) -> ConfigurationItem or None:
+        if isinstance(entity, DeviceConfigurationEntity):
+            return DeviceConfigurationItem(
+                configuration_id=entity.configuration_id,
+                configuration_key=entity.key,
+                configuration_identifier=entity.identifier,
+                configuration_name=entity.name,
+                configuration_comment=entity.comment,
+                configuration_data_type=entity.data_type,
+                configuration_value=entity.value,
+                configuration_default=entity.default,
+                configuration_params=entity.params if entity.params is not None else {},
+                device_id=entity.device.device_id,
+            )
+
+        if isinstance(entity, ChannelConfigurationEntity):
+            return ChannelConfigurationItem(
+                configuration_id=entity.configuration_id,
+                configuration_key=entity.key,
+                configuration_identifier=entity.identifier,
+                configuration_name=entity.name,
+                configuration_comment=entity.comment,
+                configuration_data_type=entity.data_type,
+                configuration_value=entity.value,
+                configuration_default=entity.default,
+                configuration_params=entity.params if entity.params is not None else {},
+                device_id=entity.channel.device.device_id,
+                channel_id=entity.channel.channel_id,
+            )
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    @staticmethod
+    def _update_item(item: ConfigurationItem, data: Dict) -> ConfigurationItem or None:
+        data_type = data.get("data_type", item.data_type.value if item.data_type is not None else None)
+        data_type = DataType(data_type) if data_type is not None else None
+
+        params: Dict[str, str or int or float or bool or List or None] = {}
+
+        if "min" in data.keys():
+            params["min"] = data.get("min", item.min_value)
+
+        if "max" in data.keys():
+            params["max"] = data.get("max", item.max_value)
+
+        if "step" in data.keys():
+            params["step"] = data.get("step", item.step_value)
+
+        if "values" in data.keys():
+            params["values"] = data.get("values", item.values)
+
+        if isinstance(item, DeviceConfigurationItem):
+            return DeviceConfigurationItem(
+                configuration_id=item.configuration_id,
+                configuration_key=item.key,
+                configuration_identifier=item.identifier,
+                configuration_name=data.get("name", item.name),
+                configuration_comment=data.get("comment", item.comment),
+                configuration_data_type=data_type,
+                configuration_value=data.get("value", item.value),
+                configuration_default=data.get("default", item.default),
+                configuration_params={**item.params, **params},
+                device_id=item.device_id,
+            )
+
+        if isinstance(item, ChannelConfigurationItem):
+            return ChannelConfigurationItem(
+                configuration_id=item.configuration_id,
+                configuration_key=item.key,
+                configuration_identifier=item.identifier,
+                configuration_name=data.get("name", item.name),
+                configuration_comment=data.get("comment", item.comment),
+                configuration_data_type=data_type,
+                configuration_value=data.get("value", item.value),
+                configuration_default=data.get("default", item.default),
+                configuration_params={**item.params, **params},
+                device_id=item.device_id,
+                channel_id=item.channel_id,
+            )
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def __iter__(self) -> "ConfigurationRepository":
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        return self
+
+    # -----------------------------------------------------------------------------
+
+    def __len__(self):
+        if self._items is None:
+            self.initialize()
+
+        return len(self._items.values())
+
+    # -----------------------------------------------------------------------------
+
+    def __next__(self) -> DeviceConfigurationItem or ChannelConfigurationItem:
+        if self._items is None:
+            self.initialize()
+
+        if self.__iterator_index < len(self._items.values()):
+            items: List[DeviceConfigurationItem or ChannelConfigurationItem] = list(self._items.values())
+
+            result: DeviceConfigurationItem or ChannelConfigurationItem = items[self.__iterator_index]
+
+            self.__iterator_index += 1
+
+            return result
+
+        # Reset index for nex iteration
+        self.__iterator_index = 0
+
+        # End of iteration
+        raise StopIteration
+
+
+class DevicesConfigurationRepository(ConfigurationRepository):
+    """
+    Devices configuration repository
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    def get_by_identifier(self, device_id: uuid.UUID, configuration_identifier: str) -> DeviceConfigurationItem or None:
+        """Find configuration in cache by provided identifier"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.device_id.__eq__(device_id) and record.identifier == configuration_identifier:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_device(self, device_id: uuid.UUID) -> List[DeviceConfigurationItem]:
+        """Find all devices properties in cache for device identifier"""
+        if self._items is None:
+            self.initialize()
+
+        items: List[DeviceConfigurationItem] = []
+
+        for record in self._items.values():
+            if record.device_id.__eq__(device_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device configuration message from exchange when entity was created"""
+        if routing_key != RoutingKey.DEVICES_CONFIGURATION_ENTITY_CREATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        entity: DeviceConfigurationEntity or None = DeviceConfigurationEntity.get(
+            configuration_id=uuid.UUID(data.get("id"), version=4),
+        )
+
+        if entity is not None:
+            self._items[entity.configuration_id.__str__()] = self._create_item(entity)
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device configuration message from exchange when entity was updated"""
+        if routing_key != RoutingKey.DEVICES_CONFIGURATION_ENTITY_UPDATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        if validated_data.get("id") not in self._items:
+            entity: DeviceConfigurationEntity or None = DeviceConfigurationEntity.get(
+                configuration_id=uuid.UUID(validated_data.get("id"), version=4)
+            )
+
+            if entity is not None:
+                self._items[entity.configuration_id.__str__()] = self._create_item(entity)
+
+                return True
+
+            return False
+
+        item = self._update_item(
+            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
+            validated_data,
+        )
+
+        if item is not None:
+            self._items[validated_data.get("id")] = item
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received device configuration message from exchange when entity was updated"""
+        if routing_key != RoutingKey.DEVICES_CONFIGURATION_ENTITY_DELETED:
+            return False
+
+        if data.get("id") in self._items:
+            del self._items[data.get("id")]
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def initialize(self) -> None:
+        """Initialize devices properties repository by fetching entities from database"""
+        items: Dict[str, DeviceConfigurationItem] = {}
+
+        for entity in DeviceConfigurationEntity.select():
+            if self._items is None or entity.configuration_id.__str__() not in self._items:
+                item = self._create_item(entity)
+
+            else:
+                item = self._update_item(self.get_by_id(entity.configuration_id), entity.to_dict())
+
+            if item is not None:
+                items[entity.configuration_id.__str__()] = item
+
+        self._items = items
+
+
+class ChannelsConfigurationRepository(ConfigurationRepository):
+    """
+    Channel configuration repository
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    def get_by_identifier(
+        self,
+        channel_id: uuid.UUID,
+        configuration_identifier: str,
+    ) -> ChannelConfigurationItem or None:
+        """Find configuration in cache by provided identifier"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.channel_id.__eq__(channel_id) and record.identifier == configuration_identifier:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_channel(self, channel_id: uuid.UUID) -> List[ChannelConfigurationItem]:
+        """Find all channels properties in cache for channel identifier"""
+        if self._items is None:
+            self.initialize()
+
+        items: List[ChannelConfigurationItem] = []
+
+        for record in self._items.values():
+            if record.channel_id.__eq__(channel_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel configuration message from exchange when entity was created"""
+        if routing_key != RoutingKey.CHANNELS_CONFIGURATION_ENTITY_CREATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        entity: ChannelConfigurationEntity or None = ChannelConfigurationEntity.get(
+            configuration_id=uuid.UUID(data.get("id"), version=4),
+        )
+
+        if entity is not None:
+            self._items[entity.configuration_id.__str__()] = self._create_item(entity)
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def update_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel configuration message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CHANNELS_CONFIGURATION_ENTITY_UPDATED:
+            return False
+
+        if self._items is None:
+            self.initialize()
+
+            return True
+
+        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+
+        if validated_data.get("id") not in self._items:
+            entity: ChannelConfigurationEntity or None = ChannelConfigurationEntity.get(
+                configuration_id=uuid.UUID(validated_data.get("id"), version=4)
+            )
+
+            if entity is not None:
+                self._items[entity.configuration_id.__str__()] = self._create_item(entity)
+
+                return True
+
+            return False
+
+        item = self._update_item(
+            self.get_by_id(uuid.UUID(validated_data.get("id"), version=4)),
+            validated_data,
+        )
+
+        if item is not None:
+            self._items[validated_data.get("id")] = item
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def delete_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
+        """Process received channel configuration message from exchange when entity was updated"""
+        if routing_key != RoutingKey.CHANNELS_CONFIGURATION_ENTITY_DELETED:
+            return False
+
+        if data.get("id") in self._items:
+            del self._items[data.get("id")]
+
+            return True
+
+        return False
+
+    # -----------------------------------------------------------------------------
+
+    @orm.db_session
+    def initialize(self) -> None:
+        """Initialize channel properties repository by fetching entities from database"""
+        items: Dict[str, ChannelConfigurationItem] = {}
+
+        for entity in ChannelConfigurationEntity.select():
+            if self._items is None or entity.configuration_id.__str__() not in self._items:
+                item = self._create_item(entity)
+
+            else:
+                item = self._update_item(self.get_by_id(entity.configuration_id), entity.to_dict())
+
+            if item is not None:
+                items[entity.configuration_id.__str__()] = item
 
         self._items = items
 

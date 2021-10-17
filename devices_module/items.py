@@ -912,7 +912,7 @@ class ConfigurationItem(ABC):
     __data_type: DataType
     __default: str or None
     __value: str or None
-    __params: Dict[str, str or int or float or bool or None]
+    __params: Dict[str, str or int or float or bool or List or None]
 
     __device_id: uuid.UUID
 
@@ -928,7 +928,7 @@ class ConfigurationItem(ABC):
         configuration_data_type: DataType,
         configuration_default: str or None,
         configuration_value: str or None,
-        configuration_params: Dict[str, str or int or float or bool or None],
+        configuration_params: Dict[str, str or int or float or bool or List or None],
         device_id: uuid.UUID,
     ) -> None:
         self.__id = configuration_id
@@ -1045,6 +1045,13 @@ class ConfigurationItem(ABC):
 
     # -----------------------------------------------------------------------------
 
+    @property
+    def params(self) -> Dict[str, str or int or float or bool or List or None]:
+        """Configuration params"""
+        return self.__params
+
+    # -----------------------------------------------------------------------------
+
     def to_dict(self) -> Dict[str, str]:
         """Convert configuration item to dictionary"""
         if isinstance(self.data_type, DataType):
@@ -1138,7 +1145,7 @@ class ChannelConfigurationItem(ConfigurationItem):
         configuration_data_type: DataType,
         configuration_default: str or None,
         configuration_value: str or None,
-        configuration_params: Dict[str, str or int or float or bool or None],
+        configuration_params: Dict[str, str or int or float or bool or List or None],
         device_id: uuid.UUID,
         channel_id: uuid.UUID,
     ) -> None:

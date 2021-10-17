@@ -21,7 +21,7 @@ Devices module entities cache items
 # Library dependencies
 import uuid
 from abc import ABC
-from typing import Dict, Set, Tuple
+from typing import Dict, Set, Tuple, List
 from modules_metadata.types import DataType
 
 
@@ -89,35 +89,35 @@ class DeviceItem:
 
     @property
     def device_id(self) -> uuid.UUID:
-        """Device identifier"""
+        """Device database identifier"""
         return self.__id
 
     # -----------------------------------------------------------------------------
 
     @property
     def identifier(self) -> str:
-        """Device human readable identifier"""
+        """Device unique identifier"""
         return self.__identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
-        """Device unique human readable key"""
+        """Device unique key"""
         return self.__key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> str or None:
-        """Device user defined name"""
+        """Device name"""
         return self.__name
 
     # -----------------------------------------------------------------------------
 
     @property
     def comment(self) -> str or None:
-        """Device user defined description"""
+        """Device commentary"""
         return self.__comment
 
     # -----------------------------------------------------------------------------
@@ -173,13 +173,13 @@ class DeviceItem:
 
     @property
     def parent(self) -> uuid.UUID or None:
-        """Device parent device identifier"""
+        """Device parent device database identifier"""
         return self.__parent
 
     # -----------------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, str or int or bool or None]:
-        """Convert property item to dictionary"""
+        """Convert device item to dictionary"""
         return {
             "id": self.device_id.__str__(),
             "identifier": self.identifier,
@@ -237,49 +237,49 @@ class ChannelItem:
     # -----------------------------------------------------------------------------
 
     @property
-    def channel_id(self) -> uuid.UUID:
-        """Channel identifier"""
-        return self.__id
-
-    # -----------------------------------------------------------------------------
-
-    @property
     def device_id(self) -> uuid.UUID:
-        """Device identifier"""
+        """Device database identifier"""
         return self.__device_id
 
     # -----------------------------------------------------------------------------
 
     @property
+    def channel_id(self) -> uuid.UUID:
+        """Channel database identifier"""
+        return self.__id
+
+    # -----------------------------------------------------------------------------
+
+    @property
     def identifier(self) -> str:
-        """Device human readable identifier"""
+        """Channel unique identifier"""
         return self.__identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
-        """Device unique human readable key"""
+        """Channel unique key"""
         return self.__key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> str or None:
-        """Device user defined name"""
+        """Channel name"""
         return self.__name
 
     # -----------------------------------------------------------------------------
 
     @property
     def comment(self) -> str or None:
-        """Device user defined description"""
+        """Channel commentary"""
         return self.__comment
 
     # -----------------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, str or int or bool or None]:
-        """Convert property item to dictionary"""
+        """Convert channel item to dictionary"""
         return {
             "id": self.channel_id.__str__(),
             "identifier": self.identifier,
@@ -342,14 +342,14 @@ class PropertyItem(ABC):
 
     @property
     def device_id(self) -> uuid.UUID:
-        """Property device identifier"""
+        """Device database identifier"""
         return self.__device_id
 
     # -----------------------------------------------------------------------------
 
     @property
     def property_id(self) -> uuid.UUID:
-        """Property identifier"""
+        """Property database identifier"""
         return self.__id
 
     # -----------------------------------------------------------------------------
@@ -363,14 +363,14 @@ class PropertyItem(ABC):
 
     @property
     def key(self) -> str:
-        """Property unique human readable key"""
+        """Property unique key"""
         return self.__key
 
     # -----------------------------------------------------------------------------
 
     @property
     def identifier(self) -> str:
-        """Property human readable identifier"""
+        """Property unique identifier"""
         return self.__identifier
 
     # -----------------------------------------------------------------------------
@@ -469,6 +469,7 @@ class DevicePropertyItem(PropertyItem):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
     def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert property item to dictionary"""
         return {**{
             "device": self.device_id.__str__(),
         }, **super().to_dict()}
@@ -520,12 +521,13 @@ class ChannelPropertyItem(PropertyItem):
 
     @property
     def channel_id(self) -> uuid.UUID:
-        """Property channel identifier"""
+        """Channel database identifier"""
         return self.__channel_id
 
     # -----------------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert property item to dictionary"""
         return {**{
             "channel": self.channel_id.__str__(),
         }, **super().to_dict()}
@@ -567,14 +569,14 @@ class ConnectorItem(ABC):
 
     @property
     def connector_id(self) -> uuid.UUID:
-        """Connector identifier"""
+        """Connector database identifier"""
         return self.__id
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
-        """Connector unique human readable key"""
+        """Connector unique key"""
         return self.__key
 
     # -----------------------------------------------------------------------------
@@ -737,7 +739,7 @@ class ControlItem(ABC):
 
     @property
     def control_id(self) -> uuid.UUID:
-        """Control identifier"""
+        """Control database identifier"""
         return self.__id
 
     # -----------------------------------------------------------------------------
@@ -787,7 +789,7 @@ class DeviceControlItem(ControlItem):
 
     @property
     def device_id(self) -> uuid.UUID:
-        """Control device identifier"""
+        """Device database identifier"""
         return self.__device_id
 
     # -----------------------------------------------------------------------------
@@ -832,14 +834,14 @@ class ChannelControlItem(ControlItem):
 
     @property
     def device_id(self) -> uuid.UUID:
-        """Control device identifier"""
+        """Device database identifier"""
         return self.__device_id
 
     # -----------------------------------------------------------------------------
 
     @property
     def channel_id(self) -> uuid.UUID:
-        """Control channel identifier"""
+        """Channel database identifier"""
         return self.__channel_id
 
     # -----------------------------------------------------------------------------
@@ -881,7 +883,7 @@ class ConnectorControlItem(ControlItem):
 
     @property
     def connector_id(self) -> uuid.UUID:
-        """Control connector identifier"""
+        """Connector database identifier"""
         return self.__connector_id
 
     # -----------------------------------------------------------------------------
@@ -890,4 +892,282 @@ class ConnectorControlItem(ControlItem):
         """Convert connector control item to dictionary"""
         return {**{
             "connector": self.connector_id.__str__(),
+        }, **super().to_dict()}
+
+
+class ConfigurationItem(ABC):
+    """
+    Configuration entity base item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __id: uuid.UUID
+    __key: str
+    __identifier: str
+    __name: str or None
+    __comment: str or None
+    __data_type: DataType
+    __default: str or None
+    __value: str or None
+    __params: Dict[str, str or int or float or bool or None]
+
+    __device_id: uuid.UUID
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        configuration_id: uuid.UUID,
+        configuration_key: str,
+        configuration_identifier: str,
+        configuration_name: str or None,
+        configuration_comment: str or None,
+        configuration_data_type: DataType,
+        configuration_default: str or None,
+        configuration_value: str or None,
+        configuration_params: Dict[str, str or int or float or bool or None],
+        device_id: uuid.UUID,
+    ) -> None:
+        self.__id = configuration_id
+        self.__key = configuration_key
+        self.__identifier = configuration_identifier
+        self.__name = configuration_name
+        self.__comment = configuration_comment
+        self.__data_type = configuration_data_type
+        self.__default = configuration_default
+        self.__value = configuration_value
+        self.__params = configuration_params
+
+        self.__device_id = device_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def device_id(self) -> uuid.UUID:
+        """Device identifier"""
+        return self.__device_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def configuration_id(self) -> uuid.UUID:
+        """Configuration identifier"""
+        return self.__id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def key(self) -> str:
+        """Configuration unique key"""
+        return self.__key
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def identifier(self) -> str:
+        """Configuration unique identifer"""
+        return self.__identifier
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def name(self) -> str or None:
+        """Configuration name"""
+        return self.__name
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def comment(self) -> str or None:
+        """Configuration commentary"""
+        return self.__comment
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def data_type(self) -> DataType:
+        """Configuration data type"""
+        return self.__data_type
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def default(self) -> str or None:
+        """Configuration default value"""
+        return self.__default
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def value(self) -> str or None:
+        """Configuration actual value"""
+        return self.__value
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def min_value(self) -> float or None:
+        """Configuration allowed minimum value"""
+        if self.__params.get("min_value") is not None:
+            return float(self.__params.get("min_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def max_value(self) -> float or None:
+        """Configuration allowed maximum value"""
+        if self.__params.get("max_value") is not None:
+            return float(self.__params.get("max_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def step_value(self) -> float or None:
+        """Configuration step value"""
+        if self.__params.get("step_value") is not None:
+            return float(self.__params.get("step_value"))
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def values(self) -> List[Dict[str, str]]:
+        """Configuration options values"""
+        return self.__params.get("select_values", [])
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str]:
+        """Convert configuration item to dictionary"""
+        if isinstance(self.data_type, DataType):
+            data_type = self.data_type.value
+
+        elif self.data_type is None:
+            data_type = None
+
+        else:
+            data_type = self.data_type
+
+        structure: Dict[str, str or None] = {
+            "id": self.configuration_id.__str__(),
+            "key": self.key,
+            "identifier": self.identifier,
+            "name": self.name,
+            "comment": self.comment,
+            "data_type": data_type,
+            "default": self.default,
+            "value": self.value,
+        }
+
+        if isinstance(self.data_type, DataType):
+            if (
+                self.data_type in [
+                    DataType.CHAR,
+                    DataType.UCHAR,
+                    DataType.SHORT,
+                    DataType.USHORT,
+                    DataType.INT,
+                    DataType.UINT,
+                    DataType.FLOAT,
+                ]
+            ):
+                return {
+                    **structure,
+                    **{
+                        "min": self.min_value,
+                        "max": self.max_value,
+                        "step": self.step_value,
+                    },
+                }
+
+            if self.data_type == DataType.ENUM:
+                return {
+                    **structure,
+                    **{
+                        "values": self.values,
+                    },
+                }
+
+        return structure
+
+
+class DeviceConfigurationItem(ConfigurationItem):
+    """
+    Device configuration entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert property item to dictionary"""
+        return {**{
+            "device": self.device_id.__str__(),
+        }, **super().to_dict()}
+
+
+class ChannelConfigurationItem(ConfigurationItem):
+    """
+    Channel configuration entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    __channel_id: uuid.UUID
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        configuration_id: uuid.UUID,
+        configuration_key: str,
+        configuration_identifier: str,
+        configuration_name: str or None,
+        configuration_comment: str or None,
+        configuration_data_type: DataType,
+        configuration_default: str or None,
+        configuration_value: str or None,
+        configuration_params: Dict[str, str or int or float or bool or None],
+        device_id: uuid.UUID,
+        channel_id: uuid.UUID,
+    ) -> None:
+        super().__init__(
+            configuration_id=configuration_id,
+            configuration_key=configuration_key,
+            configuration_identifier=configuration_identifier,
+            configuration_name=configuration_name,
+            configuration_comment=configuration_comment,
+            configuration_data_type=configuration_data_type,
+            configuration_default=configuration_default,
+            configuration_value=configuration_value,
+            configuration_params=configuration_params,
+            device_id=device_id,
+        )
+
+        self.__channel_id = channel_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def channel_id(self) -> uuid.UUID:
+        """Channel database identifier"""
+        return self.__channel_id
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, str or int or bool or None]:
+        """Convert property item to dictionary"""
+        return {**{
+            "channel": self.channel_id.__str__(),
         }, **super().to_dict()}

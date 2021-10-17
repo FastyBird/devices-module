@@ -132,6 +132,19 @@ class DevicesRepository:
 
     # -----------------------------------------------------------------------------
 
+    def get_by_identifier(self, device_identifier: str) -> DeviceItem or None:
+        """Find device in cache by provided identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        for record in self.__items.values():
+            if record.identifier == device_identifier:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
     def get_all_by_parent(self, device_id: uuid.UUID) -> List[DeviceItem]:
         """Find all devices in cache for parent device identifier"""
         if self.__items is None:
@@ -412,6 +425,19 @@ class ChannelsRepository:
 
         for record in self.__items.values():
             if record.key == channel_key:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_identifier(self, device_id: uuid.UUID, channel_identifier: str) -> ChannelItem or None:
+        """Find channel in cache by provided identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        for record in self.__items.values():
+            if record.device_id.__eq__(device_id) and record.identifier == channel_identifier:
                 return record
 
         return None
@@ -853,6 +879,34 @@ class DevicesPropertiesRepository(PropertiesRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+    def get_by_identifier(self, device_id: uuid.UUID, property_identifier: str) -> DevicePropertyItem or None:
+        """Find property in cache by provided identifier"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.device_id.__eq__(device_id) and record.identifier == property_identifier:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_device(self, device_id: uuid.UUID) -> List[DevicePropertyItem]:
+        """Find all devices properties in cache for device identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[DevicePropertyItem] = []
+
+        for record in self._items.values():
+            if record.device_id.__eq__(device_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
     @orm.db_session
     def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received device property message from exchange when entity was created"""
@@ -960,6 +1014,34 @@ class ChannelsPropertiesRepository(PropertiesRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+    def get_by_identifier(self, channel_id: uuid.UUID, property_identifier: str) -> ChannelPropertyItem or None:
+        """Find property in cache by provided identifier"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.channel_id.__eq__(channel_id) and record.identifier == property_identifier:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_channel(self, channel_id: uuid.UUID) -> List[ChannelPropertyItem]:
+        """Find all channels properties in cache for channel identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[ChannelPropertyItem] = []
+
+        for record in self._items.values():
+            if record.channel_id.__eq__(channel_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
     @orm.db_session
     def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received channel property message from exchange when entity was created"""
@@ -1554,6 +1636,34 @@ class DevicesControlsRepository(ControlsRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+    def get_by_name(self, device_id: uuid.UUID, control_name: str) -> DeviceControlItem or None:
+        """Find control in cache by provided name"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.device_id.__eq__(device_id) and record.name == control_name:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_device(self, device_id: uuid.UUID) -> List[DeviceControlItem]:
+        """Find all devices controls in cache for device identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[DeviceControlItem] = []
+
+        for record in self._items.values():
+            if record.device_id.__eq__(device_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
     @orm.db_session
     def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received device control message from exchange when entity was created"""
@@ -1658,6 +1768,34 @@ class ChannelsControlsRepository(ControlsRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+    def get_by_name(self, channel_id: uuid.UUID, control_name: str) -> ChannelControlItem or None:
+        """Find control in cache by provided name"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.channel_id.__eq__(channel_id) and record.name == control_name:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_channel(self, channel_id: uuid.UUID) -> List[ChannelControlItem]:
+        """Find all channels controls in cache for channel identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[ChannelControlItem] = []
+
+        for record in self._items.values():
+            if record.channel_id.__eq__(channel_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
     @orm.db_session
     def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received channel control message from exchange when entity was created"""
@@ -1762,6 +1900,34 @@ class ConnectorsControlsRepository(ControlsRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+    def get_by_name(self, connector_id: uuid.UUID, control_name: str) -> ConnectorControlItem or None:
+        """Find control in cache by provided name"""
+        if self._items is None:
+            self.initialize()
+
+        for record in self._items.values():
+            if record.connector_id.__eq__(connector_id) and record.name == control_name:
+                return record
+
+        return None
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_channel(self, connector_id: uuid.UUID) -> List[ConnectorControlItem]:
+        """Find all connectors controls in cache for connector identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[ConnectorControlItem] = []
+
+        for record in self._items.values():
+            if record.connector_id.__eq__(connector_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
     @orm.db_session
     def create_from_exchange(self, routing_key: RoutingKey, data: Dict) -> bool:
         """Process received connector control message from exchange when entity was created"""

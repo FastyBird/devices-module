@@ -766,7 +766,7 @@ class DeviceConfigurationEntity(db.Entity):
         else:
             data_type = self.data_type
 
-        structure: dict = {
+        structure: Dict[str, str or None] = {
             "id": self.configuration_id.__str__(),
             "key": self.key,
             "identifier": self.identifier,
@@ -960,7 +960,7 @@ class DeviceConnectorEntity(db.Entity):
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, str or int or bool or None]:
         """Transform entity to dictionary"""
-        structure: dict = {
+        structure: Dict[str, str or int or bool or None] = {
             "id": self.connector_id.__str__(),
             "type": self.connector.type,
             "connector": self.connector.connector_id.__str__(),
@@ -1406,7 +1406,7 @@ class ChannelConfigurationEntity(db.Entity):
         else:
             data_type = self.data_type
 
-        structure: dict = {
+        structure: Dict[str, str or None] = {
             "id": self.configuration_id.__str__(),
             "key": self.key,
             "identifier": self.identifier,

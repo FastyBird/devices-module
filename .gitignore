@@ -6,3 +6,4 @@
 /yarn.lock
 tests/*/output
 tests/tmp
+__pycache__

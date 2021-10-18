@@ -56,7 +56,7 @@ class DeviceItem:
 
     # -----------------------------------------------------------------------------
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         device_id: uuid.UUID,
         device_identifier: str,

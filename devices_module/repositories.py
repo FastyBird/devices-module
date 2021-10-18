@@ -308,7 +308,8 @@ class DevicesRepository:
             hardware_mac_address=data.get("hardware_mac_address", item.hardware_mac_address),
             firmware_manufacturer=data.get("firmware_manufacturer", item.firmware_manufacturer),
             firmware_version=data.get("firmware_version", item.firmware_version),
-            connector=item.connector,
+            connector_id=item.connector_id,
+            connector_data=item.connector_data,
             parent_device=item.parent,
         )
 

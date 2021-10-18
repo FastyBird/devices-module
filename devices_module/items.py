@@ -49,7 +49,8 @@ class DeviceItem:
     __firmware_manufacturer: str or None
     __firmware_version: str or None
 
-    __connector: Dict[str, str or int or bool or None]
+    __connector_id: uuid.UUID or None
+    __connector_data: Dict[str, str or int or bool or None]
 
     __parent: uuid.UUID or None = None
 
@@ -69,7 +70,8 @@ class DeviceItem:
         hardware_mac_address: str or None,
         firmware_manufacturer: str or None,
         firmware_version: str or None,
-        connector: Dict[str, str or int or bool or None],
+        connector_id: uuid.UUID or None,
+        connector_data: Dict[str, str or int or bool or None],
         parent_device: uuid.UUID or None = None,
     ) -> None:
         self.__id = device_id
@@ -88,7 +90,8 @@ class DeviceItem:
         self.__firmware_manufacturer = firmware_manufacturer
         self.__firmware_version = firmware_version
 
-        self.__connector = connector
+        self.__connector_id = connector_id
+        self.__connector_data = connector_data
 
         self.__parent = parent_device
 
@@ -186,9 +189,16 @@ class DeviceItem:
     # -----------------------------------------------------------------------------
 
     @property
-    def connector(self) -> Dict[str, str or int or bool or None]:
+    def connector_id(self) -> uuid.UUID or None:
         """Device connector settings"""
-        return self.__connector
+        return self.__connector_id
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def connector_data(self) -> Dict[str, str or int or bool or None]:
+        """Device connector settings"""
+        return self.__connector_data
 
     # -----------------------------------------------------------------------------
 

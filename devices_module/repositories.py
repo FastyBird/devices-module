@@ -285,7 +285,8 @@ class DevicesRepository:
             hardware_mac_address=entity.hardware_mac_address,
             firmware_manufacturer=entity.firmware_manufacturer,
             firmware_version=entity.firmware_version,
-            connector=entity.connector.params \
+            connector_id=entity.connector.connector_id if entity.connector is not None else None,
+            connector_data=entity.connector.params \
                 if entity.connector is not None and entity.connector.params is not None else {},
             parent_device=entity.parent.device_id if entity.parent is not None else None,
         )

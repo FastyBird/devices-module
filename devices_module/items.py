@@ -654,10 +654,10 @@ class FbBusConnectorItem(ConnectorItem):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
     @property
-    def address(self) -> int or None:
+    def address(self) -> int:
         """Connector address"""
-        return int(self.params.get("address", None)) \
-            if self.params is not None and self.params.get("address") is not None else None
+        return int(self.params.get("address", 254)) \
+            if self.params is not None and self.params.get("address") is not None else 254
 
     # -----------------------------------------------------------------------------
 
@@ -670,10 +670,10 @@ class FbBusConnectorItem(ConnectorItem):
     # -----------------------------------------------------------------------------
 
     @property
-    def baud_rate(self) -> int or None:
+    def baud_rate(self) -> int:
         """Connector communication baud rate"""
-        return int(self.params.get("baud_rate", None)) \
-            if self.params is not None and self.params.get("baud_rate") is not None else None
+        return int(self.params.get("baud_rate", 38400)) \
+            if self.params is not None and self.params.get("baud_rate") is not None else 38400
 
     # -----------------------------------------------------------------------------
 
@@ -696,26 +696,26 @@ class FbMqttV1ConnectorItem(ConnectorItem):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
     @property
-    def server(self) -> str or None:
+    def server(self) -> str:
         """Connector server address"""
-        return str(self.params.get("server", None)) \
-            if self.params is not None and self.params.get("server") is not None else None
+        return str(self.params.get("server", "127.0.0.1")) \
+            if self.params is not None and self.params.get("server") is not None else "127.0.0.1"
 
     # -----------------------------------------------------------------------------
 
     @property
-    def port(self) -> int or None:
+    def port(self) -> int:
         """Connector server port"""
-        return int(self.params.get("port", None)) \
-            if self.params is not None and self.params.get("port") is not None else None
+        return int(self.params.get("port", 1883)) \
+            if self.params is not None and self.params.get("port") is not None else 1883
 
     # -----------------------------------------------------------------------------
 
     @property
-    def secured_port(self) -> int or None:
+    def secured_port(self) -> int:
         """Connector server secured port"""
-        return int(self.params.get("secured_port", None)) \
-            if self.params is not None and self.params.get("secured_port") is not None else None
+        return int(self.params.get("secured_port", 8883)) \
+            if self.params is not None and self.params.get("secured_port") is not None else 8883
 
     # -----------------------------------------------------------------------------
 
@@ -724,6 +724,14 @@ class FbMqttV1ConnectorItem(ConnectorItem):
         """Connector server username"""
         return str(self.params.get("username", None)) \
             if self.params is not None and self.params.get("username") is not None else None
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def password(self) -> str or None:
+        """Connector server password"""
+        return str(self.params.get("password", None)) \
+            if self.params is not None and self.params.get("password") is not None else None
 
     # -----------------------------------------------------------------------------
 

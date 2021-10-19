@@ -42,12 +42,13 @@ class DbTestCase(unittest.TestCase):
 
         exchange_plugin_create_container()
         create_container({
-            "provider": "mysql",
-            "host": "127.0.0.1",
-            "user": "root",
-            "passwd": "root",
-            "db": cls.__db_name,
-            "create_tables": True,
+            "database": {
+                "host": "127.0.0.1",
+                "username": "root",
+                "password": "root",
+                "database": cls.__db_name,
+                "create_tables": True,
+            },
         })
 
     # -----------------------------------------------------------------------------

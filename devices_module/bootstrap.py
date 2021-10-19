@@ -45,19 +45,22 @@ from devices_module.repositories import (
     ChannelsConfigurationRepository,
 )
 
-default_settings: Dict[str, str or int or bool or None] = {
-    "host": "127.0.0.1",
-    "port": 3306,
-    "username": None,
-    "password": None,
-    "database": "fb_devices_module",
-    "create_tables": False,
+default_settings: Dict[str, Dict[str, str or int or bool or None]] = {
+    "database": {
+        "provider": "mysql",
+        "host": "127.0.0.1",
+        "port": 3306,
+        "username": None,
+        "password": None,
+        "database": "fb_devices_module",
+        "create_tables": False,
+    },
 }
 
 
-def create_container(settings: Dict[str, str or int or bool or None]) -> None:
+def create_container(settings: Dict[str, Dict[str, str or int or bool or None]]) -> None:
     """Register devices module services"""
-    module_settings: Dict[str, str or int or bool or None] = {**default_settings, **settings}
+    module_settings: Dict[str, Dict[str, str or int or bool or None]] = {**default_settings, **settings}
 
     # Add ENUM converter
     MySQLProvider.converter_classes.append((Enum, EnumConverter))
@@ -94,10 +97,10 @@ def create_container(settings: Dict[str, str or int or bool or None]) -> None:
 
     db.bind(
         provider="mysql",
-        host=module_settings.get("host", "127.0.0.1"),
-        port=int(module_settings.get("port", 3306)),
-        user=module_settings.get("username", None),
-        passwd=module_settings.get("password", None),
-        db=module_settings.get("database", None),
+        host=module_settings.get("database", {}).get("host", "127.0.0.1"),
+        user=module_settings.get("database", {}).get("username", None),
+        passwd=module_settings.get("database", {}).get("password", None),
+        db=module_settings.get("database", {}).get("database", None),
+        port=int(module_settings.get("database", {}).get("port", 3306)),
     )
-    db.generate_mapping(create_tables=settings.get("create_tables", False))
+    db.generate_mapping(create_tables=settings.get("database", {}).get("create_tables", False))

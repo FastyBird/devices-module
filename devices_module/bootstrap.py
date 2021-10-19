@@ -45,9 +45,20 @@ from devices_module.repositories import (
     ChannelsConfigurationRepository,
 )
 
+default_settings: Dict[str, str or int or bool or None] = {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "username": None,
+    "password": None,
+    "database": "fb_devices_module",
+    "create_tables": False,
+}
 
-def create_container(settings: Dict) -> None:
+
+def create_container(settings: Dict[str, str or int or bool or None]) -> None:
     """Register devices module services"""
+    module_settings: Dict[str, str or int or bool or None] = {**default_settings, **settings}
+
     # Add ENUM converter
     MySQLProvider.converter_classes.append((Enum, EnumConverter))
     SQLiteProvider.converter_classes.append((Enum, EnumConverter))
@@ -83,9 +94,10 @@ def create_container(settings: Dict) -> None:
 
     db.bind(
         provider="mysql",
-        host=settings.get("host", "127.0.0.1"),
-        user=settings.get("user", None),
-        passwd=settings.get("passwd", None),
-        db=settings.get("db", None),
+        host=module_settings.get("host", "127.0.0.1"),
+        port=int(module_settings.get("port", 3306)),
+        user=module_settings.get("username", None),
+        passwd=module_settings.get("password", None),
+        db=module_settings.get("database", None),
     )
     db.generate_mapping(create_tables=settings.get("create_tables", False))

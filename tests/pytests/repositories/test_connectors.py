@@ -80,9 +80,9 @@ class TestConnectorsRepository(DbTestCase):
             "key": "bLikvZ",
             "name": "FB MQTT",
             "enabled": True,
-            "server": None,
-            "port": None,
-            "secured_port": None,
+            "server": "127.0.0.1",
+            "port": 1883,
+            "secured_port": 8883,
             "username": None,
         }, connector_item.to_dict())
 
@@ -123,7 +123,7 @@ class TestConnectorsRepository(DbTestCase):
             "enabled": False,
             "server": "127.0.0.1",
             "port": 1883,
-            "secured_port": None,
+            "secured_port": 8883,
             "username": "username",
         }, connector_item.to_dict())
 
@@ -148,9 +148,9 @@ class TestConnectorsRepository(DbTestCase):
                 "key": "bLikvZ",
                 "name": "FB MQTT",
                 "enabled": True,
-                "server": None,
-                "port": None,
-                "secured_port": None,
+                "server": "127.0.0.1",
+                "port": 1883,
+                "secured_port": 8883,
                 "username": None,
             },
         )

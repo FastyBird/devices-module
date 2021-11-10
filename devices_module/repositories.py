@@ -24,7 +24,7 @@ Devices module repositories
 import json
 import uuid
 from abc import abstractmethod, ABC
-from typing import List, Dict
+from typing import List, Dict, Optional, Union
 from kink import inject
 import modules_metadata.exceptions as metadata_exceptions
 from exchange_plugin.dispatcher import EventDispatcher
@@ -44,14 +44,11 @@ from devices_module.items import (
     FbMqttV1ConnectorItem,
     DeviceItem,
     ChannelItem,
-    PropertyItem,
     DevicePropertyItem,
     ChannelPropertyItem,
-    ControlItem,
     ConnectorControlItem,
     DeviceControlItem,
     ChannelControlItem,
-    ConfigurationItem,
     DeviceConfigurationItem,
     ChannelConfigurationItem,
 )
@@ -81,7 +78,7 @@ class DevicesRepository:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    __items: Dict[str, DeviceItem] or None = None
+    __items: Optional[Dict[str, DeviceItem]] = None
 
     __iterator_index = 0
 
@@ -112,7 +109,7 @@ class DevicesRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_id(self, device_id: uuid.UUID) -> DeviceItem or None:
+    def get_by_id(self, device_id: uuid.UUID) -> Optional[DeviceItem]:
         """Find device in cache by provided identifier"""
         if self.__items is None:
             self.initialize()
@@ -124,7 +121,7 @@ class DevicesRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, device_key: str) -> DeviceItem or None:
+    def get_by_key(self, device_key: str) -> Optional[DeviceItem]:
         """Find device in cache by provided key"""
         if self.__items is None:
             self.initialize()
@@ -137,7 +134,7 @@ class DevicesRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_identifier(self, device_identifier: str) -> DeviceItem or None:
+    def get_by_identifier(self, device_identifier: str) -> Optional[DeviceItem]:
         """Find device in cache by provided identifier"""
         if self.__items is None:
             self.initialize()
@@ -184,7 +181,7 @@ class DevicesRepository:
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: DeviceEntity or None = DeviceEntity.get(
+        entity: Optional[DeviceEntity] = DeviceEntity.get(
             device_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -211,7 +208,7 @@ class DevicesRepository:
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self.__items:
-            entity: DeviceEntity or None = DeviceEntity.get(
+            entity: Optional[DeviceEntity] = DeviceEntity.get(
                 device_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -271,7 +268,7 @@ class DevicesRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __create_item(entity: DeviceEntity) -> DeviceItem or None:
+    def __create_item(entity: DeviceEntity) -> DeviceItem:
         return DeviceItem(
             device_id=entity.device_id,
             device_identifier=entity.identifier,
@@ -294,7 +291,7 @@ class DevicesRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __update_item(item: DeviceItem, data: Dict) -> DeviceItem or None:
+    def __update_item(item: DeviceItem, data: Dict) -> DeviceItem:
         return DeviceItem(
             device_id=item.device_id,
             device_identifier=item.identifier,
@@ -385,7 +382,7 @@ class ChannelsRepository:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    __items: Dict[str, ChannelItem] or None = None
+    __items: Optional[Dict[str, ChannelItem]] = None
 
     __iterator_index = 0
 
@@ -416,7 +413,7 @@ class ChannelsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_id(self, channel_id: uuid.UUID) -> ChannelItem or None:
+    def get_by_id(self, channel_id: uuid.UUID) -> Optional[ChannelItem]:
         """Find channel in cache by provided identifier"""
         if self.__items is None:
             self.initialize()
@@ -428,7 +425,7 @@ class ChannelsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, channel_key: str) -> ChannelItem or None:
+    def get_by_key(self, channel_key: str) -> Optional[ChannelItem]:
         """Find channel in cache by provided key"""
         if self.__items is None:
             self.initialize()
@@ -441,7 +438,7 @@ class ChannelsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_identifier(self, device_id: uuid.UUID, channel_identifier: str) -> ChannelItem or None:
+    def get_by_identifier(self, device_id: uuid.UUID, channel_identifier: str) -> Optional[ChannelItem]:
         """Find channel in cache by provided identifier"""
         if self.__items is None:
             self.initialize()
@@ -488,7 +485,7 @@ class ChannelsRepository:
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: ChannelEntity or None = ChannelEntity.get(
+        entity: Optional[ChannelEntity] = ChannelEntity.get(
             channel_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -515,7 +512,7 @@ class ChannelsRepository:
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self.__items:
-            entity: ChannelEntity or None = ChannelEntity.get(
+            entity: Optional[ChannelEntity] = ChannelEntity.get(
                 channel_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -599,7 +596,7 @@ class ChannelsRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __create_item(entity: ChannelEntity) -> ChannelItem or None:
+    def __create_item(entity: ChannelEntity) -> ChannelItem:
         return ChannelItem(
             channel_id=entity.channel_id,
             channel_identifier=entity.identifier,
@@ -612,7 +609,7 @@ class ChannelsRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __update_item(item: ChannelItem, data: Dict) -> ChannelItem or None:
+    def __update_item(item: ChannelItem, data: Dict) -> ChannelItem:
         return ChannelItem(
             channel_id=item.channel_id,
             channel_identifier=item.identifier,
@@ -670,7 +667,7 @@ class PropertiesRepository(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    _items: Dict[str, ChannelPropertyItem or DevicePropertyItem] or None = None
+    _items: Optional[Dict[str, Union[ChannelPropertyItem, DevicePropertyItem]]] = None
 
     __iterator_index = 0
 
@@ -701,7 +698,7 @@ class PropertiesRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_id(self, property_id: uuid.UUID) -> DevicePropertyItem or ChannelPropertyItem or None:
+    def get_by_id(self, property_id: uuid.UUID) -> Union[DevicePropertyItem, ChannelPropertyItem, None]:
         """Find property in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -713,7 +710,7 @@ class PropertiesRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, property_key: str) -> DevicePropertyItem or ChannelPropertyItem or None:
+    def get_by_key(self, property_key: str) -> Union[DevicePropertyItem, ChannelPropertyItem, None]:
         """Find property in cache by provided key"""
         if self._items is None:
             self.initialize()
@@ -740,8 +737,8 @@ class PropertiesRepository(ABC):
 
     def _entity_created(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityCreatedEvent)
-            or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
+                not isinstance(event, ModelEntityCreatedEvent)
+                or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
         ):
             return
 
@@ -751,8 +748,8 @@ class PropertiesRepository(ABC):
 
     def _entity_updated(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityUpdatedEvent)
-            or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
+                not isinstance(event, ModelEntityUpdatedEvent)
+                or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
         ):
             return
 
@@ -762,8 +759,8 @@ class PropertiesRepository(ABC):
 
     def _entity_deleted(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityDeletedEvent)
-            or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
+                not isinstance(event, ModelEntityDeletedEvent)
+                or not isinstance(event.entity, (DevicePropertyEntity, ChannelPropertyEntity))
         ):
             return
 
@@ -772,7 +769,9 @@ class PropertiesRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _create_item(entity: DevicePropertyEntity or ChannelPropertyEntity) -> PropertyItem or None:
+    def _create_item(
+        entity: Union[DevicePropertyEntity, ChannelPropertyEntity],
+    ) -> Union[DevicePropertyItem, ChannelPropertyItem, None]:
         if isinstance(entity, DevicePropertyEntity):
             return DevicePropertyItem(
                 property_id=entity.property_id,
@@ -807,7 +806,10 @@ class PropertiesRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _update_item(item: PropertyItem, data: Dict) -> PropertyItem or None:
+    def _update_item(
+        item: Union[DevicePropertyItem, ChannelPropertyItem],
+        data: Dict,
+    ) -> Union[DevicePropertyItem, ChannelPropertyItem, None]:
         data_type = data.get("data_type", item.data_type.value if item.data_type is not None else None)
         data_type = DataType(data_type) if data_type is not None else None
 
@@ -860,14 +862,14 @@ class PropertiesRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __next__(self) -> DevicePropertyItem or ChannelPropertyItem:
+    def __next__(self) -> Union[DevicePropertyItem, ChannelPropertyItem]:
         if self._items is None:
             self.initialize()
 
         if self.__iterator_index < len(self._items.values()):
-            items: List[DevicePropertyItem or ChannelPropertyItem] = list(self._items.values())
+            items: List[Union[DevicePropertyItem, ChannelPropertyItem]] = list(self._items.values())
 
-            result: DevicePropertyItem or ChannelPropertyItem = items[self.__iterator_index]
+            result: Union[DevicePropertyItem, ChannelPropertyItem] = items[self.__iterator_index]
 
             self.__iterator_index += 1
 
@@ -889,7 +891,8 @@ class DevicesPropertiesRepository(PropertiesRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def get_by_identifier(self, device_id: uuid.UUID, property_identifier: str) -> DevicePropertyItem or None:
+
+    def get_by_identifier(self, device_id: uuid.UUID, property_identifier: str) -> Optional[DevicePropertyItem]:
         """Find property in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -930,7 +933,7 @@ class DevicesPropertiesRepository(PropertiesRepository):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: DevicePropertyEntity or None = DevicePropertyEntity.get(
+        entity: Optional[DevicePropertyEntity] = DevicePropertyEntity.get(
             property_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -957,7 +960,7 @@ class DevicesPropertiesRepository(PropertiesRepository):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self._items:
-            entity: DevicePropertyEntity or None = DevicePropertyEntity.get(
+            entity: Optional[DevicePropertyEntity] = DevicePropertyEntity.get(
                 property_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -1024,7 +1027,8 @@ class ChannelsPropertiesRepository(PropertiesRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def get_by_identifier(self, channel_id: uuid.UUID, property_identifier: str) -> ChannelPropertyItem or None:
+
+    def get_by_identifier(self, channel_id: uuid.UUID, property_identifier: str) -> Optional[ChannelPropertyItem]:
         """Find property in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -1065,7 +1069,7 @@ class ChannelsPropertiesRepository(PropertiesRepository):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: ChannelPropertyEntity or None = ChannelPropertyEntity.get(
+        entity: Optional[ChannelPropertyEntity] = ChannelPropertyEntity.get(
             property_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -1092,7 +1096,7 @@ class ChannelsPropertiesRepository(PropertiesRepository):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self._items:
-            entity: ChannelPropertyEntity or None = ChannelPropertyEntity.get(
+            entity: Optional[ChannelPropertyEntity] = ChannelPropertyEntity.get(
                 property_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -1160,7 +1164,7 @@ class ConnectorsRepository(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    __items: Dict[str, ConnectorItem] or None = None
+    __items: Optional[Dict[str, Union[FbBusConnectorItem, FbMqttV1ConnectorItem]]] = None
 
     __iterator_index = 0
 
@@ -1191,7 +1195,7 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_id(self, connector_id: uuid.UUID) -> ConnectorItem or None:
+    def get_by_id(self, connector_id: uuid.UUID) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem, None]:
         """Find connector in cache by provided identifier"""
         if self.__items is None:
             self.initialize()
@@ -1203,7 +1207,7 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, connector_key: str) -> ConnectorItem or None:
+    def get_by_key(self, connector_key: str) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem, None]:
         """Find connector in cache by provided key"""
         if self.__items is None:
             self.initialize()
@@ -1229,7 +1233,7 @@ class ConnectorsRepository(ABC):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: ConnectorEntity or None = ConnectorEntity.get(connector_id=uuid.UUID(data.get("id"), version=4))
+        entity: Optional[ConnectorEntity] = ConnectorEntity.get(connector_id=uuid.UUID(data.get("id"), version=4))
 
         if entity is not None:
             self.__items[entity.connector_id.__str__()] = self.__create_item(entity)
@@ -1254,7 +1258,7 @@ class ConnectorsRepository(ABC):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self.__items:
-            entity: ConnectorEntity or None = ConnectorEntity.get(
+            entity: Optional[ConnectorEntity] = ConnectorEntity.get(
                 connector_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -1303,7 +1307,7 @@ class ConnectorsRepository(ABC):
     @orm.db_session
     def initialize(self) -> None:
         """Initialize repository by fetching entities from database"""
-        items: Dict[str, ConnectorItem] = {}
+        items: Dict[str, Union[FbBusConnectorItem, FbMqttV1ConnectorItem]] = {}
 
         for entity in ConnectorEntity.select():
             if self.__items is None or entity.connector_id.__str__() not in self.__items:
@@ -1344,7 +1348,7 @@ class ConnectorsRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __create_item(entity: ConnectorEntity) -> ConnectorItem or None:
+    def __create_item(entity: ConnectorEntity) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem, None]:
         if isinstance(entity, FbBusConnectorEntity):
             return FbBusConnectorItem(
                 connector_id=entity.connector_id,
@@ -1370,7 +1374,7 @@ class ConnectorsRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __update_item(item: ConnectorItem, data: Dict) -> ConnectorItem or None:
+    def __update_item(item: ConnectorItem, data: Dict) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem, None]:
         if isinstance(item, FbBusConnectorItem):
             params: Dict = item.params
             params["address"] = data.get("address", item.address)
@@ -1422,14 +1426,14 @@ class ConnectorsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __next__(self) -> ConnectorItem:
+    def __next__(self) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem]:
         if self.__items is None:
             self.initialize()
 
         if self.__iterator_index < len(self.__items.values()):
-            items: List[ConnectorItem] = list(self.__items.values())
+            items: List[Union[FbBusConnectorItem, FbMqttV1ConnectorItem]] = list(self.__items.values())
 
-            result: ConnectorItem = items[self.__iterator_index]
+            result: Union[FbBusConnectorItem, FbMqttV1ConnectorItem] = items[self.__iterator_index]
 
             self.__iterator_index += 1
 
@@ -1452,7 +1456,7 @@ class ControlsRepository(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    _items: Dict[str, ControlItem] or None = None
+    _items: Optional[Dict[str, Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem]]] = None
 
     __iterator_index = 0
 
@@ -1486,7 +1490,7 @@ class ControlsRepository(ABC):
     def get_by_id(
         self,
         control_id: uuid.UUID,
-    ) -> DeviceControlItem or ChannelControlItem or ConnectorControlItem or None:
+    ) -> Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem, None]:
         """Find control in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -1512,8 +1516,10 @@ class ControlsRepository(ABC):
 
     def _entity_created(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityCreatedEvent)
-            or not isinstance(event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity))
+                not isinstance(event, ModelEntityCreatedEvent)
+                or not isinstance(
+            event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity)
+            )
         ):
             return
 
@@ -1523,8 +1529,10 @@ class ControlsRepository(ABC):
 
     def _entity_updated(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityUpdatedEvent)
-            or not isinstance(event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity))
+                not isinstance(event, ModelEntityUpdatedEvent)
+                or not isinstance(
+            event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity)
+            )
         ):
             return
 
@@ -1534,8 +1542,10 @@ class ControlsRepository(ABC):
 
     def _entity_deleted(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityDeletedEvent)
-            or not isinstance(event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity))
+                not isinstance(event, ModelEntityDeletedEvent)
+                or not isinstance(
+            event.entity, (DevicesControlsRepository, ChannelControlEntity, ConnectorControlEntity)
+            )
         ):
             return
 
@@ -1545,8 +1555,8 @@ class ControlsRepository(ABC):
 
     @staticmethod
     def _create_item(
-        entity: DeviceControlEntity or ChannelControlEntity or ConnectorControlEntity
-    ) -> ControlItem or None:
+        entity: Union[DeviceControlEntity, ChannelControlEntity, ConnectorControlEntity]
+    ) -> Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem, None]:
         if isinstance(entity, DeviceControlEntity):
             return DeviceControlItem(
                 control_id=entity.control_id,
@@ -1574,7 +1584,9 @@ class ControlsRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _update_item(item: ControlItem) -> ControlItem or None:
+    def _update_item(
+        item: Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem],
+    ) -> Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem, None]:
         if isinstance(item, DeviceControlItem):
             return DeviceControlItem(
                 control_id=item.control_id,
@@ -1617,14 +1629,14 @@ class ControlsRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __next__(self) -> ControlItem:
+    def __next__(self) -> Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem]:
         if self._items is None:
             self.initialize()
 
         if self.__iterator_index < len(self._items.values()):
-            items: List[ControlItem] = list(self._items.values())
+            items: List[Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem]] = list(self._items.values())
 
-            result: ControlItem = items[self.__iterator_index]
+            result: Union[DeviceControlItem, ChannelControlItem, ConnectorControlItem] = items[self.__iterator_index]
 
             self.__iterator_index += 1
 
@@ -1646,7 +1658,8 @@ class DevicesControlsRepository(ControlsRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def get_by_name(self, device_id: uuid.UUID, control_name: str) -> DeviceControlItem or None:
+
+    def get_by_name(self, device_id: uuid.UUID, control_name: str) -> Optional[DeviceControlItem]:
         """Find control in cache by provided name"""
         if self._items is None:
             self.initialize()
@@ -1687,7 +1700,7 @@ class DevicesControlsRepository(ControlsRepository):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: DeviceControlEntity or None = DeviceControlEntity.get(
+        entity: Optional[DeviceControlEntity] = DeviceControlEntity.get(
             control_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -1714,7 +1727,7 @@ class DevicesControlsRepository(ControlsRepository):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self._items:
-            entity: DeviceControlEntity or None = DeviceControlEntity.get(
+            entity: Optional[DeviceControlEntity] = DeviceControlEntity.get(
                 control_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -1778,7 +1791,8 @@ class ChannelsControlsRepository(ControlsRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def get_by_name(self, channel_id: uuid.UUID, control_name: str) -> ChannelControlItem or None:
+
+    def get_by_name(self, channel_id: uuid.UUID, control_name: str) -> Optional[ChannelControlItem]:
         """Find control in cache by provided name"""
         if self._items is None:
             self.initialize()
@@ -1819,7 +1833,7 @@ class ChannelsControlsRepository(ControlsRepository):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: ChannelControlEntity or None = ChannelControlEntity.get(
+        entity: Optional[ChannelControlEntity] = ChannelControlEntity.get(
             control_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -1846,7 +1860,7 @@ class ChannelsControlsRepository(ControlsRepository):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self._items:
-            entity: ChannelControlEntity or None = ChannelControlEntity.get(
+            entity: Optional[ChannelControlEntity] = ChannelControlEntity.get(
                 control_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -1910,7 +1924,8 @@ class ConnectorsControlsRepository(ControlsRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def get_by_name(self, connector_id: uuid.UUID, control_name: str) -> ConnectorControlItem or None:
+
+    def get_by_name(self, connector_id: uuid.UUID, control_name: str) -> Optional[ConnectorControlItem]:
         """Find control in cache by provided name"""
         if self._items is None:
             self.initialize()
@@ -1951,7 +1966,7 @@ class ConnectorsControlsRepository(ControlsRepository):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: ConnectorControlEntity or None = ConnectorControlEntity.get(
+        entity: Optional[ConnectorControlEntity] = ConnectorControlEntity.get(
             control_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -1978,7 +1993,7 @@ class ConnectorsControlsRepository(ControlsRepository):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self._items:
-            entity: ConnectorControlEntity or None = ConnectorControlEntity.get(
+            entity: Optional[ConnectorControlEntity] = ConnectorControlEntity.get(
                 control_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -2033,11 +2048,6 @@ class ConnectorsControlsRepository(ControlsRepository):
         self._items = items
 
 
-
-
-
-
-
 @inject
 class ConfigurationRepository(ABC):
     """
@@ -2048,7 +2058,7 @@ class ConfigurationRepository(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    _items: Dict[str, DeviceConfigurationItem or ChannelConfigurationItem] or None = None
+    _items: Optional[Dict[str, Union[DeviceConfigurationItem, ChannelConfigurationItem]]] = None
 
     __iterator_index = 0
 
@@ -2079,7 +2089,7 @@ class ConfigurationRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_id(self, configuration_id: uuid.UUID) -> DeviceConfigurationItem or ChannelConfigurationItem or None:
+    def get_by_id(self, configuration_id: uuid.UUID) -> Union[DeviceConfigurationItem, ChannelConfigurationItem, None]:
         """Find configuration in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -2091,7 +2101,7 @@ class ConfigurationRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, configuration_key: str) -> DeviceConfigurationItem or ChannelConfigurationItem or None:
+    def get_by_key(self, configuration_key: str) -> Union[DeviceConfigurationItem, ChannelConfigurationItem, None]:
         """Find configuration in cache by provided key"""
         if self._items is None:
             self.initialize()
@@ -2118,8 +2128,8 @@ class ConfigurationRepository(ABC):
 
     def _entity_created(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityCreatedEvent)
-            or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
+                not isinstance(event, ModelEntityCreatedEvent)
+                or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
         ):
             return
 
@@ -2129,8 +2139,8 @@ class ConfigurationRepository(ABC):
 
     def _entity_updated(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityUpdatedEvent)
-            or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
+                not isinstance(event, ModelEntityUpdatedEvent)
+                or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
         ):
             return
 
@@ -2140,8 +2150,8 @@ class ConfigurationRepository(ABC):
 
     def _entity_deleted(self, event: IEvent) -> None:
         if (
-            not isinstance(event, ModelEntityDeletedEvent)
-            or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
+                not isinstance(event, ModelEntityDeletedEvent)
+                or not isinstance(event.entity, (DeviceConfigurationEntity, ChannelConfigurationEntity))
         ):
             return
 
@@ -2150,7 +2160,9 @@ class ConfigurationRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _create_item(entity: DeviceConfigurationEntity or ChannelConfigurationEntity) -> ConfigurationItem or None:
+    def _create_item(
+        entity: Union[DeviceConfigurationEntity, ChannelConfigurationEntity],
+    ) -> Union[DeviceConfigurationItem, ChannelConfigurationItem, None]:
         if isinstance(entity, DeviceConfigurationEntity):
             return DeviceConfigurationItem(
                 configuration_id=entity.configuration_id,
@@ -2185,11 +2197,14 @@ class ConfigurationRepository(ABC):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def _update_item(item: ConfigurationItem, data: Dict) -> ConfigurationItem or None:
+    def _update_item(
+        item: Union[DeviceConfigurationItem, ChannelConfigurationItem],
+        data: Dict,
+    ) -> Union[DeviceConfigurationItem, ChannelConfigurationItem, None]:
         data_type = data.get("data_type", item.data_type.value if item.data_type is not None else None)
         data_type = DataType(data_type) if data_type is not None else None
 
-        params: Dict[str, str or int or float or bool or List or None] = {}
+        params: Dict[str, Union[str, int, float, bool, List, None]] = {}
 
         if "min" in data.keys():
             params["min"] = data.get("min", item.min_value)
@@ -2252,14 +2267,14 @@ class ConfigurationRepository(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def __next__(self) -> DeviceConfigurationItem or ChannelConfigurationItem:
+    def __next__(self) -> Union[DeviceConfigurationItem, ChannelConfigurationItem]:
         if self._items is None:
             self.initialize()
 
         if self.__iterator_index < len(self._items.values()):
-            items: List[DeviceConfigurationItem or ChannelConfigurationItem] = list(self._items.values())
+            items: List[Union[DeviceConfigurationItem, ChannelConfigurationItem]] = list(self._items.values())
 
-            result: DeviceConfigurationItem or ChannelConfigurationItem = items[self.__iterator_index]
+            result: Union[DeviceConfigurationItem, ChannelConfigurationItem] = items[self.__iterator_index]
 
             self.__iterator_index += 1
 
@@ -2281,7 +2296,11 @@ class DevicesConfigurationRepository(ConfigurationRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def get_by_identifier(self, device_id: uuid.UUID, configuration_identifier: str) -> DeviceConfigurationItem or None:
+
+    def get_by_identifier(
+        self,
+        device_id: uuid.UUID, configuration_identifier: str,
+    ) -> Optional[DeviceConfigurationItem]:
         """Find configuration in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -2322,7 +2341,7 @@ class DevicesConfigurationRepository(ConfigurationRepository):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: DeviceConfigurationEntity or None = DeviceConfigurationEntity.get(
+        entity: Optional[DeviceConfigurationEntity] = DeviceConfigurationEntity.get(
             configuration_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -2349,7 +2368,7 @@ class DevicesConfigurationRepository(ConfigurationRepository):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self._items:
-            entity: DeviceConfigurationEntity or None = DeviceConfigurationEntity.get(
+            entity: Optional[DeviceConfigurationEntity] = DeviceConfigurationEntity.get(
                 configuration_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 
@@ -2416,11 +2435,12 @@ class ChannelsConfigurationRepository(ConfigurationRepository):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     def get_by_identifier(
         self,
         channel_id: uuid.UUID,
         configuration_identifier: str,
-    ) -> ChannelConfigurationItem or None:
+    ) -> Optional[ChannelConfigurationItem]:
         """Find configuration in cache by provided identifier"""
         if self._items is None:
             self.initialize()
@@ -2461,7 +2481,7 @@ class ChannelsConfigurationRepository(ConfigurationRepository):
 
         data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
-        entity: ChannelConfigurationEntity or None = ChannelConfigurationEntity.get(
+        entity: Optional[ChannelConfigurationEntity] = ChannelConfigurationEntity.get(
             configuration_id=uuid.UUID(data.get("id"), version=4),
         )
 
@@ -2488,7 +2508,7 @@ class ChannelsConfigurationRepository(ConfigurationRepository):
         validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
 
         if validated_data.get("id") not in self._items:
-            entity: ChannelConfigurationEntity or None = ChannelConfigurationEntity.get(
+            entity: Optional[ChannelConfigurationEntity] = ChannelConfigurationEntity.get(
                 configuration_id=uuid.UUID(validated_data.get("id"), version=4)
             )
 

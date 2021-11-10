@@ -19,7 +19,7 @@ Devices module data exchange
 """
 
 # Library dependencies
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 from exchange_plugin.dispatcher import EventDispatcher
 from exchange_plugin.events.event import IEvent
 from exchange_plugin.publisher import Publisher
@@ -132,7 +132,7 @@ class ModuleExchange:
         if not isinstance(event, ModelEntityCreatedEvent):
             return
 
-        routing_key: RoutingKey or None = self.__get_entity_created_routing_key(entity=type(event.entity))
+        routing_key = self.__get_entity_created_routing_key(entity=type(event.entity))
 
         if routing_key is not None:
             self.__publisher.publish(
@@ -147,7 +147,7 @@ class ModuleExchange:
         if not isinstance(event, ModelEntityUpdatedEvent):
             return
 
-        routing_key: RoutingKey or None = self.__get_entity_updated_routing_key(entity=type(event.entity))
+        routing_key = self.__get_entity_updated_routing_key(entity=type(event.entity))
 
         if routing_key is not None:
             self.__publisher.publish(
@@ -162,7 +162,7 @@ class ModuleExchange:
         if not isinstance(event, ModelEntityDeletedEvent):
             return
 
-        routing_key: RoutingKey or None = self.__get_entity_deleted_routing_key(entity=type(event.entity))
+        routing_key = self.__get_entity_deleted_routing_key(entity=type(event.entity))
 
         if routing_key is not None:
             self.__publisher.publish(
@@ -173,7 +173,7 @@ class ModuleExchange:
 
     # -----------------------------------------------------------------------------
 
-    def __get_entity_created_routing_key(self, entity: Type[orm.Entity]) -> RoutingKey or None:
+    def __get_entity_created_routing_key(self, entity: Type[orm.Entity]) -> Optional[RoutingKey]:
         """Get routing key for created entity"""
         for classname, routing_key in self.CREATED_ENTITIES_ROUTING_KEYS_MAPPING.items():
             if issubclass(entity, classname):
@@ -183,7 +183,7 @@ class ModuleExchange:
 
     # -----------------------------------------------------------------------------
 
-    def __get_entity_updated_routing_key(self, entity: Type[orm.Entity]) -> RoutingKey or None:
+    def __get_entity_updated_routing_key(self, entity: Type[orm.Entity]) -> Optional[RoutingKey]:
         """Get routing key for updated entity"""
         for classname, routing_key in self.UPDATED_ENTITIES_ROUTING_KEYS_MAPPING.items():
             if issubclass(entity, classname):
@@ -193,7 +193,7 @@ class ModuleExchange:
 
     # -----------------------------------------------------------------------------
 
-    def __get_entity_deleted_routing_key(self, entity: Type[orm.Entity]) -> RoutingKey or None:
+    def __get_entity_deleted_routing_key(self, entity: Type[orm.Entity]) -> Optional[RoutingKey]:
         """Get routing key for deleted entity"""
         for classname, routing_key in self.DELETED_ENTITIES_ROUTING_KEYS_MAPPING.items():
             if issubclass(entity, classname):

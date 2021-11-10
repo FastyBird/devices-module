@@ -23,11 +23,19 @@ Devices module models
 # Library dependencies
 import uuid
 import datetime
-from typing import List, Dict, Tuple
+from typing import List, Dict, Optional, Tuple, Union
 from exchange_plugin.dispatcher import EventDispatcher
-from kink import inject
+from kink import di
 from modules_metadata.types import DataType
-from pony.orm import Database, Discriminator, PrimaryKey, Required, Optional, Set, Json
+from pony.orm import (
+    Database,
+    Discriminator,
+    PrimaryKey,
+    Required as RequiredField,
+    Optional as OptionalField,
+    Set,
+    Json,
+)
 
 # Library libs
 from devices_module.events import ModelEntityCreatedEvent, ModelEntityUpdatedEvent, ModelEntityDeletedEvent
@@ -37,7 +45,6 @@ from devices_module.key import EntityKey
 db: Database = Database()
 
 
-@inject
 class ConnectorEntity(db.Entity):
     """
     Connector entity
@@ -53,26 +60,18 @@ class ConnectorEntity(db.Entity):
     _discriminator_: str = "connector"
 
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="connector_id")
-    name: str or None = Required(str, column="connector_name", nullable=False)
-    key: str = Required(str, column="connector_key", unique=True, max_len=50, nullable=False)
-    enabled: bool = Optional(bool, column="connector_enabled", nullable=True, default=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    name: Optional[str] = RequiredField(str, column="connector_name", nullable=False)
+    key: str = RequiredField(str, column="connector_key", unique=True, max_len=50, nullable=False)
+    enabled: bool = OptionalField(bool, column="connector_enabled", nullable=True, default=True)
+    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
+        Json, column="params", nullable=True
+    )
+
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
     devices: List["DeviceConnectorEntity"] = Set("DeviceConnectorEntity", reverse="connector")
     controls: List["ConnectorControlEntity"] = Set("ConnectorControlEntity", reverse="connector")
-
-    __key_generator: EntityKey
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__key_generator = key_generator
-        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -83,7 +82,7 @@ class ConnectorEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         return {
             "id": self.connector_id.__str__(),
@@ -112,13 +111,13 @@ class ConnectorEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = self.__key_generator.generate_key(self)
+            self.key = di[EntityKey].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -133,7 +132,7 @@ class ConnectorEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -142,7 +141,7 @@ class ConnectorEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
@@ -162,7 +161,7 @@ class FbBusConnectorEntity(ConnectorEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def address(self) -> int or None:
+    def address(self) -> Optional[int]:
         """Connector address"""
         return int(self.params.get("address", None)) \
             if self.params is not None and self.params.get("address") is not None else None
@@ -170,7 +169,7 @@ class FbBusConnectorEntity(ConnectorEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def serial_interface(self) -> str or None:
+    def serial_interface(self) -> Optional[str]:
         """Connector serial interface"""
         return str(self.params.get("serial_interface", None)) \
             if self.params is not None and self.params.get("serial_interface") is not None else None
@@ -178,7 +177,7 @@ class FbBusConnectorEntity(ConnectorEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def baud_rate(self) -> int or None:
+    def baud_rate(self) -> Optional[int]:
         """Connector communication baud rate"""
         return int(self.params.get("baud_rate", None)) \
             if self.params is not None and self.params.get("baud_rate") is not None else None
@@ -192,7 +191,7 @@ class FbBusConnectorEntity(ConnectorEntity):
         with_collections: bool = False,
         with_lazy: bool = False,
         related_objects: bool = False,
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         return {**{
             "address": self.address,
@@ -215,7 +214,7 @@ class FbMqttConnectorEntity(ConnectorEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def server(self) -> str or None:
+    def server(self) -> Optional[str]:
         """Connector server address"""
         return str(self.params.get("server", None)) \
             if self.params is not None and self.params.get("server") is not None else None
@@ -223,7 +222,7 @@ class FbMqttConnectorEntity(ConnectorEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def port(self) -> int or None:
+    def port(self) -> Optional[int]:
         """Connector server port"""
         return int(self.params.get("port", None)) \
             if self.params is not None and self.params.get("port") is not None else None
@@ -231,7 +230,7 @@ class FbMqttConnectorEntity(ConnectorEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def secured_port(self) -> int or None:
+    def secured_port(self) -> Optional[int]:
         """Connector server secured port"""
         return int(self.params.get("secured_port", None)) \
             if self.params is not None and self.params.get("secured_port") is not None else None
@@ -239,7 +238,7 @@ class FbMqttConnectorEntity(ConnectorEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def username(self) -> str or None:
+    def username(self) -> Optional[str]:
         """Connector server username"""
         return str(self.params.get("username", None)) \
             if self.params is not None and self.params.get("username") is not None else None
@@ -253,7 +252,7 @@ class FbMqttConnectorEntity(ConnectorEntity):
         with_collections: bool = False,
         with_lazy: bool = False,
         related_objects: bool = False,
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         return {**{
             "server": self.server,
@@ -263,7 +262,6 @@ class FbMqttConnectorEntity(ConnectorEntity):
         }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
 
 
-@inject
 class ConnectorControlEntity(db.Entity):
     """
     Connector control entity
@@ -276,20 +274,14 @@ class ConnectorControlEntity(db.Entity):
     _table_: str = "fb_connectors_controls"
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
-    name: str = Optional(str, column="control_name", nullable=False)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    name: str = OptionalField(str, column="control_name", nullable=False)
 
-    connector: ConnectorEntity = Required("ConnectorEntity", reverse="controls", column="connector_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__event_dispatcher = event_dispatcher
+    connector: ConnectorEntity = RequiredField(
+        "ConnectorEntity", reverse="controls", column="connector_id", nullable=False
+    )
 
     # -----------------------------------------------------------------------------
 
@@ -301,7 +293,7 @@ class ConnectorControlEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -316,7 +308,7 @@ class ConnectorControlEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -325,13 +317,12 @@ class ConnectorControlEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class DeviceEntity(db.Entity):
     """
     Device entity
@@ -344,59 +335,53 @@ class DeviceEntity(db.Entity):
     _table_: str = "fb_devices"
 
     device_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_id")
-    identifier: str = Required(str, column="device_identifier", unique=True, max_len=50, nullable=False)
-    key: str = Optional(str, column="device_key", unique=True, max_len=50, nullable=True)
-    parent: "DeviceEntity" = Optional("DeviceEntity", reverse="children", column="parent_id", nullable=True)
+    identifier: str = RequiredField(str, column="device_identifier", unique=True, max_len=50, nullable=False)
+    key: str = OptionalField(str, column="device_key", unique=True, max_len=50, nullable=True)
+    parent: Optional["DeviceEntity"] = OptionalField("DeviceEntity", reverse="children", column="parent_id", nullable=True)
     children: List["DeviceEntity"] = Set("DeviceEntity", reverse="parent")
-    name: str or None = Optional(str, column="device_name", nullable=True)
-    comment: str or None = Optional(str, column="device_comment", nullable=True)
-    enabled: bool = Optional(bool, column="device_enabled", default=False, nullable=True)
-    hardware_manufacturer: str or None = Optional(
+    name: Optional[str] = OptionalField(str, column="device_name", nullable=True)
+    comment: Optional[str] = OptionalField(str, column="device_comment", nullable=True)
+    enabled: bool = OptionalField(bool, column="device_enabled", default=False, nullable=True)
+    hardware_manufacturer: Optional[str] = OptionalField(
         str,
         column="device_hardware_manufacturer",
         max_len=150,
         default="generic",
         nullable=False,
     )
-    hardware_model: str or None = Optional(
+    hardware_model: Optional[str] = OptionalField(
         str,
         column="device_hardware_model",
         max_len=150,
         default="custom",
         nullable=False,
     )
-    hardware_version: str or None = Optional(str, column="device_hardware_version", max_len=150, nullable=True)
-    hardware_mac_address: str or None = Optional(str, column="device_hardware_mac_address", max_len=15, nullable=True)
-    firmware_manufacturer: str or None = Optional(
+    hardware_version: Optional[str] = OptionalField(str, column="device_hardware_version", max_len=150, nullable=True)
+    hardware_mac_address: Optional[str] = OptionalField(
+        str, column="device_hardware_mac_address", max_len=15, nullable=True
+    )
+    firmware_manufacturer: Optional[str] = OptionalField(
         str,
         column="device_firmware_manufacturer",
         max_len=150,
         default="generic",
         nullable=False,
     )
-    firmware_version: str or None = Optional(str, column="device_firmware_version", max_len=150, nullable=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    firmware_version: Optional[str] = OptionalField(str, column="device_firmware_version", max_len=150, nullable=True)
+    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
+        Json, column="params", nullable=True
+    )
+
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
     channels: List["ChannelEntity"] = Set("ChannelEntity", reverse="device")
     properties: List["DevicePropertyEntity"] = Set("DevicePropertyEntity", reverse="device")
     configuration: List["DeviceConfigurationEntity"] = Set("DeviceConfigurationEntity", reverse="device")
     controls: List["DeviceControlEntity"] = Set("DeviceControlEntity", reverse="device")
-    connector: "DeviceConnectorEntity" or None = Optional("DeviceConnectorEntity", reverse="device")
+    connector: Optional["DeviceConnectorEntity"] = OptionalField("DeviceConnectorEntity", reverse="device")
 
-    owner: str or None = Optional(str, column="owner", max_len=15, nullable=True)
-
-    __key_generator: EntityKey
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__key_generator = key_generator
-        self.__event_dispatcher = event_dispatcher
+    owner: Optional[str] = OptionalField(str, column="owner", max_len=15, nullable=True)
 
     # -----------------------------------------------------------------------------
 
@@ -407,9 +392,9 @@ class DeviceEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
-        parent_id: str or None = self.parent.device_id.__str__() if self.parent is not None else None
+        parent_id: Optional[str] = self.parent.device_id.__str__() if self.parent is not None else None
 
         return {
             "id": self.device_id.__str__(),
@@ -456,13 +441,13 @@ class DeviceEntity(db.Entity):
             self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
         if self.key is None:
-            self.key = self.__key_generator.generate_key(self)
+            self.key = di[EntityKey].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -481,7 +466,7 @@ class DeviceEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -490,13 +475,12 @@ class DeviceEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class DevicePropertyEntity(db.Entity):
     """
     Device property entity
@@ -509,29 +493,19 @@ class DevicePropertyEntity(db.Entity):
     _table_: str = "fb_devices_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    key: str = Optional(str, column="property_key", unique=True, max_len=50, nullable=True)
-    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
-    name: str = Optional(str, column="property_name", nullable=True)
-    settable: bool = Optional(bool, column="property_settable", default=False, nullable=True)
-    queryable: bool = Optional(bool, column="property_queryable", default=False, nullable=True)
-    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
-    unit: str or None = Optional(str, column="property_unit", nullable=True)
-    format: str or None = Optional(str, column="property_format", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    key: str = OptionalField(str, column="property_key", unique=True, max_len=50, nullable=True)
+    identifier: str = RequiredField(str, column="property_identifier", max_len=50, nullable=False)
+    name: str = OptionalField(str, column="property_name", nullable=True)
+    settable: bool = OptionalField(bool, column="property_settable", default=False, nullable=True)
+    queryable: bool = OptionalField(bool, column="property_queryable", default=False, nullable=True)
+    data_type: Optional[DataType] = OptionalField(DataType, column="property_data_type", nullable=True)
+    unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
+    format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
 
-    device: DeviceEntity = Required("DeviceEntity", reverse="properties", column="device_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __key_generator: EntityKey
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__key_generator = key_generator
-        self.__event_dispatcher = event_dispatcher
+    device: DeviceEntity = RequiredField("DeviceEntity", reverse="properties", column="device_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
@@ -542,7 +516,7 @@ class DevicePropertyEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -573,13 +547,13 @@ class DevicePropertyEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = self.__key_generator.generate_key(self)
+            self.key = di[EntityKey].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -594,7 +568,7 @@ class DevicePropertyEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -603,13 +577,12 @@ class DevicePropertyEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class DeviceConfigurationEntity(db.Entity):
     """
     Device configuration entity
@@ -622,29 +595,21 @@ class DeviceConfigurationEntity(db.Entity):
     _table_: str = "fb_devices_configuration"
 
     configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
-    key: str = Optional(str, column="configuration_key", unique=True, max_len=50, nullable=True)
-    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
-    name: str or None = Optional(str, column="configuration_name", nullable=True)
-    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
-    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
-    default: str or None = Optional(str, column="configuration_default", nullable=True)
-    value: str or None = Optional(str, column="configuration_value", nullable=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    key: str = OptionalField(str, column="configuration_key", unique=True, max_len=50, nullable=True)
+    identifier: str = RequiredField(str, column="configuration_identifier", max_len=50, nullable=False)
+    name: Optional[str] = OptionalField(str, column="configuration_name", nullable=True)
+    comment: Optional[str] = OptionalField(str, column="configuration_comment", nullable=True)
+    data_type: DataType = RequiredField(DataType, column="configuration_data_type", nullable=False)
+    default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
+    value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
+    params: Optional[Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]] = OptionalField(
+        Json, column="params", nullable=True
+    )
 
-    device: DeviceEntity = Required("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __key_generator: EntityKey
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__key_generator = key_generator
-        self.__event_dispatcher = event_dispatcher
+    device: DeviceEntity = RequiredField("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
@@ -666,7 +631,7 @@ class DeviceConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def get_value(self) -> float or int or str or None:
+    def get_value(self) -> Union[float, int, str, None]:
         """Get configuration value"""
         if self.value is None:
             return None
@@ -691,7 +656,7 @@ class DeviceConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def get_min(self) -> float or None:
+    def get_min(self) -> Optional[float]:
         """Get min value"""
         if self.params is not None and self.params.get("min_value") is not None:
             return float(self.params.get("min_value"))
@@ -700,13 +665,13 @@ class DeviceConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def set_min(self, min_value: float or None) -> None:
+    def set_min(self, min_value: Optional[float]) -> None:
         """Set min value"""
         self.params["min_value"] = min_value
 
     # -----------------------------------------------------------------------------
 
-    def get_max(self) -> float or None:
+    def get_max(self) -> Optional[float]:
         """Get max value"""
         if self.params is not None and self.params.get("max_value") is not None:
             return float(self.params.get("max_value"))
@@ -715,13 +680,13 @@ class DeviceConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def set_max(self, max_value: float or None) -> None:
+    def set_max(self, max_value: Optional[float]) -> None:
         """Set max value"""
         self.params["max_value"] = max_value
 
     # -----------------------------------------------------------------------------
 
-    def get_step(self) -> float or None:
+    def get_step(self) -> Optional[float]:
         """Get step value"""
         if self.params is not None and self.params.get("step_value") is not None:
             return float(self.params.get("step_value"))
@@ -730,7 +695,7 @@ class DeviceConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def set_step(self, step: float or None) -> None:
+    def set_step(self, step: Optional[float]) -> None:
         """Set step value"""
         self.params["step_value"] = step
 
@@ -755,7 +720,7 @@ class DeviceConfigurationEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -766,7 +731,7 @@ class DeviceConfigurationEntity(db.Entity):
         else:
             data_type = self.data_type
 
-        structure: Dict[str, str or None] = {
+        structure: Dict[str, Optional[str]] = {
             "id": self.configuration_id.__str__(),
             "key": self.key,
             "identifier": self.identifier,
@@ -816,13 +781,13 @@ class DeviceConfigurationEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = self.__key_generator.generate_key(self)
+            self.key = di[EntityKey].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -837,7 +802,7 @@ class DeviceConfigurationEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -846,13 +811,12 @@ class DeviceConfigurationEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class DeviceControlEntity(db.Entity):
     """
     Device control entity
@@ -865,20 +829,12 @@ class DeviceControlEntity(db.Entity):
     _table_: str = "fb_devices_controls"
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
-    name: str = Optional(str, column="control_name", nullable=False)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    name: str = OptionalField(str, column="control_name", nullable=False)
 
-    device: DeviceEntity = Required("DeviceEntity", reverse="controls", column="device_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__event_dispatcher = event_dispatcher
+    device: DeviceEntity = RequiredField("DeviceEntity", reverse="controls", column="device_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
@@ -890,7 +846,7 @@ class DeviceControlEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -905,7 +861,7 @@ class DeviceControlEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -914,13 +870,12 @@ class DeviceControlEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class DeviceConnectorEntity(db.Entity):
     """
     Device connector entity
@@ -933,21 +888,17 @@ class DeviceConnectorEntity(db.Entity):
     _table_: str = "fb_devices_connectors"
 
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_connector_id")
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
+        Json, column="params", nullable=True
+    )
 
-    device: DeviceEntity = Required("DeviceEntity", reverse="connector", column="device_id", nullable=False)
-    connector: ConnectorEntity = Required("ConnectorEntity", reverse="devices", column="connector_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__event_dispatcher = event_dispatcher
+    device: DeviceEntity = RequiredField("DeviceEntity", reverse="connector", column="device_id", nullable=False)
+    connector: ConnectorEntity = RequiredField(
+        "ConnectorEntity", reverse="devices", column="connector_id", nullable=False
+    )
 
     # -----------------------------------------------------------------------------
 
@@ -958,9 +909,9 @@ class DeviceConnectorEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
-        structure: Dict[str, str or int or bool or None] = {
+        structure: Dict[str, Union[str, int, bool, None]] = {
             "id": self.connector_id.__str__(),
             "type": self.connector.type,
             "connector": self.connector.connector_id.__str__(),
@@ -993,7 +944,7 @@ class DeviceConnectorEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -1008,7 +959,7 @@ class DeviceConnectorEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -1017,13 +968,12 @@ class DeviceConnectorEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class ChannelEntity(db.Entity):
     """
     Channel entity
@@ -1036,29 +986,21 @@ class ChannelEntity(db.Entity):
     _table_: str = "fb_channels"
 
     channel_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="channel_id")
-    key: str = Optional(str, column="channel_key", unique=True, max_len=50, nullable=True)
-    identifier: str = Required(str, column="channel_identifier", max_len=40, nullable=False)
-    name: str or None = Optional(str, column="channel_name", nullable=True)
-    comment: str or None = Optional(str, column="channel_comment", nullable=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    key: str = OptionalField(str, column="channel_key", unique=True, max_len=50, nullable=True)
+    identifier: str = RequiredField(str, column="channel_identifier", max_len=40, nullable=False)
+    name: Optional[str] = OptionalField(str, column="channel_name", nullable=True)
+    comment: Optional[str] = OptionalField(str, column="channel_comment", nullable=True)
+    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
+        Json, column="params", nullable=True
+    )
 
-    device: DeviceEntity = Required("DeviceEntity", reverse="channels", column="device_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
+
+    device: DeviceEntity = RequiredField("DeviceEntity", reverse="channels", column="device_id", nullable=False)
     properties: List["ChannelPropertyEntity"] = Set("ChannelPropertyEntity", reverse="channel")
     configuration: List["ChannelConfigurationEntity"] = Set("ChannelConfigurationEntity", reverse="channel")
     controls: List["ChannelControlEntity"] = Set("ChannelControlEntity", reverse="channel")
-
-    __key_generator: EntityKey
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__key_generator = key_generator
-        self.__event_dispatcher = event_dispatcher
 
     # -----------------------------------------------------------------------------
 
@@ -1069,7 +1011,7 @@ class ChannelEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         return {
             "id": self.channel_id.__str__(),
@@ -1100,13 +1042,13 @@ class ChannelEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = self.__key_generator.generate_key(self)
+            self.key = di[EntityKey].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -1121,7 +1063,7 @@ class ChannelEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -1130,13 +1072,12 @@ class ChannelEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class ChannelPropertyEntity(db.Entity):
     """
     Channel property entity
@@ -1149,29 +1090,19 @@ class ChannelPropertyEntity(db.Entity):
     _table_: str = "fb_channels_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    key: str = Optional(str, column="property_key", unique=True, max_len=50, nullable=True)
-    identifier: str = Required(str, column="property_identifier", max_len=50, nullable=False)
-    name: str = Optional(str, column="property_name", nullable=True)
-    settable: bool = Optional(bool, column="property_settable", default=False, nullable=True)
-    queryable: bool = Optional(bool, column="property_queryable", default=False, nullable=True)
-    data_type: DataType or None = Optional(DataType, column="property_data_type", nullable=True)
-    unit: str or None = Optional(str, column="property_unit", nullable=True)
-    format: str or None = Optional(str, column="property_format", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    key: str = OptionalField(str, column="property_key", unique=True, max_len=50, nullable=True)
+    identifier: str = RequiredField(str, column="property_identifier", max_len=50, nullable=False)
+    name: str = OptionalField(str, column="property_name", nullable=True)
+    settable: bool = OptionalField(bool, column="property_settable", default=False, nullable=True)
+    queryable: bool = OptionalField(bool, column="property_queryable", default=False, nullable=True)
+    data_type: Optional[DataType] = OptionalField(DataType, column="property_data_type", nullable=True)
+    unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
+    format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
 
-    channel: ChannelEntity = Required("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __key_generator: EntityKey
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__key_generator = key_generator
-        self.__event_dispatcher = event_dispatcher
+    channel: ChannelEntity = RequiredField("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
@@ -1182,7 +1113,7 @@ class ChannelPropertyEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -1213,13 +1144,13 @@ class ChannelPropertyEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = self.__key_generator.generate_key(self)
+            self.key = di[EntityKey].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -1234,7 +1165,7 @@ class ChannelPropertyEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -1243,13 +1174,12 @@ class ChannelPropertyEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class ChannelConfigurationEntity(db.Entity):
     """
     Channel configuration entity
@@ -1262,29 +1192,23 @@ class ChannelConfigurationEntity(db.Entity):
     _table_: str = "fb_channels_configuration"
 
     configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
-    key: str = Optional(str, column="configuration_key", unique=True, max_len=50, nullable=True)
-    identifier: str = Required(str, column="configuration_identifier", max_len=50, nullable=False)
-    name: str or None = Optional(str, column="configuration_name", nullable=True)
-    comment: str or None = Optional(str, column="configuration_comment", nullable=True)
-    data_type: DataType = Required(DataType, column="configuration_data_type", nullable=False)
-    default: str or None = Optional(str, column="configuration_default", nullable=True)
-    value: str or None = Optional(str, column="configuration_value", nullable=True)
-    params: Json or None = Optional(Json, column="params", nullable=True)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    key: str = OptionalField(str, column="configuration_key", unique=True, max_len=50, nullable=True)
+    identifier: str = RequiredField(str, column="configuration_identifier", max_len=50, nullable=False)
+    name: Optional[str] = OptionalField(str, column="configuration_name", nullable=True)
+    comment: Optional[str] = OptionalField(str, column="configuration_comment", nullable=True)
+    data_type: DataType = RequiredField(DataType, column="configuration_data_type", nullable=False)
+    default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
+    value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
+    params: Optional[Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]] = OptionalField(
+        Json, column="params", nullable=True
+    )
 
-    channel: ChannelEntity = Required("ChannelEntity", reverse="configuration", column="channel_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __key_generator: EntityKey
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, key_generator: EntityKey, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__key_generator = key_generator
-        self.__event_dispatcher = event_dispatcher
+    channel: ChannelEntity = RequiredField(
+        "ChannelEntity", reverse="configuration", column="channel_id", nullable=False
+    )
 
     # -----------------------------------------------------------------------------
 
@@ -1306,7 +1230,7 @@ class ChannelConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def get_value(self) -> float or int or str or None:
+    def get_value(self) -> Union[float, int, str, None]:
         """Get configuration value"""
         if self.value is None:
             return None
@@ -1331,7 +1255,7 @@ class ChannelConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def get_min(self) -> float or None:
+    def get_min(self) -> Optional[float]:
         """Get min value"""
         if self.params is not None and self.params.get("min_value") is not None:
             return float(self.params.get("min_value"))
@@ -1340,13 +1264,13 @@ class ChannelConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def set_min(self, min_value: float or None) -> None:
+    def set_min(self, min_value: Optional[float]) -> None:
         """Set min value"""
         self.params["min_value"] = min_value
 
     # -----------------------------------------------------------------------------
 
-    def get_max(self) -> float or None:
+    def get_max(self) -> Optional[float]:
         """Get max value"""
         if self.params is not None and self.params.get("max_value") is not None:
             return float(self.params.get("max_value"))
@@ -1355,13 +1279,13 @@ class ChannelConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def set_max(self, max_value: float or None) -> None:
+    def set_max(self, max_value: Optional[float]) -> None:
         """Set max value"""
         self.params["max_value"] = max_value
 
     # -----------------------------------------------------------------------------
 
-    def get_step(self) -> float or None:
+    def get_step(self) -> Optional[float]:
         """Get step value"""
         if self.params is not None and self.params.get("step_value") is not None:
             return float(self.params.get("step_value"))
@@ -1370,7 +1294,7 @@ class ChannelConfigurationEntity(db.Entity):
 
     # -----------------------------------------------------------------------------
 
-    def set_step(self, step: float or None) -> None:
+    def set_step(self, step: Optional[float]) -> None:
         """Set step value"""
         self.params["step_value"] = step
 
@@ -1395,7 +1319,7 @@ class ChannelConfigurationEntity(db.Entity):
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, str or int or bool or None]:
+    ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -1406,7 +1330,7 @@ class ChannelConfigurationEntity(db.Entity):
         else:
             data_type = self.data_type
 
-        structure: Dict[str, str or None] = {
+        structure: Dict[str, Optional[str]] = {
             "id": self.configuration_id.__str__(),
             "key": self.key,
             "identifier": self.identifier,
@@ -1456,13 +1380,13 @@ class ChannelConfigurationEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = self.__key_generator.generate_key(self)
+            self.key = di[EntityKey].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -1477,7 +1401,7 @@ class ChannelConfigurationEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -1486,13 +1410,12 @@ class ChannelConfigurationEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )
 
 
-@inject
 class ChannelControlEntity(db.Entity):
     """
     Channel control entity
@@ -1505,20 +1428,12 @@ class ChannelControlEntity(db.Entity):
     _table_: str = "fb_channels_controls"
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
-    name: str = Optional(str, column="control_name", nullable=False)
-    created_at: datetime.datetime or None = Optional(datetime.datetime, column="created_at", nullable=True)
-    updated_at: datetime.datetime or None = Optional(datetime.datetime, column="updated_at", nullable=True)
+    name: str = OptionalField(str, column="control_name", nullable=False)
 
-    channel: ChannelEntity = Required("ChannelEntity", reverse="controls", column="channel_id", nullable=False)
+    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
+    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    __event_dispatcher: EventDispatcher
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, event_dispatcher: EventDispatcher, *args, **kwargs) -> None:
-        db.Entity.__init__(self, *args, **kwargs)
-
-        self.__event_dispatcher = event_dispatcher
+    channel: ChannelEntity = RequiredField("ChannelEntity", reverse="controls", column="channel_id", nullable=False)
 
     # -----------------------------------------------------------------------------
 
@@ -1530,7 +1445,7 @@ class ChannelControlEntity(db.Entity):
 
     def after_insert(self) -> None:
         """After insert entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityCreatedEvent.EVENT_NAME,
             ModelEntityCreatedEvent(self),
         )
@@ -1545,7 +1460,7 @@ class ChannelControlEntity(db.Entity):
 
     def after_update(self) -> None:
         """After update entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityUpdatedEvent.EVENT_NAME,
             ModelEntityUpdatedEvent(self),
         )
@@ -1554,7 +1469,7 @@ class ChannelControlEntity(db.Entity):
 
     def after_delete(self) -> None:
         """After delete entity hook"""
-        self.__event_dispatcher.dispatch(
+        di[EventDispatcher].dispatch(
             ModelEntityDeletedEvent.EVENT_NAME,
             ModelEntityDeletedEvent(self),
         )

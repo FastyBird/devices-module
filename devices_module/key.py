@@ -23,7 +23,7 @@ Devices module entities key generator & utils
 # Library dependencies
 import math
 import time
-from typing import Callable
+from typing import Callable, Optional
 from kink import inject
 from pony.orm import core as orm
 
@@ -39,7 +39,7 @@ class EntityKey:
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
     __max_len: int = 6
-    __custom_generator: Callable[[orm.Entity], str] or None = None
+    __custom_generator: Optional[Callable[[orm.Entity], str]] = None
 
     __ALPHABET: str = "bcdfghjklmnpqrstvwxyz0123456789BCDFGHJKLMNPQRSTVWXYZ"
 
@@ -67,7 +67,7 @@ class EntityKey:
 
     # -----------------------------------------------------------------------------
 
-    def encode(self, number: int, max_length: int or None = None) -> str:
+    def encode(self, number: int, max_length: Optional[int] = None) -> str:
         """Convert number to key hash"""
         pad = (self.__max_len if max_length is None else max_length) - 1
         number = int(number + pow(self.__BASE, pad))
@@ -89,7 +89,7 @@ class EntityKey:
 
     # -----------------------------------------------------------------------------
 
-    def decode(self, string: str, max_length: int or None = None) -> int:
+    def decode(self, string: str, max_length: Optional[int] = None) -> int:
         """
         Convert key hash to number
         """

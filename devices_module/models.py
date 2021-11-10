@@ -337,7 +337,9 @@ class DeviceEntity(db.Entity):
     device_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_id")
     identifier: str = RequiredField(str, column="device_identifier", unique=True, max_len=50, nullable=False)
     key: str = OptionalField(str, column="device_key", unique=True, max_len=50, nullable=True)
-    parent: Optional["DeviceEntity"] = OptionalField("DeviceEntity", reverse="children", column="parent_id", nullable=True)
+    parent: Optional["DeviceEntity"] = OptionalField(
+        "DeviceEntity", reverse="children", column="parent_id", nullable=True
+    )
     children: List["DeviceEntity"] = Set("DeviceEntity", reverse="parent")
     name: Optional[str] = OptionalField(str, column="device_name", nullable=True)
     comment: Optional[str] = OptionalField(str, column="device_comment", nullable=True)

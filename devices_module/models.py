@@ -500,7 +500,7 @@ class DevicePropertyEntity(db.Entity):
     name: str = OptionalField(str, column="property_name", nullable=True)
     settable: bool = OptionalField(bool, column="property_settable", default=False, nullable=True)
     queryable: bool = OptionalField(bool, column="property_queryable", default=False, nullable=True)
-    data_type: Optional[DataType] = OptionalField(DataType, column="property_data_type", nullable=True)
+    data_type: Optional[str] = OptionalField(str, column="property_data_type", nullable=True)
     unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
     format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
 
@@ -508,6 +508,12 @@ class DevicePropertyEntity(db.Entity):
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = RequiredField("DeviceEntity", reverse="properties", column="device_id", nullable=False)
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def data_type_formatted(self) -> Optional[DataType]:
+        return DataType(self.data_type) if self.data_type is not None else None
 
     # -----------------------------------------------------------------------------
 
@@ -520,14 +526,14 @@ class DevicePropertyEntity(db.Entity):
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
+        if isinstance(self.data_type_formatted, DataType):
+            data_type = self.data_type_formatted.value
 
-        elif self.data_type is None:
+        elif self.data_type_formatted is None:
             data_type = None
 
         else:
-            data_type = self.data_type
+            data_type = self.data_type_formatted
 
         return {
             "id": self.property_id.__str__(),
@@ -601,7 +607,7 @@ class DeviceConfigurationEntity(db.Entity):
     identifier: str = RequiredField(str, column="configuration_identifier", max_len=50, nullable=False)
     name: Optional[str] = OptionalField(str, column="configuration_name", nullable=True)
     comment: Optional[str] = OptionalField(str, column="configuration_comment", nullable=True)
-    data_type: DataType = RequiredField(DataType, column="configuration_data_type", nullable=False)
+    data_type: str = RequiredField(str, column="configuration_data_type", nullable=False)
     default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
     value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
     params: Optional[Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]] = OptionalField(
@@ -612,6 +618,12 @@ class DeviceConfigurationEntity(db.Entity):
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = RequiredField("DeviceEntity", reverse="configuration", column="device_id", nullable=False)
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def data_type_formatted(self) -> DataType:
+        return DataType(self.data_type)
 
     # -----------------------------------------------------------------------------
 
@@ -638,9 +650,9 @@ class DeviceConfigurationEntity(db.Entity):
         if self.value is None:
             return None
 
-        if isinstance(self.data_type, DataType):
+        if isinstance(self.data_type_formatted, DataType):
             if (
-                self.data_type in [
+                self.data_type_formatted in [
                     DataType.CHAR,
                     DataType.UCHAR,
                     DataType.SHORT,
@@ -651,7 +663,7 @@ class DeviceConfigurationEntity(db.Entity):
             ):
                 return int(self.value)
 
-            if self.data_type == DataType.FLOAT:
+            if self.data_type_formatted == DataType.FLOAT:
                 return float(self.value)
 
         return self.value
@@ -724,14 +736,14 @@ class DeviceConfigurationEntity(db.Entity):
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
+        if isinstance(self.data_type_formatted, DataType):
+            data_type = self.data_type_formatted.value
 
-        elif self.data_type is None:
+        elif self.data_type_formatted is None:
             data_type = None
 
         else:
-            data_type = self.data_type
+            data_type = self.data_type_formatted
 
         structure: Dict[str, Optional[str]] = {
             "id": self.configuration_id.__str__(),
@@ -745,9 +757,9 @@ class DeviceConfigurationEntity(db.Entity):
             "device": self.device.device_id.__str__(),
         }
 
-        if isinstance(self.data_type, DataType):
+        if isinstance(self.data_type_formatted, DataType):
             if (
-                self.data_type in [
+                self.data_type_formatted in [
                     DataType.CHAR,
                     DataType.UCHAR,
                     DataType.SHORT,
@@ -766,7 +778,7 @@ class DeviceConfigurationEntity(db.Entity):
                     },
                 }
 
-            if self.data_type == DataType.ENUM:
+            if self.data_type_formatted == DataType.ENUM:
                 return {
                     **structure,
                     **{
@@ -1097,7 +1109,7 @@ class ChannelPropertyEntity(db.Entity):
     name: str = OptionalField(str, column="property_name", nullable=True)
     settable: bool = OptionalField(bool, column="property_settable", default=False, nullable=True)
     queryable: bool = OptionalField(bool, column="property_queryable", default=False, nullable=True)
-    data_type: Optional[DataType] = OptionalField(DataType, column="property_data_type", nullable=True)
+    data_type: Optional[str] = OptionalField(str, column="property_data_type", nullable=True)
     unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
     format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
 
@@ -1105,6 +1117,12 @@ class ChannelPropertyEntity(db.Entity):
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
     channel: ChannelEntity = RequiredField("ChannelEntity", reverse="properties", column="channel_id", nullable=False)
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def data_type_formatted(self) -> Optional[DataType]:
+        return DataType(self.data_type) if self.data_type is not None else None
 
     # -----------------------------------------------------------------------------
 
@@ -1117,14 +1135,14 @@ class ChannelPropertyEntity(db.Entity):
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
+        if isinstance(self.data_type_formatted, DataType):
+            data_type = self.data_type_formatted.value
 
-        elif self.data_type is None:
+        elif self.data_type_formatted is None:
             data_type = None
 
         else:
-            data_type = self.data_type
+            data_type = self.data_type_formatted
 
         return {
             "id": self.property_id.__str__(),
@@ -1198,7 +1216,7 @@ class ChannelConfigurationEntity(db.Entity):
     identifier: str = RequiredField(str, column="configuration_identifier", max_len=50, nullable=False)
     name: Optional[str] = OptionalField(str, column="configuration_name", nullable=True)
     comment: Optional[str] = OptionalField(str, column="configuration_comment", nullable=True)
-    data_type: DataType = RequiredField(DataType, column="configuration_data_type", nullable=False)
+    data_type: str = RequiredField(str, column="configuration_data_type", nullable=False)
     default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
     value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
     params: Optional[Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]] = OptionalField(
@@ -1211,6 +1229,12 @@ class ChannelConfigurationEntity(db.Entity):
     channel: ChannelEntity = RequiredField(
         "ChannelEntity", reverse="configuration", column="channel_id", nullable=False
     )
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def data_type_formatted(self) -> DataType:
+        return DataType(self.data_type)
 
     # -----------------------------------------------------------------------------
 
@@ -1237,9 +1261,9 @@ class ChannelConfigurationEntity(db.Entity):
         if self.value is None:
             return None
 
-        if isinstance(self.data_type, DataType):
+        if isinstance(self.data_type_formatted, DataType):
             if (
-                self.data_type in [
+                self.data_type_formatted in [
                     DataType.CHAR,
                     DataType.UCHAR,
                     DataType.SHORT,
@@ -1250,7 +1274,7 @@ class ChannelConfigurationEntity(db.Entity):
             ):
                 return int(self.value)
 
-            if self.data_type == DataType.FLOAT:
+            if self.data_type_formatted == DataType.FLOAT:
                 return float(self.value)
 
         return self.value
@@ -1323,14 +1347,14 @@ class ChannelConfigurationEntity(db.Entity):
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
-        if isinstance(self.data_type, DataType):
-            data_type = self.data_type.value
+        if isinstance(self.data_type_formatted, DataType):
+            data_type = self.data_type_formatted.value
 
-        elif self.data_type is None:
+        elif self.data_type_formatted is None:
             data_type = None
 
         else:
-            data_type = self.data_type
+            data_type = self.data_type_formatted
 
         structure: Dict[str, Optional[str]] = {
             "id": self.configuration_id.__str__(),
@@ -1344,9 +1368,9 @@ class ChannelConfigurationEntity(db.Entity):
             "channel": self.channel.channel_id.__str__(),
         }
 
-        if isinstance(self.data_type, DataType):
+        if isinstance(self.data_type_formatted, DataType):
             if (
-                self.data_type in [
+                self.data_type_formatted in [
                     DataType.CHAR,
                     DataType.UCHAR,
                     DataType.SHORT,
@@ -1365,7 +1389,7 @@ class ChannelConfigurationEntity(db.Entity):
                     },
                 }
 
-            if self.data_type == DataType.ENUM:
+            if self.data_type_formatted == DataType.ENUM:
                 return {
                     **structure,
                     **{

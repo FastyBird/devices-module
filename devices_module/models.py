@@ -513,6 +513,7 @@ class DevicePropertyEntity(db.Entity):
 
     @property
     def data_type_formatted(self) -> Optional[DataType]:
+        """Transform data type to enum value"""
         return DataType(self.data_type) if self.data_type is not None else None
 
     # -----------------------------------------------------------------------------
@@ -623,6 +624,7 @@ class DeviceConfigurationEntity(db.Entity):
 
     @property
     def data_type_formatted(self) -> DataType:
+        """Transform data type to enum value"""
         return DataType(self.data_type)
 
     # -----------------------------------------------------------------------------
@@ -1122,6 +1124,7 @@ class ChannelPropertyEntity(db.Entity):
 
     @property
     def data_type_formatted(self) -> Optional[DataType]:
+        """Transform data type to enum value"""
         return DataType(self.data_type) if self.data_type is not None else None
 
     # -----------------------------------------------------------------------------
@@ -1234,6 +1237,7 @@ class ChannelConfigurationEntity(db.Entity):
 
     @property
     def data_type_formatted(self) -> DataType:
+        """Transform data type to enum value"""
         return DataType(self.data_type)
 
     # -----------------------------------------------------------------------------

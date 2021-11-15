@@ -21,7 +21,6 @@ Devices module DI container
 # pylint: disable=no-value-for-parameter
 
 # Library dependencies
-from enum import Enum
 from typing import Dict, Union
 from kink import di
 

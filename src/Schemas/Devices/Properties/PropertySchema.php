@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 
+use Consistence;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
@@ -91,6 +92,9 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	{
 		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property->getId());
 
+		$actualValue = $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getActualValue()) : null;
+		$expectedValue = $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getExpectedValue()) : null;
+
 		return [
 			'key'            => $property->getKey(),
 			'identifier'     => $property->getIdentifier(),
@@ -100,8 +104,8 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			'data_type'      => $property->getDataType() !== null ? $property->getDataType()->getValue() : null,
 			'unit'           => $property->getUnit(),
 			'format'         => is_array($property->getFormat()) ? implode(',', $property->getFormat()) : $property->getFormat(),
-			'actual_value'   => $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getActualValue()) : null,
-			'expected_value' => $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getExpectedValue()) : null,
+			'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,
+			'expected_value' => $expectedValue instanceof Consistence\Enum\Enum ? (string) $expectedValue : $expectedValue,
 			'pending'        => $state !== null && $state->isPending(),
 		];
 	}

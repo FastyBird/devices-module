@@ -83,10 +83,6 @@ export default class Property extends Model implements PropertyInterface {
       [DataType.BOOLEAN].includes(this.dataType)
   }
 
-  get isSwitch(): boolean {
-    return this.identifier === 'switch'
-  }
-
   get isInteger(): boolean {
     return this.dataType !== null && Object.values(PropertyIntegerDatatypeTypes).includes(this.dataType)
   }
@@ -115,6 +111,14 @@ export default class Property extends Model implements PropertyInterface {
     return this.dataType !== null && this.dataType === DataType.COLOR
   }
 
+  get isButton(): boolean {
+    return this.dataType !== null && this.dataType === DataType.BUTTON
+  }
+
+  get isSwitch(): boolean {
+    return this.dataType !== null && this.dataType === DataType.SWITCH
+  }
+
   get isSettable(): boolean {
     return this.settable
   }
@@ -133,9 +137,9 @@ export default class Property extends Model implements PropertyInterface {
         return this.actualValue
       }
 
-      return ['true', '1', 't', 'y', 'yes'].includes(this.actualValue.toString().toLocaleLowerCase())
+      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.actualValue.toString().toLocaleLowerCase())
     } else if (this.isEnum) {
-      return this.actualValue === 'on'
+      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.actualValue.toString().toLocaleLowerCase())
     }
 
     return false
@@ -151,9 +155,9 @@ export default class Property extends Model implements PropertyInterface {
         return this.expectedValue
       }
 
-      return ['true', '1', 't', 'y', 'yes'].includes(this.expectedValue.toString().toLocaleLowerCase())
+      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.expectedValue.toString().toLocaleLowerCase())
     } else if (this.isEnum) {
-      return this.expectedValue === 'on'
+      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.expectedValue.toString().toLocaleLowerCase())
     }
 
     return false

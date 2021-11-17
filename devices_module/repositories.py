@@ -162,6 +162,21 @@ class DevicesRepository:
 
     # -----------------------------------------------------------------------------
 
+    def get_all_by_connector(self, connector_id: uuid.UUID) -> List[DeviceItem]:
+        """Find all devices in cache for connector identifier"""
+        if self.__items is None:
+            self.initialize()
+
+        items: List[DeviceItem] = []
+
+        for record in self.__items.values():
+            if record.connector_id is not None and record.connector_id.__eq__(connector_id):
+                items.append(record)
+
+        return items
+
+    # -----------------------------------------------------------------------------
+
     def clear(self) -> None:
         """Clear items cache"""
         self.__items = None

@@ -9,6 +9,7 @@ use FastyBird\DevicesModule\Subscribers;
 use FastyBird\ExchangePlugin\Publisher as ExchangePluginPublisher;
 use FastyBird\ModulesMetadata;
 use Mockery;
+use Nette\Utils;
 use Ninjify\Nunjuck\TestCase\BaseMockeryTestCase;
 use stdClass;
 use Tester\Assert;
@@ -43,12 +44,12 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePluginPublisher\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $origin, string $key, array $data): bool {
+			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
 				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
 				Assert::same('fb.bus.entity.created.device', $key);
-				Assert::equal([
+				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
@@ -63,7 +64,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
 					'params'                => [],
-				], $data);
+				]), $data);
 
 				return true;
 			})
@@ -98,12 +99,12 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePluginPublisher\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $origin, string $key, array $data): bool {
+			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
 				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
 				Assert::same('fb.bus.entity.updated.device', $key);
-				Assert::equal([
+				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
@@ -118,7 +119,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
 					'params'                => [],
-				], $data);
+				]), $data);
 
 				return true;
 			})
@@ -152,12 +153,12 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePluginPublisher\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $origin, string $key, array $data): bool {
+			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
 				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
 				Assert::same('fb.bus.entity.deleted.device', $key);
-				Assert::equal([
+				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
@@ -172,7 +173,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
 					'params'                => [],
-				], $data);
+				]), $data);
 
 				return true;
 			})

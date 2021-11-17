@@ -18,15 +18,15 @@ from unittest.mock import patch, Mock
 from pony.orm import core as orm
 
 # Library libs
-from devices_module.key import EntityKey
+from devices_module.helpers import KeyHashHelpers
 
 
-class TestEntityKey(unittest.TestCase):
+class TestKeyHashUtils(unittest.TestCase):
     @patch('devices_module.key.time')
     def test_default_generator(self, mock_time) -> None:
         mock_time.time_ns = Mock(return_value=1630831410968578000)
 
-        entity_key_generator = EntityKey()
+        entity_key_generator = KeyHashHelpers()
 
         entity = Mock()
 
@@ -35,7 +35,7 @@ class TestEntityKey(unittest.TestCase):
     # -----------------------------------------------------------------------------
 
     def test_custom_generator(self) -> None:
-        entity_key_generator = EntityKey()
+        entity_key_generator = KeyHashHelpers()
         entity_key_generator.set_generator(self.__custom_generator)
 
         entity = Mock()

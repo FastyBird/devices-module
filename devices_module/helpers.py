@@ -14,27 +14,75 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-# pylint: disable=too-many-lines
-
 """
-Devices module entities key generator & utils
+Devices module helpers
 """
 
-# Library dependencies
+# App dependencies
 import math
 import time
-from typing import Callable, Optional
+from typing import Callable, Set, Union, Optional
 from kink import inject
 from pony.orm import core as orm
+from modules_metadata.types import DataType
+
+# Library libs
+from devices_module.items import DevicePropertyItem, ChannelPropertyItem
 
 
 @inject
-class EntityKey:
+class PropertiesHelpers:  # pylint: disable=too-few-public-methods
     """
-    Entity key generator & parser
+    Properties helpers
 
     @package        FastyBird:DevicesModule!
-    @module         key
+    @module         helpers
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+    @staticmethod
+    def normalize_value(  # pylint: disable=too-many-return-statements
+        item: Union[DevicePropertyItem, ChannelPropertyItem],
+        value: Union[int, float, str, bool, None],
+    ) -> Union[int, float, str, bool, None]:
+        """Normalize property value based od property data type"""
+        if value is None or item.data_type is None:
+            return value
+
+        if item.data_type == DataType.INT:
+            return int(value)
+
+        if item.data_type == DataType.FLOAT:
+            return float(value)
+
+        if item.data_type == DataType.STRING:
+            return str(value)
+
+        if item.data_type == DataType.BOOLEAN:
+            value = str(value)
+
+            return value.lower() in ["true", "1", "t", "y", "yes", "on"]
+
+        if item.data_type == DataType.ENUM:
+            if (
+                item.get_format() is not None
+                and isinstance(item.get_format(), Set)
+                and str(value) in item.get_format()
+            ):
+                return str(value)
+
+            return None
+
+        return value
+
+
+@inject
+class KeyHashHelpers:
+    """
+    Key hash generator & parser
+
+    @package        FastyBird:DevicesModule!
+    @module         helpers
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -90,9 +138,7 @@ class EntityKey:
     # -----------------------------------------------------------------------------
 
     def decode(self, string: str, max_length: Optional[int] = None) -> int:
-        """
-        Convert key hash to number
-        """
+        """Convert key hash to number"""
         string = "".join(reversed(string))
         result = 0
         length = len(string) - 1

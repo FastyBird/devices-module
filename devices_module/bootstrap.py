@@ -26,7 +26,6 @@ from kink import di
 
 # Library libs
 from devices_module.exchange import ModuleExchange
-from devices_module.key import EntityKey
 from devices_module.models import db
 from devices_module.repositories import (
     ConnectorsRepository,
@@ -40,6 +39,7 @@ from devices_module.repositories import (
     ChannelsControlsRepository,
     ChannelsConfigurationRepository,
 )
+from devices_module.helpers import KeyHashHelpers, PropertiesHelpers
 
 default_settings: Dict[str, Dict[str, Union[str, int, bool, None]]] = {
     "database": {
@@ -84,8 +84,11 @@ def create_container(settings: Dict[str, Dict[str, Union[str, int, bool, None]]]
     di[ModuleExchange] = ModuleExchange()
     di["fb-devices-module_exchange"] = di[ModuleExchange]
 
-    di[EntityKey] = EntityKey()
-    di["fb-devices-module_entity-key-generator"] = di[EntityKey]
+    di[PropertiesHelpers] = PropertiesHelpers()
+    di["fb-devices-module_helpers-properties"] = di[PropertiesHelpers]
+
+    di[KeyHashHelpers] = KeyHashHelpers()
+    di["fb-devices-module_helpers-key-hash"] = di[KeyHashHelpers]
 
     db.bind(
         provider="mysql",

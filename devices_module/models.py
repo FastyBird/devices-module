@@ -39,7 +39,7 @@ from pony.orm import (
 
 # Library libs
 from devices_module.events import ModelEntityCreatedEvent, ModelEntityUpdatedEvent, ModelEntityDeletedEvent
-from devices_module.key import EntityKey
+from devices_module.helpers import KeyHashHelpers
 
 # Create devices module database accessor
 db: Database = Database()
@@ -111,7 +111,7 @@ class ConnectorEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = di[EntityKey].generate_key(self)
+            self.key = di[KeyHashHelpers].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -443,7 +443,7 @@ class DeviceEntity(db.Entity):
             self.firmware_manufacturer = self.firmware_manufacturer.lower()
 
         if self.key is None:
-            self.key = di[EntityKey].generate_key(self)
+            self.key = di[KeyHashHelpers].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -556,7 +556,7 @@ class DevicePropertyEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = di[EntityKey].generate_key(self)
+            self.key = di[KeyHashHelpers].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -797,7 +797,7 @@ class DeviceConfigurationEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = di[EntityKey].generate_key(self)
+            self.key = di[KeyHashHelpers].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -1058,7 +1058,7 @@ class ChannelEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = di[EntityKey].generate_key(self)
+            self.key = di[KeyHashHelpers].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -1167,7 +1167,7 @@ class ChannelPropertyEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = di[EntityKey].generate_key(self)
+            self.key = di[KeyHashHelpers].generate_key(self)
 
     # -----------------------------------------------------------------------------
 
@@ -1410,7 +1410,7 @@ class ChannelConfigurationEntity(db.Entity):
         self.created_at = datetime.datetime.now()
 
         if self.key is None:
-            self.key = di[EntityKey].generate_key(self)
+            self.key = di[KeyHashHelpers].generate_key(self)
 
     # -----------------------------------------------------------------------------
 

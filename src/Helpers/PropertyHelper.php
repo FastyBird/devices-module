@@ -56,28 +56,29 @@ final class PropertyHelper
 			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
 				return in_array(strtolower((string) $value), ['true', 't', 'yes', 'y', '1', 'on'], true);
 
-			} elseif (
-				$property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
-				&& ModulesMetadataTypes\ButtonPayloadType::isValidValue((string) $value)
-			) {
-				return ModulesMetadataTypes\ButtonPayloadType::get($value);
-
-			} elseif (
-				$property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
-				&& ModulesMetadataTypes\SwitchPayloadType::isValidValue((string) $value)
-			) {
-				return ModulesMetadataTypes\SwitchPayloadType::get($value);
-
-			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
-				if (is_array($property->getFormat()) && count($property->getFormat()) > 0) {
-					if (in_array($value, $property->getFormat(), true)) {
-						return $value;
-					}
-
-					return null;
+			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BUTTON)) {
+				if (ModulesMetadataTypes\ButtonPayloadType::isValidValue((string) $value)) {
+					return ModulesMetadataTypes\ButtonPayloadType::get($value);
 				}
 
-				return $value;
+				return null;
+
+			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SWITCH)) {
+				if (ModulesMetadataTypes\SwitchPayloadType::isValidValue((string) $value)) {
+					return ModulesMetadataTypes\SwitchPayloadType::get($value);
+				}
+
+				return null;
+
+			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+				if (
+					is_array($property->getFormat()) && count($property->getFormat()) > 0
+					&& in_array($value, $property->getFormat(), true)
+				) {
+					return $value;
+				}
+
+				return null;
 			}
 		}
 

@@ -24,7 +24,7 @@ import time
 from typing import Callable, Set, Union, Optional
 from kink import inject
 from pony.orm import core as orm
-from modules_metadata.types import DataType
+from modules_metadata.types import DataType, ButtonPayload, SwitchPayload
 
 # Library libs
 from devices_module.items import DevicePropertyItem, ChannelPropertyItem
@@ -44,7 +44,7 @@ class PropertiesHelpers:  # pylint: disable=too-few-public-methods
     def normalize_value(  # pylint: disable=too-many-return-statements
         item: Union[DevicePropertyItem, ChannelPropertyItem],
         value: Union[int, float, str, bool, None],
-    ) -> Union[int, float, str, bool, None]:
+    ) -> Union[int, float, str, bool, ButtonPayload, SwitchPayload, None]:
         """Normalize property value based od property data type"""
         if value is None or item.data_type is None:
             return value
@@ -61,7 +61,7 @@ class PropertiesHelpers:  # pylint: disable=too-few-public-methods
         if item.data_type == DataType.BOOLEAN:
             value = str(value)
 
-            return value.lower() in ["true", "1", "t", "y", "yes", "on"]
+            return value.lower() in ["true", "t", "yes", "y", "1", "on"]
 
         if item.data_type == DataType.ENUM:
             if (
@@ -70,6 +70,18 @@ class PropertiesHelpers:  # pylint: disable=too-few-public-methods
                 and str(value) in item.get_format()
             ):
                 return str(value)
+
+            return None
+
+        if item.data_type == DataType.BUTTON:
+            if ButtonPayload.has_value(str(value)):
+                return ButtonPayload(str(value))
+
+            return None
+
+        if item.data_type == DataType.SWITCH:
+            if SwitchPayload.has_value(str(value)):
+                return SwitchPayload(str(value))
 
             return None
 

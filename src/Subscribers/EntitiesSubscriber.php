@@ -25,6 +25,7 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\ExchangePlugin\Publisher as ExchangePluginPublisher;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use Nette;
+use Nette\Utils;
 use ReflectionClass;
 use ReflectionException;
 
@@ -282,17 +283,17 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$this->publisher->publish(
 					ModulesMetadataTypes\ModuleOriginType::get(ModulesMetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
-					array_merge($state !== null ? [
+					Utils\ArrayHash::from(array_merge($state !== null ? [
 						'actual_value'   => Helpers\PropertyHelper::normalizeValue($entity, $state->getActualValue()),
 						'expected_value' => Helpers\PropertyHelper::normalizeValue($entity, $state->getExpectedValue()),
 						'pending'        => $state->isPending(),
-					] : [], $entity->toArray())
+					] : [], $entity->toArray()))
 				);
 			} else {
 				$this->publisher->publish(
 					ModulesMetadataTypes\ModuleOriginType::get(ModulesMetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
-					$entity->toArray()
+					Utils\ArrayHash::from($entity->toArray())
 				);
 			}
 		}

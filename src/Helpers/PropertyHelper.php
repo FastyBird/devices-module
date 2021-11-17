@@ -54,7 +54,7 @@ final class PropertyHelper
 				return $value;
 
 			} elseif ($property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
-				return in_array(strtolower($value), ['true', 't', 'yes', 'y', '1', 'on'], true);
+				return in_array(strtolower((string) $value), ['true', 't', 'yes', 'y', '1', 'on'], true);
 
 			} elseif (
 				$property->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BUTTON)

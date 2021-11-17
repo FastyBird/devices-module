@@ -87,7 +87,7 @@ export default class Property extends Model implements PropertyInterface {
     }
   }
 
-  static beforeCreate (properties: PropertyInterface[]) {
+  static beforeCreate(properties: PropertyInterface[]): PropertyInterface[] {
     return properties.map((property: PropertyInterface) => {
       property.actualValue = normalizeValue(property, String(property.actualValue))
       property.expectedValue = normalizeValue(property, String(property.expectedValue))
@@ -96,7 +96,7 @@ export default class Property extends Model implements PropertyInterface {
     })
   }
 
-  static beforeUpdate (properties: PropertyInterface[]) {
+  static beforeUpdate(properties: PropertyInterface[]): PropertyInterface[] {
     return properties.map((property: PropertyInterface) => {
       property.actualValue = normalizeValue(property, String(property.actualValue))
       property.expectedValue = normalizeValue(property, String(property.expectedValue))

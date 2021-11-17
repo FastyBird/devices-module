@@ -22,7 +22,7 @@ from devices_module.helpers import KeyHashHelpers
 
 
 class TestKeyHashUtils(unittest.TestCase):
-    @patch('devices_module.key.time')
+    @patch('devices_module.helpers.time')
     def test_default_generator(self, mock_time) -> None:
         mock_time.time_ns = Mock(return_value=1630831410968578000)
 

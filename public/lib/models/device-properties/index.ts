@@ -38,6 +38,7 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { DevicePropertyJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
+import { normalizeValue } from '@/lib/models/properties/Property'
 
 interface SemaphoreFetchingState {
   items: string[]
@@ -250,11 +251,13 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
 
     const backupValue = payload.property.actualValue
 
+    const expectedValue = normalizeValue(payload.property, payload.value)
+
     try {
       await DeviceProperty.update({
         where: payload.property.id,
         data: {
-          value: payload.value,
+          value: expectedValue,
         },
       })
     } catch (e: any) {
@@ -272,7 +275,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
         data: {
           device: device.id,
           property: payload.property.id,
-          expected_value: payload.value,
+          expected_value: expectedValue,
         },
       })
         .then((response: RpCallResponse<{ data: string }>): void => {

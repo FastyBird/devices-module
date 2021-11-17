@@ -3,6 +3,15 @@ import { DataType } from '@fastybird/modules-metadata'
 // ENTITY TYPES
 // ============
 
+export enum PropertyIntegerDatatypeTypes {
+  CHAR = DataType.CHAR,
+  UNSIGNED_CHAR = DataType.UCHAR,
+  SHORT = DataType.SHORT,
+  UNSIGNED_SHORT = DataType.USHORT,
+  INT = DataType.INT,
+  UNSIGNED_INT = DataType.UINT,
+}
+
 export enum PropertyNumberDatatypeTypes {
   CHAR = DataType.CHAR,
   UNSIGNED_CHAR = DataType.UCHAR,
@@ -11,15 +20,6 @@ export enum PropertyNumberDatatypeTypes {
   INT = DataType.INT,
   UNSIGNED_INT = DataType.UINT,
   FLOAT = DataType.FLOAT,
-}
-
-export enum PropertyIntegerDatatypeTypes {
-  CHAR = DataType.CHAR,
-  UNSIGNED_CHAR = DataType.UCHAR,
-  SHORT = DataType.SHORT,
-  UNSIGNED_SHORT = DataType.USHORT,
-  INT = DataType.INT,
-  UNSIGNED_INT = DataType.UINT,
 }
 
 export enum PropertyCommandState {
@@ -39,11 +39,14 @@ export enum SensorNameTypes {
   NOISE_LEVEL = 'noise_level',
   TEMPERATURE = 'temperature',
   HUMIDITY = 'humidity',
+  POWER = 'power',
+  CURRENT = 'current',
+  VOLTAGE = 'voltage',
+  ENERGY = 'energy',
 }
 
 export enum ActorNameTypes {
   ACTOR = 'actor',
-  SWITCH = 'switch',
 }
 
 // ENTITY INTERFACE
@@ -92,7 +95,6 @@ export interface PropertyInterface {
   binaryExpected: boolean | null
   analogValue: string
   analogExpected: string | null
-  formattedValue: string
 
   icon: string
 }

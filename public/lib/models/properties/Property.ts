@@ -1,8 +1,5 @@
-import {
-  Model,
-  Fields,
-} from '@vuex-orm/core'
-import { DataType, HardwareManufacturer } from '@fastybird/modules-metadata'
+import { Fields, Model } from '@vuex-orm/core'
+import { ButtonPayload, DataType, HardwareManufacturer, SwitchPayload } from '@fastybird/modules-metadata'
 
 import {
   PropertyCommandResult,
@@ -10,8 +7,60 @@ import {
   PropertyIntegerDatatypeTypes,
   PropertyInterface,
   PropertyNumberDatatypeTypes,
+  SensorNameTypes,
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
+
+export const normalizeValue = (property: PropertyInterface, value: string | null): number | string | boolean | null => {
+  if (value === null) {
+    return null
+  }
+
+  switch (property.dataType) {
+    case DataType.BOOLEAN:
+      return ['true', 't', 'yes', 'y', '1', 'on'].includes(value.toLocaleLowerCase())
+
+    case DataType.FLOAT:
+      return parseFloat(value)
+
+    case DataType.CHAR:
+    case DataType.UCHAR:
+    case DataType.SHORT:
+    case DataType.USHORT:
+    case DataType.INT:
+    case DataType.UINT:
+      return parseInt(value, 10)
+
+    case DataType.STRING:
+      return value
+
+    case DataType.ENUM:
+      if (property.format?.split(',').includes(value.toLowerCase())) {
+        return value.toLowerCase()
+      }
+
+      return null
+
+    case DataType.COLOR:
+      break
+
+    case DataType.BUTTON:
+      if (value.toLowerCase() in ButtonPayload) {
+        return value.toLowerCase()
+      }
+
+      return null
+
+    case DataType.SWITCH:
+      if (value.toLowerCase() in SwitchPayload) {
+        return value.toLowerCase()
+      }
+
+      return null
+  }
+
+  return value
+}
 
 // ENTITY MODEL
 // ============
@@ -64,23 +113,19 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get isAnalogSensor(): boolean {
-    return !this.isSettable && this.dataType !== null &&
-      Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
+    return !this.isSettable && this.dataType !== null && this.dataType !== DataType.BOOLEAN
   }
 
   get isBinarySensor(): boolean {
-    return !this.isSettable && this.dataType !== null &&
-      [DataType.BOOLEAN].includes(this.dataType)
+    return !this.isSettable && this.dataType !== null && this.dataType === DataType.BOOLEAN
   }
 
   get isAnalogActor(): boolean {
-    return this.isSettable && this.dataType !== null &&
-      Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
+    return this.isSettable && this.dataType !== null && this.dataType !== DataType.BOOLEAN
   }
 
   get isBinaryActor(): boolean {
-    return this.isSettable && this.dataType !== null &&
-      [DataType.BOOLEAN].includes(this.dataType)
+    return this.isSettable && this.dataType !== null && this.dataType === DataType.BOOLEAN
   }
 
   get isInteger(): boolean {
@@ -138,8 +183,6 @@ export default class Property extends Model implements PropertyInterface {
       }
 
       return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.actualValue.toString().toLocaleLowerCase())
-    } else if (this.isEnum) {
-      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.actualValue.toString().toLocaleLowerCase())
     }
 
     return false
@@ -156,8 +199,6 @@ export default class Property extends Model implements PropertyInterface {
       }
 
       return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.expectedValue.toString().toLocaleLowerCase())
-    } else if (this.isEnum) {
-      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.expectedValue.toString().toLocaleLowerCase())
     }
 
     return false
@@ -165,6 +206,7 @@ export default class Property extends Model implements PropertyInterface {
 
   get analogValue(): string {
     const storeInstance = Property.store()
+    const actualValue = normalizeValue(this, this.actualValue !== null ? String(this.actualValue): null)
 
     if (
       this.deviceInstance !== null &&
@@ -172,11 +214,11 @@ export default class Property extends Model implements PropertyInterface {
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n')
     ) {
       switch (this.identifier) {
-        case 'air_quality':
-          if (this.actualValue as number > 7) {
+        case SensorNameTypes.AIR_QUALITY:
+          if (actualValue as number > 7) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
-          } else if (this.actualValue as number > 4) {
+          } else if (actualValue as number > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
           }
@@ -184,11 +226,11 @@ export default class Property extends Model implements PropertyInterface {
           // @ts-ignore
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
 
-        case 'light_level':
-          if (this.actualValue as number > 8) {
+        case SensorNameTypes.LIGHT_LEVEL:
+          if (actualValue as number > 8) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
-          } else if (this.actualValue as number > 4) {
+          } else if (actualValue as number > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -196,11 +238,11 @@ export default class Property extends Model implements PropertyInterface {
           // @ts-ignore
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
 
-        case 'noise_level':
-          if (this.actualValue as number > 6) {
+        case SensorNameTypes.NOISE_LEVEL:
+          if (actualValue as number > 6) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
-          } else if (this.actualValue as number > 3) {
+          } else if (actualValue as number > 3) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -210,7 +252,7 @@ export default class Property extends Model implements PropertyInterface {
       }
     }
 
-    return this.formattedValue
+    return String(actualValue)
   }
 
   get analogExpected(): string | null {
@@ -219,6 +261,7 @@ export default class Property extends Model implements PropertyInterface {
     }
 
     const storeInstance = Property.store()
+    const expectedValue = normalizeValue(this, this.expectedValue !== null ? String(this.expectedValue): null)
 
     if (
       this.deviceInstance !== null &&
@@ -226,11 +269,11 @@ export default class Property extends Model implements PropertyInterface {
       Object.prototype.hasOwnProperty.call(storeInstance, '$i18n')
     ) {
       switch (this.identifier) {
-        case 'air_quality':
-          if (this.expectedValue > 7) {
+        case SensorNameTypes.AIR_QUALITY:
+          if (expectedValue as number > 7) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.unhealthy`).toString()
-          } else if (this.expectedValue > 4) {
+          } else if (expectedValue as number > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.moderate`).toString()
           }
@@ -238,11 +281,11 @@ export default class Property extends Model implements PropertyInterface {
           // @ts-ignore
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.good`).toString()
 
-        case 'light_level':
-          if (this.expectedValue > 8) {
+        case SensorNameTypes.LIGHT_LEVEL:
+          if (expectedValue as number > 8) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.dusky`).toString()
-          } else if (this.expectedValue > 4) {
+          } else if (expectedValue as number > 4) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -250,11 +293,11 @@ export default class Property extends Model implements PropertyInterface {
           // @ts-ignore
           return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.bright`).toString()
 
-        case 'noise_level':
-          if (this.expectedValue > 6) {
+        case SensorNameTypes.NOISE_LEVEL:
+          if (expectedValue as number > 6) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.noisy`).toString()
-          } else if (this.expectedValue > 3) {
+          } else if (expectedValue as number > 3) {
             // @ts-ignore
             return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.values.normal`).toString()
           }
@@ -264,69 +307,34 @@ export default class Property extends Model implements PropertyInterface {
       }
     }
 
-    return this.formattedValue
-  }
-
-  get formattedValue(): string {
-    const value = parseFloat(String(this.actualValue))
-    const decimals = 2
-    const decPoint = ','
-    const thousandsSeparator = ' '
-
-    const cleanedNumber = (`${value}`).replace(/[^0-9+\-Ee.]/g, '')
-
-    const n = !isFinite(+cleanedNumber) ? 0 : +cleanedNumber
-    const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals)
-
-    const sep = typeof thousandsSeparator === 'undefined' ? ',' : thousandsSeparator
-    const dec = typeof decPoint === 'undefined' ? '.' : decPoint
-
-    const toFixedFix = (fN: number, fPrec: number): string => {
-      const k = 10 ** fPrec
-
-      return `${Math.round(fN * k) / k}`
-    }
-
-    // Fix for IE parseFloat(0.55).toFixed(0) = 0
-    const s = (prec ? toFixedFix(n, prec) : `${Math.round(n)}`).split('.')
-
-    if (s[0].length > 3) {
-      s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep)
-    }
-
-    if ((s[1] || '').length < prec) {
-      s[1] = s[1] || ''
-      s[1] += new Array(prec - s[1].length + 1).join('0')
-    }
-
-    return s.join(dec)
+    return String(expectedValue)
   }
 
   get icon(): string {
     switch (this.identifier) {
-      case 'temperature':
+      case SensorNameTypes.TEMPERATURE:
         return 'thermometer-half'
 
-      case 'humidity':
+      case SensorNameTypes.HUMIDITY:
         return 'tint'
 
-      case 'air_quality':
+      case SensorNameTypes.AIR_QUALITY:
         return 'fan'
 
-      case 'light_level':
+      case SensorNameTypes.LIGHT_LEVEL:
         return 'sun'
 
-      case 'noise_level':
+      case SensorNameTypes.NOISE_LEVEL:
         return 'microphone-alt'
 
-      case 'power':
+      case SensorNameTypes.POWER:
         return 'plug'
 
-      case 'current':
-      case 'voltage':
+      case SensorNameTypes.CURRENT:
+      case SensorNameTypes.VOLTAGE:
         return 'bolt'
 
-      case 'energy':
+      case SensorNameTypes.ENERGY:
         return 'calculator'
     }
 

@@ -5,7 +5,8 @@ import * as exchangeEntitySchema
 import {
   ModuleOrigin,
   ChannelPropertyEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys, DataType,
+  DevicesModule as RoutingKeys,
+  DataType,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -39,6 +40,7 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { ChannelPropertyJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
+import { normalizeValue } from '@/lib/models/properties/Property'
 
 interface SemaphoreFetchingState {
   items: string[]
@@ -149,7 +151,10 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
     }
   },
 
-  async edit({ state, commit }, payload: { property: ChannelPropertyInterface, data: ChannelPropertyUpdateInterface }): Promise<Item<ChannelProperty>> {
+  async edit({
+               state,
+               commit,
+             }, payload: { property: ChannelPropertyInterface, data: ChannelPropertyUpdateInterface }): Promise<Item<ChannelProperty>> {
     if (state.semaphore.updating.includes(payload.property.id)) {
       throw new Error('devices-module.channel-properties.update.inProgress')
     }
@@ -257,11 +262,13 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
 
     const backupValue = payload.property.actualValue
 
+    const expectedValue = normalizeValue(payload.property, payload.value)
+
     try {
       await ChannelProperty.update({
         where: payload.property.id,
         data: {
-          value: payload.value,
+          value: expectedValue,
         },
       })
     } catch (e: any) {
@@ -280,7 +287,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
           device: device.id,
           channel: channel.id,
           property: payload.property.id,
-          expected_value: payload.value,
+          expected_value: expectedValue,
         },
       })
         .then((response: RpCallResponse<{ data: string }>): void => {

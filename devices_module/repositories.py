@@ -194,7 +194,7 @@ class DevicesRepository:
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[DeviceEntity] = DeviceEntity.get(
             device_id=uuid.UUID(data.get("id"), version=4),
@@ -220,7 +220,7 @@ class DevicesRepository:
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self.__items:
             entity: Optional[DeviceEntity] = DeviceEntity.get(
@@ -498,7 +498,7 @@ class ChannelsRepository:
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[ChannelEntity] = ChannelEntity.get(
             channel_id=uuid.UUID(data.get("id"), version=4),
@@ -524,7 +524,7 @@ class ChannelsRepository:
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self.__items:
             entity: Optional[ChannelEntity] = ChannelEntity.get(
@@ -946,7 +946,7 @@ class DevicesPropertiesRepository(PropertiesRepository):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[DevicePropertyEntity] = DevicePropertyEntity.get(
             property_id=uuid.UUID(data.get("id"), version=4),
@@ -972,7 +972,7 @@ class DevicesPropertiesRepository(PropertiesRepository):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self._items:
             entity: Optional[DevicePropertyEntity] = DevicePropertyEntity.get(
@@ -1082,7 +1082,7 @@ class ChannelsPropertiesRepository(PropertiesRepository):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[ChannelPropertyEntity] = ChannelPropertyEntity.get(
             property_id=uuid.UUID(data.get("id"), version=4),
@@ -1108,7 +1108,7 @@ class ChannelsPropertiesRepository(PropertiesRepository):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self._items:
             entity: Optional[ChannelPropertyEntity] = ChannelPropertyEntity.get(
@@ -1246,7 +1246,7 @@ class ConnectorsRepository(ABC):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[ConnectorEntity] = ConnectorEntity.get(connector_id=uuid.UUID(data.get("id"), version=4))
 
@@ -1270,7 +1270,7 @@ class ConnectorsRepository(ABC):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self.__items:
             entity: Optional[ConnectorEntity] = ConnectorEntity.get(
@@ -1713,7 +1713,7 @@ class DevicesControlsRepository(ControlsRepository):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[DeviceControlEntity] = DeviceControlEntity.get(
             control_id=uuid.UUID(data.get("id"), version=4),
@@ -1739,7 +1739,7 @@ class DevicesControlsRepository(ControlsRepository):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self._items:
             entity: Optional[DeviceControlEntity] = DeviceControlEntity.get(
@@ -1846,7 +1846,7 @@ class ChannelsControlsRepository(ControlsRepository):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[ChannelControlEntity] = ChannelControlEntity.get(
             control_id=uuid.UUID(data.get("id"), version=4),
@@ -1872,7 +1872,7 @@ class ChannelsControlsRepository(ControlsRepository):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self._items:
             entity: Optional[ChannelControlEntity] = ChannelControlEntity.get(
@@ -1979,7 +1979,7 @@ class ConnectorsControlsRepository(ControlsRepository):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[ConnectorControlEntity] = ConnectorControlEntity.get(
             control_id=uuid.UUID(data.get("id"), version=4),
@@ -2005,7 +2005,7 @@ class ConnectorsControlsRepository(ControlsRepository):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self._items:
             entity: Optional[ConnectorControlEntity] = ConnectorControlEntity.get(
@@ -2354,7 +2354,7 @@ class DevicesConfigurationRepository(ConfigurationRepository):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[DeviceConfigurationEntity] = DeviceConfigurationEntity.get(
             configuration_id=uuid.UUID(data.get("id"), version=4),
@@ -2380,7 +2380,7 @@ class DevicesConfigurationRepository(ConfigurationRepository):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self._items:
             entity: Optional[DeviceConfigurationEntity] = DeviceConfigurationEntity.get(
@@ -2494,7 +2494,7 @@ class ChannelsConfigurationRepository(ConfigurationRepository):
 
             return True
 
-        data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         entity: Optional[ChannelConfigurationEntity] = ChannelConfigurationEntity.get(
             configuration_id=uuid.UUID(data.get("id"), version=4),
@@ -2520,7 +2520,7 @@ class ChannelsConfigurationRepository(ConfigurationRepository):
 
             return True
 
-        validated_data: Dict = validate_exchange_data(ModuleOrigin(ModuleOrigin.DEVICES_MODULE), routing_key, data)
+        validated_data: Dict = validate_exchange_data(ModuleOrigin.DEVICES_MODULE, routing_key, data)
 
         if validated_data.get("id") not in self._items:
             entity: Optional[ChannelConfigurationEntity] = ChannelConfigurationEntity.get(

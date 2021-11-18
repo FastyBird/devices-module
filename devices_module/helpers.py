@@ -22,6 +22,7 @@ Devices module helpers
 import math
 import time
 from typing import Callable, Set, Union, Optional
+from fastnumbers import fast_float, fast_int
 from kink import inject
 from pony.orm import core as orm
 from modules_metadata.types import DataType, ButtonPayload, SwitchPayload
@@ -50,10 +51,10 @@ class PropertiesHelpers:  # pylint: disable=too-few-public-methods
             return value
 
         if item.data_type == DataType.INT:
-            return int(value)
+            return fast_int(value)
 
         if item.data_type == DataType.FLOAT:
-            return float(value)
+            return fast_float(value)
 
         if item.data_type == DataType.STRING:
             return str(value)

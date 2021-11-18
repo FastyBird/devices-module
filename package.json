@@ -1,6 +1,6 @@
 {
   "name": "@fastybird/devices-module",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Devices module data model plugin",
   "keywords": [
     "devices",

@@ -28,6 +28,10 @@ from typing import Any, Dict, List, Optional, Union
 # Library libs
 from exchange_plugin.dispatcher import EventDispatcher
 from kink import di
+from modules_metadata.devices_module import (
+    ConfigurationNumberFieldAttribute,
+    ConfigurationSelectFieldAttribute,
+)
 from modules_metadata.types import DataType
 from pony.orm import PrimaryKey  # type: ignore[attr-defined]
 from pony.orm import Set  # type: ignore[attr-defined]
@@ -660,23 +664,23 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
 
     def has_min(self) -> bool:
         """Has min value flag"""
-        return self.params is not None and self.params.get("min_value") is not None
+        return self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MIN.value) is not None
 
     # -----------------------------------------------------------------------------
 
     def has_max(self) -> bool:
         """Has max value flag"""
-        return self.params is not None and self.params.get("max_value") is not None
+        return self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MAX.value) is not None
 
     # -----------------------------------------------------------------------------
 
     def has_step(self) -> bool:
         """Has step value flag"""
-        return self.params is not None and self.params.get("step_value") is not None
+        return self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None
 
     # -----------------------------------------------------------------------------
 
-    def get_value(self) -> Union[float, int, str, None]:
+    def get_value(self) -> Union[str, float, int, bool, None]:
         """Get configuration value"""
         if self.value is None:
             return None
@@ -695,14 +699,19 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
             if self.data_type_formatted == DataType.FLOAT:
                 return float(self.value)
 
-        return self.value
+            if self.data_type_formatted == DataType.BOOLEAN:
+                value = str(self.value)
+
+                return value.lower() in ["true", "t", "yes", "y", "1", "on"]
+
+        return str(self.value) if self.value else None
 
     # -----------------------------------------------------------------------------
 
     def get_min(self) -> Optional[float]:
         """Get min value"""
-        if self.params is not None and self.params.get("min_value") is not None:
-            return float(str(self.params.get("min_value")))
+        if self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MIN.value) is not None:
+            return float(str(self.params.get(ConfigurationNumberFieldAttribute.MIN.value)))
 
         return None
 
@@ -711,17 +720,17 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_min(self, min_value: Optional[float]) -> None:
         """Set min value"""
         if self.params is not None:
-            self.params["min_value"] = min_value
+            self.params[ConfigurationNumberFieldAttribute.MIN.value] = min_value
 
         else:
-            self.params = {"min_value": min_value}
+            self.params = {ConfigurationNumberFieldAttribute.MIN.value: min_value}
 
     # -----------------------------------------------------------------------------
 
     def get_max(self) -> Optional[float]:
         """Get max value"""
-        if self.params is not None and self.params.get("max_value") is not None:
-            return float(str(self.params.get("max_value")))
+        if self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MAX.value) is not None:
+            return float(str(self.params.get(ConfigurationNumberFieldAttribute.MAX.value)))
 
         return None
 
@@ -730,17 +739,17 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_max(self, max_value: Optional[float]) -> None:
         """Set max value"""
         if self.params is not None:
-            self.params["max_value"] = max_value
+            self.params[ConfigurationNumberFieldAttribute.MAX.value] = max_value
 
         else:
-            self.params = {"max_value": max_value}
+            self.params = {ConfigurationNumberFieldAttribute.MAX.value: max_value}
 
     # -----------------------------------------------------------------------------
 
     def get_step(self) -> Optional[float]:
         """Get step value"""
-        if self.params is not None and self.params.get("step_value") is not None:
-            return float(str(self.params.get("step_value")))
+        if self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None:
+            return float(str(self.params.get(ConfigurationNumberFieldAttribute.STEP.value)))
 
         return None
 
@@ -749,16 +758,16 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_step(self, step: Optional[float]) -> None:
         """Set step value"""
         if self.params is not None:
-            self.params["step_value"] = step
+            self.params[ConfigurationNumberFieldAttribute.STEP.value] = step
 
         else:
-            self.params = {"step_value": step}
+            self.params = {ConfigurationNumberFieldAttribute.STEP.value: step}
 
     # -----------------------------------------------------------------------------
 
     def get_values(self) -> List[Dict[str, str]]:
         """Get values for options"""
-        values = self.params.get("select_values", []) if self.params is not None else []
+        values = self.params.get(ConfigurationSelectFieldAttribute.VALUES.value, []) if self.params is not None else []
 
         if isinstance(values, List):
             mapped_values: List[Dict[str, str]] = []
@@ -776,10 +785,10 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_values(self, select_values: List[Dict[str, str]]) -> None:
         """Set values for options"""
         if self.params is not None:
-            self.params["select_values"] = select_values
+            self.params[ConfigurationSelectFieldAttribute.VALUES.value] = select_values
 
         else:
-            self.params = {"select_values": select_values}
+            self.params = {ConfigurationSelectFieldAttribute.VALUES.value: select_values}
 
     # -----------------------------------------------------------------------------
 
@@ -826,9 +835,9 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
                 return {
                     **structure,
                     **{
-                        "min": self.get_min(),
-                        "max": self.get_max(),
-                        "step": self.get_step(),
+                        ConfigurationNumberFieldAttribute.MIN.value: self.get_min(),
+                        ConfigurationNumberFieldAttribute.MAX.value: self.get_max(),
+                        ConfigurationNumberFieldAttribute.STEP.value: self.get_step(),
                     },
                 }
 
@@ -836,7 +845,7 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
                 return {
                     **structure,
                     **{
-                        "values": self.get_values(),
+                        ConfigurationSelectFieldAttribute.VALUES.value: self.get_values(),
                     },
                 }
 
@@ -1312,23 +1321,23 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
 
     def has_min(self) -> bool:
         """Has min value flag"""
-        return self.params is not None and self.params.get("min_value") is not None
+        return self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MIN.value) is not None
 
     # -----------------------------------------------------------------------------
 
     def has_max(self) -> bool:
         """Has max value flag"""
-        return self.params is not None and self.params.get("max_value") is not None
+        return self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MAX.value) is not None
 
     # -----------------------------------------------------------------------------
 
     def has_step(self) -> bool:
         """Has step value flag"""
-        return self.params is not None and self.params.get("step_value") is not None
+        return self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None
 
     # -----------------------------------------------------------------------------
 
-    def get_value(self) -> Union[float, int, str, None]:
+    def get_value(self) -> Union[str, float, int, bool, None]:
         """Get configuration value"""
         if self.value is None:
             return None
@@ -1347,14 +1356,19 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
             if self.data_type_formatted == DataType.FLOAT:
                 return float(self.value)
 
-        return self.value
+            if self.data_type_formatted == DataType.BOOLEAN:
+                value = str(self.value)
+
+                return value.lower() in ["true", "t", "yes", "y", "1", "on"]
+
+        return str(self.value) if self.value else None
 
     # -----------------------------------------------------------------------------
 
     def get_min(self) -> Optional[float]:
         """Get min value"""
-        if self.params is not None and self.params.get("min_value") is not None:
-            return float(str(self.params.get("min_value")))
+        if self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MIN.value) is not None:
+            return float(str(self.params.get(ConfigurationNumberFieldAttribute.MIN.value)))
 
         return None
 
@@ -1363,17 +1377,17 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_min(self, min_value: Optional[float]) -> None:
         """Set min value"""
         if self.params is not None:
-            self.params["min_value"] = min_value
+            self.params[ConfigurationNumberFieldAttribute.MIN.value] = min_value
 
         else:
-            self.params = {"min_value": min_value}
+            self.params = {ConfigurationNumberFieldAttribute.MIN.value: min_value}
 
     # -----------------------------------------------------------------------------
 
     def get_max(self) -> Optional[float]:
         """Get max value"""
-        if self.params is not None and self.params.get("max_value") is not None:
-            return float(str(self.params.get("max_value")))
+        if self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.MAX.value) is not None:
+            return float(str(self.params.get(ConfigurationNumberFieldAttribute.MAX.value)))
 
         return None
 
@@ -1382,17 +1396,17 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_max(self, max_value: Optional[float]) -> None:
         """Set max value"""
         if self.params is not None:
-            self.params["max_value"] = max_value
+            self.params[ConfigurationNumberFieldAttribute.MAX.value] = max_value
 
         else:
-            self.params = {"max_value": max_value}
+            self.params = {ConfigurationNumberFieldAttribute.MAX.value: max_value}
 
     # -----------------------------------------------------------------------------
 
     def get_step(self) -> Optional[float]:
         """Get step value"""
-        if self.params is not None and self.params.get("step_value") is not None:
-            return float(str(self.params.get("step_value")))
+        if self.params is not None and self.params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None:
+            return float(str(self.params.get(ConfigurationNumberFieldAttribute.STEP.value)))
 
         return None
 
@@ -1401,16 +1415,16 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_step(self, step: Optional[float]) -> None:
         """Set step value"""
         if self.params is not None:
-            self.params["step_value"] = step
+            self.params[ConfigurationNumberFieldAttribute.STEP.value] = step
 
         else:
-            self.params = {"step_value": step}
+            self.params = {ConfigurationNumberFieldAttribute.STEP.value: step}
 
     # -----------------------------------------------------------------------------
 
     def get_values(self) -> List[Dict[str, str]]:
         """Get values for options"""
-        values = self.params.get("select_values", []) if self.params is not None else []
+        values = self.params.get(ConfigurationSelectFieldAttribute.VALUES.value, []) if self.params is not None else []
 
         if isinstance(values, List):
             mapped_values: List[Dict[str, str]] = []
@@ -1428,10 +1442,10 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     def set_values(self, select_values: List[Dict[str, str]]) -> None:
         """Set values for options"""
         if self.params is not None:
-            self.params["select_values"] = select_values
+            self.params[ConfigurationSelectFieldAttribute.VALUES.value] = select_values
 
         else:
-            self.params = {"select_values": select_values}
+            self.params = {ConfigurationSelectFieldAttribute.VALUES.value: select_values}
 
     # -----------------------------------------------------------------------------
 
@@ -1462,7 +1476,7 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
             "data_type": data_type,
             "default": self.default,
             "value": self.get_value(),
-            "channel": self.channel.channel_id.__str__(),
+            "device": self.device.device_id.__str__(),
         }
 
         if isinstance(self.data_type_formatted, DataType):
@@ -1478,9 +1492,9 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
                 return {
                     **structure,
                     **{
-                        "min": self.get_min(),
-                        "max": self.get_max(),
-                        "step": self.get_step(),
+                        ConfigurationNumberFieldAttribute.MIN.value: self.get_min(),
+                        ConfigurationNumberFieldAttribute.MAX.value: self.get_max(),
+                        ConfigurationNumberFieldAttribute.STEP.value: self.get_step(),
                     },
                 }
 
@@ -1488,7 +1502,7 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
                 return {
                     **structure,
                     **{
-                        "values": self.get_values(),
+                        ConfigurationSelectFieldAttribute.VALUES.value: self.get_values(),
                     },
                 }
 

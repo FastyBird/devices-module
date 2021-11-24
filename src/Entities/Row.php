@@ -230,7 +230,7 @@ abstract class Row implements IRow
 			return (int) $this->value;
 
 		} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
-			return $this->value === '1' || Utils\Strings::lower((string) $this->value) === 'true';
+			return in_array(strtolower((string) $this->value), ['true', 't', 'yes', 'y', '1', 'on'], true);
 		}
 
 		return (string) $this->value;
@@ -256,7 +256,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('min_value');
+		return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN);
 	}
 
 	/**
@@ -272,7 +272,7 @@ abstract class Row implements IRow
 		}
 
 		if ($this->getMin() !== $min) {
-			$this->setParam('min_value', $min);
+			$this->setParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN, $min);
 		}
 	}
 
@@ -288,7 +288,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('min_value') !== null;
+		return $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN) !== null;
 	}
 
 	/**
@@ -303,7 +303,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('max_value');
+		return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX);
 	}
 
 	/**
@@ -319,7 +319,7 @@ abstract class Row implements IRow
 		}
 
 		if ($this->getMax() !== $max) {
-			$this->setParam('max_value', $max);
+			$this->setParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX, $max);
 		}
 	}
 
@@ -335,7 +335,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('max_value') !== null;
+		return $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX) !== null;
 	}
 
 	/**
@@ -350,7 +350,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('step_value');
+		return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP);
 	}
 
 	/**
@@ -366,7 +366,7 @@ abstract class Row implements IRow
 		}
 
 		if ($this->getStep() !== $step) {
-			$this->setParam('step_value', $step);
+			$this->setParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP, $step);
 		}
 	}
 
@@ -382,7 +382,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('step_value') !== null;
+		return $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP) !== null;
 	}
 
 	/**
@@ -394,7 +394,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam('select_values', []);
+		return $this->getParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
 	}
 
 	/**
@@ -406,7 +406,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		$this->setParam('select_values', []);
+		$this->setParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
 
 		foreach ($values as $value) {
 			$this->addValue($value);
@@ -424,7 +424,7 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		$values = $this->getParam('select_values', []);
+		$values = $this->getParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
 
 		if ($value->offsetExists('value') && $value->offsetExists('name')) {
 			$values[] = [
@@ -433,7 +433,7 @@ abstract class Row implements IRow
 			];
 		}
 
-		$this->setParam('select_values', $values);
+		$this->setParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, $values);
 	}
 
 	/**
@@ -453,14 +453,14 @@ abstract class Row implements IRow
 
 		if ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT) || $this->dataType->isInteger()) {
 			return array_merge($data, [
-				'min'  => $this->getMin(),
-				'max'  => $this->getMax(),
-				'step' => $this->getStep(),
+				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN  => $this->getMin(),
+				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX  => $this->getMax(),
+				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP => $this->getStep(),
 			]);
 
 		} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			return array_merge($data, [
-				'values' => $this->getValues(),
+				ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES => $this->getValues(),
 			]);
 		}
 

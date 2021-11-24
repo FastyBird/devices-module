@@ -257,7 +257,7 @@ abstract class Row implements IRow
 		}
 
 		if ($this->hasMin()) {
-			return (float)$this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN);
+			return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN);
 		}
 
 		return null;

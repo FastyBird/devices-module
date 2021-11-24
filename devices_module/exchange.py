@@ -18,30 +18,36 @@
 Devices module data exchange
 """
 
+# Python base dependencies
+from typing import Dict, Optional, Type
+
 # Library dependencies
-from typing import Dict, Type, Optional
 from exchange_plugin.dispatcher import EventDispatcher
-from exchange_plugin.events.event import IEvent
 from exchange_plugin.publisher import Publisher
+from kink import inject
 from modules_metadata.routing import RoutingKey
 from modules_metadata.types import ModuleOrigin
-from kink import inject
 from pony.orm import core as orm
+from whistle import Event
 
 # Library libs
-from devices_module.events import ModelEntityCreatedEvent, ModelEntityUpdatedEvent, ModelEntityDeletedEvent
+from devices_module.events import (
+    ModelEntityCreatedEvent,
+    ModelEntityDeletedEvent,
+    ModelEntityUpdatedEvent,
+)
 from devices_module.models import (
-    ConnectorEntity,
+    ChannelConfigurationEntity,
+    ChannelControlEntity,
+    ChannelEntity,
+    ChannelPropertyEntity,
     ConnectorControlEntity,
-    DeviceEntity,
-    DeviceControlEntity,
-    DevicePropertyEntity,
+    ConnectorEntity,
     DeviceConfigurationEntity,
     DeviceConnectorEntity,
-    ChannelEntity,
-    ChannelControlEntity,
-    ChannelPropertyEntity,
-    ChannelConfigurationEntity,
+    DeviceControlEntity,
+    DeviceEntity,
+    DevicePropertyEntity,
 )
 
 
@@ -128,7 +134,7 @@ class ModuleExchange:
 
     # -----------------------------------------------------------------------------
 
-    def __entity_created(self, event: IEvent) -> None:
+    def __entity_created(self, event: Event) -> None:
         if not isinstance(event, ModelEntityCreatedEvent):
             return
 
@@ -143,7 +149,7 @@ class ModuleExchange:
 
     # -----------------------------------------------------------------------------
 
-    def __entity_updated(self, event: IEvent) -> None:
+    def __entity_updated(self, event: Event) -> None:
         if not isinstance(event, ModelEntityUpdatedEvent):
             return
 
@@ -158,7 +164,7 @@ class ModuleExchange:
 
     # -----------------------------------------------------------------------------
 
-    def __entity_deleted(self, event: IEvent) -> None:
+    def __entity_deleted(self, event: Event) -> None:
         if not isinstance(event, ModelEntityDeletedEvent):
             return
 

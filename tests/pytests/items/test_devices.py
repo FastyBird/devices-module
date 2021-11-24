@@ -27,8 +27,6 @@ from tests.pytests.tests import DbTestCase
 class TestDeviceItem(DbTestCase):
     @inject
     def test_transform_to_dict(self, device_repository: DevicesRepository) -> None:
-        device_repository.initialize()
-
         device_item = device_repository.get_by_id(
             uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4)
         )

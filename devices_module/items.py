@@ -20,10 +20,12 @@
 Devices module entities cache items
 """
 
-# Library dependencies
+# Python base dependencies
 import uuid
 from abc import ABC
-from typing import Dict, Set, Tuple, List, Optional, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
+
+# Library libs
 from modules_metadata.types import DataType
 
 
@@ -36,6 +38,7 @@ class DeviceItem:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __id: uuid.UUID
     __identifier: str
     __key: str
@@ -50,7 +53,7 @@ class DeviceItem:
     __firmware_version: Optional[str]
 
     __connector_id: Optional[uuid.UUID]
-    __connector_data: Dict[str, Union[str, int, bool, None]]
+    __connector_data: Dict[str, Union[str, int, float, bool, None]]
 
     __parent: Optional[uuid.UUID] = None
 
@@ -71,7 +74,7 @@ class DeviceItem:
         firmware_manufacturer: Optional[str],
         firmware_version: Optional[str],
         connector_id: Optional[uuid.UUID],
-        connector_data: Dict[str, Union[str, int, bool, None]],
+        connector_data: Dict[str, Union[str, int, float, bool, None]],
         parent_device: Optional[uuid.UUID] = None,
     ) -> None:
         self.__id = device_id
@@ -196,7 +199,7 @@ class DeviceItem:
     # -----------------------------------------------------------------------------
 
     @property
-    def connector_data(self) -> Dict[str, Union[str, int, bool, None]]:
+    def connector_data(self) -> Dict[str, Union[str, int, float, bool, None]]:
         """Device connector settings"""
         return self.__connector_data
 
@@ -230,6 +233,7 @@ class ChannelItem:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __id: uuid.UUID
     __identifier: str
     __key: str
@@ -323,6 +327,7 @@ class PropertyItem(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __id: uuid.UUID
     __name: Optional[str]
     __key: str
@@ -440,14 +445,41 @@ class PropertyItem(ABC):
             return None
 
         if self.__data_type is not None:
+            min_value: Optional[str] = None
+            max_value: Optional[str] = None
+
             if self.__data_type == DataType.INT:
-                min_value, max_value, *rest = self.__format.split(":") + [None, None]  # pylint: disable=unused-variable
+                format_parts = self.__format.split(":")  # pylint: disable=unused-variable
+
+                try:
+                    min_value = format_parts[0]
+
+                except IndexError:
+                    min_value = None
+
+                try:
+                    max_value = format_parts[1]
+
+                except IndexError:
+                    max_value = None
 
                 if min_value is not None and max_value is not None and int(min_value) <= int(max_value):
                     return int(min_value), int(max_value)
 
             elif self.__data_type == DataType.FLOAT:
-                min_value, max_value, *rest = self.__format.split(":") + [None, None]
+                format_parts = self.__format.split(":")  # pylint: disable=unused-variable
+
+                try:
+                    min_value = format_parts[0]
+
+                except IndexError:
+                    min_value = None
+
+                try:
+                    max_value = format_parts[1]
+
+                except IndexError:
+                    max_value = None
 
                 if min_value is not None and max_value is not None and float(min_value) <= float(max_value):
                     return float(min_value), float(max_value)
@@ -461,13 +493,12 @@ class PropertyItem(ABC):
 
     def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
         """Convert property item to dictionary"""
+        data_type: Optional[str] = None
+
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
 
-        elif self.data_type is None:
-            data_type = None
-
-        else:
+        elif self.data_type is not None:
             data_type = self.data_type
 
         return {
@@ -492,11 +523,15 @@ class DevicePropertyItem(PropertyItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
         """Convert property item to dictionary"""
-        return {**{
-            "device": self.device_id.__str__(),
-        }, **super().to_dict()}
+        return {
+            **{
+                "device": self.device_id.__str__(),
+            },
+            **super().to_dict(),
+        }
 
 
 class ChannelPropertyItem(PropertyItem):
@@ -508,6 +543,7 @@ class ChannelPropertyItem(PropertyItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __channel_id: uuid.UUID
 
     # -----------------------------------------------------------------------------
@@ -552,9 +588,12 @@ class ChannelPropertyItem(PropertyItem):
 
     def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
         """Convert property item to dictionary"""
-        return {**{
-            "channel": self.channel_id.__str__(),
-        }, **super().to_dict()}
+        return {
+            **{
+                "channel": self.channel_id.__str__(),
+            },
+            **super().to_dict(),
+        }
 
 
 class ConnectorItem(ABC):
@@ -566,12 +605,13 @@ class ConnectorItem(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __id: uuid.UUID
     __key: str
     __name: str
     __enabled: bool
     __type: str
-    __params: Optional[Dict[str, Union[str, int, bool, None]]]
+    __params: Dict[str, Union[str, int, float, bool, None]]
 
     def __init__(
         self,
@@ -580,7 +620,7 @@ class ConnectorItem(ABC):
         connector_key: str,
         connector_enabled: bool,
         connector_type: str,
-        connector_params: Optional[Dict[str, Union[str, int, bool, None]]],
+        connector_params: Optional[Dict[str, Union[str, int, float, bool, None]]],
     ) -> None:
         self.__id = connector_id
         self.__key = connector_key
@@ -627,7 +667,7 @@ class ConnectorItem(ABC):
     # -----------------------------------------------------------------------------
 
     @property
-    def params(self) -> Optional[Dict[str, Union[str, int, bool, None]]]:
+    def params(self) -> Dict[str, Union[str, int, float, bool, None]]:
         """Connector configuration params"""
         return self.__params
 
@@ -653,37 +693,50 @@ class FbBusConnectorItem(ConnectorItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     @property
     def address(self) -> int:
         """Connector address"""
-        return int(self.params.get("address", 254)) \
-            if self.params is not None and self.params.get("address") is not None else 254
+        return (
+            int(str(self.params.get("address", 254)))
+            if self.params is not None and self.params.get("address") is not None
+            else 254
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def serial_interface(self) -> Optional[str]:
         """Connector serial interface"""
-        return str(self.params.get("serial_interface", None)) \
-            if self.params is not None and self.params.get("serial_interface") is not None else None
+        return (
+            str(self.params.get("serial_interface", None))
+            if self.params is not None and self.params.get("serial_interface") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def baud_rate(self) -> int:
         """Connector communication baud rate"""
-        return int(self.params.get("baud_rate", 38400)) \
-            if self.params is not None and self.params.get("baud_rate") is not None else 38400
+        return (
+            int(str(self.params.get("baud_rate", 38400)))
+            if self.params is not None and self.params.get("baud_rate") is not None
+            else 38400
+        )
 
     # -----------------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
         """Convert connector item to dictionary"""
-        return {**{
-            "address": self.address,
-            "serial_interface": self.serial_interface,
-            "baud_rate": self.baud_rate,
-        }, **super().to_dict()}
+        return {
+            **{
+                "address": self.address,
+                "serial_interface": self.serial_interface,
+                "baud_rate": self.baud_rate,
+            },
+            **super().to_dict(),
+        }
 
 
 class FbMqttV1ConnectorItem(ConnectorItem):
@@ -695,54 +748,73 @@ class FbMqttV1ConnectorItem(ConnectorItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     @property
     def server(self) -> str:
         """Connector server address"""
-        return str(self.params.get("server", "127.0.0.1")) \
-            if self.params is not None and self.params.get("server") is not None else "127.0.0.1"
+        return (
+            str(self.params.get("server", "127.0.0.1"))
+            if self.params is not None and self.params.get("server") is not None
+            else "127.0.0.1"
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def port(self) -> int:
         """Connector server port"""
-        return int(self.params.get("port", 1883)) \
-            if self.params is not None and self.params.get("port") is not None else 1883
+        return (
+            int(str(self.params.get("port", 1883)))
+            if self.params is not None and self.params.get("port") is not None
+            else 1883
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def secured_port(self) -> int:
         """Connector server secured port"""
-        return int(self.params.get("secured_port", 8883)) \
-            if self.params is not None and self.params.get("secured_port") is not None else 8883
+        return (
+            int(str(self.params.get("secured_port", 8883)))
+            if self.params is not None and self.params.get("secured_port") is not None
+            else 8883
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def username(self) -> Optional[str]:
         """Connector server username"""
-        return str(self.params.get("username", None)) \
-            if self.params is not None and self.params.get("username") is not None else None
+        return (
+            str(self.params.get("username", None))
+            if self.params is not None and self.params.get("username") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def password(self) -> Optional[str]:
         """Connector server password"""
-        return str(self.params.get("password", None)) \
-            if self.params is not None and self.params.get("password") is not None else None
+        return (
+            str(self.params.get("password", None))
+            if self.params is not None and self.params.get("password") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
         """Convert connector item to dictionary"""
-        return {**{
-            "server": self.server,
-            "port": self.port,
-            "secured_port": self.secured_port,
-            "username": self.username,
-        }, **super().to_dict()}
+        return {
+            **{
+                "server": self.server,
+                "port": self.port,
+                "secured_port": self.secured_port,
+                "username": self.username,
+            },
+            **super().to_dict(),
+        }
 
 
 class ControlItem(ABC):
@@ -754,6 +826,7 @@ class ControlItem(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __id: uuid.UUID
     __name: str
 
@@ -800,6 +873,7 @@ class DeviceControlItem(ControlItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __device_id: uuid.UUID
 
     # -----------------------------------------------------------------------------
@@ -828,9 +902,12 @@ class DeviceControlItem(ControlItem):
 
     def to_dict(self) -> Dict[str, str]:
         """Convert device control item to dictionary"""
-        return {**{
-            "device": self.device_id.__str__(),
-        }, **super().to_dict()}
+        return {
+            **{
+                "device": self.device_id.__str__(),
+            },
+            **super().to_dict(),
+        }
 
 
 class ChannelControlItem(ControlItem):
@@ -842,6 +919,7 @@ class ChannelControlItem(ControlItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __channel_id: uuid.UUID
     __device_id: uuid.UUID
 
@@ -880,9 +958,12 @@ class ChannelControlItem(ControlItem):
 
     def to_dict(self) -> Dict[str, str]:
         """Convert channel control item to dictionary"""
-        return {**{
-            "channel": self.channel_id.__str__(),
-        }, **super().to_dict()}
+        return {
+            **{
+                "channel": self.channel_id.__str__(),
+            },
+            **super().to_dict(),
+        }
 
 
 class ConnectorControlItem(ControlItem):
@@ -894,6 +975,7 @@ class ConnectorControlItem(ControlItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __connector_id: uuid.UUID
 
     # -----------------------------------------------------------------------------
@@ -922,9 +1004,12 @@ class ConnectorControlItem(ControlItem):
 
     def to_dict(self) -> Dict[str, str]:
         """Convert connector control item to dictionary"""
-        return {**{
-            "connector": self.connector_id.__str__(),
-        }, **super().to_dict()}
+        return {
+            **{
+                "connector": self.connector_id.__str__(),
+            },
+            **super().to_dict(),
+        }
 
 
 class ConfigurationItem(ABC):
@@ -936,6 +1021,7 @@ class ConfigurationItem(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __id: uuid.UUID
     __key: str
     __identifier: str
@@ -1044,7 +1130,7 @@ class ConfigurationItem(ABC):
     def min_value(self) -> Optional[float]:
         """Configuration allowed minimum value"""
         if self.__params.get("min_value") is not None:
-            return float(self.__params.get("min_value"))
+            return float(str(self.__params.get("min_value")))
 
         return None
 
@@ -1054,7 +1140,7 @@ class ConfigurationItem(ABC):
     def max_value(self) -> Optional[float]:
         """Configuration allowed maximum value"""
         if self.__params.get("max_value") is not None:
-            return float(self.__params.get("max_value"))
+            return float(str(self.__params.get("max_value")))
 
         return None
 
@@ -1064,7 +1150,7 @@ class ConfigurationItem(ABC):
     def step_value(self) -> Optional[float]:
         """Configuration step value"""
         if self.__params.get("step_value") is not None:
-            return float(self.__params.get("step_value"))
+            return float(str(self.__params.get("step_value")))
 
         return None
 
@@ -1073,7 +1159,18 @@ class ConfigurationItem(ABC):
     @property
     def values(self) -> List[Dict[str, str]]:
         """Configuration options values"""
-        return self.__params.get("select_values", [])
+        values = self.__params.get("select_values", []) if self.params is not None else []
+
+        if isinstance(values, list):
+            mapped_values: List[Dict[str, str]] = []
+
+            for value in values:
+                if isinstance(value, dict) and value.get("name") is not None and value.get("value") is not None:
+                    mapped_values.append({"name": str(value.get("name")), "value": str(value.get("value"))})
+
+            return mapped_values
+
+        return []
 
     # -----------------------------------------------------------------------------
 
@@ -1084,7 +1181,7 @@ class ConfigurationItem(ABC):
 
     # -----------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> Dict[str, Union[str, int, float, List[Dict[str, str]], None]]:
         """Convert configuration item to dictionary"""
         if isinstance(self.data_type, DataType):
             data_type = self.data_type.value
@@ -1095,7 +1192,7 @@ class ConfigurationItem(ABC):
         else:
             data_type = self.data_type
 
-        structure: Dict[str, Optional[str]] = {
+        structure: Dict[str, Union[str, int, float, List[Dict[str, str]], None]] = {
             "id": self.configuration_id.__str__(),
             "key": self.key,
             "identifier": self.identifier,
@@ -1107,17 +1204,15 @@ class ConfigurationItem(ABC):
         }
 
         if isinstance(self.data_type, DataType):
-            if (
-                self.data_type in [
-                    DataType.CHAR,
-                    DataType.UCHAR,
-                    DataType.SHORT,
-                    DataType.USHORT,
-                    DataType.INT,
-                    DataType.UINT,
-                    DataType.FLOAT,
-                ]
-            ):
+            if self.data_type in [
+                DataType.CHAR,
+                DataType.UCHAR,
+                DataType.SHORT,
+                DataType.USHORT,
+                DataType.INT,
+                DataType.UINT,
+                DataType.FLOAT,
+            ]:
                 return {
                     **structure,
                     **{
@@ -1147,11 +1242,15 @@ class DeviceConfigurationItem(ConfigurationItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
-    def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
+
+    def to_dict(self) -> Dict[str, Union[str, int, float, List[Dict[str, str]], None]]:
         """Convert property item to dictionary"""
-        return {**{
-            "device": self.device_id.__str__(),
-        }, **super().to_dict()}
+        return {
+            **{
+                "device": self.device_id.__str__(),
+            },
+            **super().to_dict(),
+        }
 
 
 class ChannelConfigurationItem(ConfigurationItem):
@@ -1163,6 +1262,7 @@ class ChannelConfigurationItem(ConfigurationItem):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __channel_id: uuid.UUID
 
     # -----------------------------------------------------------------------------
@@ -1205,8 +1305,11 @@ class ChannelConfigurationItem(ConfigurationItem):
 
     # -----------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
+    def to_dict(self) -> Dict[str, Union[str, int, float, List[Dict[str, str]], None]]:
         """Convert property item to dictionary"""
-        return {**{
-            "channel": self.channel_id.__str__(),
-        }, **super().to_dict()}
+        return {
+            **{
+                "channel": self.channel_id.__str__(),
+            },
+            **super().to_dict(),
+        }

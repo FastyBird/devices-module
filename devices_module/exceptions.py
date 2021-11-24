@@ -28,3 +28,14 @@ class HandleExchangeDataException(Exception):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
+
+class InvalidStateException(Exception):
+    """
+    Exception raised when app is in invalid state
+
+    @package        FastyBird:DevicesModule!
+    @module         exceptions
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """

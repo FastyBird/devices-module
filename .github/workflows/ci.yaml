@@ -502,16 +502,17 @@ jobs:
 
     strategy:
       matrix:
+        python: ["3.9"]
         operating-system: ["ubuntu-latest"]
 
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
 
-      - name: "Set up Python 3.7"
+      - name: "Set up Python ${{ matrix.python }}"
         uses: "actions/setup-python@v1"
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python }}
 
       - name: "Extract version"
         uses: "battila7/get-version-action@v2"
@@ -558,7 +559,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: "Run code lint"
+      - name: "Run code check"
         run: "make python_qa"
 
   python-tests:

@@ -57,6 +57,7 @@ setup(
     long_description_content_type="text/markdown",
     python_requires=">=3.7",
     packages=find_packages(),
+    package_data={"devices_module": ["py.typed"]},
     install_requires=[
         "fastnumbers",
         "fastybird-application-exchange",

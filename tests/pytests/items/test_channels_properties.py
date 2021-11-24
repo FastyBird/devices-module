@@ -27,8 +27,6 @@ from tests.pytests.tests import DbTestCase
 class TestChannelPropertyItem(DbTestCase):
     @inject
     def test_transform_to_dict(self, property_repository: ChannelsPropertiesRepository) -> None:
-        property_repository.initialize()
-
         property_item = property_repository.get_by_id(
             uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
         )

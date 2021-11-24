@@ -27,8 +27,6 @@ from tests.pytests.tests import DbTestCase
 class TestDeviceControlItem(DbTestCase):
     @inject
     def test_transform_to_dict(self, control_repository: DevicesControlsRepository) -> None:
-        control_repository.initialize()
-
         control_item = control_repository.get_by_id(
             uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4)
         )

@@ -18,17 +18,19 @@
 Devices module helpers
 """
 
-# App dependencies
+# Python base dependencies
 import math
 import time
-from typing import Callable, Set, Union, Optional
-from fastnumbers import fast_float, fast_int
-from kink import inject
-from pony.orm import core as orm
-from modules_metadata.types import DataType, ButtonPayload, SwitchPayload
+from typing import Callable, Optional, Set, Union
 
 # Library libs
-from devices_module.items import DevicePropertyItem, ChannelPropertyItem
+from fastnumbers import fast_float, fast_int
+from kink import inject
+from modules_metadata.types import ButtonPayload, DataType, SwitchPayload
+from pony.orm import core as orm
+
+# Library libs
+from devices_module.items import ChannelPropertyItem, DevicePropertyItem
 
 
 @inject
@@ -41,6 +43,7 @@ class PropertiesHelpers:  # pylint: disable=too-few-public-methods
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     @staticmethod
     def normalize_value(  # pylint: disable=too-many-return-statements
         item: Union[DevicePropertyItem, ChannelPropertyItem],
@@ -65,11 +68,9 @@ class PropertiesHelpers:  # pylint: disable=too-few-public-methods
             return value.lower() in ["true", "t", "yes", "y", "1", "on"]
 
         if item.data_type == DataType.ENUM:
-            if (
-                item.get_format() is not None
-                and isinstance(item.get_format(), Set)
-                and str(value) in item.get_format()
-            ):
+            data_format = item.get_format()
+
+            if data_format is not None and isinstance(data_format, Set) and str(value) in data_format:
                 return str(value)
 
             return None
@@ -99,6 +100,7 @@ class KeyHashHelpers:
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __max_len: int = 6
     __custom_generator: Optional[Callable[[orm.Entity], str]] = None
 
@@ -139,7 +141,7 @@ class KeyHashHelpers:
         while True:
             bcp = int(pow(self.__BASE, pointer))
             position = int(number / bcp) % self.__BASE
-            result.append(self.__ALPHABET[position:position + 1])
+            result.append(self.__ALPHABET[position : position + 1])
             number = number - (position * bcp)
             pointer -= 1
 
@@ -159,7 +161,7 @@ class KeyHashHelpers:
 
         while True:
             bcpow = int(pow(self.__BASE, length - pointer))
-            result = result + self.__ALPHABET.index(string[pointer:pointer + 1]) * bcpow
+            result = result + self.__ALPHABET.index(string[pointer : pointer + 1]) * bcpow
             pointer += 1
             if pointer > length:
                 break

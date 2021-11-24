@@ -27,8 +27,6 @@ from tests.pytests.tests import DbTestCase
 class TestConnectorItem(DbTestCase):
     @inject
     def test_transform_to_dict(self, connector_repository: ConnectorsRepository) -> None:
-        connector_repository.initialize()
-
         connector_item = connector_repository.get_by_id(
             uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )

@@ -27,8 +27,6 @@ from tests.pytests.tests import DbTestCase
 class TestChannelItem(DbTestCase):
     @inject
     def test_transform_to_dict(self, channel_repository: ChannelsRepository) -> None:
-        channel_repository.initialize()
-
         channel_item = channel_repository.get_by_id(
             uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )

@@ -27,8 +27,6 @@ from tests.pytests.tests import DbTestCase
 class TestChannelControlItem(DbTestCase):
     @inject
     def test_transform_to_dict(self, control_repository: ChannelsControlsRepository) -> None:
-        control_repository.initialize()
-
         control_item = control_repository.get_by_id(
             uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4)
         )

@@ -19,11 +19,11 @@ Devices module models events
 """
 
 # Library dependencies
-from exchange_plugin.events.event import IEvent
 from pony.orm import core as orm
+from whistle import Event
 
 
-class ModelEntityCreatedEvent(IEvent):
+class ModelEntityCreatedEvent(Event):
     """
     Event fired by model when new entity is created
 
@@ -32,6 +32,7 @@ class ModelEntityCreatedEvent(IEvent):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __entity: orm.Entity
 
     EVENT_NAME: str = "devices-module.entityCreated"
@@ -52,7 +53,7 @@ class ModelEntityCreatedEvent(IEvent):
         return self.__entity
 
 
-class ModelEntityUpdatedEvent(IEvent):
+class ModelEntityUpdatedEvent(Event):
     """
     Event fired by model when existing entity is update
 
@@ -61,6 +62,7 @@ class ModelEntityUpdatedEvent(IEvent):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __entity: orm.Entity
 
     EVENT_NAME: str = "devices-module.entityUpdated"
@@ -81,7 +83,7 @@ class ModelEntityUpdatedEvent(IEvent):
         return self.__entity
 
 
-class ModelEntityDeletedEvent(IEvent):
+class ModelEntityDeletedEvent(Event):
     """
     Event fired by model when existing entity is deleted
 
@@ -90,6 +92,7 @@ class ModelEntityDeletedEvent(IEvent):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     __entity: orm.Entity
 
     EVENT_NAME: str = "devices-module.entityDeleted"

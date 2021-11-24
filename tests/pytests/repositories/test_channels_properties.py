@@ -57,7 +57,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
                 "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
                 "key": "bLikx4",
                 "identifier": "switch",
-                "name": "bLikx4",
+                "name": "new name",
                 "settable": True,
                 "queryable": True,
                 "data_type": "enum",
@@ -77,7 +77,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
         self.assertEqual("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", property_item.property_id.__str__())
         self.assertEqual({
             "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-            "name": "switch",
+            "name": "new name",
             "identifier": "switch",
             "key": "bLikx4",
             "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",

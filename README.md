@@ -18,6 +18,7 @@
 [![Python latest stable](https://badgen.net/pypi/v/fastybird-devices-module?cache=300&style=flat-square)](https://pypi.org/project/fastybird-devices-module/)
 [![Python downloads month](https://img.shields.io/pypi/dm/fastybird-devices-module?cache=300&style=flat-square)](https://pypi.org/project/fastybird-devices-module/)
 [![Black](https://img.shields.io/badge/black-enabled-brightgreen.svg?style=flat-square)](https://github.com/psf/black)
+[![MyPy](https://img.shields.io/badge/mypy-enabled-brightgreen.svg?style=flat-square)](http://mypy-lang.org)
 
 ## What is FastyBird IoT devices module?
 

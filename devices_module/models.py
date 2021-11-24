@@ -20,32 +20,34 @@
 Devices module models
 """
 
-# Library dependencies
-import uuid
+# Python base dependencies
 import datetime
-from typing import List, Dict, Optional, Tuple, Union
+import uuid
+from typing import Any, Dict, List, Optional, Union
+
+# Library libs
 from exchange_plugin.dispatcher import EventDispatcher
 from kink import di
 from modules_metadata.types import DataType
-from pony.orm import (
-    Database,
-    Discriminator,
-    PrimaryKey,
-    Required as RequiredField,
-    Optional as OptionalField,
-    Set,
-    Json,
-)
+from pony.orm import Database, Discriminator, Json  # type: ignore[attr-defined]
+from pony.orm import Optional as OptionalField  # type: ignore[attr-defined]
+from pony.orm import PrimaryKey  # type: ignore[attr-defined]
+from pony.orm import Required as RequiredField  # type: ignore[attr-defined]
+from pony.orm import Set  # type: ignore[attr-defined]
 
 # Library libs
-from devices_module.events import ModelEntityCreatedEvent, ModelEntityUpdatedEvent, ModelEntityDeletedEvent
+from devices_module.events import (
+    ModelEntityCreatedEvent,
+    ModelEntityDeletedEvent,
+    ModelEntityUpdatedEvent,
+)
 from devices_module.helpers import KeyHashHelpers
 
 # Create devices module database accessor
-db: Database = Database()
+db: Database = Database()  # type: ignore[no-any-unimported]
 
 
-class ConnectorEntity(db.Entity):
+class ConnectorEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Connector entity
 
@@ -54,18 +56,17 @@ class ConnectorEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_connectors"
 
     type = Discriminator(str, column="connector_type")
     _discriminator_: str = "connector"
 
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="connector_id")
-    name: Optional[str] = RequiredField(str, column="connector_name", nullable=False)
+    name: str = RequiredField(str, column="connector_name", nullable=False)
     key: str = RequiredField(str, column="connector_key", unique=True, max_len=50, nullable=False)
     enabled: bool = OptionalField(bool, column="connector_enabled", nullable=True, default=True)
-    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
-        Json, column="params", nullable=True
-    )
+    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -77,12 +78,12 @@ class ConnectorEntity(db.Entity):
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, bool, None]]:
+    ) -> Dict[str, Union[str, int, bool, List[str], None]]:
         """Transform entity to dictionary"""
         return {
             "id": self.connector_id.__str__(),
@@ -156,6 +157,7 @@ class FbBusConnectorEntity(ConnectorEntity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _discriminator_: str = "fb-bus"
 
     # -----------------------------------------------------------------------------
@@ -163,41 +165,53 @@ class FbBusConnectorEntity(ConnectorEntity):
     @property
     def address(self) -> Optional[int]:
         """Connector address"""
-        return int(self.params.get("address", None)) \
-            if self.params is not None and self.params.get("address") is not None else None
+        return (
+            int(str(self.params.get("address", None)))
+            if self.params is not None and self.params.get("address") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def serial_interface(self) -> Optional[str]:
         """Connector serial interface"""
-        return str(self.params.get("serial_interface", None)) \
-            if self.params is not None and self.params.get("serial_interface") is not None else None
+        return (
+            str(self.params.get("serial_interface", None))
+            if self.params is not None and self.params.get("serial_interface") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def baud_rate(self) -> Optional[int]:
         """Connector communication baud rate"""
-        return int(self.params.get("baud_rate", None)) \
-            if self.params is not None and self.params.get("baud_rate") is not None else None
+        return (
+            int(str(self.params.get("baud_rate", None)))
+            if self.params is not None and self.params.get("baud_rate") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,
-        exclude: Tuple = None,
+        only: Union[List[str], str, None] = None,
+        exclude: Union[List[str], str, None] = None,
         with_collections: bool = False,
         with_lazy: bool = False,
         related_objects: bool = False,
-    ) -> Dict[str, Union[str, int, bool, None]]:
+    ) -> Dict[str, Union[str, int, bool, List[str], None]]:
         """Transform entity to dictionary"""
-        return {**{
-            "address": self.address,
-            "serial_interface": self.serial_interface,
-            "baud_rate": self.baud_rate,
-        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+        return {
+            **{
+                "address": self.address,
+                "serial_interface": self.serial_interface,
+                "baud_rate": self.baud_rate,
+            },
+            **super().to_dict(only, exclude, with_collections, with_lazy, related_objects),
+        }
 
 
 class FbMqttConnectorEntity(ConnectorEntity):
@@ -209,6 +223,7 @@ class FbMqttConnectorEntity(ConnectorEntity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _discriminator_: str = "fb-mqtt"
 
     # -----------------------------------------------------------------------------
@@ -216,53 +231,68 @@ class FbMqttConnectorEntity(ConnectorEntity):
     @property
     def server(self) -> Optional[str]:
         """Connector server address"""
-        return str(self.params.get("server", None)) \
-            if self.params is not None and self.params.get("server") is not None else None
+        return (
+            str(self.params.get("server", None))
+            if self.params is not None and self.params.get("server") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def port(self) -> Optional[int]:
         """Connector server port"""
-        return int(self.params.get("port", None)) \
-            if self.params is not None and self.params.get("port") is not None else None
+        return (
+            int(str(self.params.get("port", None)))
+            if self.params is not None and self.params.get("port") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def secured_port(self) -> Optional[int]:
         """Connector server secured port"""
-        return int(self.params.get("secured_port", None)) \
-            if self.params is not None and self.params.get("secured_port") is not None else None
+        return (
+            int(str(self.params.get("secured_port", None)))
+            if self.params is not None and self.params.get("secured_port") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     @property
     def username(self) -> Optional[str]:
         """Connector server username"""
-        return str(self.params.get("username", None)) \
-            if self.params is not None and self.params.get("username") is not None else None
+        return (
+            str(self.params.get("username", None))
+            if self.params is not None and self.params.get("username") is not None
+            else None
+        )
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,
-        exclude: Tuple = None,
+        only: Union[List[str], str, None] = None,
+        exclude: Union[List[str], str, None] = None,
         with_collections: bool = False,
         with_lazy: bool = False,
         related_objects: bool = False,
-    ) -> Dict[str, Union[str, int, bool, None]]:
+    ) -> Dict[str, Union[str, int, bool, List[str], None]]:
         """Transform entity to dictionary"""
-        return {**{
-            "server": self.server,
-            "port": self.port,
-            "secured_port": self.secured_port,
-            "username": self.username,
-        }, **super().to_dict(only, exclude, with_collections, with_lazy, related_objects)}
+        return {
+            **{
+                "server": self.server,
+                "port": self.port,
+                "secured_port": self.secured_port,
+                "username": self.username,
+            },
+            **super().to_dict(only, exclude, with_collections, with_lazy, related_objects),
+        }
 
 
-class ConnectorControlEntity(db.Entity):
+class ConnectorControlEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Connector control entity
 
@@ -271,6 +301,7 @@ class ConnectorControlEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_connectors_controls"
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
@@ -323,7 +354,7 @@ class ConnectorControlEntity(db.Entity):
         )
 
 
-class DeviceEntity(db.Entity):
+class DeviceEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Device entity
 
@@ -332,6 +363,7 @@ class DeviceEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_devices"
 
     device_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_id")
@@ -370,9 +402,7 @@ class DeviceEntity(db.Entity):
         nullable=False,
     )
     firmware_version: Optional[str] = OptionalField(str, column="device_firmware_version", max_len=150, nullable=True)
-    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
-        Json, column="params", nullable=True
-    )
+    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -389,12 +419,12 @@ class DeviceEntity(db.Entity):
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, bool, None]]:
+    ) -> Dict[str, Union[str, int, bool, List[str], Dict[str, Any], None]]:
         """Transform entity to dictionary"""
         parent_id: Optional[str] = self.parent.device_id.__str__() if self.parent is not None else None
 
@@ -460,9 +490,9 @@ class DeviceEntity(db.Entity):
         """Before update entity hook"""
         self.updated_at = datetime.datetime.now()
 
-        self.hardware_model = self.hardware_model.lower()
-        self.hardware_manufacturer = self.hardware_manufacturer.lower()
-        self.firmware_manufacturer = self.firmware_manufacturer.lower()
+        self.hardware_model = self.hardware_model.lower() if self.hardware_model else None
+        self.hardware_manufacturer = self.hardware_manufacturer.lower() if self.hardware_manufacturer else None
+        self.firmware_manufacturer = self.firmware_manufacturer.lower() if self.firmware_manufacturer else None
 
     # -----------------------------------------------------------------------------
 
@@ -483,7 +513,7 @@ class DeviceEntity(db.Entity):
         )
 
 
-class DevicePropertyEntity(db.Entity):
+class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Device property entity
 
@@ -492,6 +522,7 @@ class DevicePropertyEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_devices_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
@@ -520,20 +551,19 @@ class DevicePropertyEntity(db.Entity):
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
+        data_type: Optional[str] = None
+
         if isinstance(self.data_type_formatted, DataType):
             data_type = self.data_type_formatted.value
 
-        elif self.data_type_formatted is None:
-            data_type = None
-
-        else:
+        elif self.data_type_formatted is not None:
             data_type = self.data_type_formatted
 
         return {
@@ -592,7 +622,7 @@ class DevicePropertyEntity(db.Entity):
         )
 
 
-class DeviceConfigurationEntity(db.Entity):
+class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Device configuration entity
 
@@ -601,6 +631,7 @@ class DeviceConfigurationEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_devices_configuration"
 
     configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
@@ -611,9 +642,7 @@ class DeviceConfigurationEntity(db.Entity):
     data_type: str = RequiredField(str, column="configuration_data_type", nullable=False)
     default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
     value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
-    params: Optional[Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]] = OptionalField(
-        Json, column="params", nullable=True
-    )
+    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -653,16 +682,14 @@ class DeviceConfigurationEntity(db.Entity):
             return None
 
         if isinstance(self.data_type_formatted, DataType):
-            if (
-                self.data_type_formatted in [
-                    DataType.CHAR,
-                    DataType.UCHAR,
-                    DataType.SHORT,
-                    DataType.USHORT,
-                    DataType.INT,
-                    DataType.UINT,
-                ]
-            ):
+            if self.data_type_formatted in [
+                DataType.CHAR,
+                DataType.UCHAR,
+                DataType.SHORT,
+                DataType.USHORT,
+                DataType.INT,
+                DataType.UINT,
+            ]:
                 return int(self.value)
 
             if self.data_type_formatted == DataType.FLOAT:
@@ -675,7 +702,7 @@ class DeviceConfigurationEntity(db.Entity):
     def get_min(self) -> Optional[float]:
         """Get min value"""
         if self.params is not None and self.params.get("min_value") is not None:
-            return float(self.params.get("min_value"))
+            return float(str(self.params.get("min_value")))
 
         return None
 
@@ -683,14 +710,18 @@ class DeviceConfigurationEntity(db.Entity):
 
     def set_min(self, min_value: Optional[float]) -> None:
         """Set min value"""
-        self.params["min_value"] = min_value
+        if self.params is not None:
+            self.params["min_value"] = min_value
+
+        else:
+            self.params = {"min_value": min_value}
 
     # -----------------------------------------------------------------------------
 
     def get_max(self) -> Optional[float]:
         """Get max value"""
         if self.params is not None and self.params.get("max_value") is not None:
-            return float(self.params.get("max_value"))
+            return float(str(self.params.get("max_value")))
 
         return None
 
@@ -698,14 +729,18 @@ class DeviceConfigurationEntity(db.Entity):
 
     def set_max(self, max_value: Optional[float]) -> None:
         """Set max value"""
-        self.params["max_value"] = max_value
+        if self.params is not None:
+            self.params["max_value"] = max_value
+
+        else:
+            self.params = {"max_value": max_value}
 
     # -----------------------------------------------------------------------------
 
     def get_step(self) -> Optional[float]:
         """Get step value"""
         if self.params is not None and self.params.get("step_value") is not None:
-            return float(self.params.get("step_value"))
+            return float(str(self.params.get("step_value")))
 
         return None
 
@@ -713,30 +748,49 @@ class DeviceConfigurationEntity(db.Entity):
 
     def set_step(self, step: Optional[float]) -> None:
         """Set step value"""
-        self.params["step_value"] = step
+        if self.params is not None:
+            self.params["step_value"] = step
+
+        else:
+            self.params = {"step_value": step}
 
     # -----------------------------------------------------------------------------
 
     def get_values(self) -> List[Dict[str, str]]:
         """Get values for options"""
-        return self.params.get("select_values", [])
+        values = self.params.get("select_values", []) if self.params is not None else []
+
+        if isinstance(values, List):
+            mapped_values: List[Dict[str, str]] = []
+
+            for value in values:
+                if isinstance(value, Dict) and value.get("name") is not None and value.get("value") is not None:
+                    mapped_values.append({"name": str(value.get("name")), "value": str(value.get("value"))})
+
+            return mapped_values
+
+        return []
 
     # -----------------------------------------------------------------------------
 
     def set_values(self, select_values: List[Dict[str, str]]) -> None:
         """Set values for options"""
-        self.params["select_values"] = select_values
+        if self.params is not None:
+            self.params["select_values"] = select_values
+
+        else:
+            self.params = {"select_values": select_values}
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, bool, None]]:
+    ) -> Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type_formatted, DataType):
             data_type = self.data_type_formatted.value
@@ -747,7 +801,7 @@ class DeviceConfigurationEntity(db.Entity):
         else:
             data_type = self.data_type_formatted
 
-        structure: Dict[str, Optional[str]] = {
+        structure: Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]] = {
             "id": self.configuration_id.__str__(),
             "key": self.key,
             "identifier": self.identifier,
@@ -760,17 +814,15 @@ class DeviceConfigurationEntity(db.Entity):
         }
 
         if isinstance(self.data_type_formatted, DataType):
-            if (
-                self.data_type_formatted in [
-                    DataType.CHAR,
-                    DataType.UCHAR,
-                    DataType.SHORT,
-                    DataType.USHORT,
-                    DataType.INT,
-                    DataType.UINT,
-                    DataType.FLOAT,
-                ]
-            ):
+            if self.data_type_formatted in [
+                DataType.CHAR,
+                DataType.UCHAR,
+                DataType.SHORT,
+                DataType.USHORT,
+                DataType.INT,
+                DataType.UINT,
+                DataType.FLOAT,
+            ]:
                 return {
                     **structure,
                     **{
@@ -833,7 +885,7 @@ class DeviceConfigurationEntity(db.Entity):
         )
 
 
-class DeviceControlEntity(db.Entity):
+class DeviceControlEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Device control entity
 
@@ -842,6 +894,7 @@ class DeviceControlEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_devices_controls"
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")
@@ -892,7 +945,7 @@ class DeviceControlEntity(db.Entity):
         )
 
 
-class DeviceConnectorEntity(db.Entity):
+class DeviceConnectorEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Device connector entity
 
@@ -901,12 +954,11 @@ class DeviceConnectorEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_devices_connectors"
 
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_connector_id")
-    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
-        Json, column="params", nullable=True
-    )
+    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -920,8 +972,8 @@ class DeviceConnectorEntity(db.Entity):
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
@@ -935,18 +987,36 @@ class DeviceConnectorEntity(db.Entity):
         }
 
         if isinstance(self.connector, FbBusConnectorEntity):
-            return {**structure, **{
-                "address": self.params.get("address"),
-                "max_packet_length": self.params.get("max_packet_length"),
-                "description_support": bool(self.params.get("description_support", False)),
-                "settings_support": bool(self.params.get("settings_support", False)),
-                "configured_key_length": self.params.get("configured_key_length"),
-            }}
+            return {
+                **structure,
+                **{
+                    "address": str(self.params.get("address"))
+                    if self.params and self.params.get("address") is not None
+                    else None,
+                    "max_packet_length": int(str(self.params.get("max_packet_length")))
+                    if self.params and self.params.get("max_packet_length") is not None
+                    else None,
+                    "description_support": bool(self.params.get("description_support"))
+                    if self.params and self.params.get("description_support") is not None
+                    else False,
+                    "settings_support": bool(self.params.get("settings_support"))
+                    if self.params and self.params.get("settings_support") is not None
+                    else False,
+                    "configured_key_length": int(str(self.params.get("configured_key_length")))
+                    if self.params and self.params.get("configured_key_length") is not None
+                    else None,
+                },
+            }
 
         if isinstance(self.connector, FbMqttConnectorEntity):
-            return {**structure, **{
-                "username": self.params.get("username"),
-            }}
+            return {
+                **structure,
+                **{
+                    "username": str(self.params.get("username"))
+                    if self.params and self.params.get("username") is not None
+                    else None,
+                },
+            }
 
         return structure
 
@@ -990,7 +1060,7 @@ class DeviceConnectorEntity(db.Entity):
         )
 
 
-class ChannelEntity(db.Entity):
+class ChannelEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Channel entity
 
@@ -999,6 +1069,7 @@ class ChannelEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_channels"
 
     channel_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="channel_id")
@@ -1006,9 +1077,7 @@ class ChannelEntity(db.Entity):
     identifier: str = RequiredField(str, column="channel_identifier", max_len=40, nullable=False)
     name: Optional[str] = OptionalField(str, column="channel_name", nullable=True)
     comment: Optional[str] = OptionalField(str, column="channel_comment", nullable=True)
-    params: Optional[Dict[str, Union[str, int, float, bool, None]]] = OptionalField(
-        Json, column="params", nullable=True
-    )
+    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -1022,12 +1091,12 @@ class ChannelEntity(db.Entity):
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, bool, None]]:
+    ) -> Dict[str, Union[str, int, float, bool, List[str], Dict[str, Any], None]]:
         """Transform entity to dictionary"""
         return {
             "id": self.channel_id.__str__(),
@@ -1094,7 +1163,7 @@ class ChannelEntity(db.Entity):
         )
 
 
-class ChannelPropertyEntity(db.Entity):
+class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Channel property entity
 
@@ -1103,6 +1172,7 @@ class ChannelPropertyEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_channels_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
@@ -1131,20 +1201,19 @@ class ChannelPropertyEntity(db.Entity):
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
     ) -> Dict[str, Union[str, int, bool, None]]:
         """Transform entity to dictionary"""
+        data_type: Optional[str] = None
+
         if isinstance(self.data_type_formatted, DataType):
             data_type = self.data_type_formatted.value
 
-        elif self.data_type_formatted is None:
-            data_type = None
-
-        else:
+        elif self.data_type_formatted is not None:
             data_type = self.data_type_formatted
 
         return {
@@ -1203,7 +1272,7 @@ class ChannelPropertyEntity(db.Entity):
         )
 
 
-class ChannelConfigurationEntity(db.Entity):
+class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Channel configuration entity
 
@@ -1212,6 +1281,7 @@ class ChannelConfigurationEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_channels_configuration"
 
     configuration_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="configuration_id")
@@ -1222,9 +1292,7 @@ class ChannelConfigurationEntity(db.Entity):
     data_type: str = RequiredField(str, column="configuration_data_type", nullable=False)
     default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
     value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
-    params: Optional[Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]] = OptionalField(
-        Json, column="params", nullable=True
-    )
+    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -1266,16 +1334,14 @@ class ChannelConfigurationEntity(db.Entity):
             return None
 
         if isinstance(self.data_type_formatted, DataType):
-            if (
-                self.data_type_formatted in [
-                    DataType.CHAR,
-                    DataType.UCHAR,
-                    DataType.SHORT,
-                    DataType.USHORT,
-                    DataType.INT,
-                    DataType.UINT,
-                ]
-            ):
+            if self.data_type_formatted in [
+                DataType.CHAR,
+                DataType.UCHAR,
+                DataType.SHORT,
+                DataType.USHORT,
+                DataType.INT,
+                DataType.UINT,
+            ]:
                 return int(self.value)
 
             if self.data_type_formatted == DataType.FLOAT:
@@ -1288,7 +1354,7 @@ class ChannelConfigurationEntity(db.Entity):
     def get_min(self) -> Optional[float]:
         """Get min value"""
         if self.params is not None and self.params.get("min_value") is not None:
-            return float(self.params.get("min_value"))
+            return float(str(self.params.get("min_value")))
 
         return None
 
@@ -1296,14 +1362,18 @@ class ChannelConfigurationEntity(db.Entity):
 
     def set_min(self, min_value: Optional[float]) -> None:
         """Set min value"""
-        self.params["min_value"] = min_value
+        if self.params is not None:
+            self.params["min_value"] = min_value
+
+        else:
+            self.params = {"min_value": min_value}
 
     # -----------------------------------------------------------------------------
 
     def get_max(self) -> Optional[float]:
         """Get max value"""
         if self.params is not None and self.params.get("max_value") is not None:
-            return float(self.params.get("max_value"))
+            return float(str(self.params.get("max_value")))
 
         return None
 
@@ -1311,14 +1381,18 @@ class ChannelConfigurationEntity(db.Entity):
 
     def set_max(self, max_value: Optional[float]) -> None:
         """Set max value"""
-        self.params["max_value"] = max_value
+        if self.params is not None:
+            self.params["max_value"] = max_value
+
+        else:
+            self.params = {"max_value": max_value}
 
     # -----------------------------------------------------------------------------
 
     def get_step(self) -> Optional[float]:
         """Get step value"""
         if self.params is not None and self.params.get("step_value") is not None:
-            return float(self.params.get("step_value"))
+            return float(str(self.params.get("step_value")))
 
         return None
 
@@ -1326,30 +1400,49 @@ class ChannelConfigurationEntity(db.Entity):
 
     def set_step(self, step: Optional[float]) -> None:
         """Set step value"""
-        self.params["step_value"] = step
+        if self.params is not None:
+            self.params["step_value"] = step
+
+        else:
+            self.params = {"step_value": step}
 
     # -----------------------------------------------------------------------------
 
     def get_values(self) -> List[Dict[str, str]]:
         """Get values for options"""
-        return self.params.get("select_values", [])
+        values = self.params.get("select_values", []) if self.params is not None else []
+
+        if isinstance(values, List):
+            mapped_values: List[Dict[str, str]] = []
+
+            for value in values:
+                if isinstance(value, Dict) and value.get("name") is not None and value.get("value") is not None:
+                    mapped_values.append({"name": str(value.get("name")), "value": str(value.get("value"))})
+
+            return mapped_values
+
+        return []
 
     # -----------------------------------------------------------------------------
 
     def set_values(self, select_values: List[Dict[str, str]]) -> None:
         """Set values for options"""
-        self.params["select_values"] = select_values
+        if self.params is not None:
+            self.params["select_values"] = select_values
+
+        else:
+            self.params = {"select_values": select_values}
 
     # -----------------------------------------------------------------------------
 
     def to_dict(
         self,
-        only: Tuple = None,  # pylint: disable=unused-argument
-        exclude: Tuple = None,  # pylint: disable=unused-argument
+        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
+        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, bool, None]]:
+    ) -> Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]:
         """Transform entity to dictionary"""
         if isinstance(self.data_type_formatted, DataType):
             data_type = self.data_type_formatted.value
@@ -1360,7 +1453,7 @@ class ChannelConfigurationEntity(db.Entity):
         else:
             data_type = self.data_type_formatted
 
-        structure: Dict[str, Optional[str]] = {
+        structure: Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]] = {
             "id": self.configuration_id.__str__(),
             "key": self.key,
             "identifier": self.identifier,
@@ -1373,17 +1466,15 @@ class ChannelConfigurationEntity(db.Entity):
         }
 
         if isinstance(self.data_type_formatted, DataType):
-            if (
-                self.data_type_formatted in [
-                    DataType.CHAR,
-                    DataType.UCHAR,
-                    DataType.SHORT,
-                    DataType.USHORT,
-                    DataType.INT,
-                    DataType.UINT,
-                    DataType.FLOAT,
-                ]
-            ):
+            if self.data_type_formatted in [
+                DataType.CHAR,
+                DataType.UCHAR,
+                DataType.SHORT,
+                DataType.USHORT,
+                DataType.INT,
+                DataType.UINT,
+                DataType.FLOAT,
+            ]:
                 return {
                     **structure,
                     **{
@@ -1446,7 +1537,7 @@ class ChannelConfigurationEntity(db.Entity):
         )
 
 
-class ChannelControlEntity(db.Entity):
+class ChannelControlEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Channel control entity
 
@@ -1455,6 +1546,7 @@ class ChannelControlEntity(db.Entity):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
     _table_: str = "fb_channels_controls"
 
     control_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="control_id")

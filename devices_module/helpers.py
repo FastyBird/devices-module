@@ -23,7 +23,7 @@ import math
 import time
 from typing import Callable, Optional, Set, Union
 
-# Library libs
+# Library dependencies
 from fastnumbers import fast_float, fast_int
 from kink import inject
 from modules_metadata.types import ButtonPayload, DataType, SwitchPayload

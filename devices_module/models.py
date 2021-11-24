@@ -23,9 +23,9 @@ Devices module models
 # Python base dependencies
 import datetime
 import uuid
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
-# Library libs
+# Library dependencies
 from exchange_plugin.dispatcher import EventDispatcher
 from kink import di
 from modules_metadata.devices_module import (
@@ -428,7 +428,7 @@ class DeviceEntity(db.Entity):  # type: ignore[no-any-unimported]
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, bool, List[str], Dict[str, Any], None]]:
+    ) -> Dict[str, Union[str, int, bool, List[str], Dict, None]]:
         """Transform entity to dictionary"""
         parent_id: Optional[str] = self.parent.device_id.__str__() if self.parent is not None else None
 
@@ -1105,7 +1105,7 @@ class ChannelEntity(db.Entity):  # type: ignore[no-any-unimported]
         with_collections: bool = False,  # pylint: disable=unused-argument
         with_lazy: bool = False,  # pylint: disable=unused-argument
         related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, float, bool, List[str], Dict[str, Any], None]]:
+    ) -> Dict[str, Union[str, int, float, bool, List[str], Dict, None]]:
         """Transform entity to dictionary"""
         return {
             "id": self.channel_id.__str__(),

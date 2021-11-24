@@ -25,7 +25,7 @@ import uuid
 from abc import ABC
 from typing import Dict, List, Optional, Set, Tuple, Union
 
-# Library libs
+# Library dependencies
 from modules_metadata.types import DataType
 
 

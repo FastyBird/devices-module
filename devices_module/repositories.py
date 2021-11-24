@@ -23,10 +23,10 @@ Devices module repositories
 # Python base dependencies
 import json
 import uuid
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Dict, Generic, List, Optional, TypeVar, Union
 
-# Library libs
+# Library dependencies
 import modules_metadata.exceptions as metadata_exceptions
 from exchange_plugin.dispatcher import EventDispatcher
 from kink import inject
@@ -74,7 +74,6 @@ from devices_module.models import (
 )
 
 T = TypeVar("T")  # pylint: disable=invalid-name
-K = TypeVar("K")  # pylint: disable=invalid-name
 
 
 @inject
@@ -1155,7 +1154,7 @@ class ChannelsPropertiesRepository(PropertiesRepository[ChannelPropertyItem]):
 
 
 @inject
-class ConnectorsRepository(ABC):
+class ConnectorsRepository:
     """
     Connectors repository
 

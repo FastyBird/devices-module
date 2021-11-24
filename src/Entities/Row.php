@@ -256,7 +256,11 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN);
+		if ($this->hasMin()) {
+			return (float)$this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN);
+		}
+
+		return null;
 	}
 
 	/**
@@ -303,7 +307,11 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX);
+		if ($this->hasMax()) {
+			return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX);
+		}
+
+		return null;
 	}
 
 	/**
@@ -350,7 +358,11 @@ abstract class Row implements IRow
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP);
+		if ($this->hasStep()) {
+			return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP);
+		}
+
+		return null;
 	}
 
 	/**

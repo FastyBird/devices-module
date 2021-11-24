@@ -3,7 +3,11 @@ import * as exchangeEntitySchema from '@fastybird/modules-metadata/resources/sch
 import {
   ModuleOrigin,
   DeviceEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys, DeviceConnectionState, HardwareManufacturer, DeviceModel, FirmwareManufacturer,
+  DevicesModule as RoutingKeys,
+  DeviceConnectionState,
+  HardwareManufacturer,
+  DeviceModel,
+  FirmwareManufacturer,
 } from '@fastybird/modules-metadata'
 
 import {

@@ -4,7 +4,8 @@ import * as exchangeEntitySchema
 import {
   ModuleOrigin,
   DeviceControlEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys, DataType,
+  DevicesModule as RoutingKeys,
+  DataType,
 } from '@fastybird/modules-metadata'
 
 import {

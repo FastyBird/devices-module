@@ -1476,7 +1476,7 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
             "data_type": data_type,
             "default": self.default,
             "value": self.get_value(),
-            "device": self.device.device_id.__str__(),
+            "channel": self.channel.channel_id.__str__(),
         }
 
         if isinstance(self.data_type_formatted, DataType):

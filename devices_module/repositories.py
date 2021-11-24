@@ -184,7 +184,9 @@ class DevicesRepository:
         if routing_key != RoutingKey.DEVICES_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -193,7 +195,9 @@ class DevicesRepository:
         if routing_key != RoutingKey.DEVICES_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -480,7 +484,9 @@ class ChannelsRepository:
         if routing_key != RoutingKey.CHANNELS_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -489,7 +495,9 @@ class ChannelsRepository:
         if routing_key != RoutingKey.CHANNELS_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -871,7 +879,9 @@ class DevicesPropertiesRepository(PropertiesRepository[DevicePropertyItem]):
         if routing_key != RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -880,7 +890,9 @@ class DevicesPropertiesRepository(PropertiesRepository[DevicePropertyItem]):
         if routing_key != RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1024,7 +1036,9 @@ class ChannelsPropertiesRepository(PropertiesRepository[ChannelPropertyItem]):
         if routing_key != RoutingKey.CHANNELS_PROPERTY_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1033,7 +1047,9 @@ class ChannelsPropertiesRepository(PropertiesRepository[ChannelPropertyItem]):
         if routing_key != RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1205,7 +1221,9 @@ class ConnectorsRepository(ABC):
         if routing_key != RoutingKey.CONNECTORS_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1214,7 +1232,10 @@ class ConnectorsRepository(ABC):
         if routing_key != RoutingKey.CONNECTORS_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
+
 
     # -----------------------------------------------------------------------------
 
@@ -1631,7 +1652,9 @@ class DevicesControlsRepository(ControlsRepository[DeviceControlItem]):
         if routing_key != RoutingKey.DEVICES_CONTROL_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1640,7 +1663,9 @@ class DevicesControlsRepository(ControlsRepository[DeviceControlItem]):
         if routing_key != RoutingKey.DEVICES_CONTROL_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1764,7 +1789,9 @@ class ChannelsControlsRepository(ControlsRepository[ChannelControlItem]):
         if routing_key != RoutingKey.CHANNELS_CONTROL_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1773,7 +1800,9 @@ class ChannelsControlsRepository(ControlsRepository[ChannelControlItem]):
         if routing_key != RoutingKey.CHANNELS_CONTROL_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1899,7 +1928,9 @@ class ConnectorsControlsRepository(ControlsRepository[ConnectorControlItem]):
         if routing_key != RoutingKey.CONNECTORS_CONTROL_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -1908,7 +1939,9 @@ class ConnectorsControlsRepository(ControlsRepository[ConnectorControlItem]):
         if routing_key != RoutingKey.CONNECTORS_CONTROL_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -2202,7 +2235,9 @@ class DevicesConfigurationRepository(ConfigurationRepository[DeviceConfiguration
         if routing_key != RoutingKey.DEVICES_CONFIGURATION_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -2211,7 +2246,9 @@ class DevicesConfigurationRepository(ConfigurationRepository[DeviceConfiguration
         if routing_key != RoutingKey.DEVICES_CONFIGURATION_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -2373,7 +2410,9 @@ class ChannelsConfigurationRepository(ConfigurationRepository[ChannelConfigurati
         if routing_key != RoutingKey.CHANNELS_CONFIGURATION_ENTITY_CREATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 
@@ -2382,7 +2421,9 @@ class ChannelsConfigurationRepository(ConfigurationRepository[ChannelConfigurati
         if routing_key != RoutingKey.CHANNELS_CONFIGURATION_ENTITY_UPDATED:
             return False
 
-        return self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+        result: bool = self.__handle_data_from_exchange(routing_key=routing_key, data=data)
+
+        return result
 
     # -----------------------------------------------------------------------------
 

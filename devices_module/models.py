@@ -29,11 +29,11 @@ from typing import Any, Dict, List, Optional, Union
 from exchange_plugin.dispatcher import EventDispatcher
 from kink import di
 from modules_metadata.types import DataType
+from pony.orm import PrimaryKey  # type: ignore[attr-defined]
+from pony.orm import Set  # type: ignore[attr-defined]
 from pony.orm import Database, Discriminator, Json  # type: ignore[attr-defined]
 from pony.orm import Optional as OptionalField  # type: ignore[attr-defined]
-from pony.orm import PrimaryKey  # type: ignore[attr-defined]
 from pony.orm import Required as RequiredField  # type: ignore[attr-defined]
-from pony.orm import Set  # type: ignore[attr-defined]
 
 # Library libs
 from devices_module.events import (

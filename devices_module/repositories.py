@@ -1236,7 +1236,6 @@ class ConnectorsRepository(ABC):
 
         return result
 
-
     # -----------------------------------------------------------------------------
 
     @orm.db_session

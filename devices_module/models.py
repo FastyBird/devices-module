@@ -66,7 +66,7 @@ class ConnectorEntity(db.Entity):  # type: ignore[no-any-unimported]
     name: str = RequiredField(str, column="connector_name", nullable=False)
     key: str = RequiredField(str, column="connector_key", unique=True, max_len=50, nullable=False)
     enabled: bool = OptionalField(bool, column="connector_enabled", nullable=True, default=True)
-    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
+    params: Optional[Dict] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -402,7 +402,7 @@ class DeviceEntity(db.Entity):  # type: ignore[no-any-unimported]
         nullable=False,
     )
     firmware_version: Optional[str] = OptionalField(str, column="device_firmware_version", max_len=150, nullable=True)
-    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
+    params: Optional[Dict] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -642,7 +642,7 @@ class DeviceConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     data_type: str = RequiredField(str, column="configuration_data_type", nullable=False)
     default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
     value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
-    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
+    params: Optional[Dict] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -958,7 +958,7 @@ class DeviceConnectorEntity(db.Entity):  # type: ignore[no-any-unimported]
     _table_: str = "fb_devices_connectors"
 
     connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_connector_id")
-    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
+    params: Optional[Dict] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -1077,7 +1077,7 @@ class ChannelEntity(db.Entity):  # type: ignore[no-any-unimported]
     identifier: str = RequiredField(str, column="channel_identifier", max_len=40, nullable=False)
     name: Optional[str] = OptionalField(str, column="channel_name", nullable=True)
     comment: Optional[str] = OptionalField(str, column="channel_comment", nullable=True)
-    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
+    params: Optional[Dict] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -1292,7 +1292,7 @@ class ChannelConfigurationEntity(db.Entity):  # type: ignore[no-any-unimported]
     data_type: str = RequiredField(str, column="configuration_data_type", nullable=False)
     default: Optional[str] = OptionalField(str, column="configuration_default", nullable=True)
     value: Optional[str] = OptionalField(str, column="configuration_value", nullable=True)
-    params: Optional[Dict[str, Any]] = OptionalField(Json, column="params", nullable=True)
+    params: Optional[Dict] = OptionalField(Json, column="params", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)

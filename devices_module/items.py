@@ -53,7 +53,7 @@ class DeviceItem:
     __firmware_version: Optional[str]
 
     __connector_id: Optional[uuid.UUID]
-    __connector_data: Dict[str, Union[str, int, float, bool, None]]
+    __connector_data: Dict
 
     __parent: Optional[uuid.UUID] = None
 
@@ -74,7 +74,7 @@ class DeviceItem:
         firmware_manufacturer: Optional[str],
         firmware_version: Optional[str],
         connector_id: Optional[uuid.UUID],
-        connector_data: Dict[str, Union[str, int, float, bool, None]],
+        connector_data: Dict,
         parent_device: Optional[uuid.UUID] = None,
     ) -> None:
         self.__id = device_id
@@ -199,7 +199,7 @@ class DeviceItem:
     # -----------------------------------------------------------------------------
 
     @property
-    def connector_data(self) -> Dict[str, Union[str, int, float, bool, None]]:
+    def connector_data(self) -> Dict:
         """Device connector settings"""
         return self.__connector_data
 
@@ -611,7 +611,7 @@ class ConnectorItem(ABC):
     __name: str
     __enabled: bool
     __type: str
-    __params: Dict[str, Union[str, int, float, bool, None]]
+    __params: Dict
 
     def __init__(
         self,
@@ -620,7 +620,7 @@ class ConnectorItem(ABC):
         connector_key: str,
         connector_enabled: bool,
         connector_type: str,
-        connector_params: Optional[Dict[str, Union[str, int, float, bool, None]]],
+        connector_params: Optional[Dict],
     ) -> None:
         self.__id = connector_id
         self.__key = connector_key
@@ -667,7 +667,7 @@ class ConnectorItem(ABC):
     # -----------------------------------------------------------------------------
 
     @property
-    def params(self) -> Dict[str, Union[str, int, float, bool, None]]:
+    def params(self) -> Dict:
         """Connector configuration params"""
         return self.__params
 
@@ -1030,7 +1030,7 @@ class ConfigurationItem(ABC):
     __data_type: DataType
     __default: Optional[str]
     __value: Optional[str]
-    __params: Dict[str, Union[str, int, float, bool, List, None]]
+    __params: Dict
 
     __device_id: uuid.UUID
 
@@ -1046,7 +1046,7 @@ class ConfigurationItem(ABC):
         configuration_data_type: DataType,
         configuration_default: Optional[str],
         configuration_value: Optional[str],
-        configuration_params: Dict[str, Union[str, int, float, bool, List, None]],
+        configuration_params: Dict,
         device_id: uuid.UUID,
     ) -> None:
         self.__id = configuration_id

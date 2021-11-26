@@ -58,7 +58,7 @@ export default class ConnectorControl extends Model implements ConnectorControlI
     })
   }
 
-  static transmitCommand(control: ConnectorControl, value?: string | number | boolean | null): Promise<boolean> {
+  static transmitCommand(control: ConnectorControlInterface, value?: string | number | boolean | null): Promise<boolean> {
     return ConnectorControl.dispatch('transmitCommand', {
       control,
       value,

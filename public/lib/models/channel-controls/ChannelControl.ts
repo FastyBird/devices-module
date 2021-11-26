@@ -79,7 +79,7 @@ export default class ChannelControl extends Model implements ChannelControlInter
     })
   }
 
-  static transmitCommand(control: ChannelControl, value?: string | number | boolean | null): Promise<boolean> {
+  static transmitCommand(control: ChannelControlInterface, value?: string | number | boolean | null): Promise<boolean> {
     return ChannelControl.dispatch('transmitCommand', {
       control,
       value,

@@ -58,7 +58,7 @@ export default class DeviceControl extends Model implements DeviceControlInterfa
     })
   }
 
-  static transmitCommand(control: DeviceControl, value?: string | number | boolean | null): Promise<boolean> {
+  static transmitCommand(control: DeviceControlInterface, value?: string | number | boolean | null): Promise<boolean> {
     return DeviceControl.dispatch('transmitCommand', {
       control,
       value,

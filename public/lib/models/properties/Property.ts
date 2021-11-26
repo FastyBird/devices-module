@@ -87,22 +87,36 @@ export default class Property extends Model implements PropertyInterface {
     }
   }
 
-  static beforeCreate(properties: PropertyInterface[]): PropertyInterface[] {
-    return properties.map((property: PropertyInterface) => {
-      property.actualValue = normalizeValue(property, String(property.actualValue))
-      property.expectedValue = normalizeValue(property, String(property.expectedValue))
+  static beforeCreate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
+    if (Array.isArray(properties)) {
+      return properties.map((property: PropertyInterface) => {
+        property.actualValue = normalizeValue(property, String(property.actualValue))
+        property.expectedValue = normalizeValue(property, String(property.expectedValue))
 
-      return property
-    })
+        return property
+      })
+    } else {
+      properties.actualValue = normalizeValue(properties, String(properties.actualValue))
+      properties.expectedValue = normalizeValue(properties, String(properties.expectedValue))
+
+      return properties
+    }
   }
 
-  static beforeUpdate(properties: PropertyInterface[]): PropertyInterface[] {
-    return properties.map((property: PropertyInterface) => {
-      property.actualValue = normalizeValue(property, String(property.actualValue))
-      property.expectedValue = normalizeValue(property, String(property.expectedValue))
+  static beforeUpdate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
+    if (Array.isArray(properties)) {
+      return properties.map((property: PropertyInterface) => {
+        property.actualValue = normalizeValue(property, String(property.actualValue))
+        property.expectedValue = normalizeValue(property, String(property.expectedValue))
 
-      return property
-    })
+        return property
+      })
+    } else {
+      properties.actualValue = normalizeValue(properties, String(properties.actualValue))
+      properties.expectedValue = normalizeValue(properties, String(properties.expectedValue))
+
+      return properties
+    }
   }
 
   id!: string

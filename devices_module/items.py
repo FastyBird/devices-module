@@ -29,7 +29,18 @@ from typing import Dict, List, Optional, Set, Tuple, Union
 from modules_metadata.types import DataType
 
 
-class DeviceItem:
+class RepositoryItem(ABC):
+    """
+    Repository base item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+
+class DeviceItem(RepositoryItem):
     """
     Device entity base item
 
@@ -224,7 +235,7 @@ class DeviceItem:
         }
 
 
-class ChannelItem:
+class ChannelItem(RepositoryItem):
     """
     Channel entity base item
 
@@ -318,7 +329,7 @@ class ChannelItem:
         }
 
 
-class PropertyItem(ABC):
+class PropertyItem(RepositoryItem):
     """
     Property entity base item
 
@@ -596,7 +607,7 @@ class ChannelPropertyItem(PropertyItem):
         }
 
 
-class ConnectorItem(ABC):
+class ConnectorItem(RepositoryItem):
     """
     Connector entity item
 
@@ -817,7 +828,7 @@ class FbMqttV1ConnectorItem(ConnectorItem):
         }
 
 
-class ControlItem(ABC):
+class ControlItem(RepositoryItem):
     """
     Control entity base item
 
@@ -1012,7 +1023,7 @@ class ConnectorControlItem(ControlItem):
         }
 
 
-class ConfigurationItem(ABC):
+class ConfigurationItem(RepositoryItem):
     """
     Configuration entity base item
 

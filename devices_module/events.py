@@ -22,6 +22,9 @@ Devices module models events
 from pony.orm import core as orm
 from whistle import Event
 
+# Library libs
+from devices_module.items import RepositoryItem
+
 
 class ModelEntityCreatedEvent(Event):
     """
@@ -111,3 +114,93 @@ class ModelEntityDeletedEvent(Event):
     def entity(self) -> orm.Entity:
         """Deleted entity instance"""
         return self.__entity
+
+
+class ModelItemCreatedEvent(Event):
+    """
+    Event fired by model when new item is created
+
+    @package        FastyBird:DevicesModule!
+    @module         events
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __item: RepositoryItem
+
+    EVENT_NAME: str = "devices-module.itemCreated"
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        item: RepositoryItem,
+    ) -> None:
+        self.__item = item
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def item(self) -> RepositoryItem:
+        """Created item instance"""
+        return self.__item
+
+
+class ModelItemUpdatedEvent(Event):
+    """
+    Event fired by model when existing item is update
+
+    @package        FastyBird:DevicesModule!
+    @module         events
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __item: RepositoryItem
+
+    EVENT_NAME: str = "devices-module.itemUpdated"
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        item: RepositoryItem,
+    ) -> None:
+        self.__item = item
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def item(self) -> RepositoryItem:
+        """Updated item instance"""
+        return self.__item
+
+
+class ModelItemDeletedEvent(Event):
+    """
+    Event fired by model when existing item is deleted
+
+    @package        FastyBird:DevicesModule!
+    @module         events
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __item: RepositoryItem
+
+    EVENT_NAME: str = "devices-module.itemDeleted"
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        item: RepositoryItem,
+    ) -> None:
+        self.__item = item
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def item(self) -> RepositoryItem:
+        """Deleted item instance"""
+        return self.__item

@@ -41,7 +41,7 @@ from whistle import Event
 from devices_module.events import (
     ModelEntityCreatedEvent,
     ModelEntityDeletedEvent,
-    ModelEntityUpdatedEvent,
+    ModelEntityUpdatedEvent, ModelItemCreatedEvent, ModelItemUpdatedEvent, ModelItemDeletedEvent,
 )
 from devices_module.exceptions import HandleExchangeDataException, InvalidStateException
 from devices_module.items import (
@@ -308,6 +308,15 @@ class DevicesRepository:
 
         self.initialize()
 
+        device_item = self.get_by_id(device_id=event.entity.device_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemCreatedEvent.EVENT_NAME,
+            event=ModelItemCreatedEvent(
+                item=device_item
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def __entity_updated(self, event: Event) -> None:
@@ -316,13 +325,31 @@ class DevicesRepository:
 
         self.initialize()
 
+        device_item = self.get_by_id(device_id=event.entity.device_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemUpdatedEvent.EVENT_NAME,
+            event=ModelItemUpdatedEvent(
+                item=device_item
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def __entity_deleted(self, event: Event) -> None:
         if not isinstance(event, ModelEntityDeletedEvent) or not isinstance(event.entity, DeviceEntity):
             return
 
+        device_item = self.get_by_id(device_id=event.entity.device_id)
+
         self.initialize()
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemDeletedEvent.EVENT_NAME,
+            event=ModelItemDeletedEvent(
+                item=device_item,
+            )
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -591,6 +618,15 @@ class ChannelsRepository:
 
         self.initialize()
 
+        channel_item = self.get_by_id(channel_id=event.entity.channel_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemCreatedEvent.EVENT_NAME,
+            event=ModelItemCreatedEvent(
+                item=channel_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def __entity_updated(self, event: Event) -> None:
@@ -599,13 +635,31 @@ class ChannelsRepository:
 
         self.initialize()
 
+        channel_item = self.get_by_id(channel_id=event.entity.channel_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemUpdatedEvent.EVENT_NAME,
+            event=ModelItemUpdatedEvent(
+                item=channel_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def __entity_deleted(self, event: Event) -> None:
         if not isinstance(event, ModelEntityDeletedEvent) or not isinstance(event.entity, ChannelEntity):
             return
 
+        channel_item = self.get_by_id(channel_id=event.entity.channel_id)
+
         self.initialize()
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemDeletedEvent.EVENT_NAME,
+            event=ModelItemDeletedEvent(
+                item=channel_item,
+            )
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -753,6 +807,15 @@ class PropertiesRepository(Generic[T]):
 
         self.initialize()
 
+        property_item = self.get_by_id(property_id=event.entity.property_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemCreatedEvent.EVENT_NAME,
+            event=ModelItemCreatedEvent(
+                item=property_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def _entity_updated(self, event: Event) -> None:
@@ -763,6 +826,15 @@ class PropertiesRepository(Generic[T]):
 
         self.initialize()
 
+        property_item = self.get_by_id(property_id=event.entity.property_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemUpdatedEvent.EVENT_NAME,
+            event=ModelItemUpdatedEvent(
+                item=property_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def _entity_deleted(self, event: Event) -> None:
@@ -771,7 +843,16 @@ class PropertiesRepository(Generic[T]):
         ):
             return
 
+        property_item = self.get_by_id(property_id=event.entity.property_id)
+
         self.initialize()
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemDeletedEvent.EVENT_NAME,
+            event=ModelItemDeletedEvent(
+                item=property_item,
+            )
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1307,6 +1388,15 @@ class ConnectorsRepository:
 
         self.initialize()
 
+        connector_item = self.get_by_id(connector_id=event.entity.connector_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemCreatedEvent.EVENT_NAME,
+            event=ModelItemCreatedEvent(
+                item=connector_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def __entity_updated(self, event: Event) -> None:
@@ -1315,13 +1405,31 @@ class ConnectorsRepository:
 
         self.initialize()
 
+        connector_item = self.get_by_id(connector_id=event.entity.connector_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemUpdatedEvent.EVENT_NAME,
+            event=ModelItemUpdatedEvent(
+                item=connector_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def __entity_deleted(self, event: Event) -> None:
         if not isinstance(event, ModelEntityDeletedEvent) or not isinstance(event.entity, ConnectorEntity):
             return
 
+        connector_item = self.get_by_id(connector_id=event.entity.connector_id)
+
         self.initialize()
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemDeletedEvent.EVENT_NAME,
+            event=ModelItemDeletedEvent(
+                item=connector_item,
+            )
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -1525,6 +1633,15 @@ class ControlsRepository(Generic[T]):
 
         self.initialize()
 
+        control_item = self.get_by_id(control_id=event.entity.control_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemCreatedEvent.EVENT_NAME,
+            event=ModelItemCreatedEvent(
+                item=control_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def _entity_updated(self, event: Event) -> None:
@@ -1535,6 +1652,15 @@ class ControlsRepository(Generic[T]):
 
         self.initialize()
 
+        control_item = self.get_by_id(control_id=event.entity.control_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemUpdatedEvent.EVENT_NAME,
+            event=ModelItemUpdatedEvent(
+                item=control_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def _entity_deleted(self, event: Event) -> None:
@@ -1543,7 +1669,16 @@ class ControlsRepository(Generic[T]):
         ):
             return
 
+        control_item = self.get_by_id(control_id=event.entity.control_id)
+
         self.initialize()
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemDeletedEvent.EVENT_NAME,
+            event=ModelItemDeletedEvent(
+                item=control_item,
+            )
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -2104,6 +2239,15 @@ class ConfigurationRepository(Generic[T]):
 
         self.initialize()
 
+        configuration_item = self.get_by_id(configuration_id=event.entity.configuration_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemCreatedEvent.EVENT_NAME,
+            event=ModelItemCreatedEvent(
+                item=configuration_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def _entity_updated(self, event: Event) -> None:
@@ -2114,6 +2258,15 @@ class ConfigurationRepository(Generic[T]):
 
         self.initialize()
 
+        configuration_item = self.get_by_id(configuration_id=event.entity.configuration_id)
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemUpdatedEvent.EVENT_NAME,
+            event=ModelItemUpdatedEvent(
+                item=configuration_item,
+            )
+        )
+
     # -----------------------------------------------------------------------------
 
     def _entity_deleted(self, event: Event) -> None:
@@ -2122,7 +2275,16 @@ class ConfigurationRepository(Generic[T]):
         ):
             return
 
+        configuration_item = self.get_by_id(configuration_id=event.entity.configuration_id)
+
         self.initialize()
+
+        self.__event_dispatcher.dispatch(
+            event_id=ModelItemDeletedEvent.EVENT_NAME,
+            event=ModelItemDeletedEvent(
+                item=configuration_item,
+            )
+        )
 
     # -----------------------------------------------------------------------------
 

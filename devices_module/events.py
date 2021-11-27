@@ -18,12 +18,17 @@
 Devices module models events
 """
 
+# Python base dependencies
+from typing import Generic, TypeVar
+
 # Library dependencies
 from pony.orm import core as orm
 from whistle import Event
 
 # Library libs
 from devices_module.items import RepositoryItem
+
+T = TypeVar("T")  # pylint: disable=invalid-name
 
 
 class ModelEntityCreatedEvent(Event):
@@ -116,7 +121,7 @@ class ModelEntityDeletedEvent(Event):
         return self.__entity
 
 
-class ModelItemCreatedEvent(Event):
+class ModelItemCreatedEvent(Generic[T], Event):
     """
     Event fired by model when new item is created
 
@@ -126,7 +131,7 @@ class ModelItemCreatedEvent(Event):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __item: RepositoryItem
+    __item: T
 
     EVENT_NAME: str = "devices-module.itemCreated"
 
@@ -134,19 +139,19 @@ class ModelItemCreatedEvent(Event):
 
     def __init__(
         self,
-        item: RepositoryItem,
+        item: T,
     ) -> None:
         self.__item = item
 
     # -----------------------------------------------------------------------------
 
     @property
-    def item(self) -> RepositoryItem:
+    def item(self) -> T:
         """Created item instance"""
         return self.__item
 
 
-class ModelItemUpdatedEvent(Event):
+class ModelItemUpdatedEvent(Generic[T], Event):
     """
     Event fired by model when existing item is update
 
@@ -156,7 +161,7 @@ class ModelItemUpdatedEvent(Event):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __item: RepositoryItem
+    __item: T
 
     EVENT_NAME: str = "devices-module.itemUpdated"
 
@@ -164,19 +169,19 @@ class ModelItemUpdatedEvent(Event):
 
     def __init__(
         self,
-        item: RepositoryItem,
+        item: T,
     ) -> None:
         self.__item = item
 
     # -----------------------------------------------------------------------------
 
     @property
-    def item(self) -> RepositoryItem:
+    def item(self) -> T:
         """Updated item instance"""
         return self.__item
 
 
-class ModelItemDeletedEvent(Event):
+class ModelItemDeletedEvent(Generic[T], Event):
     """
     Event fired by model when existing item is deleted
 
@@ -186,7 +191,7 @@ class ModelItemDeletedEvent(Event):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __item: RepositoryItem
+    __item: T
 
     EVENT_NAME: str = "devices-module.itemDeleted"
 
@@ -194,13 +199,13 @@ class ModelItemDeletedEvent(Event):
 
     def __init__(
         self,
-        item: RepositoryItem,
+        item: T,
     ) -> None:
         self.__item = item
 
     # -----------------------------------------------------------------------------
 
     @property
-    def item(self) -> RepositoryItem:
+    def item(self) -> T:
         """Deleted item instance"""
         return self.__item

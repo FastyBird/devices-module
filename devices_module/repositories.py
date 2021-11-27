@@ -1635,7 +1635,7 @@ class ControlsRepository(Generic[T]):
 
         control_item = self.get_by_id(control_id=event.entity.control_id)
 
-        self.__event_dispatcher.dispatch(
+        self._event_dispatcher.dispatch(
             event_id=ModelItemCreatedEvent.EVENT_NAME,
             event=ModelItemCreatedEvent(
                 item=control_item,
@@ -1654,7 +1654,7 @@ class ControlsRepository(Generic[T]):
 
         control_item = self.get_by_id(control_id=event.entity.control_id)
 
-        self.__event_dispatcher.dispatch(
+        self._event_dispatcher.dispatch(
             event_id=ModelItemUpdatedEvent.EVENT_NAME,
             event=ModelItemUpdatedEvent(
                 item=control_item,
@@ -1673,7 +1673,7 @@ class ControlsRepository(Generic[T]):
 
         self.initialize()
 
-        self.__event_dispatcher.dispatch(
+        self._event_dispatcher.dispatch(
             event_id=ModelItemDeletedEvent.EVENT_NAME,
             event=ModelItemDeletedEvent(
                 item=control_item,

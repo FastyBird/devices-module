@@ -25,9 +25,6 @@ from typing import Generic, TypeVar
 from pony.orm import core as orm
 from whistle import Event
 
-# Library libs
-from devices_module.items import RepositoryItem
-
 T = TypeVar("T")  # pylint: disable=invalid-name
 
 

@@ -33,7 +33,7 @@ final class ItemValueHelper
 	/**
 	 * @param ModulesMetadataTypes\DataTypeType $dataType
 	 * @param bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null $value
-	 * @param Array<string|int|float>|null  $format
+	 * @param Array<string|int|float|null>|null  $format
 	 *
 	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null
 	 */

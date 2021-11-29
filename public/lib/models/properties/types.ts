@@ -96,5 +96,5 @@ export interface PropertyInterface {
 
   icon: string
 
-  getFormat(): Array<string | number | null> | null
+  getFormat(): (string | number | null)[] | null
 }

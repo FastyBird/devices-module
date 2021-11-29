@@ -4,7 +4,7 @@ import { parse } from 'date-fns'
 export const normalizeValue = (
   dataType: DataType,
   value: string | null,
-  enumFormat?: Array<string | number | null> | null
+  enumFormat?: (string | number | null)[] | null,
 ): number | string | boolean | Date | null => {
   if (value === null) {
     return null

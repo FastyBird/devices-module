@@ -450,7 +450,7 @@ class PropertyItem(RepositoryItem):
 
     # -----------------------------------------------------------------------------
 
-    def get_format(
+    def get_format(  # pylint: disable=too-many-return-statements,too-many-branches
         self
     ) -> Union[
         Tuple[Union[int, None], Union[int, None]],

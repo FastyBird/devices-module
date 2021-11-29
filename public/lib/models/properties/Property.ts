@@ -299,7 +299,7 @@ export default class Property extends Model implements PropertyInterface {
     return 'chart-bar'
   }
 
-  getFormat(): Array<string | number | null> | null {
+  getFormat(): (string | number | null)[] | null {
     if (this.dataType !== null) {
       switch (this.dataType) {
         case DataType.CHAR:

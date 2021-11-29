@@ -43,7 +43,7 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
     """
 
     @staticmethod
-    def normalize_value(  # pylint: disable=too-many-return-statements
+    def normalize_value(  # pylint: disable=too-many-return-statements,too-many-branches
         data_type: DataType,
         value: Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None],
         data_format: Union[

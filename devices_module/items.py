@@ -451,12 +451,9 @@ class PropertyItem(RepositoryItem):
     # -----------------------------------------------------------------------------
 
     def get_format(  # pylint: disable=too-many-return-statements,too-many-branches
-        self
+        self,
     ) -> Union[
-        Tuple[Union[int, None], Union[int, None]],
-        Tuple[Union[float, None], Union[float, None]],
-        Set[str],
-        None
+        Tuple[Union[int, None], Union[int, None]], Tuple[Union[float, None], Union[float, None]], Set[str], None
     ]:
         """Property formatted value format"""
         if self.__format is None:

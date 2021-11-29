@@ -22,7 +22,7 @@ Devices module helpers
 import math
 import time
 from datetime import datetime
-from typing import Callable, Optional, Set, Union, Tuple
+from typing import Callable, Optional, Set, Tuple, Union
 
 # Library dependencies
 from fastnumbers import fast_float, fast_int
@@ -47,11 +47,8 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
         data_type: DataType,
         value: Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None],
         data_format: Union[
-            Tuple[Union[int, None], Union[int, None]],
-            Tuple[Union[float, None], Union[float, None]],
-            Set[str],
-            None
-        ] = None
+            Tuple[Union[int, None], Union[int, None]], Tuple[Union[float, None], Union[float, None]], Set[str], None
+        ] = None,
     ) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Normalize property value based od property data type"""
         if value is None:

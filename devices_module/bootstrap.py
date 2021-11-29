@@ -28,7 +28,7 @@ from kink import di
 
 # Library libs
 from devices_module.exchange import ModuleExchange
-from devices_module.helpers import KeyHashHelpers, ItemValueHelpers
+from devices_module.helpers import ItemValueHelpers, KeyHashHelpers
 from devices_module.models import db
 from devices_module.repositories import (
     ChannelsConfigurationRepository,

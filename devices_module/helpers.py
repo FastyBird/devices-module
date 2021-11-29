@@ -65,29 +65,29 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             DataType.INT,
             DataType.UINT,
         ):
-            int_value = fast_int(value)
+            int_value: int = fast_int(str(value))  # type: ignore[arg-type]
 
-            if data_format is not None and isinstance(data_format, Tuple) and len(data_format) == 2:
+            if data_format is not None and isinstance(data_format, tuple) and len(data_format) == 2:
                 min_value, max_value = data_format
 
-                if min_value is not None and min_value > int_value:
+                if min_value is not None and isinstance(min_value, (int, float)) and min_value > int_value:
                     return None
 
-                if max_value is not None and max_value < int_value:
+                if max_value is not None and isinstance(max_value, (int, float)) and max_value < int_value:
                     return None
 
             return int_value
 
         if data_type == DataType.FLOAT:
-            float_value = fast_float(value)
+            float_value: float = fast_float(str(value))  # type: ignore[arg-type]
 
-            if data_format is not None and isinstance(data_format, Tuple) and len(data_format) == 2:
+            if data_format is not None and isinstance(data_format, tuple) and len(data_format) == 2:
                 min_value, max_value = data_format
 
-                if min_value is not None and min_value > float_value:
+                if min_value is not None and isinstance(min_value, (int, float)) and min_value > float_value:
                     return None
 
-                if max_value is not None and max_value < float_value:
+                if max_value is not None and isinstance(max_value, (int, float)) and max_value < float_value:
                     return None
 
             return float_value
@@ -101,7 +101,7 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             return str(value)
 
         if data_type == DataType.ENUM:
-            if data_format is not None and isinstance(data_format, List) and str(value) in data_format:
+            if data_format is not None and isinstance(data_format, list) and str(value) in data_format:
                 return str(value)
 
             return None

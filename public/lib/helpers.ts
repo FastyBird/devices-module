@@ -17,7 +17,7 @@ export const normalizeValue = (
     case DataType.FLOAT: {
       const floatValue = parseFloat(value)
 
-      if (Array.isArray(enumFormat) && enumFormat.length == 2) {
+      if (Array.isArray(enumFormat) && enumFormat.length === 2) {
         if (enumFormat[0] !== null && enumFormat[0] > floatValue) {
           return null
         }
@@ -38,7 +38,7 @@ export const normalizeValue = (
     case DataType.UINT: {
       const intValue = parseInt(value, 10)
 
-      if (Array.isArray(enumFormat) && enumFormat.length == 2) {
+      if (Array.isArray(enumFormat) && enumFormat.length === 2) {
         if (enumFormat[0] !== null && enumFormat[0] > intValue) {
           return null
         }

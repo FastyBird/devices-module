@@ -22,7 +22,7 @@ Devices module helpers
 import math
 import time
 from datetime import datetime
-from typing import Callable, Optional, Set, Union, List, Tuple
+from typing import Callable, Optional, Set, Union, Tuple
 
 # Library dependencies
 from fastnumbers import fast_float, fast_int

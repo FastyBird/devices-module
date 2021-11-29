@@ -450,7 +450,14 @@ class PropertyItem(RepositoryItem):
 
     # -----------------------------------------------------------------------------
 
-    def get_format(self) -> Union[Tuple[int, int], Tuple[float, float], Set[str], None]:
+    def get_format(
+        self
+    ) -> Union[
+        Tuple[Union[int, None], Union[int, None]],
+        Tuple[Union[float, None], Union[float, None]],
+        Set[str],
+        None
+    ]:
         """Property formatted value format"""
         if self.__format is None:
             return None
@@ -459,7 +466,14 @@ class PropertyItem(RepositoryItem):
             min_value: Optional[str] = None
             max_value: Optional[str] = None
 
-            if self.__data_type == DataType.INT:
+            if self.__data_type in (
+                DataType.CHAR,
+                DataType.UCHAR,
+                DataType.SHORT,
+                DataType.USHORT,
+                DataType.INT,
+                DataType.UINT,
+            ):
                 format_parts = self.__format.split(":")  # pylint: disable=unused-variable
 
                 try:
@@ -476,6 +490,12 @@ class PropertyItem(RepositoryItem):
 
                 if min_value is not None and max_value is not None and int(min_value) <= int(max_value):
                     return int(min_value), int(max_value)
+
+                if min_value is not None and max_value is None:
+                    return int(min_value), None
+
+                if min_value is None and max_value is not None:
+                    return None, int(max_value)
 
             elif self.__data_type == DataType.FLOAT:
                 format_parts = self.__format.split(":")  # pylint: disable=unused-variable
@@ -494,6 +514,12 @@ class PropertyItem(RepositoryItem):
 
                 if min_value is not None and max_value is not None and float(min_value) <= float(max_value):
                     return float(min_value), float(max_value)
+
+                if min_value is not None and max_value is None:
+                    return int(min_value), None
+
+                if min_value is None and max_value is not None:
+                    return None, int(max_value)
 
             elif self.__data_type == DataType.ENUM:
                 return {x.strip() for x in self.__format.split(",")}

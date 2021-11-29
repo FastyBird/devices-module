@@ -10,6 +10,7 @@ import {
   ConfigurationNumberDatatypeTypes,
   ValuesItemInterface,
 } from '@/lib/models/configuration/types'
+import { normalizeValue } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============
@@ -38,6 +39,34 @@ export default class Configuration extends Model implements ConfigurationInterfa
     }
   }
 
+  static beforeCreate(configurations: ConfigurationInterface[] | ConfigurationInterface): ConfigurationInterface[] | ConfigurationInterface {
+    if (Array.isArray(configurations)) {
+      return configurations.map((configuration: ConfigurationInterface) => {
+        configuration.value = normalizeValue(configuration.dataType, String(configuration.value))
+
+        return configuration
+      })
+    } else {
+      configurations.value = normalizeValue(configurations.dataType, String(configurations.value))
+
+      return configurations
+    }
+  }
+
+  static beforeUpdate(configurations: ConfigurationInterface[] | ConfigurationInterface): ConfigurationInterface[] | ConfigurationInterface {
+    if (Array.isArray(configurations)) {
+      return configurations.map((configuration: ConfigurationInterface) => {
+        configuration.value = normalizeValue(configuration.dataType, String(configuration.value))
+
+        return configuration
+      })
+    } else {
+      configurations.value = normalizeValue(configurations.dataType, String(configurations.value))
+
+      return configurations
+    }
+  }
+
   id!: string
 
   key!: string
@@ -45,7 +74,7 @@ export default class Configuration extends Model implements ConfigurationInterfa
   name!: string | null
   comment!: string | null
 
-  value!: string | number | boolean | null
+  value!: string | number | boolean | Date | null
   default!: string | number | boolean | null
   dataType!: DataType
 

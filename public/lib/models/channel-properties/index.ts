@@ -40,7 +40,7 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { ChannelPropertyJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
-import { normalizeValue } from '@/lib/models/properties/Property'
+import { normalizeValue } from '@/lib/helpers'
 
 interface SemaphoreFetchingState {
   items: string[]
@@ -262,7 +262,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
 
     const backupValue = payload.property.actualValue
 
-    const expectedValue = normalizeValue(payload.property, payload.value)
+    const expectedValue = payload.property.dataType !== null ? normalizeValue(payload.property.dataType, payload.value, payload.property.getFormat()) : payload.value
 
     try {
       await ChannelProperty.update({

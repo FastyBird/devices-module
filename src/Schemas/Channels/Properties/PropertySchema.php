@@ -92,8 +92,10 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	{
 		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property->getId());
 
-		$actualValue = $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getActualValue()) : null;
-		$expectedValue = $state !== null ? Helpers\PropertyHelper::normalizeValue($property, $state->getExpectedValue()) : null;
+		$dataType = $property->getDataType();
+
+		$actualValue = $state !== null ? ($dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
+		$expectedValue = $state !== null ? ($dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;
 
 		return [
 			'key'            => $property->getKey(),
@@ -101,7 +103,7 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			'name'           => $property->getName(),
 			'settable'       => $property->isSettable(),
 			'queryable'      => $property->isQueryable(),
-			'data_type'      => $property->getDataType() !== null ? $property->getDataType()->getValue() : null,
+			'data_type'      => $dataType !== null ? $dataType->getValue() : null,
 			'unit'           => $property->getUnit(),
 			'format'         => is_array($property->getFormat()) ? implode(',', $property->getFormat()) : $property->getFormat(),
 			'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,

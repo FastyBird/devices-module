@@ -97,7 +97,7 @@ interface IProperty extends IEntity,
 	public function setUnit(?string $units): void;
 
 	/**
-	 * @return string[]|string|int[]|float[]|null
+	 * @return Array<string|int|float|null>|null
 	 */
 	public function getFormat();
 

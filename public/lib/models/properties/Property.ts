@@ -1,5 +1,5 @@
 import { Fields, Model } from '@vuex-orm/core'
-import { ButtonPayload, DataType, HardwareManufacturer, SwitchPayload } from '@fastybird/modules-metadata'
+import { DataType, HardwareManufacturer } from '@fastybird/modules-metadata'
 
 import {
   PropertyCommandResult,
@@ -10,57 +10,7 @@ import {
   SensorNameTypes,
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
-
-export const normalizeValue = (property: PropertyInterface, value: string | null): number | string | boolean | null => {
-  if (value === null) {
-    return null
-  }
-
-  switch (property.dataType) {
-    case DataType.BOOLEAN:
-      return ['true', 't', 'yes', 'y', '1', 'on'].includes(value.toLocaleLowerCase())
-
-    case DataType.FLOAT:
-      return parseFloat(value)
-
-    case DataType.CHAR:
-    case DataType.UCHAR:
-    case DataType.SHORT:
-    case DataType.USHORT:
-    case DataType.INT:
-    case DataType.UINT:
-      return parseInt(value, 10)
-
-    case DataType.STRING:
-      return value
-
-    case DataType.ENUM:
-      if (property.format?.split(',').includes(value.toLowerCase())) {
-        return value.toLowerCase()
-      }
-
-      return null
-
-    case DataType.COLOR:
-      break
-
-    case DataType.BUTTON:
-      if (value.toLowerCase() in ButtonPayload) {
-        return value.toLowerCase()
-      }
-
-      return null
-
-    case DataType.SWITCH:
-      if (value.toLowerCase() in SwitchPayload) {
-        return value.toLowerCase()
-      }
-
-      return null
-  }
-
-  return value
-}
+import { normalizeValue } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============
@@ -90,14 +40,18 @@ export default class Property extends Model implements PropertyInterface {
   static beforeCreate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
-        property.actualValue = normalizeValue(property, String(property.actualValue))
-        property.expectedValue = normalizeValue(property, String(property.expectedValue))
+        if (property.dataType) {
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.getFormat())
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.getFormat())
+        }
 
         return property
       })
     } else {
-      properties.actualValue = normalizeValue(properties, String(properties.actualValue))
-      properties.expectedValue = normalizeValue(properties, String(properties.expectedValue))
+      if (properties.dataType) {
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.getFormat())
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.getFormat())
+      }
 
       return properties
     }
@@ -106,14 +60,18 @@ export default class Property extends Model implements PropertyInterface {
   static beforeUpdate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
-        property.actualValue = normalizeValue(property, String(property.actualValue))
-        property.expectedValue = normalizeValue(property, String(property.expectedValue))
+        if (property.dataType) {
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.getFormat())
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.getFormat())
+        }
 
         return property
       })
     } else {
-      properties.actualValue = normalizeValue(properties, String(properties.actualValue))
-      properties.expectedValue = normalizeValue(properties, String(properties.expectedValue))
+      if (properties.dataType) {
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.getFormat())
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.getFormat())
+      }
 
       return properties
     }
@@ -130,8 +88,8 @@ export default class Property extends Model implements PropertyInterface {
   unit!: string | null
   format!: string | null
 
-  actualValue!: string | number | boolean | null
-  expectedValue!: string | number | boolean | null
+  actualValue!: string | number | boolean | Date | null
+  expectedValue!: string | number | boolean | Date | null
   pending!: boolean
 
   command!: PropertyCommandState | null
@@ -204,41 +162,9 @@ export default class Property extends Model implements PropertyInterface {
     return this.queryable
   }
 
-  get binaryValue(): boolean {
-    if (this.actualValue === null) {
-      return false
-    }
-
-    if (this.isBoolean) {
-      if (typeof this.actualValue === 'boolean') {
-        return this.actualValue
-      }
-
-      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.actualValue.toString().toLocaleLowerCase())
-    }
-
-    return false
-  }
-
-  get binaryExpected(): boolean | null {
-    if (this.expectedValue === null) {
-      return null
-    }
-
-    if (this.isBoolean) {
-      if (typeof this.expectedValue === 'boolean') {
-        return this.expectedValue
-      }
-
-      return ['true', 't', 'yes', 'y', '1', 'on'].includes(this.expectedValue.toString().toLocaleLowerCase())
-    }
-
-    return false
-  }
-
-  get analogValue(): string {
+  get formattedActualValue(): string {
     const storeInstance = Property.store()
-    const actualValue = normalizeValue(this, this.actualValue !== null ? String(this.actualValue): null)
+    const actualValue = this.dataType ? normalizeValue(this.dataType, this.actualValue !== null ? String(this.actualValue) : null, this.getFormat()) : this.actualValue
 
     if (
       this.deviceInstance !== null &&
@@ -287,13 +213,13 @@ export default class Property extends Model implements PropertyInterface {
     return String(actualValue)
   }
 
-  get analogExpected(): string | null {
+  get formattedExpectedValue(): string | null {
     if (this.expectedValue === null) {
       return null
     }
 
     const storeInstance = Property.store()
-    const expectedValue = normalizeValue(this, this.expectedValue !== null ? String(this.expectedValue): null)
+    const expectedValue = this.dataType ? normalizeValue(this.dataType, this.expectedValue !== null ? String(this.expectedValue) : null, this.getFormat()) : this.expectedValue
 
     if (
       this.deviceInstance !== null &&
@@ -371,5 +297,74 @@ export default class Property extends Model implements PropertyInterface {
     }
 
     return 'chart-bar'
+  }
+
+  getFormat(): Array<string | number | null> | null {
+    if (this.dataType !== null) {
+      switch (this.dataType) {
+        case DataType.CHAR:
+        case DataType.UCHAR:
+        case DataType.SHORT:
+        case DataType.USHORT:
+        case DataType.INT:
+        case DataType.UINT: {
+          if (this.format !== null) {
+            const [min, max] = this.format.split(':').concat(['', '']);
+
+            if (min !== '' && max !== '' && parseInt(min, 10) <= parseInt(max, 10)) {
+              return [parseInt(min, 10), parseInt(max, 10)];
+            }
+
+            if (min !== '' && max === '') {
+              return [parseInt(min, 10), null];
+            }
+
+            if (min === '' && max !== '') {
+              return [null, parseInt(max, 10)];
+            }
+          }
+
+          break
+        }
+
+        case DataType.FLOAT: {
+          if (this.format !== null) {
+            const [min, max] = this.format.split(':').concat(['', '']);
+
+            if (min !== '' && max !== '' && parseFloat(min) <= parseFloat(max)) {
+              return [parseFloat(min), parseFloat(max)];
+            }
+
+            if (min !== '' && max === '') {
+              return [parseFloat(min), null];
+            }
+
+            if (min === '' && max !== '') {
+              return [null, parseFloat(max)];
+            }
+          }
+
+          break
+        }
+
+        case DataType.ENUM: {
+          if (this.format !== null) {
+            const format = this.format
+              .split(',')
+              .map((item): string => {
+                return item.trim()
+              })
+
+            return format.filter((item, index): boolean => {
+              return format.indexOf(item) === index
+            })
+          }
+
+          break
+        }
+      }
+    }
+
+    return null
   }
 }

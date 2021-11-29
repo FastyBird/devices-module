@@ -21,7 +21,8 @@ Devices module helpers
 # Python base dependencies
 import math
 import time
-from typing import Callable, Optional, Set, Union
+from datetime import datetime
+from typing import Callable, Optional, Set, Union, List, Tuple
 
 # Library dependencies
 from fastnumbers import fast_float, fast_int
@@ -29,14 +30,11 @@ from kink import inject
 from modules_metadata.types import ButtonPayload, DataType, SwitchPayload
 from pony.orm import core as orm
 
-# Library libs
-from devices_module.items import ChannelPropertyItem, DevicePropertyItem
-
 
 @inject
-class PropertiesHelpers:  # pylint: disable=too-few-public-methods
+class ItemValueHelpers:  # pylint: disable=too-few-public-methods
     """
-    Properties helpers
+    Item value helpers
 
     @package        FastyBird:DevicesModule!
     @module         helpers
@@ -46,42 +44,111 @@ class PropertiesHelpers:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def normalize_value(  # pylint: disable=too-many-return-statements
-        item: Union[DevicePropertyItem, ChannelPropertyItem],
-        value: Union[int, float, str, bool, None],
-    ) -> Union[int, float, str, bool, ButtonPayload, SwitchPayload, None]:
+        data_type: DataType,
+        value: Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None],
+        data_format: Union[
+            Tuple[Union[int, None], Union[int, None]],
+            Tuple[Union[float, None], Union[float, None]],
+            Set[str],
+            None
+        ] = None
+    ) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Normalize property value based od property data type"""
-        if value is None or item.data_type is None:
+        if value is None:
             return value
 
-        if item.data_type == DataType.INT:
-            return fast_int(value)
+        if data_type in (
+            DataType.CHAR,
+            DataType.UCHAR,
+            DataType.SHORT,
+            DataType.USHORT,
+            DataType.INT,
+            DataType.UINT,
+        ):
+            int_value = fast_int(value)
 
-        if item.data_type == DataType.FLOAT:
-            return fast_float(value)
+            if data_format is not None and isinstance(data_format, Tuple) and len(data_format) == 2:
+                min_value, max_value = data_format
 
-        if item.data_type == DataType.STRING:
-            return str(value)
+                if min_value is not None and min_value > int_value:
+                    return None
 
-        if item.data_type == DataType.BOOLEAN:
+                if max_value is not None and max_value < int_value:
+                    return None
+
+            return int_value
+
+        if data_type == DataType.FLOAT:
+            float_value = fast_float(value)
+
+            if data_format is not None and isinstance(data_format, Tuple) and len(data_format) == 2:
+                min_value, max_value = data_format
+
+                if min_value is not None and min_value > float_value:
+                    return None
+
+                if max_value is not None and max_value < float_value:
+                    return None
+
+            return float_value
+
+        if data_type == DataType.BOOLEAN:
             value = str(value)
 
             return value.lower() in ["true", "t", "yes", "y", "1", "on"]
 
-        if item.data_type == DataType.ENUM:
-            data_format = item.get_format()
+        if data_type == DataType.STRING:
+            return str(value)
 
-            if data_format is not None and isinstance(data_format, Set) and str(value) in data_format:
+        if data_type == DataType.ENUM:
+            if data_format is not None and isinstance(data_format, List) and str(value) in data_format:
                 return str(value)
 
             return None
 
-        if item.data_type == DataType.BUTTON:
+        if data_type == DataType.DATE:
+            if isinstance(value, datetime):
+                return value
+
+            try:
+                return datetime.strptime(str(value), "%Y-%m-%d")
+
+            except ValueError:
+                return None
+
+        if data_type == DataType.TIME:
+            if isinstance(value, datetime):
+                return value
+
+            try:
+                return datetime.strptime(str(value), "%H:%M:%S%z")
+
+            except ValueError:
+                return None
+
+        if data_type == DataType.DATETIME:
+            if isinstance(value, datetime):
+                return value
+
+            try:
+                return datetime.strptime(str(value), r"%Y-%m-%d\T%H:%M:%S%z")
+
+            except ValueError:
+                return None
+
+        if data_type == DataType.BUTTON:
+            if isinstance(value, ButtonPayload):
+                return value
+
             if ButtonPayload.has_value(str(value)):
                 return ButtonPayload(str(value))
 
             return None
 
-        if item.data_type == DataType.SWITCH:
+        if data_type == DataType.SWITCH:
+            if isinstance(value, SwitchPayload):
+                return value
+
             if SwitchPayload.has_value(str(value)):
                 return SwitchPayload(str(value))
 

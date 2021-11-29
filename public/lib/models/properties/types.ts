@@ -64,8 +64,8 @@ export interface PropertyInterface {
   unit: string | null
   format: string | null
 
-  actualValue: string | number | boolean | null
-  expectedValue: string | number | boolean | null
+  actualValue: string | number | boolean | Date | null
+  expectedValue: string | number | boolean | Date | null
   pending: boolean
 
   command: PropertyCommandState | null
@@ -91,10 +91,10 @@ export interface PropertyInterface {
   isSettable: boolean
   isQueryable: boolean
 
-  binaryValue: boolean
-  binaryExpected: boolean | null
-  analogValue: string
-  analogExpected: string | null
+  formattedActualValue: string
+  formattedExpectedValue: string | null
 
   icon: string
+
+  getFormat(): Array<string | number | null> | null
 }

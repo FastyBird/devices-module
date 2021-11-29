@@ -280,12 +280,14 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			) {
 				$state = $this->propertyStateRepository->findOne($entity->getId());
 
+				$dataType = $entity->getDataType();
+
 				$this->publisher->publish(
 					ModulesMetadataTypes\ModuleOriginType::get(ModulesMetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => Helpers\PropertyHelper::normalizeValue($entity, $state->getActualValue()),
-						'expected_value' => Helpers\PropertyHelper::normalizeValue($entity, $state->getExpectedValue()),
+						'actual_value'   => $dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
+						'expected_value' => $dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);

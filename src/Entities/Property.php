@@ -227,6 +227,14 @@ abstract class Property implements IProperty
 					if ($min !== null && $max !== null && intval($min) <= intval($max)) {
 						return [intval($min), intval($max)];
 					}
+
+					if ($min !== null && $max === null) {
+						return [intval($min), null];
+					}
+
+					if ($min === null && $max !== null) {
+						return [null, intval($max)];
+					}
 				}
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 				if ($format !== null) {
@@ -234,6 +242,14 @@ abstract class Property implements IProperty
 
 					if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
 						return [floatval($min), floatval($max)];
+					}
+
+					if ($min !== null && $max === null) {
+						return [floatval($min), null];
+					}
+
+					if ($min === null && $max !== null) {
+						return [null, floatval($max)];
 					}
 				}
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {

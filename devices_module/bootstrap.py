@@ -28,7 +28,7 @@ from kink import di
 
 # Library libs
 from devices_module.exchange import ModuleExchange
-from devices_module.helpers import KeyHashHelpers, PropertiesHelpers
+from devices_module.helpers import KeyHashHelpers, ItemValueHelpers
 from devices_module.models import db
 from devices_module.repositories import (
     ChannelsConfigurationRepository,
@@ -86,8 +86,8 @@ def create_container(settings: Dict[str, Dict[str, Union[str, int, bool, None]]]
     di[ModuleExchange] = ModuleExchange()  # type: ignore[call-arg]
     di["fb-devices-module_exchange"] = di[ModuleExchange]
 
-    di[PropertiesHelpers] = PropertiesHelpers()
-    di["fb-devices-module_helpers-properties"] = di[PropertiesHelpers]
+    di[ItemValueHelpers] = ItemValueHelpers()
+    di["fb-devices-module_helpers-properties"] = di[ItemValueHelpers]
 
     di[KeyHashHelpers] = KeyHashHelpers()
     di["fb-devices-module_helpers-key-hash"] = di[KeyHashHelpers]

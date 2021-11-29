@@ -71,6 +71,7 @@ const external = [
   '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.configuration.json',
   '@fastybird/modules-metadata/resources/schemas/devices-module/entity.connector.json',
   '@vuex-orm/core',
+  'date-fns',
 ];
 
 // UMD/IIFE shared settings: output.globals
@@ -97,6 +98,7 @@ const globals = {
   '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.configuration.json': 'ChannelConfigurationExchangeEntitySchema',
   '@fastybird/modules-metadata/resources/schemas/devices-module/entity.connector.json': 'ConnectorExchangeEntitySchema',
   '@vuex-orm/core': 'OrmCore',
+  'date-fns': 'dateFns',
 };
 
 // Customize configs for individual targets

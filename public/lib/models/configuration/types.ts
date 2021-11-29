@@ -39,7 +39,7 @@ export interface ConfigurationInterface {
   comment: string | null
 
   default: string | number | boolean | null
-  value: string | number | boolean | null
+  value: string | number | boolean | Date | null
   dataType: DataType
 
   min: number | null

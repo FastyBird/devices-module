@@ -60,6 +60,10 @@ from devices_module.items import (
     DevicePropertyItem,
     FbBusConnectorItem,
     FbMqttV1ConnectorItem,
+    ModbusConnectorItem,
+    ShellyConnectorItem,
+    SonoffConnectorItem,
+    TuyaConnectorItem,
 )
 from devices_module.models import (
     ChannelConfigurationEntity,
@@ -74,6 +78,10 @@ from devices_module.models import (
     DevicePropertyEntity,
     FbBusConnectorEntity,
     FbMqttConnectorEntity,
+    ModbusConnectorEntity,
+    ShellyConnectorEntity,
+    SonoffConnectorEntity,
+    TuyaConnectorEntity,
 )
 
 T = TypeVar("T")  # pylint: disable=invalid-name
@@ -1251,7 +1259,19 @@ class ConnectorsRepository:
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __items: Optional[Dict[str, Union[FbBusConnectorItem, FbMqttV1ConnectorItem]]] = None
+    __items: Optional[
+        Dict[
+            str,
+            Union[
+                FbBusConnectorItem,
+                FbMqttV1ConnectorItem,
+                ShellyConnectorItem,
+                TuyaConnectorItem,
+                SonoffConnectorItem,
+                ModbusConnectorItem,
+            ],
+        ]
+    ] = None
 
     __iterator_index = 0
 
@@ -1282,7 +1302,17 @@ class ConnectorsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_id(self, connector_id: uuid.UUID) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem, None]:
+    def get_by_id(
+        self, connector_id: uuid.UUID
+    ) -> Union[
+        FbBusConnectorItem,
+        FbMqttV1ConnectorItem,
+        ShellyConnectorItem,
+        TuyaConnectorItem,
+        SonoffConnectorItem,
+        ModbusConnectorItem,
+        None,
+    ]:
         """Find connector in cache by provided identifier"""
         for record in self:
             if connector_id.__eq__(record.connector_id):
@@ -1292,7 +1322,17 @@ class ConnectorsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, connector_key: str) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem, None]:
+    def get_by_key(
+        self, connector_key: str
+    ) -> Union[
+        FbBusConnectorItem,
+        FbMqttV1ConnectorItem,
+        ShellyConnectorItem,
+        TuyaConnectorItem,
+        SonoffConnectorItem,
+        ModbusConnectorItem,
+        None,
+    ]:
         """Find connector in cache by provided key"""
         for record in self:
             if record.key == connector_key:
@@ -1350,7 +1390,17 @@ class ConnectorsRepository:
     @orm.db_session
     def initialize(self) -> None:
         """Initialize repository by fetching entities from database"""
-        items: Dict[str, Union[FbBusConnectorItem, FbMqttV1ConnectorItem]] = {}
+        items: Dict[
+            str,
+            Union[
+                FbBusConnectorItem,
+                FbMqttV1ConnectorItem,
+                ShellyConnectorItem,
+                TuyaConnectorItem,
+                SonoffConnectorItem,
+                ModbusConnectorItem,
+            ],
+        ] = {}
 
         for entity in ConnectorEntity.select():
             items[entity.connector_id.__str__()] = self.__create_item(entity=entity)
@@ -1443,7 +1493,16 @@ class ConnectorsRepository:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __create_item(entity: ConnectorEntity) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem]:
+    def __create_item(
+        entity: ConnectorEntity,
+    ) -> Union[
+        FbBusConnectorItem,
+        FbMqttV1ConnectorItem,
+        ShellyConnectorItem,
+        TuyaConnectorItem,
+        SonoffConnectorItem,
+        ModbusConnectorItem,
+    ]:
         if isinstance(entity, FbBusConnectorEntity):
             return FbBusConnectorItem(
                 connector_id=entity.connector_id,
@@ -1464,12 +1523,62 @@ class ConnectorsRepository:
                 connector_params=entity.params,
             )
 
+        if isinstance(entity, ShellyConnectorEntity):
+            return ShellyConnectorItem(
+                connector_id=entity.connector_id,
+                connector_name=entity.name,
+                connector_key=entity.key,
+                connector_enabled=entity.enabled,
+                connector_type=entity.type,
+                connector_params=entity.params,
+            )
+
+        if isinstance(entity, TuyaConnectorEntity):
+            return TuyaConnectorItem(
+                connector_id=entity.connector_id,
+                connector_name=entity.name,
+                connector_key=entity.key,
+                connector_enabled=entity.enabled,
+                connector_type=entity.type,
+                connector_params=entity.params,
+            )
+
+        if isinstance(entity, SonoffConnectorEntity):
+            return SonoffConnectorItem(
+                connector_id=entity.connector_id,
+                connector_name=entity.name,
+                connector_key=entity.key,
+                connector_enabled=entity.enabled,
+                connector_type=entity.type,
+                connector_params=entity.params,
+            )
+
+        if isinstance(entity, ModbusConnectorEntity):
+            return ModbusConnectorItem(
+                connector_id=entity.connector_id,
+                connector_name=entity.name,
+                connector_key=entity.key,
+                connector_enabled=entity.enabled,
+                connector_type=entity.type,
+                connector_params=entity.params,
+            )
+
         raise InvalidStateException("Unsupported entity type provided")
 
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __update_item(item: ConnectorItem, data: Dict) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem, None]:
+    def __update_item(  # pylint: disable=too-many-return-statements
+        item: ConnectorItem, data: Dict
+    ) -> Union[
+        FbBusConnectorItem,
+        FbMqttV1ConnectorItem,
+        ShellyConnectorItem,
+        TuyaConnectorItem,
+        SonoffConnectorItem,
+        ModbusConnectorItem,
+        None,
+    ]:
         if isinstance(item, FbBusConnectorItem):
             params = item.params
             params["address"] = str(data.get("address", item.address))
@@ -1501,11 +1610,70 @@ class ConnectorsRepository:
                 connector_params=params,
             )
 
+        if isinstance(item, ShellyConnectorItem):
+            params = item.params
+
+            return ShellyConnectorItem(
+                connector_id=item.connector_id,
+                connector_name=data.get("name", item.name),
+                connector_key=item.key,
+                connector_enabled=bool(data.get("enabled", item.enabled)),
+                connector_type=item.type,
+                connector_params=params,
+            )
+
+        if isinstance(item, TuyaConnectorItem):
+            params = item.params
+
+            return TuyaConnectorItem(
+                connector_id=item.connector_id,
+                connector_name=data.get("name", item.name),
+                connector_key=item.key,
+                connector_enabled=bool(data.get("enabled", item.enabled)),
+                connector_type=item.type,
+                connector_params=params,
+            )
+
+        if isinstance(item, SonoffConnectorItem):
+            params = item.params
+
+            return SonoffConnectorItem(
+                connector_id=item.connector_id,
+                connector_name=data.get("name", item.name),
+                connector_key=item.key,
+                connector_enabled=bool(data.get("enabled", item.enabled)),
+                connector_type=item.type,
+                connector_params=params,
+            )
+
+        if isinstance(item, ModbusConnectorItem):
+            params = item.params
+
+            return ModbusConnectorItem(
+                connector_id=item.connector_id,
+                connector_name=data.get("name", item.name),
+                connector_key=item.key,
+                connector_enabled=bool(data.get("enabled", item.enabled)),
+                connector_type=item.type,
+                connector_params=params,
+            )
+
         return None
 
     # -----------------------------------------------------------------------------
 
-    def __setitem__(self, key: str, value: Union[FbBusConnectorItem, FbMqttV1ConnectorItem]) -> None:
+    def __setitem__(
+        self,
+        key: str,
+        value: Union[
+            FbBusConnectorItem,
+            FbMqttV1ConnectorItem,
+            ShellyConnectorItem,
+            TuyaConnectorItem,
+            SonoffConnectorItem,
+            ModbusConnectorItem,
+        ],
+    ) -> None:
         if self.__items is None:
             self.initialize()
 
@@ -1514,7 +1682,16 @@ class ConnectorsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def __getitem__(self, key: str) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem]:
+    def __getitem__(
+        self, key: str
+    ) -> Union[
+        FbBusConnectorItem,
+        FbMqttV1ConnectorItem,
+        ShellyConnectorItem,
+        TuyaConnectorItem,
+        SonoffConnectorItem,
+        ModbusConnectorItem,
+    ]:
         if self.__items is None:
             self.initialize()
 
@@ -1547,7 +1724,16 @@ class ConnectorsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def __next__(self) -> Union[FbBusConnectorItem, FbMqttV1ConnectorItem]:
+    def __next__(
+        self,
+    ) -> Union[
+        FbBusConnectorItem,
+        FbMqttV1ConnectorItem,
+        ShellyConnectorItem,
+        TuyaConnectorItem,
+        SonoffConnectorItem,
+        ModbusConnectorItem,
+    ]:
         if self.__items is None:
             self.initialize()
 

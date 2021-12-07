@@ -29,7 +29,7 @@ export interface DeviceConnectorInterface {
 
   draft: boolean
 
-  // FB bus Connector specific
+  // FB BUS Connector specific
   address: number
   maxPacketLength: number
   descriptionSupport: boolean
@@ -41,7 +41,7 @@ export interface DeviceConnectorInterface {
   pubSubSubMaxConditions: number
   pubSubSubMaxActions: number
 
-  // MQTT Connector specific
+  // FB MQTT Connector specific
   username: string
   password: string
 
@@ -61,7 +61,7 @@ export interface DeviceConnectorInterface {
 // =============
 
 interface DeviceConnectorAttributesResponseInterface {
-  // FB bus Connector specific
+  // FB BUS Connector specific
   address?: number
   max_packet_length?: number
   description_support?: boolean
@@ -73,7 +73,7 @@ interface DeviceConnectorAttributesResponseInterface {
   pub_sub_sub_max_conditions?: number
   pub_sub_sub_max_actions?: number
 
-  // MQTT Connector specific
+  // FB MQTT Connector specific
   username?: string
   password?: string
 }

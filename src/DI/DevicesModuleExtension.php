@@ -257,6 +257,18 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.connector.fbMqtt'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\FbMqttConnectorSchema::class);
 
+		$builder->addDefinition($this->prefix('schemas.connector.shelly'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\ShellyConnectorSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.connector.tuya'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\TuyaConnectorSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.connector.sonoff'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\SonoffConnectorSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.connector.modbus'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\ModbusConnectorSchema::class);
+
 		$builder->addDefinition($this->prefix('schemas.connector.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\Controls\ControlSchema::class);
 
@@ -275,6 +287,18 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition($this->prefix('hydrators.connectors.fbMqtt'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\FbMqttConnectorHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.connectors.shelly'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Connectors\ShellyConnectorHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.connectors.tuya'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Connectors\TuyaConnectorHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.connectors.sonoff'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Connectors\SonoffConnectorHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.connectors.modbus'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Connectors\ModbusConnectorHydrator::class);
 
 		// Helpers
 		$builder->addDefinition($this->prefix('helpers.property'), new DI\Definitions\ServiceDefinition())

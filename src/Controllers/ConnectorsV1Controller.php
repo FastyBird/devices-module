@@ -58,16 +58,36 @@ class ConnectorsV1Controller extends BaseV1Controller
 	/** @var Hydrators\Connectors\FbMqttConnectorHydrator */
 	private Hydrators\Connectors\FbMqttConnectorHydrator $fbMqttConnectorHydrator;
 
+	/** @var Hydrators\Connectors\ShellyConnectorHydrator */
+	private Hydrators\Connectors\ShellyConnectorHydrator $shellyConnectorHydrator;
+
+	/** @var Hydrators\Connectors\TuyaConnectorHydrator */
+	private Hydrators\Connectors\TuyaConnectorHydrator $tuyaConnectorHydrator;
+
+	/** @var Hydrators\Connectors\SonoffConnectorHydrator */
+	private Hydrators\Connectors\SonoffConnectorHydrator $sonoffConnectorHydrator;
+
+	/** @var Hydrators\Connectors\ModbusConnectorHydrator */
+	private Hydrators\Connectors\ModbusConnectorHydrator $modbusConnectorHydrator;
+
 	public function __construct(
 		Models\Connectors\IConnectorRepository $connectorRepository,
 		Models\Connectors\IConnectorsManager $connectorsManager,
 		Hydrators\Connectors\FbBusConnectorHydrator $fbBusConnectorHydrator,
-		Hydrators\Connectors\FbMqttConnectorHydrator $fbMqttConnectorHydrator
+		Hydrators\Connectors\FbMqttConnectorHydrator $fbMqttConnectorHydrator,
+		Hydrators\Connectors\ShellyConnectorHydrator $shellyConnectorHydrator,
+		Hydrators\Connectors\TuyaConnectorHydrator $tuyaConnectorHydrator,
+		Hydrators\Connectors\SonoffConnectorHydrator $sonoffConnectorHydrator,
+		Hydrators\Connectors\ModbusConnectorHydrator $modbusConnectorHydrator
 	) {
 		$this->connectorRepository = $connectorRepository;
 		$this->connectorsManager = $connectorsManager;
 		$this->fbBusConnectorHydrator = $fbBusConnectorHydrator;
 		$this->fbMqttConnectorHydrator = $fbMqttConnectorHydrator;
+		$this->shellyConnectorHydrator = $shellyConnectorHydrator;
+		$this->tuyaConnectorHydrator = $tuyaConnectorHydrator;
+		$this->sonoffConnectorHydrator = $sonoffConnectorHydrator;
+		$this->modbusConnectorHydrator = $modbusConnectorHydrator;
 	}
 
 	/**
@@ -143,6 +163,30 @@ class ConnectorsV1Controller extends BaseV1Controller
 				&& $connector instanceof Entities\Connectors\IFbMqttConnector
 			) {
 				$updateConnectorData = $this->fbMqttConnectorHydrator->hydrate($document, $connector);
+
+			} elseif (
+				$document->getResource()->getType() === Schemas\Connectors\ShellyConnectorSchema::SCHEMA_TYPE
+				&& $connector instanceof Entities\Connectors\IShellyConnector
+			) {
+				$updateConnectorData = $this->shellyConnectorHydrator->hydrate($document, $connector);
+
+			} elseif (
+				$document->getResource()->getType() === Schemas\Connectors\TuyaConnectorSchema::SCHEMA_TYPE
+				&& $connector instanceof Entities\Connectors\ITuyaConnector
+			) {
+				$updateConnectorData = $this->tuyaConnectorHydrator->hydrate($document, $connector);
+
+			} elseif (
+				$document->getResource()->getType() === Schemas\Connectors\SonoffConnectorSchema::SCHEMA_TYPE
+				&& $connector instanceof Entities\Connectors\ISonoffConnector
+			) {
+				$updateConnectorData = $this->sonoffConnectorHydrator->hydrate($document, $connector);
+
+			} elseif (
+				$document->getResource()->getType() === Schemas\Connectors\ModbusConnectorSchema::SCHEMA_TYPE
+				&& $connector instanceof Entities\Connectors\IModbusConnector
+			) {
+				$updateConnectorData = $this->modbusConnectorHydrator->hydrate($document, $connector);
 
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(

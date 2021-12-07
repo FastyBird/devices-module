@@ -312,6 +312,22 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
                   entityData[camelName] = ConnectorEntityTypes.FB_MQTT
                   break
 
+                case ConnectorType.SHELLY:
+                  entityData[camelName] = ConnectorEntityTypes.SHELLY
+                  break
+
+                case ConnectorType.TUYA:
+                  entityData[camelName] = ConnectorEntityTypes.TUYA
+                  break
+
+                case ConnectorType.SONOFF:
+                  entityData[camelName] = ConnectorEntityTypes.SONOFF
+                  break
+
+                case ConnectorType.MODBUS:
+                  entityData[camelName] = ConnectorEntityTypes.MODBUS
+                  break
+
                 default:
                   entityData[camelName] = body[attrName]
               }

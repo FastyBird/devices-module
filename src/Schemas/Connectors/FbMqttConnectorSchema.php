@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Schemas;
 use Neomerx\JsonApi;
 
 /**
- * FB Bus connector entity schema
+ * FB MQTT connector entity schema
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

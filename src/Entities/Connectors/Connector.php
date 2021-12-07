@@ -40,7 +40,11 @@ use Throwable;
  * @ORM\DiscriminatorColumn(name="connector_type", type="string", length=40)
  * @ORM\DiscriminatorMap({
  *    "fb-bus"   = "FastyBird\DevicesModule\Entities\Connectors\FbBusConnector",
- *    "fb-mqtt"  = "FastyBird\DevicesModule\Entities\Connectors\FbMqttConnector"
+ *    "fb-mqtt"  = "FastyBird\DevicesModule\Entities\Connectors\FbMqttConnector",
+ *    "shelly"   = "FastyBird\DevicesModule\Entities\Connectors\ShellyConnector",
+ *    "tuya"     = "FastyBird\DevicesModule\Entities\Connectors\TuyaConnector",
+ *    "sonoff"   = "FastyBird\DevicesModule\Entities\Connectors\SonoffConnector",
+ *    "modbus"   = "FastyBird\DevicesModule\Entities\Connectors\ModbusConnector"
  * })
  * @ORM\MappedSuperclass
  */

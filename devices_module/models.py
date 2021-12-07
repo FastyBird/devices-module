@@ -296,6 +296,58 @@ class FbMqttConnectorEntity(ConnectorEntity):
         }
 
 
+class ShellyConnectorEntity(ConnectorEntity):
+    """
+    Shelly connector entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    _discriminator_: str = "shelly"
+
+
+class TuyaConnectorEntity(ConnectorEntity):
+    """
+    Tuya connector entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    _discriminator_: str = "tuya"
+
+
+class SonoffConnectorEntity(ConnectorEntity):
+    """
+    Sonoff connector entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    _discriminator_: str = "sonoff"
+
+
+class ModbusConnectorEntity(ConnectorEntity):
+    """
+    Modbus connector entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    _discriminator_: str = "modbus"
+
+
 class ConnectorControlEntity(db.Entity):  # type: ignore[no-any-unimported]
     """
     Connector control entity

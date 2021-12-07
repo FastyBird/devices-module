@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FbMqttConnectorHydrator.php
+ * TuyaConnectorHydrator.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -18,26 +18,21 @@ namespace FastyBird\DevicesModule\Hydrators\Connectors;
 use FastyBird\DevicesModule\Entities;
 
 /**
- * FB MQTT Connector entity hydrator
+ * Tuya Connector entity hydrator
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends ConnectorHydrator<Entities\Connectors\IFbMqttConnector>
+ * @phpstan-extends ConnectorHydrator<Entities\Connectors\ITuyaConnector>
  */
-final class FbMqttConnectorHydrator extends ConnectorHydrator
+final class TuyaConnectorHydrator extends ConnectorHydrator
 {
 
 	/** @var string[] */
 	protected array $attributes = [
 		'name',
-		'server',
-		'port',
-		'secured_port',
-		'username',
-		'password',
 	];
 
 	/**
@@ -45,7 +40,7 @@ final class FbMqttConnectorHydrator extends ConnectorHydrator
 	 */
 	protected function getEntityName(): string
 	{
-		return Entities\Connectors\FbMqttConnector::class;
+		return Entities\Connectors\TuyaConnector::class;
 	}
 
 }

@@ -851,6 +851,50 @@ class FbMqttV1ConnectorItem(ConnectorItem):
         }
 
 
+class ShellyConnectorItem(ConnectorItem):
+    """
+    Shelly connector entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+
+class TuyaConnectorItem(ConnectorItem):
+    """
+    Tuya connector entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+
+class SonoffConnectorItem(ConnectorItem):
+    """
+    Sonoff connector entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+
+class ModbusConnectorItem(ConnectorItem):
+    """
+    Modbus connector entity item
+
+    @package        FastyBird:DevicesModule!
+    @module         items
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+
 class ControlItem(RepositoryItem):
     """
     Control entity base item

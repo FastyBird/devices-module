@@ -30,7 +30,7 @@ export default class DeviceConnector extends Model implements DeviceConnectorInt
 
       draft: this.boolean(false),
 
-      // FB bus Connector specific
+      // FB BUS Connector specific
       address: this.number(0),
       maxPacketLength: this.number(0),
       descriptionSupport: this.boolean(false),
@@ -42,7 +42,7 @@ export default class DeviceConnector extends Model implements DeviceConnectorInt
       pubSubSubMaxConditions: this.number(0),
       pubSubSubMaxActions: this.number(0),
 
-      // MQTT Connector specific
+      // FB MQTT Connector specific
       username: this.string(''),
       password: this.string(''),
 
@@ -65,7 +65,7 @@ export default class DeviceConnector extends Model implements DeviceConnectorInt
 
   draft!: boolean
 
-  // FB bus Connector specific
+  // FB BUS Connector specific
   address!: number
   maxPacketLength!: number
   descriptionSupport!: boolean
@@ -77,7 +77,7 @@ export default class DeviceConnector extends Model implements DeviceConnectorInt
   pubSubSubMaxConditions!: number
   pubSubSubMaxActions!: number
 
-  // MQTT Connector specific
+  // FB MQTT Connector specific
   username!: string
   password!: string
 

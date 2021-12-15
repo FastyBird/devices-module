@@ -597,6 +597,7 @@ jobs:
       - name: "Install dependencies"
         run: |
           python -m pip install --upgrade pip
+          pip install mysqlclient
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: "Run tests"
@@ -637,6 +638,7 @@ jobs:
       - name: "Install dependencies"
         run: |
           python -m pip install --upgrade pip
+          pip install mysqlclient
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: "Install code coverage"

@@ -1,7 +1,6 @@
 fastnumbers>=3.2
 fastybird-exchange-plugin>=0.4
-fastybird-modules-metadata>=0.11
+fastybird-modules-metadata>=0.12
 kink>=0.6
 pony>=0.7
 setuptools>=57.4
-mysqlclient>=2.0

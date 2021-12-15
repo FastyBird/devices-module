@@ -98,7 +98,7 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             return str(value)
 
         if data_type == DataType.ENUM:
-            if data_format is not None and isinstance(data_format, list) and str(value) in data_format:
+            if data_format is not None and isinstance(data_format, (list, set)) and str(value) in list(data_format):
                 return str(value)
 
             return None

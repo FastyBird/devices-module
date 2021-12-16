@@ -43,5 +43,6 @@ class TestChannelPropertyItem(DbTestCase):
             "settable": True,
             "data_type": "enum",
             "format": "on,off,toggle",
+                "invalid": None,
             "unit": None,
         }, property_item.to_dict())

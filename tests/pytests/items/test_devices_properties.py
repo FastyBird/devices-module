@@ -43,5 +43,6 @@ class TestDevicePropertyItem(DbTestCase):
             "settable": False,
             "data_type": "int",
             "format": None,
+                "invalid": None,
             "unit": None,
         }, property_item.to_dict())

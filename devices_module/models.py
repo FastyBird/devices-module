@@ -590,6 +590,7 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     data_type: Optional[str] = OptionalField(str, column="property_data_type", nullable=True)
     unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
     format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
+    invalid: Optional[str] = OptionalField(str, column="property_invalid", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -632,6 +633,7 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
             "data_type": data_type,
             "unit": self.unit,
             "format": self.format,
+            "invalid": self.invalid,
             "device": self.device.device_id.__str__(),
         }
 
@@ -1245,6 +1247,7 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     data_type: Optional[str] = OptionalField(str, column="property_data_type", nullable=True)
     unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
     format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
+    invalid: Optional[str] = OptionalField(str, column="property_invalid", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -1287,6 +1290,7 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
             "data_type": data_type,
             "unit": self.unit,
             "format": self.format,
+            "invalid": self.invalid,
             "channel": self.channel.channel_id.__str__(),
         }
 

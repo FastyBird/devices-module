@@ -27,6 +27,7 @@ export default class Property extends Model implements PropertyInterface {
       dataType: this.string(null).nullable(),
       unit: this.string(null).nullable(),
       format: this.string(null).nullable(),
+      invalid: this.string(null).nullable(),
 
       actualValue: this.attr(null).nullable(),
       expectedValue: this.attr(null).nullable(),
@@ -87,6 +88,7 @@ export default class Property extends Model implements PropertyInterface {
   dataType!: DataType | null
   unit!: string | null
   format!: string | null
+  invalid!: string | null
 
   actualValue!: string | number | boolean | Date | null
   expectedValue!: string | number | boolean | Date | null
@@ -360,6 +362,37 @@ export default class Property extends Model implements PropertyInterface {
             })
           }
 
+          break
+        }
+      }
+    }
+
+    return null
+  }
+
+  getInvalid(): string | number | null {
+    if (this.invalid === null) {
+      return null
+    }
+
+    if (this.dataType !== null) {
+      switch (this.dataType) {
+        case DataType.CHAR:
+        case DataType.UCHAR:
+        case DataType.SHORT:
+        case DataType.USHORT:
+        case DataType.INT:
+        case DataType.UINT: {
+          if (!isNaN(this.invalid)) {
+            return parseInt(this.invalid, 10)
+          }
+          break
+        }
+
+        case DataType.FLOAT: {
+          if (!isNaN(this.invalid)) {
+            return parseFloat(this.invalid)
+          }
           break
         }
       }

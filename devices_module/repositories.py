@@ -24,11 +24,12 @@ Devices module repositories
 import json
 import uuid
 from abc import abstractmethod
-from typing import Dict, Generic, List, Optional, TypeVar, Union
+from typing import Dict, Generic, List, Optional, Set, Tuple, TypeVar, Union
 
 # Library dependencies
 import modules_metadata.exceptions as metadata_exceptions
 from exchange_plugin.dispatcher import EventDispatcher
+from fastnumbers import fast_float, fast_int
 from kink import inject
 from modules_metadata.loader import load_schema
 from modules_metadata.routing import RoutingKey
@@ -85,6 +86,115 @@ from devices_module.models import (
 )
 
 T = TypeVar("T")  # pylint: disable=invalid-name
+
+
+def build_property_invalid_value(
+    data_type: Optional[DataType],
+    invalid_value: Optional[str],
+) -> Union[str, int, float, bool, None]:
+    """Transform serialized property invalid value into value representation used for data transforming"""
+    if invalid_value is None:
+        return None
+
+    if data_type is not None:
+        if data_type in (
+            DataType.CHAR,
+            DataType.UCHAR,
+            DataType.SHORT,
+            DataType.USHORT,
+            DataType.INT,
+            DataType.UINT,
+        ):
+            try:
+                return fast_int(invalid_value, raise_on_invalid=True)
+
+            except ValueError:
+                return str(invalid_value)
+
+        if data_type == DataType.FLOAT:
+            try:
+                return fast_float(invalid_value, raise_on_invalid=True)
+
+            except ValueError:
+                return str(invalid_value)
+
+    return str(invalid_value)
+
+
+def build_property_value_format(  # pylint: disable=too-many-branches,too-many-return-statements
+    data_type: Optional[DataType],
+    value_format: Optional[str],
+) -> Union[Tuple[Optional[int], Optional[int]], Tuple[Optional[float], Optional[float]], Set[str], None]:
+    """Transform serialized property value format into value representation used for data transforming"""
+    if value_format is None:
+        return None
+
+    if data_type is not None:
+        if data_type in (
+            DataType.CHAR,
+            DataType.UCHAR,
+            DataType.SHORT,
+            DataType.USHORT,
+            DataType.INT,
+            DataType.UINT,
+        ):
+            format_parts = value_format.split(":")  # pylint: disable=unused-variable
+
+            int_min_value: Optional[int] = None
+            int_max_value: Optional[int] = None
+
+            try:
+                int_min_value = int(fast_int(format_parts[0], raise_on_invalid=True))
+
+            except (IndexError, ValueError):
+                int_min_value = None
+
+            try:
+                int_max_value = int(fast_int(format_parts[1], raise_on_invalid=True))
+
+            except (IndexError, ValueError):
+                int_max_value = None
+
+            if int_min_value is not None and int_max_value is not None and int_min_value <= int_max_value:
+                return int_min_value, int_max_value
+
+            if int_min_value is not None and int_max_value is None:
+                return int_min_value, None
+
+            if int_min_value is None and int_max_value is not None:
+                return None, int_max_value
+
+        elif data_type == DataType.FLOAT:
+            format_parts = value_format.split(":")  # pylint: disable=unused-variable
+
+            float_min_value: Optional[float] = None
+            float_max_value: Optional[float] = None
+
+            try:
+                float_min_value = float(fast_float(format_parts[0], raise_on_invalid=True))
+
+            except (IndexError, ValueError):
+                float_min_value = None
+
+            try:
+                float_max_value = float(fast_float(format_parts[1], raise_on_invalid=True))
+
+            except (IndexError, ValueError):
+                float_max_value = None
+
+            if float_min_value is not None and float_max_value is not None and float_min_value <= float_max_value:
+                return float_min_value, float_max_value
+
+            if float_min_value is not None and float_max_value is None:
+                return float_min_value, None
+
+            if float_min_value is None and float_max_value is not None:
+                return None, float_max_value
+
+        elif data_type == DataType.ENUM:
+            return {x.strip() for x in value_format.split(",")}
+
+    return None
 
 
 @inject
@@ -1060,7 +1170,12 @@ class DevicesPropertiesRepository(PropertiesRepository[DevicePropertyItem]):
             property_settable=entity.settable,
             property_queryable=entity.queryable,
             property_data_type=entity.data_type_formatted,
-            property_format=entity.format,
+            property_format=build_property_value_format(
+                data_type=entity.data_type_formatted, value_format=entity.format
+            ),
+            property_invalid=build_property_invalid_value(
+                data_type=entity.data_type_formatted, invalid_value=entity.invalid
+            ),
             property_unit=entity.unit,
             device_id=entity.device.device_id,
         )
@@ -1083,7 +1198,12 @@ class DevicesPropertiesRepository(PropertiesRepository[DevicePropertyItem]):
             property_settable=data.get("settable", item.settable),
             property_queryable=data.get("queryable", item.queryable),
             property_data_type=data_type,
-            property_format=data.get("format", item.format),
+            property_format=build_property_value_format(
+                data_type=item.data_type, value_format=data.get("format", None)
+            ),
+            property_invalid=build_property_invalid_value(
+                data_type=item.data_type, invalid_value=data.get("invalid", None)
+            ),
             property_unit=data.get("unit", item.unit),
             device_id=item.device_id,
         )
@@ -1217,7 +1337,12 @@ class ChannelsPropertiesRepository(PropertiesRepository[ChannelPropertyItem]):
             property_settable=entity.settable,
             property_queryable=entity.queryable,
             property_data_type=entity.data_type_formatted,
-            property_format=entity.format,
+            property_format=build_property_value_format(
+                data_type=entity.data_type_formatted, value_format=entity.format
+            ),
+            property_invalid=build_property_invalid_value(
+                data_type=entity.data_type_formatted, invalid_value=entity.invalid
+            ),
             property_unit=entity.unit,
             device_id=entity.channel.device.device_id,
             channel_id=entity.channel.channel_id,
@@ -1241,7 +1366,12 @@ class ChannelsPropertiesRepository(PropertiesRepository[ChannelPropertyItem]):
             property_settable=data.get("settable", item.settable),
             property_queryable=data.get("queryable", item.queryable),
             property_data_type=data_type,
-            property_format=data.get("format", item.format),
+            property_format=build_property_value_format(
+                data_type=item.data_type, value_format=data.get("format", None)
+            ),
+            property_invalid=build_property_invalid_value(
+                data_type=item.data_type, invalid_value=data.get("invalid", None)
+            ),
             property_unit=data.get("unit", item.unit),
             device_id=item.device_id,
             channel_id=item.channel_id,

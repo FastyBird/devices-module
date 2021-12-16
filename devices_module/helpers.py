@@ -26,12 +26,10 @@ from typing import Callable, Optional, Set, Tuple, Union
 
 # Library dependencies
 from fastnumbers import fast_float, fast_int
-from kink import inject
 from modules_metadata.types import ButtonPayload, DataType, SwitchPayload
 from pony.orm import core as orm
 
 
-@inject
 class ItemValueHelpers:  # pylint: disable=too-few-public-methods
     """
     Item value helpers
@@ -46,8 +44,8 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
     def normalize_value(  # pylint: disable=too-many-return-statements,too-many-branches
         data_type: DataType,
         value: Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None],
-        data_format: Union[
-            Tuple[Union[int, None], Union[int, None]], Tuple[Union[float, None], Union[float, None]], Set[str], None
+        value_format: Union[
+            Tuple[Optional[int], Optional[int]], Tuple[Optional[float], Optional[float]], Set[str], None
         ] = None,
     ) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Normalize property value based od property data type"""
@@ -62,10 +60,15 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             DataType.INT,
             DataType.UINT,
         ):
-            int_value: int = fast_int(str(value))  # type: ignore[arg-type]
+            try:
+                int_value: int = value if isinstance(value, int) \
+                    else fast_int(str(value), raise_on_invalid=True)  # type: ignore[arg-type]
 
-            if data_format is not None and isinstance(data_format, tuple) and len(data_format) == 2:
-                min_value, max_value = data_format
+            except ValueError:
+                return None
+
+            if value_format is not None and isinstance(value_format, tuple) and len(value_format) == 2:
+                min_value, max_value = value_format
 
                 if min_value is not None and isinstance(min_value, (int, float)) and min_value > int_value:
                     return None
@@ -76,10 +79,15 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             return int_value
 
         if data_type == DataType.FLOAT:
-            float_value: float = fast_float(str(value))  # type: ignore[arg-type]
+            try:
+                float_value: float = value if isinstance(value, int) \
+                    else fast_float(str(value), raise_on_invalid=True)  # type: ignore[arg-type]
 
-            if data_format is not None and isinstance(data_format, tuple) and len(data_format) == 2:
-                min_value, max_value = data_format
+            except ValueError:
+                return None
+
+            if value_format is not None and isinstance(value_format, tuple) and len(value_format) == 2:
+                min_value, max_value = value_format
 
                 if min_value is not None and isinstance(min_value, (int, float)) and min_value > float_value:
                     return None
@@ -90,6 +98,9 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             return float_value
 
         if data_type == DataType.BOOLEAN:
+            if isinstance(value, bool):
+                return value
+
             value = str(value)
 
             return value.lower() in ["true", "t", "yes", "y", "1", "on"]
@@ -98,7 +109,7 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             return str(value)
 
         if data_type == DataType.ENUM:
-            if data_format is not None and isinstance(data_format, (list, set)) and str(value) in list(data_format):
+            if value_format is not None and isinstance(value_format, (list, set)) and str(value) in list(value_format):
                 return str(value)
 
             return None
@@ -154,7 +165,6 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
         return value
 
 
-@inject
 class KeyHashHelpers:
     """
     Key hash generator & parser

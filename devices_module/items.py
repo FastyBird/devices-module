@@ -347,7 +347,8 @@ class PropertyItem(RepositoryItem):
     __queryable: bool
     __data_type: Optional[DataType]
     __unit: Optional[str]
-    __format: Optional[str]
+    __format: Union[Tuple[Optional[int], Optional[int]], Tuple[Optional[float], Optional[float]], Set[str], None]
+    __invalid: Union[str, int, float, bool, None]
 
     __device_id: uuid.UUID
 
@@ -363,7 +364,10 @@ class PropertyItem(RepositoryItem):
         property_queryable: bool,
         property_data_type: Optional[DataType],
         property_unit: Optional[str],
-        property_format: Optional[str],
+        property_format: Union[
+            Tuple[Optional[int], Optional[int]], Tuple[Optional[float], Optional[float]], Set[str], None
+        ],
+        property_invalid: Union[str, int, float, bool, None],
         device_id: uuid.UUID,
     ) -> None:
         self.__id = property_id
@@ -375,6 +379,7 @@ class PropertyItem(RepositoryItem):
         self.__data_type = property_data_type
         self.__unit = property_unit
         self.__format = property_format
+        self.__invalid = property_invalid
 
         self.__device_id = device_id
 
@@ -444,84 +449,18 @@ class PropertyItem(RepositoryItem):
     # -----------------------------------------------------------------------------
 
     @property
-    def format(self) -> Optional[str]:
+    def format(
+        self,
+    ) -> Union[Tuple[Optional[int], Optional[int]], Tuple[Optional[float], Optional[float]], Set[str], None]:
         """Property value format"""
         return self.__format
 
     # -----------------------------------------------------------------------------
 
-    def get_format(  # pylint: disable=too-many-return-statements,too-many-branches
-        self,
-    ) -> Union[
-        Tuple[Union[int, None], Union[int, None]], Tuple[Union[float, None], Union[float, None]], Set[str], None
-    ]:
-        """Property formatted value format"""
-        if self.__format is None:
-            return None
-
-        if self.__data_type is not None:
-            min_value: Optional[str] = None
-            max_value: Optional[str] = None
-
-            if self.__data_type in (
-                DataType.CHAR,
-                DataType.UCHAR,
-                DataType.SHORT,
-                DataType.USHORT,
-                DataType.INT,
-                DataType.UINT,
-            ):
-                format_parts = self.__format.split(":")  # pylint: disable=unused-variable
-
-                try:
-                    min_value = format_parts[0]
-
-                except IndexError:
-                    min_value = None
-
-                try:
-                    max_value = format_parts[1]
-
-                except IndexError:
-                    max_value = None
-
-                if min_value is not None and max_value is not None and int(min_value) <= int(max_value):
-                    return int(min_value), int(max_value)
-
-                if min_value is not None and max_value is None:
-                    return int(min_value), None
-
-                if min_value is None and max_value is not None:
-                    return None, int(max_value)
-
-            elif self.__data_type == DataType.FLOAT:
-                format_parts = self.__format.split(":")  # pylint: disable=unused-variable
-
-                try:
-                    min_value = format_parts[0]
-
-                except IndexError:
-                    min_value = None
-
-                try:
-                    max_value = format_parts[1]
-
-                except IndexError:
-                    max_value = None
-
-                if min_value is not None and max_value is not None and float(min_value) <= float(max_value):
-                    return float(min_value), float(max_value)
-
-                if min_value is not None and max_value is None:
-                    return int(min_value), None
-
-                if min_value is None and max_value is not None:
-                    return None, int(max_value)
-
-            elif self.__data_type == DataType.ENUM:
-                return {x.strip() for x in self.__format.split(",")}
-
-        return None
+    @property
+    def invalid(self) -> Union[str, int, float, bool, None]:
+        """Property invalid value representation"""
+        return self.__invalid
 
     # -----------------------------------------------------------------------------
 
@@ -535,6 +474,14 @@ class PropertyItem(RepositoryItem):
         elif self.data_type is not None:
             data_type = self.data_type
 
+        serialized_format: Optional[str] = None
+
+        if isinstance(self.format, tuple):
+            serialized_format = ":".join(str(elm) if elm is not None else "" for elm in self.format)
+
+        elif isinstance(self.format, set):
+            serialized_format = ",".join(self.format)
+
         return {
             "id": self.property_id.__str__(),
             "name": self.name,
@@ -544,7 +491,7 @@ class PropertyItem(RepositoryItem):
             "queryable": self.queryable,
             "data_type": data_type,
             "unit": self.unit,
-            "format": self.format,
+            "format": serialized_format,
         }
 
 
@@ -592,7 +539,10 @@ class ChannelPropertyItem(PropertyItem):
         property_queryable: bool,
         property_data_type: Optional[DataType],
         property_unit: Optional[str],
-        property_format: Optional[str],
+        property_format: Union[
+            Tuple[Optional[int], Optional[int]], Tuple[Optional[float], Optional[float]], Set[str], None
+        ],
+        property_invalid: Union[str, int, float, bool, None],
         device_id: uuid.UUID,
         channel_id: uuid.UUID,
     ) -> None:
@@ -606,6 +556,7 @@ class ChannelPropertyItem(PropertyItem):
             property_data_type=property_data_type,
             property_unit=property_unit,
             property_format=property_format,
+            property_invalid=property_invalid,
             device_id=device_id,
         )
 

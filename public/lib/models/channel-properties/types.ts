@@ -49,6 +49,7 @@ interface ChannelPropertyAttributesResponseInterface {
   dataType: DataType | null
   unit: string | null
   format: string | null
+  invalid: string | null
 
   actualValue: string | number | boolean | null
   expectedValue: string | number | boolean | null

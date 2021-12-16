@@ -109,6 +109,18 @@ interface IProperty extends IEntity,
 	public function setFormat(?string $format): void;
 
 	/**
+	 * @return string|int|float|null
+	 */
+	public function getInvalid();
+
+	/**
+	 * @param string|null $invalid
+	 *
+	 * @return void
+	 */
+	public function setInvalid(?string $invalid): void;
+
+	/**
 	 * @return mixed[]
 	 */
 	public function toArray(): array;

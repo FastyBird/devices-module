@@ -106,6 +106,14 @@ abstract class Property implements IProperty
 	protected ?string $format = null;
 
 	/**
+	 * @var string|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="property_invalid", nullable=true, options={"default": null})
+	 */
+	protected ?string $invalid = null;
+
+	/**
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -219,45 +227,43 @@ abstract class Property implements IProperty
 	{
 		$format = $this->format;
 
+		if ($format === null) {
+			return null;
+		}
+
 		if ($this->dataType !== null) {
 			if ($this->dataType->isInteger()) {
-				if ($format !== null) {
-					[$min, $max] = explode(':', $format) + [null, null];
+				[$min, $max] = explode(':', $format) + [null, null];
 
-					if ($min !== null && $max !== null && intval($min) <= intval($max)) {
-						return [intval($min), intval($max)];
-					}
+				if ($min !== null && $max !== null && intval($min) <= intval($max)) {
+					return [intval($min), intval($max)];
+				}
 
-					if ($min !== null && $max === null) {
-						return [intval($min), null];
-					}
+				if ($min !== null && $max === null) {
+					return [intval($min), null];
+				}
 
-					if ($min === null && $max !== null) {
-						return [null, intval($max)];
-					}
+				if ($min === null && $max !== null) {
+					return [null, intval($max)];
 				}
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-				if ($format !== null) {
-					[$min, $max] = explode(':', $format) + [null, null];
+				[$min, $max] = explode(':', $format) + [null, null];
 
-					if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
-						return [floatval($min), floatval($max)];
-					}
+				if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
+					return [floatval($min), floatval($max)];
+				}
 
-					if ($min !== null && $max === null) {
-						return [floatval($min), null];
-					}
+				if ($min !== null && $max === null) {
+					return [floatval($min), null];
+				}
 
-					if ($min === null && $max !== null) {
-						return [null, floatval($max)];
-					}
+				if ($min === null && $max !== null) {
+					return [null, floatval($max)];
 				}
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
-				if ($format !== null) {
-					return array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
-						return $item !== '';
-					});
-				}
+				return array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
+					return $item !== '';
+				});
 			}
 		}
 
@@ -275,6 +281,40 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getInvalid()
+	{
+		$invalid = $this->invalid;
+
+		if ($invalid === null) {
+			return null;
+		}
+
+		if ($this->dataType !== null) {
+			if ($this->dataType->isInteger()) {
+				if (is_numeric($invalid)) {
+					return intval($invalid);
+				}
+			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+				if (is_numeric($invalid)) {
+					return floatval($invalid);
+				}
+			}
+		}
+
+		return $invalid;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setInvalid(?string $invalid): void
+	{
+		$this->invalid = $invalid;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function toArray(): array
 	{
 		return [
@@ -287,6 +327,7 @@ abstract class Property implements IProperty
 			'data_type'  => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
 			'unit'       => $this->getUnit(),
 			'format'     => $this->getFormat(),
+			'invalid'    => $this->getInvalid(),
 		];
 	}
 

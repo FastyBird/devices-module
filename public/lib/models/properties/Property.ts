@@ -383,14 +383,14 @@ export default class Property extends Model implements PropertyInterface {
         case DataType.USHORT:
         case DataType.INT:
         case DataType.UINT: {
-          if (!isNaN(this.invalid)) {
+          if (!isNaN(Number(this.invalid))) {
             return parseInt(this.invalid, 10)
           }
           break
         }
 
         case DataType.FLOAT: {
-          if (!isNaN(this.invalid)) {
+          if (!isNaN(Number(this.invalid))) {
             return parseFloat(this.invalid)
           }
           break

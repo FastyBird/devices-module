@@ -61,8 +61,9 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
             DataType.UINT,
         ):
             try:
-                int_value: int = value if isinstance(value, int) \
-                    else fast_int(str(value), raise_on_invalid=True)  # type: ignore[arg-type]
+                int_value: int = (
+                    value if isinstance(value, int) else fast_int(str(value), raise_on_invalid=True)
+                )  # type: ignore[arg-type]
 
             except ValueError:
                 return None
@@ -80,8 +81,9 @@ class ItemValueHelpers:  # pylint: disable=too-few-public-methods
 
         if data_type == DataType.FLOAT:
             try:
-                float_value: float = value if isinstance(value, int) \
-                    else fast_float(str(value), raise_on_invalid=True)  # type: ignore[arg-type]
+                float_value: float = (
+                    value if isinstance(value, int) else fast_float(str(value), raise_on_invalid=True)
+                )  # type: ignore[arg-type]
 
             except ValueError:
                 return None

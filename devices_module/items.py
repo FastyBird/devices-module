@@ -464,7 +464,7 @@ class PropertyItem(RepositoryItem):
 
     # -----------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
+    def to_dict(self) -> Dict[str, Union[str, int, float, bool, None]]:
         """Convert property item to dictionary"""
         data_type: Optional[str] = None
 
@@ -506,7 +506,7 @@ class DevicePropertyItem(PropertyItem):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
+    def to_dict(self) -> Dict[str, Union[str, int, float, bool, None]]:
         """Convert property item to dictionary"""
         return {
             **{
@@ -572,7 +572,7 @@ class ChannelPropertyItem(PropertyItem):
 
     # -----------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
+    def to_dict(self) -> Dict[str, Union[str, int, float, bool, None]]:
         """Convert property item to dictionary"""
         return {
             **{

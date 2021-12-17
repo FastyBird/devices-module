@@ -1187,8 +1187,8 @@ class DevicesPropertiesRepository(PropertiesRepository[DevicePropertyItem]):
         item: DevicePropertyItem,
         data: Dict,
     ) -> DevicePropertyItem:
-        data_type = data.get("data_type", item.data_type.value if item.data_type is not None else None)
-        data_type = DataType(data_type) if data_type is not None else None
+        data_type = data.get("data_type", None)
+        data_type = DataType(data_type) if data_type is not None and DataType.has_value(data_type) else None
 
         return DevicePropertyItem(
             property_id=item.property_id,
@@ -1355,8 +1355,8 @@ class ChannelsPropertiesRepository(PropertiesRepository[ChannelPropertyItem]):
         item: ChannelPropertyItem,
         data: Dict,
     ) -> ChannelPropertyItem:
-        data_type = data.get("data_type", item.data_type.value if item.data_type is not None else None)
-        data_type = DataType(data_type) if data_type is not None else None
+        data_type = data.get("data_type", None)
+        data_type = DataType(data_type) if data_type is not None and DataType.has_value(data_type) else None
 
         return ChannelPropertyItem(
             property_id=item.property_id,

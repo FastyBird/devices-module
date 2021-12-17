@@ -480,7 +480,10 @@ class PropertyItem(RepositoryItem):
             serialized_format = ":".join(str(elm) if elm is not None else "" for elm in self.format)
 
         elif isinstance(self.format, set):
-            serialized_format = ",".join(self.format)
+            sorted_format_items = list(self.format)
+            sorted_format_items.sort()
+
+            serialized_format = ",".join(sorted_format_items)
 
         return {
             "id": self.property_id.__str__(),

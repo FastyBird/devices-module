@@ -1198,12 +1198,8 @@ class DevicesPropertiesRepository(PropertiesRepository[DevicePropertyItem]):
             property_settable=data.get("settable", item.settable),
             property_queryable=data.get("queryable", item.queryable),
             property_data_type=data_type,
-            property_format=build_property_value_format(
-                data_type=item.data_type, value_format=data.get("format", None)
-            ),
-            property_invalid=build_property_invalid_value(
-                data_type=item.data_type, invalid_value=data.get("invalid", None)
-            ),
+            property_format=build_property_value_format(data_type=data_type, value_format=data.get("format", None)),
+            property_invalid=build_property_invalid_value(data_type=data_type, invalid_value=data.get("invalid", None)),
             property_unit=data.get("unit", item.unit),
             device_id=item.device_id,
         )
@@ -1366,12 +1362,8 @@ class ChannelsPropertiesRepository(PropertiesRepository[ChannelPropertyItem]):
             property_settable=data.get("settable", item.settable),
             property_queryable=data.get("queryable", item.queryable),
             property_data_type=data_type,
-            property_format=build_property_value_format(
-                data_type=item.data_type, value_format=data.get("format", None)
-            ),
-            property_invalid=build_property_invalid_value(
-                data_type=item.data_type, invalid_value=data.get("invalid", None)
-            ),
+            property_format=build_property_value_format(data_type=data_type, value_format=data.get("format", None)),
+            property_invalid=build_property_invalid_value(data_type=data_type, invalid_value=data.get("invalid", None)),
             property_unit=data.get("unit", item.unit),
             device_id=item.device_id,
             channel_id=item.channel_id,

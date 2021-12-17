@@ -62,7 +62,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
                 "queryable": True,
                 "data_type": "enum",
                 "unit": None,
-                "format": "on,off,toggle",
+                "format": "toggle,off,on",
                 "invalid": None,
                 "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
             },
@@ -85,8 +85,8 @@ class TestChannelsPropertiesRepository(DbTestCase):
             "queryable": True,
             "settable": True,
             "data_type": "enum",
-            "format": "on,off,toggle",
-                "invalid": None,
+            "format": "toggle,off,on",
+            "invalid": None,
             "unit": None,
         }, property_item.to_dict())
 
@@ -107,7 +107,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
                 "queryable": True,
                 "data_type": "enum",
                 "unit": None,
-                "format": "on,off",
+                "format": "off,on",
                 "invalid": None,
                 "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
             },
@@ -130,8 +130,8 @@ class TestChannelsPropertiesRepository(DbTestCase):
             "settable": False,
             "data_type": "enum",
             "unit": None,
-            "format": "on,off",
-                "invalid": None,
+            "format": "off,on",
+            "invalid": None,
             "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
         }, property_item.to_dict())
 
@@ -159,7 +159,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
                 "queryable": True,
                 "settable": True,
                 "data_type": "enum",
-                "format": "on,off,toggle",
+                "format": "toggle,off,on",
                 "invalid": None,
                 "unit": None,
             },

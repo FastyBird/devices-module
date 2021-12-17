@@ -492,6 +492,7 @@ class PropertyItem(RepositoryItem):
             "data_type": data_type,
             "unit": self.unit,
             "format": serialized_format,
+            "invalid": self.invalid,
         }
 
 

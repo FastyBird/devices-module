@@ -105,7 +105,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
                 "key": "bLikvh",
                 "queryable": False,
                 "settable": False,
-                "data_type": "int",
+                "data_type": "enum",
                 "format": "good,poor",
                 "invalid": None,
                 "unit": None,

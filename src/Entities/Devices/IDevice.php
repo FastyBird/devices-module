@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Entities\Devices;
 
 use FastyBird\DevicesModule\Entities;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineTimestampable;
 
@@ -122,9 +121,9 @@ interface IDevice extends Entities\IEntity,
 	public function setHardwareManufacturer(?string $manufacturer): void;
 
 	/**
-	 * @return ModulesMetadataTypes\HardwareManufacturerType
+	 * @return string
 	 */
-	public function getHardwareManufacturer(): ModulesMetadataTypes\HardwareManufacturerType;
+	public function getHardwareManufacturer(): string;
 
 	/**
 	 * @param string|null $model
@@ -134,9 +133,9 @@ interface IDevice extends Entities\IEntity,
 	public function setHardwareModel(?string $model): void;
 
 	/**
-	 * @return ModulesMetadataTypes\DeviceModelType
+	 * @return string
 	 */
-	public function getHardwareModel(): ModulesMetadataTypes\DeviceModelType;
+	public function getHardwareModel(): string;
 
 	/**
 	 * @param string|null $version
@@ -172,9 +171,9 @@ interface IDevice extends Entities\IEntity,
 	public function setFirmwareManufacturer(?string $manufacturer): void;
 
 	/**
-	 * @return ModulesMetadataTypes\FirmwareManufacturerType
+	 * @return string
 	 */
-	public function getFirmwareManufacturer(): ModulesMetadataTypes\FirmwareManufacturerType;
+	public function getFirmwareManufacturer(): string;
 
 	/**
 	 * @param string|null $version

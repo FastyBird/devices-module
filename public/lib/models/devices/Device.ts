@@ -88,12 +88,12 @@ export default class Device extends Model implements DeviceInterface {
   comment!: string | null
   enabled!: boolean
 
-  hardwareModel!: DeviceModel
-  hardwareManufacturer!: HardwareManufacturer
+  hardwareModel!: string
+  hardwareManufacturer!: string
   hardwareVersion!: string | null
   macAddress!: string | null
 
-  firmwareManufacturer!: FirmwareManufacturer
+  firmwareManufacturer!: string
   firmwareVersion!: string | null
 
   owner!: string | null

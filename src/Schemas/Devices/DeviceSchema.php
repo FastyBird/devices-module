@@ -98,7 +98,7 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	 * @param Entities\Devices\IDevice $device
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string>
+	 * @return iterable<string, string|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -112,12 +112,12 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 			'enabled' => $device->isEnabled(),
 
-			'hardware_model'        => $device->getHardwareModel()->getValue(),
-			'hardware_manufacturer' => $device->getHardwareManufacturer()->getValue(),
+			'hardware_model'        => $device->getHardwareModel(),
+			'hardware_manufacturer' => $device->getHardwareManufacturer(),
 			'hardware_version'      => $device->getHardwareVersion(),
 			'hardware_mac_address'  => $device->getHardwareMacAddress(),
 
-			'firmware_manufacturer' => $device->getFirmwareManufacturer()->getValue(),
+			'firmware_manufacturer' => $device->getFirmwareManufacturer(),
 			'firmware_version'      => $device->getFirmwareVersion(),
 
 			'owner' => $device->getOwnerId(),

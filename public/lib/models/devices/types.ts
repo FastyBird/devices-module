@@ -1,10 +1,4 @@
 import {
-  DeviceModel,
-  HardwareManufacturer,
-  FirmwareManufacturer,
-} from '@fastybird/modules-metadata'
-
-import {
   TJsonApiBody,
   TJsonApiData,
   TJsonApiRelation,
@@ -58,12 +52,12 @@ export interface DeviceInterface {
 
   enabled: boolean
 
-  hardwareModel: DeviceModel
-  hardwareManufacturer: HardwareManufacturer
+  hardwareModel: string
+  hardwareManufacturer: string
   hardwareVersion: string | null
   macAddress: string | null
 
-  firmwareManufacturer: FirmwareManufacturer
+  firmwareManufacturer: string
   firmwareVersion: string | null
 
   owner: string | null

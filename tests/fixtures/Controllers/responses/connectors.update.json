@@ -25,8 +25,8 @@
       "devices": {
         "data": [
           {
-            "type": "devices-module/device-connector",
-            "id": "7c055b2b-60c3-4017-93db-e9478d8aa662"
+            "type": "devices-module/device",
+            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         ]
       },

@@ -6,7 +6,6 @@ import { DeviceEntityTypes } from '@/lib/models/devices/types'
 import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
 import { DeviceConfigurationEntityTypes } from '@/lib/models/device-configuration/types'
 import { DeviceControlEntityTypes } from '@/lib/models/device-controls/types'
-import { DeviceConnectorEntityTypes } from '@/lib/models/device-connector/types'
 import { ChannelEntityTypes } from '@/lib/models/channels/types'
 import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
 import { ChannelConfigurationEntityTypes } from '@/lib/models/channel-configuration/types'
@@ -32,11 +31,6 @@ export interface DeviceConfigurationJsonModelInterface extends TJsonaModel {
 export interface DeviceControlJsonModelInterface extends TJsonaModel {
   id: string
   type: DeviceControlEntityTypes
-}
-
-export interface DeviceConnectorJsonModelInterface extends TJsonaModel {
-  id: string
-  type: DeviceConnectorEntityTypes
 }
 
 export interface ChannelJsonModelInterface extends TJsonaModel {
@@ -71,7 +65,7 @@ export interface ConnectorControlJsonModelInterface extends TJsonaModel {
 
 export interface RelationInterface extends TJsonaModel {
   id: string
-  type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceConfigurationEntityTypes | DeviceControlEntityTypes | DeviceConnectorEntityTypes | ChannelPropertyEntityTypes | ChannelConfigurationEntityTypes | ChannelControlEntityTypes | ConnectorEntityTypes | ConnectorControlEntityTypes
+  type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceConfigurationEntityTypes | DeviceControlEntityTypes | ChannelPropertyEntityTypes | ChannelConfigurationEntityTypes | ChannelControlEntityTypes | ConnectorEntityTypes | ConnectorControlEntityTypes
 }
 
 export const ModuleApiPrefix = `/${ModulePrefix.MODULE_DEVICES}`

@@ -27,11 +27,11 @@ import {
   ChannelEntityTypes,
   ChannelDataResponseInterface,
 } from '@/lib/models/channels/types'
-import DeviceConnector from '@/lib/models/device-connector/DeviceConnector'
 import {
   DeviceControlDataResponseInterface,
   DeviceControlEntityTypes,
 } from '@/lib/models/device-controls/types'
+import { ConnectorInterface } from '@/lib/models/connectors/types'
 
 // ENTITY TYPES
 // ============
@@ -74,7 +74,7 @@ export interface DeviceInterface {
   channels: ChannelInterface[]
   properties: DevicePropertyInterface[]
   configuration: DeviceConfigurationInterface[]
-  connector: DeviceConnector
+  connector: ConnectorInterface
 
   isEnabled: boolean
   isReady: boolean
@@ -82,6 +82,8 @@ export interface DeviceInterface {
   title: string
   hasComment: boolean
   isCustomModel: boolean
+
+  connectorId: string
 }
 
 // API RESPONSES

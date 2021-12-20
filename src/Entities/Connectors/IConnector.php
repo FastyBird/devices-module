@@ -52,7 +52,7 @@ interface IConnector extends Entities\IEntity,
 	public function setEnabled(bool $enabled): void;
 
 	/**
-	 * @return Entities\Devices\Connectors\IConnector[]
+	 * @return Entities\Devices\IDevice[]
 	 */
 	public function getDevices(): array;
 

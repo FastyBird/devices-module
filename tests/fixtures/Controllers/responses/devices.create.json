@@ -1,102 +1,102 @@
 {
-  "meta": {
-    "author": "FastyBird team",
-    "copyright": "FastyBird s.r.o"
+  "meta" : {
+    "author" : "FastyBird team",
+    "copyright" : "FastyBird s.r.o"
   },
-  "jsonapi": {
-    "version": "1.1"
+  "jsonapi" : {
+    "version" : "1.1"
   },
-  "links": {
-    "self": "/v1/devices"
+  "links" : {
+    "self" : "/v1/devices"
   },
-  "data": {
-    "type": "devices-module/device",
-    "id": "bbbf5caa-b30e-4558-b83a-699617958cea",
-    "attributes": {
-      "key": "bJtCcu",
-      "identifier": "new-device",
-      "name": "Newly created device",
-      "comment": null,
-      "enabled": true,
-      "hardware_model": "custom",
-      "hardware_manufacturer": "generic",
-      "hardware_version": null,
-      "hardware_mac_address": null,
-      "firmware_manufacturer": "generic",
-      "firmware_version": null,
-      "owner": "5e79efbf-bd0d-5b7c-46ef-bfbdefbfbd34"
+  "data" : {
+    "type" : "devices-module/device",
+    "id" : "bbbf5caa-b30e-4558-b83a-699617958cea",
+    "attributes" : {
+      "key" : "bJtCcu",
+      "identifier" : "new-device",
+      "name" : "Newly created device",
+      "comment" : null,
+      "enabled" : true,
+      "hardware_model" : "custom",
+      "hardware_manufacturer" : "generic",
+      "hardware_version" : null,
+      "hardware_mac_address" : null,
+      "firmware_manufacturer" : "generic",
+      "firmware_version" : null,
+      "owner" : "5e79efbf-bd0d-5b7c-46ef-bfbdefbfbd34"
     },
-    "relationships": {
-      "properties": {
-        "links": {
-          "self": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/properties",
-          "related": {
-            "href": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/properties",
-            "meta": {
-              "count": 0
+    "relationships" : {
+      "properties" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/properties",
+          "related" : {
+            "href" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/properties",
+            "meta" : {
+              "count" : 0
             }
           }
         },
-        "data": []
+        "data" : []
       },
-      "configuration": {
-        "links": {
-          "self": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/configuration",
-          "related": {
-            "href": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/configuration",
-            "meta": {
-              "count": 0
+      "configuration" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/configuration",
+          "related" : {
+            "href" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/configuration",
+            "meta" : {
+              "count" : 0
             }
           }
         },
-        "data": []
+        "data" : []
       },
-      "controls": {
-        "links": {
-          "self": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/controls",
-          "related": {
-            "href": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/controls",
-            "meta": {
-              "count": 0
+      "controls" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/controls",
+          "related" : {
+            "href" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/controls",
+            "meta" : {
+              "count" : 0
             }
           }
         },
-        "data": []
+        "data" : []
       },
-      "channels": {
-        "links": {
-          "self": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/channels",
-          "related": {
-            "href": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/channels",
-            "meta": {
-              "count": 0
+      "channels" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/channels",
+          "related" : {
+            "href" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/channels",
+            "meta" : {
+              "count" : 0
             }
           }
         },
-        "data": []
+        "data" : []
       },
-      "children": {
-        "links": {
-          "self": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/children",
-          "related": {
-            "href": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/children",
-            "meta": {
-              "count": 0
+      "children" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/children",
+          "related" : {
+            "href" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/children",
+            "meta" : {
+              "count" : 0
             }
           }
         },
-        "data": []
+        "data" : []
       },
-      "connector": {
-        "links": {
-          "self": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/connector",
-          "related": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/connector"
+      "connector" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/connector",
+          "related" : "/devices-module/device/bbbf5caa-b30e-4558-b83a-699617958cea/connector"
         },
-        "data": null
+        "data" : null
       }
     },
-    "links": {
-      "self": "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea"
+    "links" : {
+      "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea"
     }
   }
 }

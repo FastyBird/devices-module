@@ -30,7 +30,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
     def test_repository_iterator(self, property_repository: DevicesPropertiesRepository) -> None:
         property_repository.initialize()
 
-        self.assertEqual(3, len(property_repository))
+        self.assertEqual(5, len(property_repository))
 
     # -----------------------------------------------------------------------------
 

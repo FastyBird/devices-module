@@ -12,9 +12,9 @@ import Channel from '@/lib/models/channels/Channel'
 import { ChannelEntityTypes } from '@/lib/models/channels/types'
 import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
 import { ChannelConfigurationEntityTypes } from '@/lib/models/channel-configuration/types'
-import { DeviceConnectorEntityTypes } from '@/lib/models/device-connector/types'
 import Connector from '@/lib/models/connectors/Connector'
 import { RelationInterface } from '@/lib/types'
+import { DeviceEntityTypes } from '@/lib/models/devices/types'
 
 const RELATIONSHIP_NAMES_PROP = 'relationshipNames'
 
@@ -25,18 +25,11 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
     if (
       model.type === ChannelEntityTypes.CHANNEL ||
       model.type === DevicePropertyEntityTypes.PROPERTY ||
-      model.type === DeviceConfigurationEntityTypes.CONFIGURATION ||
-      model.type === DeviceConnectorEntityTypes.CONNECTOR
+      model.type === DeviceConfigurationEntityTypes.CONFIGURATION
     ) {
       exceptProps.push('deviceId')
       exceptProps.push('device')
       exceptProps.push('deviceBackward')
-
-      if (model.type === DeviceConnectorEntityTypes.CONNECTOR) {
-        exceptProps.push('connectorId')
-        exceptProps.push('connector')
-        exceptProps.push('connectorBackward')
-      }
     } else if (
       model.type === ChannelPropertyEntityTypes.PROPERTY ||
       model.type === ChannelConfigurationEntityTypes.CONFIGURATION
@@ -44,6 +37,12 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
       exceptProps.push('channelId')
       exceptProps.push('channel')
       exceptProps.push('channelBackward')
+    } else if (
+      model.type === DeviceEntityTypes.DEVICE
+    ) {
+      exceptProps.push('connectorId')
+      exceptProps.push('connector')
+      exceptProps.push('connectorBackward')
     }
 
     if (Array.isArray(model[RELATIONSHIP_NAMES_PROP])) {
@@ -110,6 +109,17 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
         }
       })
 
+    if (Object.prototype.hasOwnProperty.call(model, 'connectorId')) {
+      const connector = Connector.find(model.connectorId)
+
+      if (connector !== null) {
+        relationships.connector = {
+          id: connector.id,
+          type: connector.type,
+        }
+      }
+    }
+
     if (Object.prototype.hasOwnProperty.call(model, 'deviceId')) {
       const device = Device.find(model.deviceId)
 
@@ -128,17 +138,6 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
         relationships.channel = {
           id: channel.id,
           type: channel.type,
-        }
-      }
-    }
-
-    if (Object.prototype.hasOwnProperty.call(model, 'connectorId')) {
-      const connector = Connector.find(model.connectorId)
-
-      if (connector !== null) {
-        relationships.connector = {
-          id: connector.id,
-          type: connector.type,
         }
       }
     }

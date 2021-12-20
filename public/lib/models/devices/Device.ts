@@ -25,7 +25,8 @@ import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfigu
 import { DeviceConfigurationInterface } from '@/lib/models/device-configuration/types'
 import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
-import DeviceConnector from '@/lib/models/device-connector/DeviceConnector'
+import Connector from '@/lib/models/connectors/Connector'
+import { ConnectorInterface } from '@/lib/models/connectors/types'
 
 // ENTITY MODEL
 // ============
@@ -66,7 +67,11 @@ export default class Device extends Model implements DeviceInterface {
       channels: this.hasMany(Channel, 'deviceId'),
       properties: this.hasMany(DeviceProperty, 'deviceId'),
       configuration: this.hasMany(DeviceConfiguration, 'deviceId'),
-      connector: this.hasOne(DeviceConnector, 'deviceId'),
+
+      connector: this.belongsTo(Connector, 'id'),
+      connectorBackward: this.hasOne(Connector, 'id', 'connectorId'),
+
+      connectorId: this.string(''),
     }
   }
 
@@ -99,7 +104,9 @@ export default class Device extends Model implements DeviceInterface {
   channels!: ChannelInterface[]
   properties!: DevicePropertyInterface[]
   configuration!: DeviceConfigurationInterface[]
-  connector!: DeviceConnector
+  connector!: ConnectorInterface
+
+  connectorId!: string
 
   get isEnabled(): boolean {
     return this.enabled
@@ -112,7 +119,11 @@ export default class Device extends Model implements DeviceInterface {
       .where('deviceId', this.id)
       .first()
 
-    return property !== null && (property.actualValue === DeviceConnectionState.READY || property.actualValue === DeviceConnectionState.RUNNING)
+    return property !== null && (
+      property.actualValue === DeviceConnectionState.READY
+      || property.actualValue === DeviceConnectionState.RUNNING
+      || property.actualValue === DeviceConnectionState.CONNECTED
+    )
   }
 
   get icon(): string {

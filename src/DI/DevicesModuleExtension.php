@@ -142,10 +142,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Models\Devices\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.devicesConnectorManager'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Devices\Connectors\ConnectorsManager::class)
-			->setArgument('entityCrud', '__placeholder__');
-
 		$builder->addDefinition($this->prefix('models.channelsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\ChannelsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
@@ -195,10 +191,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Controllers\DeviceControlsV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceConnector'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DeviceConnectorV1Controller::class)
-			->addTag('nette.inject');
-
 		$builder->addDefinition($this->prefix('controllers.channels'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ChannelsV1Controller::class)
 			->addTag('nette.inject');
@@ -229,9 +221,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition($this->prefix('schemas.device.properties'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Properties\PropertySchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.connector'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Connectors\ConnectorSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.configuration'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Configuration\RowSchema::class);
@@ -278,9 +267,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Channels\ChannelHydrator::class);
-
-		$builder->addDefinition($this->prefix('hydrators.connectors'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Devices\Connectors\ConnectorHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\FbBusConnectorHydrator::class);
@@ -358,9 +344,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$devicesConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConfigurationManager');
 		$devicesConfigurationManagerService->setBody('return new ' . Models\Devices\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Configuration\Row::class . '\'));');
-
-		$connectorManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConnectorManager');
-		$connectorManagerService->setBody('return new ' . Models\Devices\Connectors\ConnectorsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Connectors\Connector::class . '\'));');
 
 		$channelsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsManager');
 		$channelsManagerService->setBody('return new ' . Models\Channels\ChannelsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Channel::class . '\'));');

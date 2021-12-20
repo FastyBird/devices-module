@@ -6,8 +6,7 @@ import {
   TJsonApiRelationshipData,
 } from 'jsona/lib/JsonaTypes'
 
-import { DeviceEntityTypes } from '@/lib/models/devices/types'
-import { DeviceConnectorInterface } from '@/lib/models/device-connector/types'
+import { DeviceEntityTypes, DeviceInterface } from '@/lib/models/devices/types'
 import {
   ConnectorControlDataResponseInterface,
   ConnectorControlEntityTypes,
@@ -50,7 +49,7 @@ export interface ConnectorInterface {
   // Relations
   relationshipNames: string[]
 
-  devices: DeviceConnectorInterface[]
+  devices: DeviceInterface[]
 
   // Entity transformers
   isEnabled: boolean

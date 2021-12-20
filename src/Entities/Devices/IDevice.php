@@ -369,15 +369,15 @@ interface IDevice extends Entities\IEntity,
 	public function toArray(): array;
 
 	/**
-	 * @param Entities\Devices\Connectors\IConnector|null $connector
+	 * @param Entities\Connectors\IConnector|null $connector
 	 *
 	 * @return void
 	 */
-	public function setConnector(?Entities\Devices\Connectors\IConnector $connector): void;
+	public function setConnector(?Entities\Connectors\IConnector $connector): void;
 
 	/**
-	 * @return Entities\Devices\Connectors\IConnector|null
+	 * @return Entities\Connectors\IConnector|null
 	 */
-	public function getConnector(): ?Entities\Devices\Connectors\IConnector;
+	public function getConnector(): ?Entities\Connectors\IConnector;
 
 }

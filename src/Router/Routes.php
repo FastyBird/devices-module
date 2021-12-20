@@ -60,9 +60,6 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\DeviceControlsV1Controller */
 	private Controllers\DeviceControlsV1Controller $deviceControlsV1Controller;
 
-	/** @var Controllers\DeviceConnectorV1Controller */
-	private Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller;
-
 	/** @var Controllers\ChannelsV1Controller */
 	private Controllers\ChannelsV1Controller $channelsV1Controller;
 
@@ -97,7 +94,6 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller,
 		Controllers\DeviceConfigurationV1Controller $deviceConfigurationV1Controller,
 		Controllers\DeviceControlsV1Controller $deviceControlsV1Controller,
-		Controllers\DeviceConnectorV1Controller $deviceConnectorV1Controller,
 		Controllers\ChannelsV1Controller $channelsV1Controller,
 		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
 		Controllers\ChannelConfigurationV1Controller $channelConfigurationV1Controller,
@@ -115,7 +111,6 @@ class Routes implements WebServerRouter\IRoutes
 		$this->devicePropertiesV1Controller = $devicePropertiesV1Controller;
 		$this->deviceConfigurationV1Controller = $deviceConfigurationV1Controller;
 		$this->deviceControlsV1Controller = $deviceControlsV1Controller;
-		$this->deviceConnectorV1Controller = $deviceConnectorV1Controller;
 		$this->channelsV1Controller = $channelsV1Controller;
 		$this->channelPropertiesV1Controller = $channelPropertiesV1Controller;
 		$this->channelConfigurationV1Controller = $channelConfigurationV1Controller;
@@ -240,22 +235,6 @@ class Routes implements WebServerRouter\IRoutes
 					'readRelationship',
 				]);
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONTROL_RELATIONSHIP);
-
-				/**
-				 * DEVICE CONNECTOR
-				 */
-				$route = $group->get('/connector', [$this->deviceConnectorV1Controller, 'read']);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONNECTOR);
-
-				$route = $group->get('/connector/relationships/{' . self::RELATION_ENTITY . '}', [
-					$this->deviceConnectorV1Controller,
-					'readRelationship',
-				]);
-				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONNECTOR_RELATIONSHIP);
-
-				$group->post('/connector', [$this->deviceConnectorV1Controller, 'create']);
-
-				$group->patch('/connector', [$this->deviceConnectorV1Controller, 'update']);
 
 				$group->group('/channels', function (Routing\RouteCollector $group): void {
 					/**

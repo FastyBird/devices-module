@@ -90,10 +90,10 @@ abstract class Connector implements IConnector
 	private bool $enabled = true;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Devices\Connectors\IConnector>
+	 * @var Common\Collections\Collection<int, Entities\Devices\IDevice>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Connectors\Connector", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
+	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
 	private Common\Collections\Collection $devices;
 

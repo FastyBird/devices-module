@@ -205,12 +205,13 @@ class Device implements IDevice
 	private Common\Collections\Collection $configuration;
 
 	/**
-	 * @var Entities\Devices\Connectors\IConnector|null
+	 * @var Entities\Connectors\IConnector|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Connectors\Connector", mappedBy="device", cascade={"persist", "remove"})
+	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="devices")
+	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=true)
 	 */
-	private ?Entities\Devices\Connectors\IConnector $connector = null;
+	private ?Entities\Connectors\IConnector $connector = null;
 
 	/**
 	 * @param string $identifier
@@ -854,7 +855,7 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setConnector(?Entities\Devices\Connectors\IConnector $connector): void
+	public function setConnector(?Entities\Connectors\IConnector $connector): void
 	{
 		$this->connector = $connector;
 	}
@@ -862,7 +863,7 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConnector(): ?Entities\Devices\Connectors\IConnector
+	public function getConnector(): ?Entities\Connectors\IConnector
 	{
 		return $this->connector;
 	}

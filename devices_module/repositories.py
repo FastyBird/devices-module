@@ -392,10 +392,7 @@ class DevicesRepository:
             hardware_mac_address=entity.hardware_mac_address,
             firmware_manufacturer=entity.firmware_manufacturer,
             firmware_version=entity.firmware_version,
-            connector_id=entity.connector.connector.connector_id if entity.connector is not None else None,
-            connector_data=entity.connector.params
-            if entity.connector is not None and entity.connector.params is not None
-            else {},
+            connector_id=entity.connector.connector_id if entity.connector is not None else None,
             parent_device=entity.parent.device_id if entity.parent is not None else None,
         )
 
@@ -417,7 +414,6 @@ class DevicesRepository:
             firmware_manufacturer=data.get("firmware_manufacturer", item.firmware_manufacturer),
             firmware_version=data.get("firmware_version", item.firmware_version),
             connector_id=item.connector_id,
-            connector_data=item.connector_data,
             parent_device=item.parent,
         )
 

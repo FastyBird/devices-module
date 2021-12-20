@@ -46,8 +46,6 @@ final class Constants
 	public const ROUTE_NAME_DEVICE_CONTROLS = 'device.controls';
 	public const ROUTE_NAME_DEVICE_CONTROL = 'device.control';
 	public const ROUTE_NAME_DEVICE_CONTROL_RELATIONSHIP = 'device.control.relationship';
-	public const ROUTE_NAME_DEVICE_CONNECTOR = 'device.connector';
-	public const ROUTE_NAME_DEVICE_CONNECTOR_RELATIONSHIP = 'device.connector.relationship';
 	public const ROUTE_NAME_CHANNELS = 'channels';
 	public const ROUTE_NAME_CHANNEL = 'channel';
 	public const ROUTE_NAME_CHANNEL_RELATIONSHIP = 'channel.relationship';
@@ -75,7 +73,6 @@ final class Constants
 		DevicesModuleEntities\Devices\Properties\Property::class  => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Devices\Configuration\Row::class    => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONFIGURATION_CREATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Devices\Controls\Control::class     => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONTROL_CREATED_ENTITY_ROUTING_KEY,
-		DevicesModuleEntities\Devices\Connectors\Connector::class => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONNECTOR_CREATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Channel::class             => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_CREATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Properties\Property::class => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Configuration\Row::class   => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_CONFIGURATION_CREATED_ENTITY_ROUTING_KEY,
@@ -89,7 +86,6 @@ final class Constants
 		DevicesModuleEntities\Devices\Properties\Property::class  => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Devices\Configuration\Row::class    => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONFIGURATION_UPDATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Devices\Controls\Control::class     => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONTROL_UPDATED_ENTITY_ROUTING_KEY,
-		DevicesModuleEntities\Devices\Connectors\Connector::class => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONNECTOR_UPDATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Channel::class             => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_UPDATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Properties\Property::class => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Configuration\Row::class   => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_CONFIGURATION_UPDATED_ENTITY_ROUTING_KEY,
@@ -103,7 +99,6 @@ final class Constants
 		DevicesModuleEntities\Devices\Properties\Property::class  => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Devices\Configuration\Row::class    => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONFIGURATION_DELETED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Devices\Controls\Control::class     => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONTROL_DELETED_ENTITY_ROUTING_KEY,
-		DevicesModuleEntities\Devices\Connectors\Connector::class => ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_CONNECTOR_DELETED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Channel::class             => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_DELETED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Properties\Property::class => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY,
 		DevicesModuleEntities\Channels\Configuration\Row::class   => ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_CONFIGURATION_DELETED_ENTITY_ROUTING_KEY,

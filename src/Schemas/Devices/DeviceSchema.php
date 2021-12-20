@@ -296,13 +296,13 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				]
 			);
 
-		} elseif ($name === self::RELATIONSHIPS_CONNECTOR) {
+		} elseif ($name === self::RELATIONSHIPS_CONNECTOR && $device->getConnector() !== null) {
 			return new JsonApi\Schema\Link(
 				false,
 				$this->router->urlFor(
-					DevicesModule\Constants::ROUTE_NAME_DEVICE_CONNECTOR,
+					DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $device->getConnector()->getPlainId(),
 					]
 				),
 				false

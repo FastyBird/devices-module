@@ -64,7 +64,6 @@ class DeviceItem(RepositoryItem):
     __firmware_version: Optional[str]
 
     __connector_id: Optional[uuid.UUID]
-    __connector_data: Dict
 
     __parent: Optional[uuid.UUID] = None
 
@@ -85,7 +84,6 @@ class DeviceItem(RepositoryItem):
         firmware_manufacturer: Optional[str],
         firmware_version: Optional[str],
         connector_id: Optional[uuid.UUID],
-        connector_data: Dict,
         parent_device: Optional[uuid.UUID] = None,
     ) -> None:
         self.__id = device_id
@@ -105,7 +103,6 @@ class DeviceItem(RepositoryItem):
         self.__firmware_version = firmware_version
 
         self.__connector_id = connector_id
-        self.__connector_data = connector_data
 
         self.__parent = parent_device
 
@@ -206,13 +203,6 @@ class DeviceItem(RepositoryItem):
     def connector_id(self) -> Optional[uuid.UUID]:
         """Device connector settings"""
         return self.__connector_id
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def connector_data(self) -> Dict:
-        """Device connector settings"""
-        return self.__connector_data
 
     # -----------------------------------------------------------------------------
 

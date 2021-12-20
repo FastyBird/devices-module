@@ -1,109 +1,173 @@
 {
-  "meta": {
-    "author": "FastyBird team",
-    "copyright": "FastyBird s.r.o"
+  "meta" : {
+    "author" : "FastyBird team",
+    "copyright" : "FastyBird s.r.o"
   },
-  "jsonapi": {
-    "version": "1.1"
+  "jsonapi" : {
+    "version" : "1.1"
   },
-  "links": {
-    "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties"
+  "links" : {
+    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties"
   },
-  "data": [
+  "data" : [
     {
-      "type": "devices-module/device-property",
-      "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-      "attributes": {
-        "key": "bLikvh",
-        "identifier": "rssi",
-        "name": "rssi",
-        "settable": false,
-        "queryable": true,
-        "data_type": "int",
-        "unit": null,
-        "format": null,
-        "invalid": null,
-        "actual_value": null,
-        "expected_value": null,
-        "pending": false
+      "type" : "devices-module/device-property",
+      "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
+      "attributes" : {
+        "key" : "bLikvh",
+        "identifier" : "rssi",
+        "name" : "rssi",
+        "settable" : false,
+        "queryable" : true,
+        "data_type" : "int",
+        "unit" : null,
+        "format" : null,
+        "invalid" : null,
+        "actual_value" : null,
+        "expected_value" : null,
+        "pending" : false
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
       }
     },
     {
-      "type": "devices-module/device-property",
-      "id": "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
-      "attributes": {
-        "key": "bLikvt",
-        "identifier": "status_led",
-        "name": "status_led",
-        "settable": true,
-        "queryable": true,
-        "data_type": "enum",
-        "unit": null,
-        "format": "on,off",
-        "invalid": null,
-        "actual_value": null,
-        "expected_value": null,
-        "pending": false
+      "type" : "devices-module/device-property",
+      "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
+      "attributes" : {
+        "key" : "bLykvV",
+        "identifier" : "password",
+        "name" : "password",
+        "settable" : true,
+        "queryable" : false,
+        "data_type" : "string",
+        "unit" : null,
+        "format" : null,
+        "invalid" : null,
+        "actual_value" : null,
+        "expected_value" : null,
+        "pending" : false
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/3134ba8e-f134-4bf2-9c80-c977c4deb0fb"
       }
     },
     {
-      "type": "devices-module/device-property",
-      "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-      "attributes": {
-        "key": "bLikpV",
-        "identifier": "uptime",
-        "name": "uptime",
-        "settable": false,
-        "queryable": true,
-        "data_type": "int",
-        "unit": null,
-        "format": null,
-        "invalid": null,
-        "actual_value": null,
-        "expected_value": null,
-        "pending": false
+      "type" : "devices-module/device-property",
+      "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
+      "attributes" : {
+        "key" : "bLikvt",
+        "identifier" : "status_led",
+        "name" : "status_led",
+        "settable" : true,
+        "queryable" : true,
+        "data_type" : "enum",
+        "unit" : null,
+        "format" : "on,off",
+        "invalid" : null,
+        "actual_value" : null,
+        "expected_value" : null,
+        "pending" : false
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
+      }
+    },
+    {
+      "type" : "devices-module/device-property",
+      "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+      "attributes" : {
+        "key" : "bLikpV",
+        "identifier" : "uptime",
+        "name" : "uptime",
+        "settable" : false,
+        "queryable" : true,
+        "data_type" : "int",
+        "unit" : null,
+        "format" : null,
+        "invalid" : null,
+        "actual_value" : null,
+        "expected_value" : null,
+        "pending" : false
+      },
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+          },
+          "data" : {
+            "type" : "devices-module/device",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          }
+        }
+      },
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+      }
+    },
+    {
+      "type" : "devices-module/device-property",
+      "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
+      "attributes" : {
+        "key" : "bLykvt",
+        "identifier" : "username",
+        "name" : "username",
+        "settable" : true,
+        "queryable" : false,
+        "data_type" : "string",
+        "unit" : null,
+        "format" : null,
+        "invalid" : null,
+        "actual_value" : null,
+        "expected_value" : null,
+        "pending" : false
+      },
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+          },
+          "data" : {
+            "type" : "devices-module/device",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          }
+        }
+      },
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/c747cfdd-654c-4e50-9715-6d14dbf20552"
       }
     }
   ]

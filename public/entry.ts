@@ -9,8 +9,6 @@ import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfigu
 import devicesConfiguration from '@/lib/models/device-configuration'
 import DeviceControl from '@/lib/models/device-controls/DeviceControl'
 import devicesControl from '@/lib/models/device-controls'
-import DeviceConnector from '@/lib/models/device-connector/DeviceConnector'
-import deviceConnector from '@/lib/models/device-connector/index'
 import Channel from '@/lib/models/channels/Channel'
 import channels from '@/lib/models/channels'
 import ChannelProperty from '@/lib/models/channel-properties/ChannelProperty'
@@ -41,7 +39,6 @@ const install: Plugin = function installVuexOrmWamp(components: ComponentsInterf
   config.database.register(DeviceProperty, deviceProperties)
   config.database.register(DeviceConfiguration, devicesConfiguration)
   config.database.register(DeviceControl, devicesControl)
-  config.database.register(DeviceConnector, deviceConnector)
   config.database.register(Channel, channels)
   config.database.register(ChannelProperty, channelProperties)
   config.database.register(ChannelConfiguration, channelsConfiguration)
@@ -67,7 +64,6 @@ export {
   Connector,
   ConnectorControl,
   DeviceConfiguration,
-  DeviceConnector,
   DeviceControl,
   DeviceProperty,
   Device,

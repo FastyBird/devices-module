@@ -75,7 +75,7 @@ class ConnectorEntity(db.Entity):  # type: ignore[no-any-unimported]
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
-    devices: List["DeviceConnectorEntity"] = Set("DeviceConnectorEntity", reverse="connector")
+    devices: List["DeviceEntity"] = Set("DeviceEntity", reverse="connector")
     controls: List["ConnectorControlEntity"] = Set("ConnectorControlEntity", reverse="connector")
 
     # -----------------------------------------------------------------------------
@@ -467,9 +467,12 @@ class DeviceEntity(db.Entity):  # type: ignore[no-any-unimported]
     properties: List["DevicePropertyEntity"] = Set("DevicePropertyEntity", reverse="device")
     configuration: List["DeviceConfigurationEntity"] = Set("DeviceConfigurationEntity", reverse="device")
     controls: List["DeviceControlEntity"] = Set("DeviceControlEntity", reverse="device")
-    connector: Optional["DeviceConnectorEntity"] = OptionalField("DeviceConnectorEntity", reverse="device")
 
     owner: Optional[str] = OptionalField(str, column="owner", max_len=15, nullable=True)
+
+    connector: ConnectorEntity = OptionalField(
+        "ConnectorEntity", reverse="devices", column="connector_id", nullable=True
+    )
 
     # -----------------------------------------------------------------------------
 
@@ -967,121 +970,6 @@ class DeviceControlEntity(db.Entity):  # type: ignore[no-any-unimported]
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
 
     device: DeviceEntity = RequiredField("DeviceEntity", reverse="controls", column="device_id", nullable=False)
-
-    # -----------------------------------------------------------------------------
-
-    def before_insert(self) -> None:
-        """Before insert entity hook"""
-        self.created_at = datetime.datetime.now()
-
-    # -----------------------------------------------------------------------------
-
-    def after_insert(self) -> None:
-        """After insert entity hook"""
-        di[EventDispatcher].dispatch(
-            ModelEntityCreatedEvent.EVENT_NAME,
-            ModelEntityCreatedEvent(self),
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def before_update(self) -> None:
-        """Before update entity hook"""
-        self.updated_at = datetime.datetime.now()
-
-    # -----------------------------------------------------------------------------
-
-    def after_update(self) -> None:
-        """After update entity hook"""
-        di[EventDispatcher].dispatch(
-            ModelEntityUpdatedEvent.EVENT_NAME,
-            ModelEntityUpdatedEvent(self),
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def after_delete(self) -> None:
-        """After delete entity hook"""
-        di[EventDispatcher].dispatch(
-            ModelEntityDeletedEvent.EVENT_NAME,
-            ModelEntityDeletedEvent(self),
-        )
-
-
-class DeviceConnectorEntity(db.Entity):  # type: ignore[no-any-unimported]
-    """
-    Device connector entity
-
-    @package        FastyBird:DevicesModule!
-    @module         models
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    _table_: str = "fb_devices_connectors"
-
-    connector_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="device_connector_id")
-    params: Optional[Dict] = OptionalField(Json, column="params", nullable=True)
-
-    created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
-    updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
-
-    device: DeviceEntity = RequiredField("DeviceEntity", reverse="connector", column="device_id", nullable=False)
-    connector: ConnectorEntity = RequiredField(
-        "ConnectorEntity", reverse="devices", column="connector_id", nullable=False
-    )
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(
-        self,
-        only: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
-        exclude: Union[List[str], str, None] = None,  # pylint: disable=unused-argument
-        with_collections: bool = False,  # pylint: disable=unused-argument
-        with_lazy: bool = False,  # pylint: disable=unused-argument
-        related_objects: bool = False,  # pylint: disable=unused-argument
-    ) -> Dict[str, Union[str, int, bool, None]]:
-        """Transform entity to dictionary"""
-        structure: Dict[str, Union[str, int, bool, None]] = {
-            "id": self.connector_id.__str__(),
-            "type": self.connector.type,
-            "connector": self.connector.connector_id.__str__(),
-            "device": self.device.device_id.__str__(),
-        }
-
-        if isinstance(self.connector, FbBusConnectorEntity):
-            return {
-                **structure,
-                **{
-                    "address": str(self.params.get("address"))
-                    if self.params and self.params.get("address") is not None
-                    else None,
-                    "max_packet_length": int(str(self.params.get("max_packet_length")))
-                    if self.params and self.params.get("max_packet_length") is not None
-                    else None,
-                    "description_support": bool(self.params.get("description_support"))
-                    if self.params and self.params.get("description_support") is not None
-                    else False,
-                    "settings_support": bool(self.params.get("settings_support"))
-                    if self.params and self.params.get("settings_support") is not None
-                    else False,
-                    "configured_key_length": int(str(self.params.get("configured_key_length")))
-                    if self.params and self.params.get("configured_key_length") is not None
-                    else None,
-                },
-            }
-
-        if isinstance(self.connector, FbMqttConnectorEntity):
-            return {
-                **structure,
-                **{
-                    "username": str(self.params.get("username"))
-                    if self.params and self.params.get("username") is not None
-                    else None,
-                },
-            }
-
-        return structure
 
     # -----------------------------------------------------------------------------
 

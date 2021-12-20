@@ -44,7 +44,6 @@ import { DeviceJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib
 import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
 import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfiguration'
 import DeviceControl from '@/lib/models/device-controls/DeviceControl'
-import DeviceConnector from '@/lib/models/device-connector/DeviceConnector'
 
 interface SemaphoreFetchingState {
   items: boolean
@@ -576,7 +575,6 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     DeviceProperty.reset()
     DeviceConfiguration.reset()
     DeviceControl.reset()
-    DeviceConnector.reset()
 
     Channel.reset()
   },

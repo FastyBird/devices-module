@@ -9,8 +9,8 @@ import {
   ConnectorInterface,
   ConnectorUpdateInterface,
 } from '@/lib/models/connectors/types'
-import DeviceConnector from '@/lib/models/device-connector/DeviceConnector'
-import { DeviceConnectorInterface } from '@/lib/models/device-connector/types'
+import Device from '@/lib/models/devices/Device'
+import { DeviceInterface } from '@/lib/models/devices/types'
 
 // ENTITY MODEL
 // ============
@@ -30,7 +30,7 @@ export default class Connector extends Model implements ConnectorInterface {
       // Relations
       relationshipNames: this.attr([]),
 
-      devices: this.hasMany(DeviceConnector, 'connectorId'),
+      devices: this.hasMany(Device, 'connectorId'),
 
       // FB bus
       address: this.number(null).nullable(),
@@ -54,7 +54,7 @@ export default class Connector extends Model implements ConnectorInterface {
 
   relationshipNames!: string[]
 
-  devices!: DeviceConnectorInterface[]
+  devices!: DeviceInterface[]
 
   address!: number
   serialInterface!: string

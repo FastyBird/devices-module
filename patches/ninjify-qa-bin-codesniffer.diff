@@ -1,0 +1,23 @@
+--- a/bin/codesniffer
++++ b/bin/codesniffer
+@@ -1,6 +1,20 @@
+ #!/bin/bash
++RUN=${RUN:='none'}
+
++while [ $# -gt 0 ]; do
++   if [[ $1 == *"--"* ]]; then
++        param="${1/--/}"
++        param=$(echo $param | tr 'a-z' 'A-Z')
++        declare $param="$2"
++   fi
++  shift
++done
++
++if [[ "$RUN" == "GA" ]]; then
++DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../bin"
++else
+ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
++fi
+ RULESET=${RULESET:='ruleset.xml'}
+ EXTENSIONS=${EXTENSIONS:='php,phtml,phpt'}
+ EXCLUDE_FOLDERS=${EXCLUDE_FOLDERS:='*/temp,*/tmp'}

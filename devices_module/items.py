@@ -839,6 +839,38 @@ class ModbusConnectorItem(ConnectorItem):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
+    @property
+    def serial_interface(self) -> Optional[str]:
+        """Connector serial interface"""
+        return (
+            str(self.params.get("serial_interface", None))
+            if self.params is not None and self.params.get("serial_interface") is not None
+            else None
+        )
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def baud_rate(self) -> int:
+        """Connector communication baud rate"""
+        return (
+            int(str(self.params.get("baud_rate", 9600)))
+            if self.params is not None and self.params.get("baud_rate") is not None
+            else 9600
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, Union[str, int, bool, None]]:
+        """Convert connector item to dictionary"""
+        return {
+            **{
+                "serial_interface": self.serial_interface,
+                "baud_rate": self.baud_rate,
+            },
+            **super().to_dict(),
+        }
+
 
 class ControlItem(RepositoryItem):
     """

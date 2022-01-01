@@ -12,11 +12,7 @@ php_lint: vendor
 	vendor/bin/linter src tests
 
 php_cs: vendor
-ifdef GITHUB_ACTION
-	vendor/bin/codesniffer src tests --run GA
-else
 	vendor/bin/codesniffer src tests
-endif
 
 php_csf: vendor
 	vendor/bin/codefixer src tests

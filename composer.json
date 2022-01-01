@@ -90,9 +90,6 @@
       },
       "nette/utils": {
         "Bug: Offset check with null support": "patches/nette.array.offsetCheck.diff"
-      },
-      "ninjify/qa": {
-        "Bug: PHPCS path error": "patches/ninjify-qa-bin-codesniffer.diff"
       }
     }
   }

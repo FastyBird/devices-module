@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Channels\Properties;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Types;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
@@ -55,6 +56,7 @@ class Property extends Entities\Property implements IProperty
 
 	/**
 	 * @param Entities\Channels\IChannel $channel
+	 * @param Types\PropertyTypeType $type
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -62,10 +64,11 @@ class Property extends Entities\Property implements IProperty
 	 */
 	public function __construct(
 		Entities\Channels\IChannel $channel,
+		Types\PropertyTypeType $type,
 		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
-		parent::__construct($identifier, $id);
+		parent::__construct($type, $identifier, $id);
 
 		$this->channel = $channel;
 

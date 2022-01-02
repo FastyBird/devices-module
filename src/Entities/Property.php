@@ -18,6 +18,8 @@ namespace FastyBird\DevicesModule\Entities;
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Helpers;
+use FastyBird\DevicesModule\Types;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -40,6 +42,15 @@ abstract class Property implements IProperty
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
 	protected Uuid\UuidInterface $id;
+
+	/**
+	 * @var Types\PropertyTypeType
+	 *
+	 * @Enum(class=Types\PropertyTypeType::class)
+	 * @IPubDoctrine\Crud(is="required")
+	 * @ORM\Column(type="string_enum", name="property_type", nullable=false, options={"default": "dynamic"})
+	 */
+	protected $type;
 
 	/**
 	 * @var string|null
@@ -114,18 +125,37 @@ abstract class Property implements IProperty
 	protected ?string $invalid = null;
 
 	/**
+	 * @var mixed|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="property_value", nullable=true, options={"default": null})
+	 */
+	protected $value = null;
+
+	/**
+	 * @param Types\PropertyTypeType $type
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
+		Types\PropertyTypeType $type,
 		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->identifier = $identifier;
+		$this->type = $type;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getType(): Types\PropertyTypeType
+	{
+		return $this->type;
 	}
 
 	/**
@@ -223,7 +253,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFormat()
+	public function getFormat(): ?array
 	{
 		$format = $this->format;
 
@@ -329,10 +359,39 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getValue()
+	{
+		if (!$this->type->equalsValue(Types\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
+		}
+
+		if ($this->value === null) {
+			return null;
+		}
+
+		if ($this->getDataType() === null) {
+			return null;
+		}
+
+		return Helpers\ItemValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setValue(?string $value): void
+	{
+		$this->value = $value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function toArray(): array
 	{
-		return [
+		$data = [
 			'id'         => $this->getPlainId(),
+			'type'       => $this->getType()->getValue(),
 			'key'        => $this->getKey(),
 			'identifier' => $this->getIdentifier(),
 			'name'       => $this->getName(),
@@ -342,7 +401,16 @@ abstract class Property implements IProperty
 			'unit'       => $this->getUnit(),
 			'format'     => $this->getFormat(),
 			'invalid'    => $this->getInvalid(),
+
 		];
+
+		if (!$this->getType()->equalsValue(Types\PropertyTypeType::TYPE_STATIC)) {
+			return $data;
+		}
+
+		return array_merge($data, [
+			'value' => $this->getValue(),
+		]);
 	}
 
 }

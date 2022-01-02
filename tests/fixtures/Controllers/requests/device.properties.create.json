@@ -3,6 +3,7 @@
     "type": "devices-module/device-property",
     "id": "50b0fd41-0a6e-44f0-b513-c536208afccf",
     "attributes": {
+      "type": "static",
       "identifier": "battery",
       "name": "battery",
       "settable": false,

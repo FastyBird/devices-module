@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
+use FastyBird\DevicesModule\Types;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineTimestampable;
 
@@ -30,6 +31,11 @@ interface IProperty extends IEntity,
 	IKey,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
+
+	/**
+	 * @return Types\PropertyTypeType
+	 */
+	public function getType(): Types\PropertyTypeType;
 
 	/**
 	 * @return string
@@ -99,7 +105,7 @@ interface IProperty extends IEntity,
 	/**
 	 * @return Array<string>|Array<int|null>|Array<float|null>|null
 	 */
-	public function getFormat();
+	public function getFormat(): ?array;
 
 	/**
 	 * @param string|null $format
@@ -119,6 +125,18 @@ interface IProperty extends IEntity,
 	 * @return void
 	 */
 	public function setInvalid(?string $invalid): void;
+
+	/**
+	 * @return mixed|null
+	 */
+	public function getValue();
+
+	/**
+	 * @param string|null $value
+	 *
+	 * @return void
+	 */
+	public function setValue(?string $value): void;
 
 	/**
 	 * @return mixed[]

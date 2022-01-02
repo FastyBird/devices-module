@@ -33,14 +33,14 @@ final class ItemValueHelper
 	/**
 	 * @param ModulesMetadataTypes\DataTypeType $dataType
 	 * @param bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null $value
-	 * @param Array<string|int|float|null>|null  $format
+	 * @param Array<string>|Array<int|null>|Array<float|null>|null  $format
 	 *
 	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null
 	 */
 	public static function normalizeValue(
 		ModulesMetadataTypes\DataTypeType $dataType,
 		$value,
-		$format = null
+		?array $format = null
 	) {
 		if ($value === null) {
 			return null;

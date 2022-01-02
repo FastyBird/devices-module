@@ -93,7 +93,7 @@ export const normalizeValue = (
 
 export const cleanFormat = (
   dataType: string | null,
-  rawFormat: string[] | (number | null)[] | null
+  rawFormat: string[] | (number | null)[] | null,
 ): string[] | (number | null)[] | null => {
   if (dataType !== null) {
     switch (dataType) {
@@ -146,7 +146,7 @@ export const cleanFormat = (
 
 export const mapInvalid = (
   dataType: string | null,
-  rawInvalid: string | number | null
+  rawInvalid: string | number | null,
 ): string | number | null => {
   if (rawInvalid === null) {
     return null

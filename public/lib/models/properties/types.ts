@@ -62,8 +62,8 @@ export interface PropertyInterface {
   queryable: boolean
   dataType: DataType | null
   unit: string | null
-  format: string | null
-  invalid: string | null
+  format: string[] | (number|null)[] | null
+  invalid: string | number | null
 
   actualValue: string | number | boolean | Date | null
   expectedValue: string | number | boolean | Date | null
@@ -96,7 +96,4 @@ export interface PropertyInterface {
   formattedExpectedValue: string | null
 
   icon: string
-
-  getFormat(): (string | number | null)[] | null
-  getInvalid(): string | number | null
 }

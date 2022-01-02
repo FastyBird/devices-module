@@ -252,7 +252,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
 
     const backupValue = payload.property.actualValue
 
-    const expectedValue = payload.property.dataType !== null ? normalizeValue(payload.property.dataType, payload.value, payload.property.getFormat()) : payload.value
+    const expectedValue = payload.property.dataType !== null ? normalizeValue(payload.property.dataType, payload.value, payload.property.format) : payload.value
 
     try {
       await DeviceProperty.update({

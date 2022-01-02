@@ -33,6 +33,8 @@ final class ModbusConnectorHydrator extends ConnectorHydrator
 	/** @var string[] */
 	protected array $attributes = [
 		'name',
+		'serial_interface',
+		'baud_rate',
 	];
 
 	/**

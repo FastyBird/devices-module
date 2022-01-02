@@ -105,7 +105,7 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			'queryable'      => $property->isQueryable(),
 			'data_type'      => $dataType !== null ? $dataType->getValue() : null,
 			'unit'           => $property->getUnit(),
-			'format'         => is_array($property->getFormat()) ? implode(',', $property->getFormat()) : $property->getFormat(),
+			'format'         => $property->getFormat(),
 			'invalid'        => $property->getInvalid(),
 			'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,
 			'expected_value' => $expectedValue instanceof Consistence\Enum\Enum ? (string) $expectedValue : $expectedValue,

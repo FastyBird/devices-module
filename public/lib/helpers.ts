@@ -74,14 +74,14 @@ export const normalizeValue = (
       break
 
     case DataType.BUTTON:
-      if (Object.values(ButtonPayload).includes(value.toLowerCase())) {
+      if (value.toLowerCase() in ButtonPayload) {
         return value.toLowerCase()
       }
 
       return null
 
     case DataType.SWITCH:
-      if (Object.values(SwitchPayload).includes(value.toLowerCase())) {
+      if (value.toLowerCase() in SwitchPayload) {
         return value.toLowerCase()
       }
 
@@ -89,4 +89,97 @@ export const normalizeValue = (
   }
 
   return value
+}
+
+export const cleanFormat = (
+  dataType: string | null,
+  rawFormat: string[] | (number | null)[] | null
+): string[] | (number | null)[] | null => {
+  if (dataType !== null) {
+    switch (dataType) {
+      case DataType.CHAR:
+      case DataType.UCHAR:
+      case DataType.SHORT:
+      case DataType.USHORT:
+      case DataType.INT:
+      case DataType.UINT: {
+        if (Array.isArray(rawFormat) && rawFormat.length === 2) {
+          return [
+            rawFormat[0] !== null ? parseInt(`${rawFormat[0]}`, 10) : null,
+            rawFormat[1] !== null ? parseInt(`${rawFormat[1]}`, 10) : null,
+          ]
+        }
+
+        break
+      }
+
+      case DataType.FLOAT: {
+        if (Array.isArray(rawFormat) && rawFormat.length === 2) {
+          return [
+            rawFormat[0] !== null ? parseFloat(`${rawFormat[0]}`) : null,
+            rawFormat[1] !== null ? parseFloat(`${rawFormat[1]}`) : null,
+          ]
+        }
+
+        break
+      }
+
+      case DataType.ENUM: {
+        if (Array.isArray(rawFormat)) {
+          const format = rawFormat
+            .map((item): string => {
+              return typeof item === 'string' ? item.trim() : ''
+            })
+
+          return format.filter((item, index): boolean => {
+            return item !== '' && format.indexOf(item) === index
+          })
+        }
+
+        break
+      }
+    }
+  }
+
+  return null
+}
+
+export const mapInvalid = (
+  dataType: string | null,
+  rawInvalid: string | number | null
+): string | number | null => {
+  if (rawInvalid === null) {
+    return null
+  }
+
+  if (dataType !== null) {
+    switch (dataType) {
+      case DataType.CHAR:
+      case DataType.UCHAR:
+      case DataType.SHORT:
+      case DataType.USHORT:
+      case DataType.INT:
+      case DataType.UINT: {
+        if (!isNaN(Number(rawInvalid))) {
+          return parseInt(`${rawInvalid}`, 10)
+        }
+
+        break
+      }
+
+      case DataType.FLOAT: {
+        if (!isNaN(Number(rawInvalid))) {
+          return parseFloat(`${rawInvalid}`)
+        }
+
+        break
+      }
+
+      default: {
+        return `${rawInvalid}`
+      }
+    }
+  }
+
+  return null
 }

@@ -55,17 +55,17 @@ class Property extends Entities\Property implements IProperty
 
 	/**
 	 * @param Entities\Devices\IDevice $device
-	 * @param string $property
+	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		Entities\Devices\IDevice $device,
-		string $property,
+		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
-		parent::__construct($property, $id);
+		parent::__construct($identifier, $id);
 
 		$this->device = $device;
 

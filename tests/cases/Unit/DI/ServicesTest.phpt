@@ -79,6 +79,8 @@ final class ServicesTest extends BaseTestCase
 
 		Assert::notNull($container->getByType(Hydrators\Devices\DeviceHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Channels\ChannelHydrator::class));
+		Assert::notNull($container->getByType(Hydrators\Properties\DevicePropertyHydrator::class));
+		Assert::notNull($container->getByType(Hydrators\Properties\ChannelPropertyHydrator::class));
 
 		Assert::notNull($container->getByType(Subscribers\EntitiesSubscriber::class));
 

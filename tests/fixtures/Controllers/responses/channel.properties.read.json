@@ -20,7 +20,11 @@
       "queryable" : true,
       "data_type" : "enum",
       "unit" : null,
-      "format" : "on,off,toggle",
+      "format" : [
+        "on",
+        "off",
+        "toggle"
+      ],
       "invalid": null,
       "actual_value" : null,
       "expected_value" : null,

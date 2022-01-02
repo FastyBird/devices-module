@@ -46,7 +46,14 @@ final class ItemValueHelper
 			return null;
 		}
 
-		if ($dataType->isInteger()) {
+		if (
+			$dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+		) {
 			if (is_array($format) && count($format) === 2) {
 				if ($format[0] !== null && intval($format[0]) > intval($value)) {
 					return null;

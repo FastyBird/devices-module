@@ -92,7 +92,12 @@ final class RowSchema extends JsonApiSchemas\JsonApiSchema
 
 		if (
 			$row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			|| $row->getDataType()->isInteger()
+			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			return array_merge($attributes, [
 				'min'  => $row->getMin(),

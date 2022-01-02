@@ -18,15 +18,19 @@
       "type" : "devices-module/channel-property",
       "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
       "attributes" : {
-        "identifier" : "switch",
         "key" : "bLikx4",
+        "identifier" : "switch",
         "name" : "switch",
         "settable" : true,
         "queryable" : true,
         "data_type" : "enum",
         "unit" : null,
-        "format" : "on,off,toggle",
-        "invalid": null,
+        "format" : [
+          "on",
+          "off",
+          "toggle"
+        ],
+        "invalid" : null,
         "actual_value" : null,
         "expected_value" : null,
         "pending" : false

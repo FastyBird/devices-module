@@ -232,7 +232,14 @@ abstract class Property implements IProperty
 		}
 
 		if ($this->dataType !== null) {
-			if ($this->dataType->isInteger()) {
+			if (
+				$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			) {
 				[$min, $max] = explode(':', $format) + [null, null];
 
 				if ($min !== null && $max !== null && intval($min) <= intval($max)) {
@@ -290,7 +297,14 @@ abstract class Property implements IProperty
 		}
 
 		if ($this->dataType !== null) {
-			if ($this->dataType->isInteger()) {
+			if (
+				$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			) {
 				if (is_numeric($invalid)) {
 					return intval($invalid);
 				}

@@ -226,7 +226,14 @@ abstract class Row implements IRow
 		if ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 			return (float) $this->value;
 
-		} elseif ($this->dataType->isInteger()) {
+		} elseif (
+			$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+		) {
 			return (int) $this->value;
 
 		} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
@@ -251,7 +258,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -270,7 +282,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -287,7 +304,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -302,7 +324,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -321,7 +348,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -338,7 +370,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -353,7 +390,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -372,7 +414,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -389,7 +436,12 @@ abstract class Row implements IRow
 	{
 		if (
 			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->isInteger()
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
@@ -463,7 +515,15 @@ abstract class Row implements IRow
 			'value'      => $this->getValue(),
 		];
 
-		if ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT) || $this->dataType->isInteger()) {
+		if (
+			$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+		) {
 			return array_merge($data, [
 				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN  => $this->getMin(),
 				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX  => $this->getMax(),

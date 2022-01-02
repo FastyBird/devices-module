@@ -25,6 +25,8 @@ use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\StatusCodeInterface;
+use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
+use Nette\Utils;
 use Psr\Http\Message;
 use Throwable;
 
@@ -127,6 +129,134 @@ final class ChannelsV1Controller extends BaseV1Controller
 	 * @Secured
 	 * @Secured\Role(manager,administrator)
 	 */
+	public function create(
+		Message\ServerRequestInterface $request,
+		WebServerHttp\Response $response
+	): WebServerHttp\Response
+	{
+		// At first, try to load device
+		$this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+
+		$document = $this->createDocument($request);
+
+		if ($document->getResource()->getType() === Schemas\Channels\ChannelSchema::SCHEMA_TYPE) {
+			try {
+				// Start transaction connection to the database
+				$this->getOrmConnection()->beginTransaction();
+
+				$channel = $this->channelsManager->create($this->channelHydrator->hydrate($document));
+
+				// Commit all changes into database
+				$this->getOrmConnection()->commit();
+
+			} catch (JsonApiExceptions\IJsonApiException $ex) {
+				throw $ex;
+
+			} catch (DoctrineCrudExceptions\MissingRequiredFieldException $ex) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.heading'),
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
+					[
+						'pointer' => 'data/attributes/' . $ex->getField(),
+					]
+				);
+
+			} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.heading'),
+					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
+					[
+						'pointer' => 'data/attributes/' . $ex->getField(),
+					]
+				);
+
+			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+				if (preg_match("%PRIMARY'%", $ex->getMessage(), $match) === 1) {
+					throw new JsonApiExceptions\JsonApiErrorException(
+						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.heading'),
+						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.message'),
+						[
+							'pointer' => '/data/id',
+						]
+					);
+
+				} elseif (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) === 1) {
+					$columnParts = explode('.', $match['key']);
+					$columnKey = end($columnParts);
+
+					if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'channel_')) {
+						throw new JsonApiExceptions\JsonApiErrorException(
+							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
+							[
+								'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
+							]
+						);
+					}
+				}
+
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message')
+				);
+
+			} catch (Throwable $ex) {
+				// Log caught exception
+				$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
+					'exception' => [
+						'message' => $ex->getMessage(),
+						'code'    => $ex->getCode(),
+					],
+				]);
+
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+					$this->translator->translate('//devices-module.base.messages.notCreated.heading'),
+					$this->translator->translate('//devices-module.base.messages.notCreated.message')
+				);
+
+			} finally {
+				// Revert all changes when error occur
+				if ($this->getOrmConnection()->isTransactionActive()) {
+					$this->getOrmConnection()->rollBack();
+				}
+			}
+
+			/** @var WebServerHttp\Response $response */
+			$response = $response
+				->withEntity(WebServerHttp\ScalarEntity::from($channel))
+				->withStatus(StatusCodeInterface::STATUS_CREATED);
+
+			return $response;
+		}
+
+		throw new JsonApiExceptions\JsonApiErrorException(
+			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
+			[
+				'pointer' => '/data/type',
+			]
+		);
+	}
+
+	/**
+	 * @param Message\ServerRequestInterface $request
+	 * @param WebServerHttp\Response $response
+	 *
+	 * @return WebServerHttp\Response
+	 *
+	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws Doctrine\DBAL\ConnectionException
+	 *
+	 * @Secured
+	 * @Secured\Role(manager,administrator)
+	 */
 	public function update(
 		Message\ServerRequestInterface $request,
 		WebServerHttp\Response $response
@@ -190,6 +320,65 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 		return $response
 			->withEntity(WebServerHttp\ScalarEntity::from($channel));
+	}
+
+	/**
+	 * @param Message\ServerRequestInterface $request
+	 * @param WebServerHttp\Response $response
+	 *
+	 * @return WebServerHttp\Response
+	 *
+	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws Doctrine\DBAL\ConnectionException
+	 *
+	 * @Secured
+	 * @Secured\Role(manager,administrator)
+	 */
+	public function delete(
+		Message\ServerRequestInterface $request,
+		WebServerHttp\Response $response
+	): WebServerHttp\Response {
+		// At first, try to load device
+		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		// & channel
+		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
+
+		try {
+			// Start transaction connection to the database
+			$this->getOrmConnection()->beginTransaction();
+
+			// Remove channel
+			$this->channelsManager->delete($channel);
+
+			// Commit all changes into database
+			$this->getOrmConnection()->commit();
+
+		} catch (Throwable $ex) {
+			// Log caught exception
+			$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
+				'exception' => [
+					'message' => $ex->getMessage(),
+					'code'    => $ex->getCode(),
+				],
+			]);
+
+			throw new JsonApiExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+				$this->translator->translate('//devices-module.base.messages.notDeleted.heading'),
+				$this->translator->translate('//devices-module.base.messages.notDeleted.message')
+			);
+
+		} finally {
+			// Revert all changes when error occur
+			if ($this->getOrmConnection()->isTransactionActive()) {
+				$this->getOrmConnection()->rollBack();
+			}
+		}
+
+		/** @var WebServerHttp\Response $response */
+		$response = $response->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
+
+		return $response;
 	}
 
 	/**

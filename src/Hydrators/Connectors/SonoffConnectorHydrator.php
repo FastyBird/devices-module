@@ -33,11 +33,6 @@ final class SonoffConnectorHydrator extends ConnectorHydrator
 	/** @var string[] */
 	protected array $attributes = [
 		'name',
-		'server',
-		'port',
-		'secured_port',
-		'username',
-		'password',
 	];
 
 	/**

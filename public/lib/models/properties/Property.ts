@@ -10,7 +10,7 @@ import {
   SensorNameTypes,
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
-import { normalizeValue } from '@/lib/helpers'
+import { cleanFormat, mapInvalid, normalizeValue } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============
@@ -26,7 +26,7 @@ export default class Property extends Model implements PropertyInterface {
       queryable: this.boolean(false),
       dataType: this.string(null).nullable(),
       unit: this.string(null).nullable(),
-      format: this.string(null).nullable(),
+      format: this.attr(null).nullable(),
       invalid: this.string(null).nullable(),
 
       actualValue: this.attr(null).nullable(),
@@ -42,16 +42,26 @@ export default class Property extends Model implements PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
         if (property.dataType) {
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.getFormat())
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.getFormat())
+          property.format = cleanFormat(property.dataType, property.format)
+          property.invalid = mapInvalid(property.dataType, property.invalid)
+
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        } else {
+          property.format = null
         }
 
         return property
       })
     } else {
       if (properties.dataType) {
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.getFormat())
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.getFormat())
+        properties.format = cleanFormat(properties.dataType, properties.format)
+        properties.invalid = mapInvalid(properties.dataType, properties.invalid)
+
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      } else {
+        properties.format = null
       }
 
       return properties
@@ -62,16 +72,26 @@ export default class Property extends Model implements PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
         if (property.dataType) {
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.getFormat())
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.getFormat())
+          property.format = cleanFormat(property.dataType, property.format)
+          property.invalid = mapInvalid(property.dataType, property.invalid)
+
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        } else {
+          property.format = null
         }
 
         return property
       })
     } else {
       if (properties.dataType) {
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.getFormat())
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.getFormat())
+        properties.format = cleanFormat(properties.dataType, properties.format)
+        properties.invalid = mapInvalid(properties.dataType, properties.invalid)
+
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      } else {
+        properties.format = null
       }
 
       return properties
@@ -87,8 +107,8 @@ export default class Property extends Model implements PropertyInterface {
   queryable!: boolean
   dataType!: DataType | null
   unit!: string | null
-  format!: string | null
-  invalid!: string | null
+  format!: string[] | (number|null)[] | null
+  invalid!: string | number | null
 
   actualValue!: string | number | boolean | Date | null
   expectedValue!: string | number | boolean | Date | null
@@ -166,7 +186,7 @@ export default class Property extends Model implements PropertyInterface {
 
   get formattedActualValue(): string {
     const storeInstance = Property.store()
-    const actualValue = this.dataType ? normalizeValue(this.dataType, this.actualValue !== null ? String(this.actualValue) : null, this.getFormat()) : this.actualValue
+    const actualValue = this.dataType ? normalizeValue(this.dataType, this.actualValue !== null ? String(this.actualValue) : null, this.format) : this.actualValue
 
     if (
       this.deviceInstance !== null &&
@@ -221,7 +241,7 @@ export default class Property extends Model implements PropertyInterface {
     }
 
     const storeInstance = Property.store()
-    const expectedValue = this.dataType ? normalizeValue(this.dataType, this.expectedValue !== null ? String(this.expectedValue) : null, this.getFormat()) : this.expectedValue
+    const expectedValue = this.dataType ? normalizeValue(this.dataType, this.expectedValue !== null ? String(this.expectedValue) : null, this.format) : this.expectedValue
 
     if (
       this.deviceInstance !== null &&
@@ -299,105 +319,5 @@ export default class Property extends Model implements PropertyInterface {
     }
 
     return 'chart-bar'
-  }
-
-  getFormat(): (string | number | null)[] | null {
-    if (this.dataType !== null) {
-      switch (this.dataType) {
-        case DataType.CHAR:
-        case DataType.UCHAR:
-        case DataType.SHORT:
-        case DataType.USHORT:
-        case DataType.INT:
-        case DataType.UINT: {
-          if (this.format !== null) {
-            const [min, max] = this.format.split(':').concat(['', '']);
-
-            if (min !== '' && max !== '' && parseInt(min, 10) <= parseInt(max, 10)) {
-              return [parseInt(min, 10), parseInt(max, 10)];
-            }
-
-            if (min !== '' && max === '') {
-              return [parseInt(min, 10), null];
-            }
-
-            if (min === '' && max !== '') {
-              return [null, parseInt(max, 10)];
-            }
-          }
-
-          break
-        }
-
-        case DataType.FLOAT: {
-          if (this.format !== null) {
-            const [min, max] = this.format.split(':').concat(['', '']);
-
-            if (min !== '' && max !== '' && parseFloat(min) <= parseFloat(max)) {
-              return [parseFloat(min), parseFloat(max)];
-            }
-
-            if (min !== '' && max === '') {
-              return [parseFloat(min), null];
-            }
-
-            if (min === '' && max !== '') {
-              return [null, parseFloat(max)];
-            }
-          }
-
-          break
-        }
-
-        case DataType.ENUM: {
-          if (this.format !== null) {
-            const format = this.format
-              .split(',')
-              .map((item): string => {
-                return item.trim()
-              })
-
-            return format.filter((item, index): boolean => {
-              return format.indexOf(item) === index
-            })
-          }
-
-          break
-        }
-      }
-    }
-
-    return null
-  }
-
-  getInvalid(): string | number | null {
-    if (this.invalid === null) {
-      return null
-    }
-
-    if (this.dataType !== null) {
-      switch (this.dataType) {
-        case DataType.CHAR:
-        case DataType.UCHAR:
-        case DataType.SHORT:
-        case DataType.USHORT:
-        case DataType.INT:
-        case DataType.UINT: {
-          if (!isNaN(Number(this.invalid))) {
-            return parseInt(this.invalid, 10)
-          }
-          break
-        }
-
-        case DataType.FLOAT: {
-          if (!isNaN(Number(this.invalid))) {
-            return parseFloat(this.invalid)
-          }
-          break
-        }
-      }
-    }
-
-    return null
   }
 }

@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Hydrators\Devices;
 
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use IPub\JsonAPIDocument;
 
@@ -38,6 +39,12 @@ class DeviceHydrator extends JsonApiHydrators\Hydrator
 		'name',
 		'comment',
 		'enabled',
+		'params',
+	];
+
+	/** @var string[] */
+	protected array $relationships = [
+		Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONNECTOR,
 	];
 
 	/** @var string */

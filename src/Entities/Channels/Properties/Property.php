@@ -55,17 +55,17 @@ class Property extends Entities\Property implements IProperty
 
 	/**
 	 * @param Entities\Channels\IChannel $channel
-	 * @param string $property
+	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		Entities\Channels\IChannel $channel,
-		string $property,
+		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
-		parent::__construct($property, $id);
+		parent::__construct($identifier, $id);
 
 		$this->channel = $channel;
 

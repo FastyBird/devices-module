@@ -268,6 +268,12 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Channels\ChannelHydrator::class);
 
+		$builder->addDefinition($this->prefix('hydrators.device.property'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\DevicePropertyHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.channel.property'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\ChannelPropertyHydrator::class);
+
 		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\FbBusConnectorHydrator::class);
 

@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Hydrators\Channels;
 
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use IPub\JsonAPIDocument;
 
@@ -34,8 +35,15 @@ final class ChannelHydrator extends JsonApiHydrators\Hydrator
 
 	/** @var string[] */
 	protected array $attributes = [
+		'identifier',
 		'name',
 		'comment',
+		'params',
+	];
+
+	/** @var string[] */
+	protected array $relationships = [
+		Schemas\Channels\ChannelSchema::RELATIONSHIPS_DEVICE,
 	];
 
 	/** @var string */

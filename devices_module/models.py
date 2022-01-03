@@ -585,7 +585,7 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     _table_: str = "fb_devices_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    type: Optional[str] = OptionalField(str, column="property_type", nullable=False, sql_default="dynamic")
+    type: str = RequiredField(str, column="property_type", nullable=False)
     key: str = OptionalField(str, column="property_key", unique=True, max_len=50, nullable=True)
     identifier: str = RequiredField(str, column="property_identifier", max_len=50, nullable=False)
     name: str = OptionalField(str, column="property_name", nullable=True)
@@ -1130,7 +1130,7 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     _table_: str = "fb_channels_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
-    type: Optional[str] = OptionalField(str, column="property_type", nullable=False, sql_default="dynamic")
+    type: str = RequiredField(str, column="property_type", nullable=False)
     key: str = OptionalField(str, column="property_key", unique=True, max_len=50, nullable=True)
     identifier: str = RequiredField(str, column="property_identifier", max_len=50, nullable=False)
     name: str = OptionalField(str, column="property_name", nullable=True)

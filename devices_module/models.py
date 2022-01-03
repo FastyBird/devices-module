@@ -585,6 +585,7 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     _table_: str = "fb_devices_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
+    type: Optional[str] = OptionalField(str, column="property_type", nullable=False, sql_default="dynamic")
     key: str = OptionalField(str, column="property_key", unique=True, max_len=50, nullable=True)
     identifier: str = RequiredField(str, column="property_identifier", max_len=50, nullable=False)
     name: str = OptionalField(str, column="property_name", nullable=True)
@@ -594,6 +595,8 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
     format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
     invalid: Optional[str] = OptionalField(str, column="property_invalid", nullable=True)
+    number_of_decimals: Optional[int] = OptionalField(int, column="property_number_of_decimals", nullable=True)
+    value: Optional[str] = OptionalField(str, column="property_value", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)
@@ -1127,6 +1130,7 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     _table_: str = "fb_channels_properties"
 
     property_id: uuid.UUID = PrimaryKey(uuid.UUID, default=uuid.uuid4, column="property_id")
+    type: Optional[str] = OptionalField(str, column="property_type", nullable=False, sql_default="dynamic")
     key: str = OptionalField(str, column="property_key", unique=True, max_len=50, nullable=True)
     identifier: str = RequiredField(str, column="property_identifier", max_len=50, nullable=False)
     name: str = OptionalField(str, column="property_name", nullable=True)
@@ -1136,6 +1140,8 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
     unit: Optional[str] = OptionalField(str, column="property_unit", nullable=True)
     format: Optional[str] = OptionalField(str, column="property_format", nullable=True)
     invalid: Optional[str] = OptionalField(str, column="property_invalid", nullable=True)
+    number_of_decimals: Optional[int] = OptionalField(int, column="property_number_of_decimals", nullable=True)
+    value: Optional[str] = OptionalField(str, column="property_value", nullable=True)
 
     created_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="created_at", nullable=True)
     updated_at: Optional[datetime.datetime] = OptionalField(datetime.datetime, column="updated_at", nullable=True)

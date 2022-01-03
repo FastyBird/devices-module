@@ -125,6 +125,14 @@ abstract class Property implements IProperty
 	protected ?string $invalid = null;
 
 	/**
+	 * @var string|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="integer", name="property_number_of_decimals", nullable=true, options={"default": null})
+	 */
+	protected ?string $numberOfDecimals = null;
+
+	/**
 	 * @var mixed|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -354,6 +362,22 @@ abstract class Property implements IProperty
 	public function setInvalid(?string $invalid): void
 	{
 		$this->invalid = $invalid;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getNumberOfDecimals(): ?int
+	{
+		return $this->numberOfDecimals;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setNumberOfDecimals(?int $numberOfDecimals): void
+	{
+		$this->numberOfDecimals = $numberOfDecimals;
 	}
 
 	/**

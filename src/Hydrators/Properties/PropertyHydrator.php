@@ -44,8 +44,10 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 		5 => 'unit',
 		6 => 'format',
 		7 => 'invalid',
+		8 => 'value',
 
-		'data_type' => 'dataType',
+		'data_type'          => 'dataType',
+		'number_of_decimals' => 'numberOfDecimals',
 	];
 
 	/** @var string */
@@ -155,6 +157,40 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 		}
 
 		return (string) $attributes->get('invalid');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return int|null
+	 */
+	protected function hydrateNumberOfDecimalsAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?int
+	{
+		if (
+			!is_scalar($attributes->get('number_of_decimals'))
+			|| (string) $attributes->get('number_of_decimals') === ''
+		) {
+			return null;
+		}
+
+		return (int) $attributes->get('number_of_decimals');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return string|null
+	 */
+	protected function hydrateValueAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	{
+		if (
+			!is_scalar($attributes->get('value'))
+			|| (string) $attributes->get('value') === ''
+		) {
+			return null;
+		}
+
+		return (string) $attributes->get('value');
 	}
 
 }

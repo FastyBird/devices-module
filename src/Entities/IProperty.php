@@ -127,6 +127,18 @@ interface IProperty extends IEntity,
 	public function setInvalid(?string $invalid): void;
 
 	/**
+	 * @return int|null
+	 */
+	public function getNumberOfDecimals(): ?int;
+
+	/**
+	 * @param int|null $numberOfDecimals
+	 *
+	 * @return void
+	 */
+	public function setNumberOfDecimals(?int $numberOfDecimals): void;
+
+	/**
 	 * @return mixed|null
 	 */
 	public function getValue();

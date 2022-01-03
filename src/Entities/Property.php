@@ -19,7 +19,6 @@ use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Helpers;
-use FastyBird\DevicesModule\Types;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -44,9 +43,9 @@ abstract class Property implements IProperty
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var Types\PropertyTypeType
+	 * @var ModulesMetadataTypes\PropertyTypeType
 	 *
-	 * @Enum(class=Types\PropertyTypeType::class)
+	 * @Enum(class=ModulesMetadataTypes\PropertyTypeType::class)
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string_enum", name="property_type", nullable=false, options={"default": "dynamic"})
 	 */
@@ -141,14 +140,14 @@ abstract class Property implements IProperty
 	protected $value = null;
 
 	/**
-	 * @param Types\PropertyTypeType $type
+	 * @param ModulesMetadataTypes\PropertyTypeType $type
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
-		Types\PropertyTypeType $type,
+		ModulesMetadataTypes\PropertyTypeType $type,
 		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
@@ -161,7 +160,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): Types\PropertyTypeType
+	public function getType(): ModulesMetadataTypes\PropertyTypeType
 	{
 		return $this->type;
 	}
@@ -385,7 +384,7 @@ abstract class Property implements IProperty
 	 */
 	public function getValue()
 	{
-		if (!$this->type->equalsValue(Types\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
 		}
 
@@ -429,7 +428,7 @@ abstract class Property implements IProperty
 
 		];
 
-		if (!$this->getType()->equalsValue(Types\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			return $data;
 		}
 

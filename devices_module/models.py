@@ -31,6 +31,7 @@ from kink import di
 from modules_metadata.devices_module import (
     ConfigurationNumberFieldAttribute,
     ConfigurationSelectFieldAttribute,
+    PropertyType,
 )
 from modules_metadata.types import DataType
 from pony.orm import PrimaryKey  # type: ignore[attr-defined]
@@ -645,7 +646,7 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
             "device": self.device.device_id.__str__(),
         }
 
-        if self.type == "static":
+        if self.type == PropertyType.STATIC.value:
             return data
 
         return {
@@ -1202,7 +1203,7 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
             "channel": self.channel.channel_id.__str__(),
         }
 
-        if self.type == "static":
+        if self.type == PropertyType.STATIC.value:
             return data
 
         return {

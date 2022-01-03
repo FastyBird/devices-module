@@ -276,7 +276,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				(
 					$entity instanceof Entities\Devices\Properties\IProperty
 					|| $entity instanceof Entities\Channels\Properties\IProperty
-				) && $this->propertyStateRepository !== null
+				)
+				&& $entity->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
+				&& $this->propertyStateRepository !== null
 			) {
 				$state = $this->propertyStateRepository->findOne($entity->getId());
 

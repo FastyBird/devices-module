@@ -19,6 +19,9 @@ from pony.orm import core as orm
 from unittest.mock import patch
 from exchange_plugin.publisher import Publisher
 
+# Library dependencies
+from modules_metadata.devices_module import PropertyType
+
 # Library libs
 from devices_module.items import DevicePropertyItem
 from devices_module.models import DeviceEntity, DevicePropertyEntity
@@ -64,7 +67,7 @@ class TestDevicePropertyEntity(DbTestCase):
         device = DeviceEntity.get(device_id=uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4))
 
         property_entity = DevicePropertyEntity(
-            type="dynamic",
+            type=PropertyType.DYNAMIC.value,
             property_id=uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),
             identifier="property-identifier",
             name="Property name",

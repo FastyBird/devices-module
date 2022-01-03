@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
-use FastyBird\DevicesModule\Types;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineTimestampable;
 
@@ -33,9 +32,9 @@ interface IProperty extends IEntity,
 {
 
 	/**
-	 * @return Types\PropertyTypeType
+	 * @return ModulesMetadataTypes\PropertyTypeType
 	 */
-	public function getType(): Types\PropertyTypeType;
+	public function getType(): ModulesMetadataTypes\PropertyTypeType;
 
 	/**
 	 * @return string

@@ -125,12 +125,12 @@ abstract class Property implements IProperty
 	protected ?string $invalid = null;
 
 	/**
-	 * @var string|null
+	 * @var int|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="integer", name="property_number_of_decimals", nullable=true, options={"default": null})
 	 */
-	protected ?string $numberOfDecimals = null;
+	protected ?int $numberOfDecimals = null;
 
 	/**
 	 * @var mixed|null

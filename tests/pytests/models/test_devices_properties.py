@@ -64,6 +64,7 @@ class TestDevicePropertyEntity(DbTestCase):
         device = DeviceEntity.get(device_id=uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4))
 
         property_entity = DevicePropertyEntity(
+            type="dynamic",
             property_id=uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),
             identifier="property-identifier",
             name="Property name",

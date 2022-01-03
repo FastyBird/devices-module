@@ -629,8 +629,9 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
         elif self.data_type_formatted is not None:
             data_type = self.data_type_formatted
 
-        return {
+        data: Dict[str, Union[str, int, bool, None]] = {
             "id": self.property_id.__str__(),
+            "type": self.type,
             "key": self.key,
             "identifier": self.identifier,
             "name": self.name,
@@ -640,7 +641,18 @@ class DevicePropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
             "unit": self.unit,
             "format": self.format,
             "invalid": self.invalid,
+            "number_of_decimals": self.number_of_decimals,
             "device": self.device.device_id.__str__(),
+        }
+
+        if self.type == "static":
+            return data
+
+        return {
+            **{
+                "value": self.value,
+            },
+            **data,
         }
 
     # -----------------------------------------------------------------------------
@@ -1174,8 +1186,9 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
         elif self.data_type_formatted is not None:
             data_type = self.data_type_formatted
 
-        return {
+        data: Dict[str, Union[str, int, bool, None]] = {
             "id": self.property_id.__str__(),
+            "type": self.type,
             "key": self.key,
             "identifier": self.identifier,
             "name": self.name,
@@ -1185,7 +1198,18 @@ class ChannelPropertyEntity(db.Entity):  # type: ignore[no-any-unimported]
             "unit": self.unit,
             "format": self.format,
             "invalid": self.invalid,
+            "number_of_decimals": self.number_of_decimals,
             "channel": self.channel.channel_id.__str__(),
+        }
+
+        if self.type == "static":
+            return data
+
+        return {
+            **{
+                "value": self.value,
+            },
+            **data,
         }
 
     # -----------------------------------------------------------------------------

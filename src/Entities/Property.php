@@ -414,17 +414,18 @@ abstract class Property implements IProperty
 	public function toArray(): array
 	{
 		$data = [
-			'id'         => $this->getPlainId(),
-			'type'       => $this->getType()->getValue(),
-			'key'        => $this->getKey(),
-			'identifier' => $this->getIdentifier(),
-			'name'       => $this->getName(),
-			'settable'   => $this->isSettable(),
-			'queryable'  => $this->isQueryable(),
-			'data_type'  => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
-			'unit'       => $this->getUnit(),
-			'format'     => $this->getFormat(),
-			'invalid'    => $this->getInvalid(),
+			'id'                 => $this->getPlainId(),
+			'type'               => $this->getType()->getValue(),
+			'key'                => $this->getKey(),
+			'identifier'         => $this->getIdentifier(),
+			'name'               => $this->getName(),
+			'settable'           => $this->isSettable(),
+			'queryable'          => $this->isQueryable(),
+			'data_type'          => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
+			'unit'               => $this->getUnit(),
+			'format'             => $this->getFormat(),
+			'invalid'            => $this->getInvalid(),
+			'number_of_decimals' => $this->getNumberOfDecimals(),
 
 		];
 

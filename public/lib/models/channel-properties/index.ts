@@ -5,8 +5,8 @@ import * as exchangeEntitySchema
 import {
   ModuleOrigin,
   ChannelPropertyEntity as ExchangeEntity,
-  DevicesModule as RoutingKeys,
-  DataType,
+  DevicesModuleRoutes as RoutingKeys,
+  DataType, normalizeValue, PropertyType,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -40,7 +40,6 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { ChannelPropertyJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
-import { normalizeValue } from '@/lib/helpers'
 
 interface SemaphoreFetchingState {
   items: string[]
@@ -374,9 +373,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
           id: body.id,
         })
 
-        const entityData: { [index: string]: string | boolean | number | string[] | number[] | DataType | null | undefined } = {
-          type: ChannelPropertyEntityTypes.PROPERTY,
-        }
+        const entityData: { [index: string]: string | boolean | number | string[] | ((string | null)[])[] | (number | null)[] | DataType | null | undefined } = {}
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')
 
@@ -384,7 +381,17 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
           .forEach((attrName) => {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
-            if (camelName === 'channel') {
+            if (camelName === 'type') {
+              switch (body[attrName]) {
+                case PropertyType.DYNAMIC:
+                  entityData[camelName] = ChannelPropertyEntityTypes.PROPERTY_DYNAMIC
+                  break
+
+                case PropertyType.STATIC:
+                  entityData[camelName] = ChannelPropertyEntityTypes.PROPERTY_STATIC
+                  break
+              }
+            } else if (camelName === 'channel') {
               const channel = Channel.query().where('id', body[attrName]).first()
 
               if (channel !== null) {

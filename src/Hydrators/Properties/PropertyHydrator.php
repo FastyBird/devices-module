@@ -36,15 +36,14 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 
 	/** @var string[] */
 	protected array $attributes = [
-		0 => 'type',
-		1 => 'identifier',
-		2 => 'name',
-		3 => 'settable',
-		4 => 'queryable',
-		5 => 'unit',
-		6 => 'format',
-		7 => 'invalid',
-		8 => 'value',
+		0 => 'identifier',
+		1 => 'name',
+		2 => 'settable',
+		3 => 'queryable',
+		4 => 'unit',
+		5 => 'format',
+		6 => 'invalid',
+		7 => 'value',
 
 		'data_type'          => 'dataType',
 		'number_of_decimals' => 'numberOfDecimals',

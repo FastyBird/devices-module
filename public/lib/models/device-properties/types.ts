@@ -19,7 +19,8 @@ import { PropertyInterface } from '@/lib/models/properties/types'
 // ============
 
 export enum DevicePropertyEntityTypes {
-  PROPERTY = 'devices-module/device-property',
+  PROPERTY_DYNAMIC = 'devices-module/device-property-dynamic',
+  PROPERTY_STATIC = 'devices-module/device-property-static',
 }
 
 // ENTITY INTERFACE
@@ -45,11 +46,13 @@ interface DevicePropertyAttributesResponseInterface {
   name: string | null
   settable: boolean
   queryable: boolean
-
   dataType: DataType | null
   unit: string | null
-  format: string | null
-  invalid: string | null
+  format: string[] | ((string | null)[])[] | (number | null)[] | null | string
+  invalid: string | number | null
+  numberOfDecimals: number | null
+
+  value: string | number | boolean | null
 
   actualValue: string | number | boolean | null
   expectedValue: string | number | boolean | null

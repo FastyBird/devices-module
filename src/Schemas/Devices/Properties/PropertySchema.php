@@ -15,15 +15,12 @@
 
 namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 
-use Consistence;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
-use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -35,15 +32,11 @@ use Neomerx\JsonApi;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Devices\Properties\IProperty>
+ * @phpstan-template T of Entities\Devices\Properties\IProperty
+ * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
  */
-final class PropertySchema extends JsonApiSchemas\JsonApiSchema
+abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 {
-
-	/**
-	 * Define entity schema type string
-	 */
-	public const SCHEMA_TYPE = 'devices-module/device-property';
 
 	/**
 	 * Define relationships names
@@ -53,32 +46,10 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	/** @var Routing\IRouter */
 	private Routing\IRouter $router;
 
-	/** @var Models\States\IPropertyRepository|null */
-	private ?Models\States\IPropertyRepository $propertyRepository;
-
 	public function __construct(
-		Routing\IRouter $router,
-		?Models\States\IPropertyRepository $propertyRepository
-	)
-	{
+		Routing\IRouter $router
+	) {
 		$this->router = $router;
-		$this->propertyRepository = $propertyRepository;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getEntityClass(): string
-	{
-		return Entities\Devices\Properties\Property::class;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getType(): string
-	{
-		return self::SCHEMA_TYPE;
 	}
 
 	/**
@@ -93,8 +64,7 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	{
 		$dataType = $property->getDataType();
 
-		$attributes = [
-			'type'               => $property->getType()->getValue(),
+		return [
 			'key'                => $property->getKey(),
 			'identifier'         => $property->getIdentifier(),
 			'name'               => $property->getName(),
@@ -106,26 +76,6 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			'invalid'            => $property->getInvalid(),
 			'number_of_decimals' => $property->getNumberOfDecimals(),
 		];
-
-		if ($property->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			return array_merge($attributes, [
-				'value' => $property->getValue(),
-			]);
-
-		} elseif ($property->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_DYNAMIC)) {
-			$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property->getId());
-
-			$actualValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
-			$expectedValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;
-
-			return array_merge($attributes, [
-				'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,
-				'expected_value' => $expectedValue instanceof Consistence\Enum\Enum ? (string) $expectedValue : $expectedValue,
-				'pending'        => $state !== null && $state->isPending(),
-			]);
-		}
-
-		return $attributes;
 	}
 
 	/**

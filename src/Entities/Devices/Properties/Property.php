@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Entities\Devices\Properties;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
@@ -41,8 +40,15 @@ use Throwable;
  *       @ORM\Index(name="property_queryable_idx", columns={"property_queryable"})
  *     }
  * )
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="property_type", type="string", length=40)
+ * @ORM\DiscriminatorMap({
+ *    "static"   = "FastyBird\DevicesModule\Entities\Devices\Properties\StaticProperty",
+ *    "dynamic"  = "FastyBird\DevicesModule\Entities\Devices\Properties\DynamicProperty"
+ * })
+ * @ORM\MappedSuperclass
  */
-class Property extends Entities\Property implements IProperty
+abstract class Property extends Entities\Property implements IProperty
 {
 
 	/**
@@ -52,11 +58,10 @@ class Property extends Entities\Property implements IProperty
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="properties")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
 	 */
-	private Entities\Devices\IDevice $device;
+	protected Entities\Devices\IDevice $device;
 
 	/**
 	 * @param Entities\Devices\IDevice $device
-	 * @param ModulesMetadataTypes\PropertyTypeType $type
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -64,11 +69,10 @@ class Property extends Entities\Property implements IProperty
 	 */
 	public function __construct(
 		Entities\Devices\IDevice $device,
-		ModulesMetadataTypes\PropertyTypeType $type,
 		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
-		parent::__construct($type, $identifier, $id);
+		parent::__construct($identifier, $id);
 
 		$this->device = $device;
 

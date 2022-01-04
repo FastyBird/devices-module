@@ -43,15 +43,6 @@ abstract class Property implements IProperty
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var ModulesMetadataTypes\PropertyTypeType
-	 *
-	 * @Enum(class=ModulesMetadataTypes\PropertyTypeType::class)
-	 * @IPubDoctrine\Crud(is="required")
-	 * @ORM\Column(type="string_enum", name="property_type", nullable=false, options={"default": "dynamic"})
-	 */
-	protected $type;
-
-	/**
 	 * @var string|null
 	 *
 	 * @ORM\Column(type="string", name="property_key", length=50)
@@ -140,24 +131,21 @@ abstract class Property implements IProperty
 	protected $value = null;
 
 	/**
-	 * @param ModulesMetadataTypes\PropertyTypeType $type
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
-		ModulesMetadataTypes\PropertyTypeType $type,
 		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->identifier = $identifier;
-		$this->type = $type;
 
 		// Static property can not be set or read from device/channel property
-		if ($this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			$this->settable = false;
 			$this->queryable = false;
 		}
@@ -166,10 +154,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): ModulesMetadataTypes\PropertyTypeType
-	{
-		return $this->type;
-	}
+	abstract public function getType(): ModulesMetadataTypes\PropertyTypeType;
 
 	/**
 	 * {@inheritDoc}
@@ -208,7 +193,7 @@ abstract class Property implements IProperty
 	 */
 	public function setSettable(bool $settable): void
 	{
-		if ($settable && $this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($settable && $this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidArgumentException('Static type property can not be settable');
 		}
 
@@ -228,7 +213,7 @@ abstract class Property implements IProperty
 	 */
 	public function setQueryable(bool $queryable): void
 	{
-		if ($queryable && $this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($queryable && $this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidArgumentException('Static type property can not be queryable');
 		}
 
@@ -355,7 +340,7 @@ abstract class Property implements IProperty
 	 */
 	public function getValue()
 	{
-		if (!$this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
 		}
 

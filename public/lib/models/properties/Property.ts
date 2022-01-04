@@ -1,5 +1,5 @@
 import { Fields, Model } from '@vuex-orm/core'
-import { DataType, HardwareManufacturer } from '@fastybird/modules-metadata'
+import { DataType, HardwareManufacturer, normalizeValue } from '@fastybird/modules-metadata'
 
 import {
   PropertyCommandResult,
@@ -10,7 +10,7 @@ import {
   SensorNameTypes,
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
-import { cleanFormat, mapInvalid, normalizeValue } from '@/lib/helpers'
+import { cleanInvalid } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============
@@ -42,8 +42,7 @@ export default class Property extends Model implements PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
         if (property.dataType) {
-          property.format = cleanFormat(property.dataType, property.format)
-          property.invalid = mapInvalid(property.dataType, property.invalid)
+          property.invalid = cleanInvalid(property.dataType, property.invalid)
 
           property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
           property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
@@ -55,8 +54,7 @@ export default class Property extends Model implements PropertyInterface {
       })
     } else {
       if (properties.dataType) {
-        properties.format = cleanFormat(properties.dataType, properties.format)
-        properties.invalid = mapInvalid(properties.dataType, properties.invalid)
+        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
         properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
         properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
@@ -72,8 +70,7 @@ export default class Property extends Model implements PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
         if (property.dataType) {
-          property.format = cleanFormat(property.dataType, property.format)
-          property.invalid = mapInvalid(property.dataType, property.invalid)
+          property.invalid = cleanInvalid(property.dataType, property.invalid)
 
           property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
           property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
@@ -85,8 +82,7 @@ export default class Property extends Model implements PropertyInterface {
       })
     } else {
       if (properties.dataType) {
-        properties.format = cleanFormat(properties.dataType, properties.format)
-        properties.invalid = mapInvalid(properties.dataType, properties.invalid)
+        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
         properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
         properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
@@ -107,8 +103,11 @@ export default class Property extends Model implements PropertyInterface {
   queryable!: boolean
   dataType!: DataType | null
   unit!: string | null
-  format!: string[] | (number|null)[] | null
+  format!: string[] | ((string | null)[])[] | (number | null)[] | null
   invalid!: string | number | null
+  numberOfDecimals!: number | null
+
+  value!: string | number | boolean | Date | null
 
   actualValue!: string | number | boolean | Date | null
   expectedValue!: string | number | boolean | Date | null

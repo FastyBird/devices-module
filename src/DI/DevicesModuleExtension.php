@@ -219,25 +219,31 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('schemas.device'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\DeviceSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.properties'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Properties\PropertySchema::class);
+		$builder->addDefinition($this->prefix('schemas.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\Properties\DynamicPropertySchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.device.property.static'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\Properties\StaticPropertySchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.configuration'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Configuration\RowSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.controls'), new DI\Definitions\ServiceDefinition())
+		$builder->addDefinition($this->prefix('schemas.device.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Controls\ControlSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.channel'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\ChannelSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.channel.property'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Channels\Properties\PropertySchema::class);
+		$builder->addDefinition($this->prefix('schemas.channel.property.dynamic'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Channels\Properties\DynamicPropertySchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.channel.property.static'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Channels\Properties\StaticPropertySchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.configuration'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Configuration\RowSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.controls'), new DI\Definitions\ServiceDefinition())
+		$builder->addDefinition($this->prefix('schemas.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Controls\ControlSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector.fbBus'), new DI\Definitions\ServiceDefinition())
@@ -268,11 +274,17 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Channels\ChannelHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.device.property'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\DevicePropertyHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\DeviceDynamicPropertyHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.channel.property'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\ChannelPropertyHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.device.property.static'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\DeviceStaticPropertyHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.channel.property.dynamic'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\ChannelDynamicPropertyHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.channel.property.static'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\ChannelStaticPropertyHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\FbBusConnectorHydrator::class);

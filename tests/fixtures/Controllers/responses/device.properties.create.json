@@ -10,10 +10,9 @@
     "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties"
   },
   "data" : {
-    "type" : "devices-module/device-property",
+    "type": "devices-module/device-property-static",
     "id" : "50b0fd41-0a6e-44f0-b513-c536208afccf",
     "attributes" : {
-      "type" : "static",
       "key" : "bJtCcu",
       "identifier" : "battery",
       "name" : "battery",

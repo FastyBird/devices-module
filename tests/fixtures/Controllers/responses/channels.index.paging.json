@@ -45,11 +45,11 @@
           },
           "data": [
             {
-              "type": "devices-module/channel-property",
+              "type" : "devices-module/channel-property-dynamic",
               "id": "24c436f4-a2e4-4d2b-b910-1a3ff785b784"
             },
             {
-              "type": "devices-module/channel-property",
+              "type" : "devices-module/channel-property-dynamic",
               "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
             }
           ]

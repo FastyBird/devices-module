@@ -23,7 +23,7 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
 
   static fields(): Fields {
     return Object.assign(Property.fields(), {
-      type: this.string(DevicePropertyEntityTypes.PROPERTY),
+      type: this.string(DevicePropertyEntityTypes.PROPERTY_DYNAMIC),
 
       device: this.belongsTo(Device, 'id'),
       deviceBackward: this.hasOne(Device, 'id', 'deviceId'),

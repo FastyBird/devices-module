@@ -16,10 +16,9 @@
   },
   "data" : [
     {
-      "type" : "devices-module/device-property",
+      "type": "devices-module/device-property-static",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
-        "type" : "static",
         "key" : "bLykvV",
         "identifier" : "password",
         "name" : "password",

@@ -26,22 +26,15 @@ use FastyBird\DevicesModule\Schemas;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends PropertyHydrator<Entities\Channels\Properties\IProperty>
+ * @phpstan-template TEntityClass of Entities\Channels\Properties\IProperty
+ * @phpstan-extends  PropertyHydrator<TEntityClass>
  */
-final class ChannelPropertyHydrator extends PropertyHydrator
+abstract class ChannelPropertyHydrator extends PropertyHydrator
 {
 
 	/** @var string[] */
 	protected array $relationships = [
 		Schemas\Channels\Properties\PropertySchema::RELATIONSHIPS_CHANNEL,
 	];
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getEntityName(): string
-	{
-		return Entities\Channels\Properties\Property::class;
-	}
 
 }

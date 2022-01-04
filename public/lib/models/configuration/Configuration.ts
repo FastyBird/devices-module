@@ -2,7 +2,7 @@ import {
   Model,
   Fields,
 } from '@vuex-orm/core'
-import { DataType } from '@fastybird/modules-metadata'
+import { DataType, normalizeValue } from '@fastybird/modules-metadata'
 
 import {
   ConfigurationIntegerDatatypeTypes,
@@ -10,7 +10,6 @@ import {
   ConfigurationNumberDatatypeTypes,
   ValuesItemInterface,
 } from '@/lib/models/configuration/types'
-import { normalizeValue } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============

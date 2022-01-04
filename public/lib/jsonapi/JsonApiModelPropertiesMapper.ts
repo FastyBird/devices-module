@@ -23,16 +23,18 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
     const exceptProps = ['id', '$id', 'type', 'draft', RELATIONSHIP_NAMES_PROP]
 
     if (
-      model.type === ChannelEntityTypes.CHANNEL ||
-      model.type === DevicePropertyEntityTypes.PROPERTY ||
-      model.type === DeviceConfigurationEntityTypes.CONFIGURATION
+      model.type === ChannelEntityTypes.CHANNEL
+      || model.type === DevicePropertyEntityTypes.PROPERTY_DYNAMIC
+      || model.type === DevicePropertyEntityTypes.PROPERTY_STATIC
+      || model.type === DeviceConfigurationEntityTypes.CONFIGURATION
     ) {
       exceptProps.push('deviceId')
       exceptProps.push('device')
       exceptProps.push('deviceBackward')
     } else if (
-      model.type === ChannelPropertyEntityTypes.PROPERTY ||
-      model.type === ChannelConfigurationEntityTypes.CONFIGURATION
+      model.type === ChannelPropertyEntityTypes.PROPERTY_DYNAMIC
+      || model.type === ChannelPropertyEntityTypes.PROPERTY_STATIC
+      || model.type === ChannelConfigurationEntityTypes.CONFIGURATION
     ) {
       exceptProps.push('channelId')
       exceptProps.push('channel')
@@ -77,8 +79,8 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
 
   getRelationships(model: TJsonaModel): TJsonaRelationships {
     if (
-      !Object.prototype.hasOwnProperty.call(model, RELATIONSHIP_NAMES_PROP) ||
-      !Array.isArray(model[RELATIONSHIP_NAMES_PROP])
+      !Object.prototype.hasOwnProperty.call(model, RELATIONSHIP_NAMES_PROP)
+      || !Array.isArray(model[RELATIONSHIP_NAMES_PROP])
     ) {
       return {}
     }

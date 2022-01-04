@@ -64,21 +64,26 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\Properties\IPropertiesManager */
 	protected Models\Channels\Properties\IPropertiesManager $propertiesManager;
 
-	/** @var Hydrators\Properties\ChannelPropertyHydrator */
-	protected Hydrators\Properties\ChannelPropertyHydrator $propertyHydrator;
+	/** @var Hydrators\Properties\ChannelDynamicPropertyHydrator */
+	protected Hydrators\Properties\ChannelDynamicPropertyHydrator $dynamicPropertyHydrator;
+
+	/** @var Hydrators\Properties\ChannelStaticPropertyHydrator */
+	protected Hydrators\Properties\ChannelStaticPropertyHydrator $staticPropertyHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Channels\IChannelRepository $channelRepository,
 		Models\Channels\Properties\IPropertyRepository $propertyRepository,
 		Models\Channels\Properties\IPropertiesManager $propertiesManager,
-		Hydrators\Properties\ChannelPropertyHydrator $propertyHydrator
+		Hydrators\Properties\ChannelDynamicPropertyHydrator $dynamicPropertyHydrator,
+		Hydrators\Properties\ChannelStaticPropertyHydrator $staticPropertyHydrator
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->channelRepository = $channelRepository;
 		$this->propertyRepository = $propertyRepository;
 		$this->propertiesManager = $propertiesManager;
-		$this->propertyHydrator = $propertyHydrator;
+		$this->dynamicPropertyHydrator = $dynamicPropertyHydrator;
+		$this->staticPropertyHydrator = $staticPropertyHydrator;
 	}
 
 	/**
@@ -154,12 +159,20 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 
 		$document = $this->createDocument($request);
 
-		if ($document->getResource()->getType() === Schemas\Channels\Properties\PropertySchema::SCHEMA_TYPE) {
+		if (
+			$document->getResource()->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE
+			|| $document->getResource()->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE
+		) {
 			try {
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->create($this->propertyHydrator->hydrate($document));
+				if ($document->getResource()->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+					$property = $this->propertiesManager->create($this->dynamicPropertyHydrator->hydrate($document));
+
+				} elseif ($document->getResource()->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
+				}
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -291,8 +304,11 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 			// Start transaction connection to the database
 			$this->getOrmConnection()->beginTransaction();
 
-			if ($document->getResource()->getType() === Schemas\Channels\Properties\PropertySchema::SCHEMA_TYPE) {
-				$updatePropertyData = $this->propertyHydrator->hydrate($document, $property);
+			if ($document->getResource()->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+				$updatePropertyData = $this->dynamicPropertyHydrator->hydrate($document, $property);
+
+			} elseif ($document->getResource()->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+				$updatePropertyData = $this->staticPropertyHydrator->hydrate($document, $property);
 
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(

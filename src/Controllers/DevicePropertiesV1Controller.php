@@ -60,19 +60,24 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Devices\Properties\IPropertiesManager */
 	protected Models\Devices\Properties\IPropertiesManager $propertiesManager;
 
-	/** @var Hydrators\Properties\DevicePropertyHydrator */
-	protected Hydrators\Properties\DevicePropertyHydrator $propertyHydrator;
+	/** @var Hydrators\Properties\DeviceDynamicPropertyHydrator */
+	protected Hydrators\Properties\DeviceDynamicPropertyHydrator $dynamicPropertyHydrator;
+
+	/** @var Hydrators\Properties\DeviceStaticPropertyHydrator */
+	protected Hydrators\Properties\DeviceStaticPropertyHydrator $staticPropertyHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Devices\Properties\IPropertyRepository $propertyRepository,
 		Models\Devices\Properties\IPropertiesManager $propertiesManager,
-		Hydrators\Properties\DevicePropertyHydrator $propertyHydrator
+		Hydrators\Properties\DeviceDynamicPropertyHydrator $dynamicPropertyHydrator,
+		Hydrators\Properties\DeviceStaticPropertyHydrator $staticPropertyHydrator
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->propertyRepository = $propertyRepository;
 		$this->propertiesManager = $propertiesManager;
-		$this->propertyHydrator = $propertyHydrator;
+		$this->dynamicPropertyHydrator = $dynamicPropertyHydrator;
+		$this->staticPropertyHydrator = $staticPropertyHydrator;
 	}
 
 	/**
@@ -142,12 +147,20 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 		$document = $this->createDocument($request);
 
-		if ($document->getResource()->getType() === Schemas\Devices\Properties\PropertySchema::SCHEMA_TYPE) {
+		if (
+			$document->getResource()->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE
+			|| $document->getResource()->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE
+		) {
 			try {
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->create($this->propertyHydrator->hydrate($document));
+				if ($document->getResource()->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+					$property = $this->propertiesManager->create($this->dynamicPropertyHydrator->hydrate($document));
+
+				} elseif ($document->getResource()->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
+				}
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -277,8 +290,11 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 			// Start transaction connection to the database
 			$this->getOrmConnection()->beginTransaction();
 
-			if ($document->getResource()->getType() === Schemas\Devices\Properties\PropertySchema::SCHEMA_TYPE) {
-				$updatePropertyData = $this->propertyHydrator->hydrate($document, $property);
+			if ($document->getResource()->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+				$updatePropertyData = $this->dynamicPropertyHydrator->hydrate($document, $property);
+
+			} elseif ($document->getResource()->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+				$updatePropertyData = $this->staticPropertyHydrator->hydrate($document, $property);
 
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(

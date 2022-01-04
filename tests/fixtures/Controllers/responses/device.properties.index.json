@@ -11,10 +11,9 @@
   },
   "data" : [
     {
-      "type" : "devices-module/device-property",
+      "type": "devices-module/device-property-dynamic",
       "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
       "attributes" : {
-        "type" : "dynamic",
         "key" : "bLikvh",
         "identifier" : "rssi",
         "name" : "rssi",
@@ -45,10 +44,9 @@
       }
     },
     {
-      "type" : "devices-module/device-property",
+      "type": "devices-module/device-property-static",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
-        "type" : "static",
         "key" : "bLykvV",
         "identifier" : "password",
         "name" : "password",
@@ -77,10 +75,9 @@
       }
     },
     {
-      "type" : "devices-module/device-property",
+      "type": "devices-module/device-property-static",
       "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
       "attributes" : {
-        "type" : "static",
         "key" : "bLikvt",
         "identifier" : "status_led",
         "name" : "status_led",
@@ -112,10 +109,9 @@
       }
     },
     {
-      "type" : "devices-module/device-property",
+      "type": "devices-module/device-property-dynamic",
       "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
       "attributes" : {
-        "type" : "dynamic",
         "key" : "bLikpV",
         "identifier" : "uptime",
         "name" : "uptime",
@@ -146,10 +142,9 @@
       }
     },
     {
-      "type" : "devices-module/device-property",
+      "type": "devices-module/device-property-static",
       "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
       "attributes" : {
-        "type" : "static",
         "key" : "bLykvt",
         "identifier" : "username",
         "name" : "username",

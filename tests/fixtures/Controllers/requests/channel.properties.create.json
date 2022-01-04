@@ -1,9 +1,8 @@
 {
   "data" : {
-    "type" : "devices-module/channel-property",
+    "type" : "devices-module/channel-property-dynamic",
     "id" : "06644f70-7707-41c3-9a97-a5d66219659c",
     "attributes" : {
-      "type": "dynamic",
       "identifier" : "button",
       "name" : "button",
       "settable" : false,

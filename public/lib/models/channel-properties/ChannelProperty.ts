@@ -25,7 +25,7 @@ export default class ChannelProperty extends Property implements ChannelProperty
 
   static fields(): Fields {
     return Object.assign(Property.fields(), {
-      type: this.string(ChannelPropertyEntityTypes.PROPERTY),
+      type: this.string(ChannelPropertyEntityTypes.PROPERTY_DYNAMIC),
 
       channel: this.belongsTo(Channel, 'id'),
       channelBackward: this.hasOne(Channel, 'id', 'channelId'),

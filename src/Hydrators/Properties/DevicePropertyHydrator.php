@@ -26,22 +26,15 @@ use FastyBird\DevicesModule\Schemas;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends PropertyHydrator<Entities\Devices\Properties\IProperty>
+ * @phpstan-template TEntityClass of Entities\Devices\Properties\IProperty
+ * @phpstan-extends  PropertyHydrator<TEntityClass>
  */
-final class DevicePropertyHydrator extends PropertyHydrator
+abstract class DevicePropertyHydrator extends PropertyHydrator
 {
 
 	/** @var string[] */
 	protected array $relationships = [
 		Schemas\Devices\Properties\PropertySchema::RELATIONSHIPS_DEVICE,
 	];
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getEntityName(): string
-	{
-		return Entities\Devices\Properties\Property::class;
-	}
 
 }

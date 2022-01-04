@@ -40,23 +40,23 @@
           },
           "data" : [
             {
-              "type" : "devices-module/device-property",
+              "type" : "devices-module/device-property-dynamic",
               "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
             },
             {
-              "type" : "devices-module/device-property",
+              "type" : "devices-module/device-property-static",
               "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb"
             },
             {
-              "type" : "devices-module/device-property",
+              "type" : "devices-module/device-property-static",
               "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
             },
             {
-              "type" : "devices-module/device-property",
+              "type" : "devices-module/device-property-dynamic",
               "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
             },
             {
-              "type" : "devices-module/device-property",
+              "type" : "devices-module/device-property-static",
               "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552"
             }
           ]

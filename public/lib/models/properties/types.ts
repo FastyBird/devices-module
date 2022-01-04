@@ -62,8 +62,11 @@ export interface PropertyInterface {
   queryable: boolean
   dataType: DataType | null
   unit: string | null
-  format: string[] | (number|null)[] | null
+  format: string[] | ((string | null)[])[] | (number | null)[] | null
   invalid: string | number | null
+  numberOfDecimals: number | null
+
+  value: string | number | boolean | Date | null
 
   actualValue: string | number | boolean | Date | null
   expectedValue: string | number | boolean | Date | null

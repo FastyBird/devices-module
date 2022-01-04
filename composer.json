@@ -39,7 +39,7 @@
     "fastybird/database-plugin": "^0.2",
     "fastybird/exchange-plugin": "^0.4",
     "fastybird/json-api": "^0.1",
-    "fastybird/modules-metadata": "^0.17",
+    "fastybird/modules-metadata": "^0.18",
     "fastybird/simple-auth": "^0.1",
     "fastybird/web-server": "^0.4",
     "ipub/doctrine-timestampable": "^1.5",

@@ -43,7 +43,7 @@ interface IProperty
 	public function setActualValue(?string $actual): void;
 
 	/**
-	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|Array<string | null>|null
+	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null
 	 */
 	public function getActualValue();
 

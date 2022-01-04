@@ -145,7 +145,7 @@ class Routes implements WebServerRouter\IRoutes
 	}
 
 	/**
-	 * @param Routing\IRouter | Routing\IRouteCollector $group
+	 * @param Routing\IRouter|Routing\IRouteCollector $group
 	 *
 	 * @return Routing\IRouteGroup
 	 */

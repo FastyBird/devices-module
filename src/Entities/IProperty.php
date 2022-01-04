@@ -139,7 +139,7 @@ interface IProperty extends IEntity,
 	public function setNumberOfDecimals(?int $numberOfDecimals): void;
 
 	/**
-	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|Array<string | null>|null
+	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null
 	 */
 	public function getValue();
 

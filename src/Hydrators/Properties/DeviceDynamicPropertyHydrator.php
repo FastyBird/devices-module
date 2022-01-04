@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Hydrators\Properties;
 
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Schemas;
 
 /**
  * Device property entity hydrator
@@ -26,7 +25,7 @@ use FastyBird\DevicesModule\Schemas;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends PropertyHydrator<Entities\Devices\Properties\IDynamicProperty>
+ * @phpstan-extends DevicePropertyHydrator<Entities\Devices\Properties\IDynamicProperty>
  */
 final class DeviceDynamicPropertyHydrator extends DevicePropertyHydrator
 {

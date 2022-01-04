@@ -160,6 +160,16 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 				} elseif ($document->getResource()->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
+
+				} else {
+					throw new JsonApiExceptions\JsonApiErrorException(
+						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+						$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+						$this->translator->translate('//devices-module.base.messages.invalidType.message'),
+						[
+							'pointer' => '/data/type',
+						]
+					);
 				}
 
 				// Commit all changes into database

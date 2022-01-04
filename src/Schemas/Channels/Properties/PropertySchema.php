@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Schemas\Channels\Properties;
 
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;

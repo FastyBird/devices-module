@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Hydrators\Properties;
 
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Schemas;
 
 /**
  * Channel property entity hydrator
@@ -26,7 +25,7 @@ use FastyBird\DevicesModule\Schemas;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends PropertyHydrator<Entities\Channels\Properties\IStaticProperty>
+ * @phpstan-extends ChannelPropertyHydrator<Entities\Channels\Properties\IStaticProperty>
  */
 final class ChannelStaticPropertyHydrator extends ChannelPropertyHydrator
 {

@@ -15,12 +15,8 @@
 
 namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 
-use Consistence;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Schemas;
-use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
-use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
 /**

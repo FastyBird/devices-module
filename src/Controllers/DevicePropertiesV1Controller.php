@@ -300,10 +300,16 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 			// Start transaction connection to the database
 			$this->getOrmConnection()->beginTransaction();
 
-			if ($document->getResource()->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+			if (
+				$document->getResource()->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE
+				&& $property instanceof Entities\Devices\Properties\IDynamicProperty
+			) {
 				$updatePropertyData = $this->dynamicPropertyHydrator->hydrate($document, $property);
 
-			} elseif ($document->getResource()->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+			} elseif (
+				$document->getResource()->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE
+				&& $property instanceof Entities\Devices\Properties\IStaticProperty
+			) {
 				$updatePropertyData = $this->staticPropertyHydrator->hydrate($document, $property);
 
 			} else {

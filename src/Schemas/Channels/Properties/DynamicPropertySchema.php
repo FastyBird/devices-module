@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Schemas\Channels\Properties;
 
 use Consistence;
+use DateTime;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Schemas;
@@ -70,10 +71,10 @@ final class DynamicPropertySchema extends PropertySchema
 	}
 
 	/**
-	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param Entities\Channels\Properties\IDynamicProperty $property
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|bool|int|float|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
+	 * @return iterable<string, string|bool|int|float|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

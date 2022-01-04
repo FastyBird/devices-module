@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\ExchangePlugin\Publisher as ExchangePluginPublisher;
+use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -288,8 +289,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					ModulesMetadataTypes\ModuleOriginType::get(ModulesMetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => $dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
-						'expected_value' => $dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
+						'actual_value'   => $dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
+						'expected_value' => $dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);

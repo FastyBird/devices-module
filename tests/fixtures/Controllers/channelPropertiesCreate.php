@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 use Fig\Http\Message\StatusCodeInterface;
 
@@ -10,12 +10,19 @@ const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZ
 return [
 	// Valid responses
 	//////////////////
-	'create'          => [
+	'create' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channel.properties.create.json'),
 		StatusCodeInterface::STATUS_CREATED,
 		__DIR__ . '/responses/channel.properties.create.json',
+	],
+	'createComposedEnum' => [
+		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
+		'Bearer ' . VALID_TOKEN,
+		file_get_contents(__DIR__ . '/requests/channel.properties.create.composedEnum.json'),
+		StatusCodeInterface::STATUS_CREATED,
+		__DIR__ . '/responses/channel.properties.create.composedEnum.json',
 	],
 
 	// Invalid responses
@@ -34,42 +41,42 @@ return [
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/channel.properties.create.notUnique.json',
 	],
-	'invalidType'     => [
+	'invalidType' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channel.properties.create.invalid.type.json'),
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/generic/invalid.type.json',
 	],
-	'missingToken'    => [
+	'missingToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
 		null,
 		file_get_contents(__DIR__ . '/requests/channel.properties.create.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'invalidToken'    => [
+	'invalidToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
 		'Bearer ' . INVALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channel.properties.create.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'emptyToken'      => [
+	'emptyToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
 		'',
 		file_get_contents(__DIR__ . '/requests/channel.properties.create.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'expiredToken'    => [
+	'expiredToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
 		'Bearer ' . EXPIRED_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channel.properties.create.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'notAllowed'      => [
+	'notAllowed' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties',
 		'Bearer ' . VALID_TOKEN_USER,
 		file_get_contents(__DIR__ . '/requests/channel.properties.create.json'),

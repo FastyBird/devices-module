@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
+use DateTime;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineTimestampable;
 
@@ -102,7 +103,7 @@ interface IProperty extends IEntity,
 	public function setUnit(?string $units): void;
 
 	/**
-	 * @return Array<string>|Array<int|null>|Array<float|null>|null
+	 * @return Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null
 	 */
 	public function getFormat(): ?array;
 
@@ -138,7 +139,7 @@ interface IProperty extends IEntity,
 	public function setNumberOfDecimals(?int $numberOfDecimals): void;
 
 	/**
-	 * @return mixed|null
+	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|Array<string | null>|null
 	 */
 	public function getValue();
 

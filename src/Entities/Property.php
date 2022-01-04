@@ -18,7 +18,7 @@ namespace FastyBird\DevicesModule\Entities;
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\DevicesModule\Helpers;
+use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -155,6 +155,12 @@ abstract class Property implements IProperty
 
 		$this->identifier = $identifier;
 		$this->type = $type;
+
+		// Static property can not be set or read from device/channel property
+		if ($this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			$this->settable = false;
+			$this->queryable = false;
+		}
 	}
 
 	/**
@@ -202,6 +208,10 @@ abstract class Property implements IProperty
 	 */
 	public function setSettable(bool $settable): void
 	{
+		if ($settable && $this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidArgumentException('Static type property can not be settable');
+		}
+
 		$this->settable = $settable;
 	}
 
@@ -218,6 +228,10 @@ abstract class Property implements IProperty
 	 */
 	public function setQueryable(bool $queryable): void
 	{
+		if ($queryable && $this->type->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidArgumentException('Static type property can not be queryable');
+		}
+
 		$this->queryable = $queryable;
 	}
 
@@ -264,54 +278,7 @@ abstract class Property implements IProperty
 	{
 		$format = $this->format;
 
-		if ($format === null) {
-			return null;
-		}
-
-		if ($this->dataType !== null) {
-			if (
-				$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
-			) {
-				[$min, $max] = explode(':', $format) + [null, null];
-
-				if ($min !== null && $max !== null && intval($min) <= intval($max)) {
-					return [intval($min), intval($max)];
-				}
-
-				if ($min !== null && $max === null) {
-					return [intval($min), null];
-				}
-
-				if ($min === null && $max !== null) {
-					return [null, intval($max)];
-				}
-			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-				[$min, $max] = explode(':', $format) + [null, null];
-
-				if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
-					return [floatval($min), floatval($max)];
-				}
-
-				if ($min !== null && $max === null) {
-					return [floatval($min), null];
-				}
-
-				if ($min === null && $max !== null) {
-					return [null, floatval($max)];
-				}
-			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
-				return array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
-					return $item !== '';
-				});
-			}
-		}
-
-		return null;
+		return $this->buildFormat($format);
 	}
 
 	/**
@@ -319,6 +286,10 @@ abstract class Property implements IProperty
 	 */
 	public function setFormat(?string $format): void
 	{
+		if ($format !== null && $this->buildFormat($format) === null) {
+			throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
+		}
+
 		$this->format = $format;
 	}
 
@@ -396,7 +367,7 @@ abstract class Property implements IProperty
 			return null;
 		}
 
-		return Helpers\ItemValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
+		return ModulesMetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
 	}
 
 	/**
@@ -435,6 +406,73 @@ abstract class Property implements IProperty
 		return array_merge($data, [
 			'value' => $this->getValue(),
 		]);
+	}
+
+	/**
+	 * @param string|null $format
+	 *
+	 * @return Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null
+	 */
+	private function buildFormat(?string $format): ?array
+	{
+		if ($format === null) {
+			return null;
+		}
+
+		if ($this->dataType !== null) {
+			if (
+				$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
+				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			) {
+				[$min, $max] = explode(':', $format) + [null, null];
+
+				if ($min !== null && $max !== null && intval($min) <= intval($max)) {
+					return [intval($min), intval($max)];
+				}
+
+				if ($min !== null && $max === null) {
+					return [intval($min), null];
+				}
+
+				if ($min === null && $max !== null) {
+					return [null, intval($max)];
+				}
+			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+				[$min, $max] = explode(':', $format) + [null, null];
+
+				if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
+					return [floatval($min), floatval($max)];
+				}
+
+				if ($min !== null && $max === null) {
+					return [floatval($min), null];
+				}
+
+				if ($min === null && $max !== null) {
+					return [null, floatval($max)];
+				}
+			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+				return array_map(function (string $item) {
+					if (strpos($item, ':') === false) {
+						return $item;
+					}
+
+					$parts = array_map(function (?string $item): ?string {
+						return $item === '' ? null : $item;
+					}, array_map('trim', explode(':', $item) + [null, null, null]));
+
+					return [$parts[0], $parts[1], $parts[2]];
+				}, array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
+					return $item !== '';
+				}));
+			}
+		}
+
+		return null;
 	}
 
 }

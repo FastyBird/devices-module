@@ -13,11 +13,12 @@
     "type" : "devices-module/device-property",
     "id" : "50b0fd41-0a6e-44f0-b513-c536208afccf",
     "attributes" : {
+      "type" : "static",
       "key" : "bJtCcu",
       "identifier" : "battery",
       "name" : "battery",
       "settable" : false,
-      "queryable" : true,
+      "queryable" : false,
       "data_type" : "enum",
       "unit" : null,
       "format" : [
@@ -26,9 +27,8 @@
         "full"
       ],
       "invalid" : null,
-      "actual_value" : null,
-      "expected_value" : null,
-      "pending" : false
+      "number_of_decimals" : null,
+      "value" : null
     },
     "relationships" : {
       "device" : {

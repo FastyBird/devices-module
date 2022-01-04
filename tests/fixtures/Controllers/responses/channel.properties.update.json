@@ -13,6 +13,7 @@
     "type" : "devices-module/channel-property",
     "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
     "attributes" : {
+      "type" : "dynamic",
       "key" : "bLikx4",
       "identifier" : "switch",
       "name" : "switch",
@@ -22,6 +23,7 @@
       "unit" : null,
       "format" : null,
       "invalid" : null,
+      "number_of_decimals" : null,
       "actual_value" : null,
       "expected_value" : null,
       "pending" : false

@@ -19,6 +19,7 @@
       "type" : "devices-module/device-property",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
+        "type" : "static",
         "key" : "bLykvV",
         "identifier" : "password",
         "name" : "password",
@@ -28,9 +29,8 @@
         "unit" : null,
         "format" : null,
         "invalid" : null,
-        "actual_value" : null,
-        "expected_value" : null,
-        "pending" : false
+        "number_of_decimals" : null,
+        "value" : "device-password"
       },
       "relationships" : {
         "device" : {

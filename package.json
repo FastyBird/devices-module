@@ -38,13 +38,13 @@
     "lint:ts": "tslint -c tslint.json 'public/**/*.ts'"
   },
   "dependencies": {
-    "@fastybird/modules-metadata": "^0.14",
+    "@fastybird/modules-metadata": "^0.17",
     "@fastybird/vue-wamp-v1": "^0.1",
     "@fastybird/vuex-orm-wamp": "^0.1",
     "@vuex-orm/core": "^0.36",
     "@vuex-orm/plugin-axios": "^0.9",
     "ajv": "^8.5",
-    "date-fns": "^2.26.0",
+    "date-fns": "^2.26",
     "jsona": "1.9.2",
     "lodash": "^4.17",
     "uuid": "^8.3"

@@ -7,24 +7,36 @@
     "version" : "1.1"
   },
   "links" : {
-    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties"
   },
   "data" : {
     "type" : "devices-module/channel-property",
-    "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+    "id" : "17ebf5c3-1485-4235-8f23-99ac9f906739",
     "attributes" : {
       "type" : "dynamic",
-      "key" : "bLikx4",
-      "identifier" : "switch",
-      "name" : "switch",
+      "key" : "bJtCcu",
+      "identifier" : "switch_02",
+      "name" : "switch 02",
       "settable" : true,
       "queryable" : true,
       "data_type" : "enum",
       "unit" : null,
       "format" : [
-        "on",
-        "off",
-        "toggle"
+        [
+          "on",
+          "1",
+          "256"
+        ],
+        [
+          "off",
+          "0",
+          "512"
+        ],
+        [
+          "toggle",
+          null,
+          "768"
+        ]
       ],
       "invalid" : null,
       "number_of_decimals" : null,
@@ -44,7 +56,7 @@
       }
     },
     "links" : {
-      "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties/bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
+      "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties/17ebf5c3-1485-4235-8f23-99ac9f906739"
     }
   }
 }

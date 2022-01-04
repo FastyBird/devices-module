@@ -293,9 +293,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Hydrators\Connectors\ModbusConnectorHydrator::class);
 
 		// Helpers
-		$builder->addDefinition($this->prefix('helpers.property'), new DI\Definitions\ServiceDefinition())
-			->setType(Helpers\ItemValueHelper::class);
-
 		$builder->addDefinition($this->prefix('helpers.entityKey'), new DI\Definitions\ServiceDefinition())
 			->setType(Helpers\EntityKeyHelper::class);
 	}

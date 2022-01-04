@@ -132,14 +132,35 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 	 */
 	protected function hydrateFormatAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
 	{
-		if (
-			!is_scalar($attributes->get('format'))
-			|| (string) $attributes->get('format') === ''
-		) {
+		$rawFormat = $attributes->get('format');
+		$rawDataType = $attributes->get('data_type');
+
+		if (is_array($rawFormat)) {
+			if (
+				$rawDataType !== null
+				&& is_scalar($rawDataType)
+				&& ModulesMetadataTypes\DataTypeType::isValidValue((string) $rawDataType)
+			) {
+				$dataType = ModulesMetadataTypes\DataTypeType::get((string) $rawDataType);
+
+				if ($dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+					return implode(',', array_map(function ($item): string {
+						return is_array($item) ? implode(':', $item) : $item;
+					}, $rawFormat));
+				}
+
+				if (count($rawFormat) === 2) {
+					return implode(':', $rawFormat);
+				}
+			}
+
+			return null;
+
+		} elseif (!is_scalar($rawFormat) || (string) $rawFormat === '') {
 			return null;
 		}
 
-		return (string) $attributes->get('format');
+		return (string) $rawFormat;
 	}
 
 	/**

@@ -18,11 +18,12 @@ namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 use Consistence;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
+use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -84,33 +85,47 @@ final class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	 * @param Entities\Devices\Properties\IProperty $property
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|bool|null>
+	 * @return iterable<string, string|bool|int|float|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property->getId());
-
 		$dataType = $property->getDataType();
 
-		$actualValue = $state !== null ? ($dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
-		$expectedValue = $state !== null ? ($dataType !== null ? Helpers\ItemValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;
-
-		return [
-			'key'            => $property->getKey(),
-			'identifier'     => $property->getIdentifier(),
-			'name'           => $property->getName(),
-			'settable'       => $property->isSettable(),
-			'queryable'      => $property->isQueryable(),
-			'data_type'      => $dataType !== null ? $dataType->getValue() : null,
-			'unit'           => $property->getUnit(),
-			'format'         => $property->getFormat(),
-			'invalid'        => $property->getInvalid(),
-			'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,
-			'expected_value' => $expectedValue instanceof Consistence\Enum\Enum ? (string) $expectedValue : $expectedValue,
-			'pending'        => $state !== null && $state->isPending(),
+		$attributes = [
+			'type'               => $property->getType()->getValue(),
+			'key'                => $property->getKey(),
+			'identifier'         => $property->getIdentifier(),
+			'name'               => $property->getName(),
+			'settable'           => $property->isSettable(),
+			'queryable'          => $property->isQueryable(),
+			'data_type'          => $dataType !== null ? $dataType->getValue() : null,
+			'unit'               => $property->getUnit(),
+			'format'             => $property->getFormat(),
+			'invalid'            => $property->getInvalid(),
+			'number_of_decimals' => $property->getNumberOfDecimals(),
 		];
+
+		if ($property->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			return array_merge($attributes, [
+				'value' => $property->getValue(),
+			]);
+
+		} elseif ($property->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_DYNAMIC)) {
+			$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property->getId());
+
+			$actualValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
+			$expectedValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;
+
+			return array_merge($attributes, [
+				'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,
+				'expected_value' => $expectedValue instanceof Consistence\Enum\Enum ? (string) $expectedValue : $expectedValue,
+				'pending'        => $state !== null && $state->isPending(),
+			]);
+		}
+
+		return $attributes;
 	}
 
 	/**

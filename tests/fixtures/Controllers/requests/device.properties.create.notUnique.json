@@ -7,10 +7,10 @@
       "identifier": "battery",
       "name": "battery",
       "settable": false,
-      "queryable": true,
+      "queryable": false,
       "data_type": "enum",
       "unit": null,
-      "format": "low:medium:full",
+      "format": ["low","medium","full"],
       "invalid": null
     },
     "relationships": {

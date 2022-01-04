@@ -13,6 +13,7 @@
     "type" : "devices-module/device-property",
     "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
     "attributes" : {
+      "type" : "dynamic",
       "key" : "bLikvh",
       "identifier" : "rssi",
       "name" : "rssi",
@@ -22,6 +23,7 @@
       "unit" : null,
       "format" : null,
       "invalid" : null,
+      "number_of_decimals" : null,
       "actual_value" : null,
       "expected_value" : null,
       "pending" : false

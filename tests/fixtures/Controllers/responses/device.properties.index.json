@@ -14,6 +14,7 @@
       "type" : "devices-module/device-property",
       "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
       "attributes" : {
+        "type" : "dynamic",
         "key" : "bLikvh",
         "identifier" : "rssi",
         "name" : "rssi",
@@ -23,6 +24,7 @@
         "unit" : null,
         "format" : null,
         "invalid" : null,
+        "number_of_decimals" : null,
         "actual_value" : null,
         "expected_value" : null,
         "pending" : false
@@ -46,6 +48,7 @@
       "type" : "devices-module/device-property",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
+        "type" : "static",
         "key" : "bLykvV",
         "identifier" : "password",
         "name" : "password",
@@ -55,9 +58,8 @@
         "unit" : null,
         "format" : null,
         "invalid" : null,
-        "actual_value" : null,
-        "expected_value" : null,
-        "pending" : false
+        "number_of_decimals" : null,
+        "value" : "device-password"
       },
       "relationships" : {
         "device" : {
@@ -78,6 +80,7 @@
       "type" : "devices-module/device-property",
       "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
       "attributes" : {
+        "type" : "static",
         "key" : "bLikvt",
         "identifier" : "status_led",
         "name" : "status_led",
@@ -90,9 +93,8 @@
           "off"
         ],
         "invalid" : null,
-        "actual_value" : null,
-        "expected_value" : null,
-        "pending" : false
+        "number_of_decimals" : null,
+        "value" : "on"
       },
       "relationships" : {
         "device" : {
@@ -113,6 +115,7 @@
       "type" : "devices-module/device-property",
       "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
       "attributes" : {
+        "type" : "dynamic",
         "key" : "bLikpV",
         "identifier" : "uptime",
         "name" : "uptime",
@@ -122,6 +125,7 @@
         "unit" : null,
         "format" : null,
         "invalid" : null,
+        "number_of_decimals" : null,
         "actual_value" : null,
         "expected_value" : null,
         "pending" : false
@@ -145,6 +149,7 @@
       "type" : "devices-module/device-property",
       "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
       "attributes" : {
+        "type" : "static",
         "key" : "bLykvt",
         "identifier" : "username",
         "name" : "username",
@@ -154,9 +159,8 @@
         "unit" : null,
         "format" : null,
         "invalid" : null,
-        "actual_value" : null,
-        "expected_value" : null,
-        "pending" : false
+        "number_of_decimals" : null,
+        "value" : "device-username"
       },
       "relationships" : {
         "device" : {

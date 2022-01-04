@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 use DateTime;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Schemas;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use Neomerx\JsonApi;
 
 /**
@@ -58,7 +59,7 @@ final class StaticPropertySchema extends PropertySchema
 	 * @param Entities\Devices\Properties\IStaticProperty $property
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|bool|int|float|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
+	 * @return iterable<string, string|bool|int|float|ModulesMetadataTypes\SwitchPayloadType|ModulesMetadataTypes\ButtonPayloadType|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

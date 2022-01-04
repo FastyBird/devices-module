@@ -21,6 +21,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -74,7 +75,7 @@ final class DynamicPropertySchema extends PropertySchema
 	 * @param Entities\Channels\Properties\IDynamicProperty $property
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|bool|int|float|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
+	 * @return iterable<string, string|bool|int|float|ModulesMetadataTypes\SwitchPayloadType|ModulesMetadataTypes\ButtonPayloadType|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

@@ -57,6 +57,8 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	 *
 	 * @return iterable<string, string|bool|int|float|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
+	 * @phpstan-param T $property
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
@@ -82,6 +84,8 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
 	 *
+	 * @phpstan-param T $property
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getSelfLink($property): JsonApi\Contracts\Schema\LinkInterface
@@ -105,6 +109,8 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	 *
 	 * @return iterable<string, mixed>
 	 *
+	 * @phpstan-param T $property
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
@@ -123,6 +129,8 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	 * @param string $name
 	 *
 	 * @return JsonApi\Contracts\Schema\LinkInterface
+	 *
+	 * @phpstan-param T $property
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

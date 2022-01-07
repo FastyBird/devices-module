@@ -71,7 +71,7 @@ final class FbMqttConnectorHydrator extends ConnectorHydrator
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
-	 * @return string|null
+	 * @return int|null
 	 */
 	protected function hydratePortAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?int
 	{
@@ -88,7 +88,7 @@ final class FbMqttConnectorHydrator extends ConnectorHydrator
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
-	 * @return string|null
+	 * @return int|null
 	 */
 	protected function hydrateSecuredPortAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?int
 	{

@@ -68,7 +68,7 @@ final class ModbusConnectorHydrator extends ConnectorHydrator
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
-	 * @return string|null
+	 * @return int|null
 	 */
 	protected function hydrateBaudRateAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?int
 	{

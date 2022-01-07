@@ -233,7 +233,7 @@ abstract class Property implements IProperty
 	 */
 	public function setDataType(?ModulesMetadataTypes\DataTypeType $dataType): void
 	{
-		$this->dataType = $dataType !== null ? $dataType : null;
+		$this->dataType = $dataType;
 	}
 
 	/**

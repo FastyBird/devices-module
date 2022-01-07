@@ -84,9 +84,6 @@ class DbTestCase(unittest.TestCase):
 
     @classmethod
     def __setup_database(cls) -> None:
-        cls.__db_engine = create_engine(f"mysql://root:root@localhost/{cls.__db_name}", echo=False)
-        cls.__db_session = Session(cls.__db_engine)
-
         cls.__raw_database = MySQLdb.connect(host="127.0.0.1", user="root", passwd="root")
 
         cls.__cursor = cls.__raw_database.cursor()
@@ -94,6 +91,9 @@ class DbTestCase(unittest.TestCase):
         cls.__cursor.execute("DROP DATABASE IF EXISTS {}".format(cls.__db_name))
         cls.__cursor.execute("CREATE DATABASE {}".format(cls.__db_name))
         cls.__cursor.execute("USE {}".format(cls.__db_name))
+
+        cls.__db_engine = create_engine(f"mysql+pymysql://root:root@127.0.0.1/{cls.__db_name}", echo=False)
+        cls.__db_session = Session(cls.__db_engine)
 
     # -----------------------------------------------------------------------------
 

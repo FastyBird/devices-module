@@ -32,7 +32,7 @@ use Throwable;
  *       "comment"="Device channels controls"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_control_unique", columns={"control_name", "channel_id"})
+ *       @ORM\UniqueConstraint(name="control_name_unique", columns={"control_name", "channel_id"})
  *     },
  *     indexes={
  *       @ORM\Index(name="control_name_idx", columns={"control_name"})

@@ -70,7 +70,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         Index("device_identifier_idx", "device_identifier"),
         Index("device_name_idx", "device_name"),
         Index("device_enabled_idx", "device_enabled"),
-        UniqueConstraint("device_identifier", "connector_id", name="device_unique"),
+        UniqueConstraint("device_identifier", "connector_id", name="device_identifier_connector_unique"),
         UniqueConstraint("device_key", name="device_key_unique"),
         {
             "mysql_engine": "InnoDB",
@@ -436,7 +436,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
         Index("property_identifier_idx", "property_identifier"),
         Index("property_settable_idx", "property_settable"),
         Index("property_queryable_idx", "property_queryable"),
-        UniqueConstraint("property_identifier", "device_id", name="device_property_unique"),
+        UniqueConstraint("property_identifier", "device_id", name="property_identifier_unique"),
         UniqueConstraint("property_key", name="property_key_unique"),
         {
             "mysql_engine": "InnoDB",
@@ -556,7 +556,7 @@ class DeviceConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, Configur
 
     __table_args__ = (
         Index("configuration_identifier_idx", "configuration_identifier"),
-        UniqueConstraint("configuration_identifier", "device_id", name="device_configuration_unique"),
+        UniqueConstraint("configuration_identifier", "device_id", name="configuration_identifier_unique"),
         UniqueConstraint("configuration_key", name="configuration_key_unique"),
         {
             "mysql_engine": "InnoDB",
@@ -605,7 +605,7 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __table_args__ = (
         Index("control_name_idx", "control_name"),
-        UniqueConstraint("control_name", "device_id", name="device_control_unique"),
+        UniqueConstraint("control_name", "device_id", name="control_name_unique"),
         {
             "mysql_engine": "InnoDB",
             "mysql_collate": "utf8mb4_general_ci",

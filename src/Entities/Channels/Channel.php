@@ -33,7 +33,7 @@ use Throwable;
  *       "comment"="Device channels"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_unique", columns={"channel_identifier", "device_id"}),
+ *       @ORM\UniqueConstraint(name="channel_identifier_unique", columns={"channel_identifier", "device_id"}),
  *       @ORM\UniqueConstraint(name="channel_key_unique", columns={"channel_key"})
  *     },
  *     indexes={
@@ -462,8 +462,6 @@ class Channel implements IChannel
 			'identifier' => $this->getIdentifier(),
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),
-
-			'params' => (array) $this->getParams(),
 
 			'device'  => $this->getDevice()->getPlainId(),
 		];

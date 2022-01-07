@@ -36,7 +36,8 @@ use Throwable;
  *       "comment"="Devices"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="device_unique", columns={"device_identifier", "connector_id"}),
+ *       @ORM\UniqueConstraint(name="device_identifier_unique", columns={"device_identifier"}, options={"where": "connector_id IS NULL"}),
+ *       @ORM\UniqueConstraint(name="device_identifier_connector_unique", columns={"device_identifier", "connector_id"}, options={"where": "connector_id IS NOT NULL"}),
  *       @ORM\UniqueConstraint(name="device_key_unique", columns={"device_key"})
  *     },
  *     indexes={
@@ -855,8 +856,6 @@ class Device implements IDevice
 
 			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof ModulesMetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()->getValue() : $this->getFirmwareManufacturer(),
 			'firmware_version'      => $this->getFirmwareVersion(),
-
-			'params' => (array) $this->getParams(),
 
 			'connector'  => $this->getConnector() !== null ? $this->getConnector()->getPlainId() : null,
 

@@ -1,8 +1,8 @@
 {
   "errors" : [
     {
-      "code" : "422",
       "status" : "422",
+      "code" : "422",
       "title" : "Attribute not unique",
       "detail" : "Provided attribute is not unique",
       "source" : {

@@ -31,7 +31,7 @@ use Throwable;
  *       "comment"="Devices configurations rows"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="device_configuration_unique", columns={"configuration_identifier", "device_id"}),
+ *       @ORM\UniqueConstraint(name="configuration_identifier_unique", columns={"configuration_identifier", "device_id"}),
  *       @ORM\UniqueConstraint(name="configuration_key_unique", columns={"configuration_key"})
  *     },
  *     indexes={

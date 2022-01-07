@@ -32,7 +32,7 @@ use Throwable;
  *       "comment"="Connectors controls"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="connector_control_unique", columns={"control_name", "connector_id"})
+ *       @ORM\UniqueConstraint(name="control_name_unique", columns={"control_name", "connector_id"})
  *     },
  *     indexes={
  *       @ORM\Index(name="control_name_idx", columns={"control_name"})

@@ -60,7 +60,7 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __table_args__ = (
         Index("channel_identifier_idx", "channel_identifier"),
-        UniqueConstraint("channel_identifier", "device_id", name="channel_unique"),
+        UniqueConstraint("channel_identifier", "device_id", name="channel_identifier_unique"),
         UniqueConstraint("channel_key", name="channel_key_unique"),
         {
             "mysql_engine": "InnoDB",
@@ -230,7 +230,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
         Index("property_identifier_idx", "property_identifier"),
         Index("property_settable_idx", "property_settable"),
         Index("property_queryable_idx", "property_queryable"),
-        UniqueConstraint("property_identifier", "channel_id", name="channel_property_unique"),
+        UniqueConstraint("property_identifier", "channel_id", name="property_identifier_unique"),
         UniqueConstraint("property_key", name="property_key_unique"),
         {
             "mysql_engine": "InnoDB",
@@ -350,7 +350,7 @@ class ChannelConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, Configu
 
     __table_args__ = (
         Index("configuration_identifier_idx", "configuration_identifier"),
-        UniqueConstraint("configuration_identifier", "channel_id", name="channel_configuration_unique"),
+        UniqueConstraint("configuration_identifier", "channel_id", name="configuration_identifier_unique"),
         UniqueConstraint("configuration_key", name="configuration_key_unique"),
         {
             "mysql_engine": "InnoDB",
@@ -399,7 +399,7 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __table_args__ = (
         Index("control_name_idx", "control_name"),
-        UniqueConstraint("control_name", "channel_id", name="channel_control_unique"),
+        UniqueConstraint("control_name", "channel_id", name="control_name_unique"),
         {
             "mysql_engine": "InnoDB",
             "mysql_collate": "utf8mb4_general_ci",

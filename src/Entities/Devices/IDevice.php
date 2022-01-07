@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Entities\Devices;
 
 use FastyBird\DevicesModule\Entities;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineTimestampable;
 
@@ -35,9 +36,9 @@ interface IDevice extends Entities\IEntity,
 {
 
 	/**
-	 * @return string
+	 * @return IDevice|null
 	 */
-	public function getIdentifier(): string;
+	public function getParent(): ?IDevice;
 
 	/**
 	 * @param IDevice $device
@@ -47,14 +48,14 @@ interface IDevice extends Entities\IEntity,
 	public function setParent(IDevice $device): void;
 
 	/**
-	 * @return IDevice|null
-	 */
-	public function getParent(): ?IDevice;
-
-	/**
 	 * @return void
 	 */
 	public function removeParent(): void;
+
+	/**
+	 * @return IDevice[]
+	 */
+	public function getChildren(): array;
 
 	/**
 	 * @param IDevice[] $children
@@ -71,16 +72,21 @@ interface IDevice extends Entities\IEntity,
 	public function addChild(IDevice $child): void;
 
 	/**
-	 * @return IDevice[]
-	 */
-	public function getChildren(): array;
-
-	/**
 	 * @param IDevice $child
 	 *
 	 * @return void
 	 */
 	public function removeChild(IDevice $child): void;
+
+	/**
+	 * @return string
+	 */
+	public function getIdentifier(): string;
+
+	/**
+	 * @return string|null
+	 */
+	public function getName(): ?string;
 
 	/**
 	 * @param string|null $name
@@ -92,7 +98,7 @@ interface IDevice extends Entities\IEntity,
 	/**
 	 * @return string|null
 	 */
-	public function getName(): ?string;
+	public function getComment(): ?string;
 
 	/**
 	 * @param string|null $comment
@@ -102,9 +108,9 @@ interface IDevice extends Entities\IEntity,
 	public function setComment(?string $comment = null): void;
 
 	/**
-	 * @return string|null
+	 * @return bool
 	 */
-	public function getComment(): ?string;
+	public function isEnabled(): bool;
 
 	/**
 	 * @param bool $enabled
@@ -114,28 +120,33 @@ interface IDevice extends Entities\IEntity,
 	public function setEnabled(bool $enabled): void;
 
 	/**
-	 * @param string|null $manufacturer
+	 * @return string|ModulesMetadataTypes\HardwareManufacturerType
+	 */
+	public function getHardwareManufacturer();
+
+	/**
+	 * @param string|ModulesMetadataTypes\HardwareManufacturerType $manufacturer
 	 *
 	 * @return void
 	 */
-	public function setHardwareManufacturer(?string $manufacturer): void;
+	public function setHardwareManufacturer($manufacturer): void;
 
 	/**
-	 * @return string
+	 * @return string|ModulesMetadataTypes\DeviceModelType
 	 */
-	public function getHardwareManufacturer(): string;
+	public function getHardwareModel();
 
 	/**
-	 * @param string|null $model
+	 * @param string|ModulesMetadataTypes\DeviceModelType $model
 	 *
 	 * @return void
 	 */
-	public function setHardwareModel(?string $model): void;
+	public function setHardwareModel($model): void;
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getHardwareModel(): string;
+	public function getHardwareVersion(): ?string;
 
 	/**
 	 * @param string|null $version
@@ -145,9 +156,11 @@ interface IDevice extends Entities\IEntity,
 	public function setHardwareVersion(?string $version): void;
 
 	/**
+	 * @param string $separator
+	 *
 	 * @return string|null
 	 */
-	public function getHardwareVersion(): ?string;
+	public function getHardwareMacAddress(string $separator = ':'): ?string;
 
 	/**
 	 * @param string|null $macAddress
@@ -157,23 +170,21 @@ interface IDevice extends Entities\IEntity,
 	public function setHardwareMacAddress(?string $macAddress): void;
 
 	/**
-	 * @param string $separator
-	 *
-	 * @return string|null
+	 * @return string|ModulesMetadataTypes\FirmwareManufacturerType
 	 */
-	public function getHardwareMacAddress(string $separator = ':'): ?string;
+	public function getFirmwareManufacturer();
 
 	/**
-	 * @param string|null $manufacturer
+	 * @param string|ModulesMetadataTypes\FirmwareManufacturerType $manufacturer
 	 *
 	 * @return void
 	 */
-	public function setFirmwareManufacturer(?string $manufacturer): void;
+	public function setFirmwareManufacturer($manufacturer): void;
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getFirmwareManufacturer(): string;
+	public function getFirmwareVersion(): ?string;
 
 	/**
 	 * @param string|null $version
@@ -183,14 +194,9 @@ interface IDevice extends Entities\IEntity,
 	public function setFirmwareVersion(?string $version): void;
 
 	/**
-	 * @return string|null
+	 * @return Entities\Channels\IChannel[]
 	 */
-	public function getFirmwareVersion(): ?string;
-
-	/**
-	 * @return bool
-	 */
-	public function isEnabled(): bool;
+	public function getChannels(): array;
 
 	/**
 	 * @param Entities\Channels\IChannel[] $channels
@@ -207,11 +213,6 @@ interface IDevice extends Entities\IEntity,
 	public function addChannel(Entities\Channels\IChannel $channel): void;
 
 	/**
-	 * @return Entities\Channels\IChannel[]
-	 */
-	public function getChannels(): array;
-
-	/**
 	 * @param string $id
 	 *
 	 * @return Entities\Channels\IChannel|null
@@ -224,6 +225,11 @@ interface IDevice extends Entities\IEntity,
 	 * @return void
 	 */
 	public function removeChannel(Entities\Channels\IChannel $channel): void;
+
+	/**
+	 * @return Entities\Devices\Controls\IControl[]
+	 */
+	public function getControls(): array;
 
 	/**
 	 * @param Entities\Devices\Controls\IControl[] $control
@@ -240,11 +246,6 @@ interface IDevice extends Entities\IEntity,
 	public function addControl(Entities\Devices\Controls\IControl $control): void;
 
 	/**
-	 * @return Entities\Devices\Controls\IControl[]
-	 */
-	public function getControls(): array;
-
-	/**
 	 * @param string $name
 	 *
 	 * @return Entities\Devices\Controls\IControl|null
@@ -252,11 +253,11 @@ interface IDevice extends Entities\IEntity,
 	public function getControl(string $name): ?Entities\Devices\Controls\IControl;
 
 	/**
-	 * @param string $name
+	 * @param Entities\Devices\Controls\IControl $control
 	 *
-	 * @return Entities\Devices\Controls\IControl|null
+	 * @return void
 	 */
-	public function findControl(string $name): ?Entities\Devices\Controls\IControl;
+	public function removeControl(Entities\Devices\Controls\IControl $control): void;
 
 	/**
 	 * @param string $name
@@ -266,11 +267,16 @@ interface IDevice extends Entities\IEntity,
 	public function hasControl(string $name): bool;
 
 	/**
-	 * @param Entities\Devices\Controls\IControl $control
+	 * @param string $name
 	 *
-	 * @return void
+	 * @return Entities\Devices\Controls\IControl|null
 	 */
-	public function removeControl(Entities\Devices\Controls\IControl $control): void;
+	public function findControl(string $name): ?Entities\Devices\Controls\IControl;
+
+	/**
+	 * @return Entities\Devices\Properties\IProperty[]
+	 */
+	public function getProperties(): array;
 
 	/**
 	 * @param Entities\Devices\Properties\IProperty[] $properties
@@ -287,11 +293,6 @@ interface IDevice extends Entities\IEntity,
 	public function addProperty(Entities\Devices\Properties\IProperty $property): void;
 
 	/**
-	 * @return Entities\Devices\Properties\IProperty[]
-	 */
-	public function getProperties(): array;
-
-	/**
 	 * @param string $id
 	 *
 	 * @return Entities\Devices\Properties\IProperty|null
@@ -299,11 +300,11 @@ interface IDevice extends Entities\IEntity,
 	public function getProperty(string $id): ?Entities\Devices\Properties\IProperty;
 
 	/**
-	 * @param string $property
+	 * @param Properties\IProperty $property
 	 *
-	 * @return Properties\IProperty|null
+	 * @return void
 	 */
-	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty;
+	public function removeProperty(Entities\Devices\Properties\IProperty $property): void;
 
 	/**
 	 * @param string $property
@@ -313,11 +314,16 @@ interface IDevice extends Entities\IEntity,
 	public function hasProperty(string $property): bool;
 
 	/**
-	 * @param Properties\IProperty $property
+	 * @param string $property
 	 *
-	 * @return void
+	 * @return Properties\IProperty|null
 	 */
-	public function removeProperty(Entities\Devices\Properties\IProperty $property): void;
+	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty;
+
+	/**
+	 * @return Entities\Devices\Configuration\IRow[]
+	 */
+	public function getConfiguration(): array;
 
 	/**
 	 * @param Entities\Devices\Configuration\IRow[] $configuration
@@ -329,12 +335,7 @@ interface IDevice extends Entities\IEntity,
 	 *
 	 * @return void
 	 */
-	public function addConfiguration(Entities\Devices\Configuration\IRow $row): void;
-
-	/**
-	 * @return Entities\Devices\Configuration\IRow[]
-	 */
-	public function getConfiguration(): array;
+	public function addConfigurationRow(Entities\Devices\Configuration\IRow $row): void;
 
 	/**
 	 * @param string $id
@@ -344,28 +345,28 @@ interface IDevice extends Entities\IEntity,
 	public function getConfigurationRow(string $id): ?Entities\Devices\Configuration\IRow;
 
 	/**
-	 * @param string|null $configuration
-	 *
-	 * @return Entities\Devices\Configuration\IRow|null
-	 */
-	public function findConfiguration(?string $configuration): ?Entities\Devices\Configuration\IRow;
-
-	/**
-	 * @return bool
-	 */
-	public function hasConfiguration(): bool;
-
-	/**
 	 * @param Entities\Devices\Configuration\IRow $stat
 	 *
 	 * @return void
 	 */
-	public function removeConfiguration(Entities\Devices\Configuration\IRow $stat): void;
+	public function removeConfigurationRow(Entities\Devices\Configuration\IRow $stat): void;
 
 	/**
-	 * @return mixed[]
+	 * @return bool
 	 */
-	public function toArray(): array;
+	public function hasConfigurationRow(string $configuration): bool;
+
+	/**
+	 * @param string|null $configuration
+	 *
+	 * @return Entities\Devices\Configuration\IRow|null
+	 */
+	public function findConfigurationRow(?string $configuration): ?Entities\Devices\Configuration\IRow;
+
+	/**
+	 * @return Entities\Connectors\IConnector|null
+	 */
+	public function getConnector(): ?Entities\Connectors\IConnector;
 
 	/**
 	 * @param Entities\Connectors\IConnector|null $connector
@@ -375,8 +376,8 @@ interface IDevice extends Entities\IEntity,
 	public function setConnector(?Entities\Connectors\IConnector $connector): void;
 
 	/**
-	 * @return Entities\Connectors\IConnector|null
+	 * @return mixed[]
 	 */
-	public function getConnector(): ?Entities\Connectors\IConnector;
+	public function toArray(): array;
 
 }

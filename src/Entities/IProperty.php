@@ -84,11 +84,11 @@ interface IProperty extends IEntity,
 	public function getDataType(): ?ModulesMetadataTypes\DataTypeType;
 
 	/**
-	 * @param string|null $dataType
+	 * @param ModulesMetadataTypes\DataTypeType|null $dataType
 	 *
 	 * @return void
 	 */
-	public function setDataType(?string $dataType): void;
+	public function setDataType(?ModulesMetadataTypes\DataTypeType $dataType): void;
 
 	/**
 	 * @return string|null

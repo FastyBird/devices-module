@@ -19,9 +19,9 @@ Devices module exceptions
 """
 
 
-class HandleExchangeDataException(Exception):
+class InvalidStateException(Exception):
     """
-    Exception raised when received exchange message could not be handled
+    Exception raised when app is in invalid state
 
     @package        FastyBird:DevicesModule!
     @module         exceptions
@@ -30,7 +30,7 @@ class HandleExchangeDataException(Exception):
     """
 
 
-class InvalidStateException(Exception):
+class InvalidArgumentException(Exception):
     """
     Exception raised when app is in invalid state
 

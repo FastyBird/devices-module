@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #     Copyright 2021. FastyBird s.r.o.
 #
 #     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +16,15 @@
 
 # Test dependencies
 import uuid
+
+# Library dependencies
 from kink import inject
+from modules_metadata.routing import RoutingKey
+from modules_metadata.types import ModuleOrigin
 
 # Library libs
-from devices_module.items import ChannelItem
-from devices_module.repositories import ChannelsRepository
-from modules_metadata.routing import RoutingKey
+from devices_module.entities.channel import ChannelEntity
+from devices_module.repositories.channel import ChannelsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -28,31 +33,25 @@ from tests.pytests.tests import DbTestCase
 class TestChannelsRepository(DbTestCase):
     @inject
     def test_repository_iterator(self, channel_repository: ChannelsRepository) -> None:
-        channel_repository.initialize()
-
-        self.assertEqual(3, len(channel_repository))
+        self.assertEqual(3, len(channel_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
     def test_get_item(self, channel_repository: ChannelsRepository) -> None:
-        channel_repository.initialize()
+        entity = channel_repository.get_by_id(channel_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4))
 
-        channel_item = channel_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
-        )
-
-        self.assertIsInstance(channel_item, ChannelItem)
-        self.assertEqual("bLikxh", channel_item.key)
+        self.assertIsInstance(entity, ChannelEntity)
+        self.assertEqual("bLikxh", entity.key)
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, channel_repository: ChannelsRepository) -> None:
-        channel_repository.initialize()
+    def test_transform_to_dict(self, channel_repository: ChannelsRepository) -> None:
+        entity = channel_repository.get_by_id(channel_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4))
 
-        result: bool = channel_repository.create_from_exchange(
-            RoutingKey(RoutingKey.CHANNELS_ENTITY_CREATED),
+        self.assertIsInstance(entity, ChannelEntity)
+        self.assertEqual(
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "identifier": "channel-one",
@@ -61,89 +60,13 @@ class TestChannelsRepository(DbTestCase):
                 "comment": None,
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
             },
+            entity.to_dict(),
         )
-
-        self.assertTrue(result)
-
-        channel_item = channel_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
+        self.assertIsInstance(
+            self.validate_exchange_data(
+                origin=ModuleOrigin.DEVICES_MODULE,
+                routing_key=RoutingKey.CHANNELS_ENTITY_CREATED,
+                data=entity.to_dict(),
+            ),
+            dict,
         )
-
-        self.assertIsInstance(channel_item, ChannelItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", channel_item.channel_id.__str__())
-        self.assertEqual({
-            "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "identifier": "channel-one",
-            "key": "bLikxh",
-            "name": "Channel one",
-            "comment": None,
-            "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-        }, channel_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_update_from_exchange(self, channel_repository: ChannelsRepository) -> None:
-        channel_repository.initialize()
-
-        result: bool = channel_repository.update_from_exchange(
-            RoutingKey(RoutingKey.CHANNELS_ENTITY_UPDATED),
-            {
-                "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "identifier": "channel-one",
-                "key": "bLikxh",
-                "name": "Edited channel one",
-                "comment": None,
-                "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-            },
-        )
-
-        self.assertTrue(result)
-
-        channel_item = channel_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
-        )
-
-        self.assertIsInstance(channel_item, ChannelItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", channel_item.channel_id.__str__())
-        self.assertEqual({
-            "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "identifier": "channel-one",
-            "key": "bLikxh",
-            "name": "Edited channel one",
-            "comment": None,
-            "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-        }, channel_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_delete_from_exchange(self, channel_repository: ChannelsRepository) -> None:
-        channel_repository.initialize()
-
-        channel_item = channel_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
-        )
-
-        self.assertIsInstance(channel_item, ChannelItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", channel_item.channel_id.__str__())
-
-        result: bool = channel_repository.delete_from_exchange(
-            RoutingKey(RoutingKey.CHANNELS_ENTITY_DELETED),
-            {
-                "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "identifier": "channel-one",
-                "key": "bLikxh",
-                "name": "Channel one",
-                "comment": None,
-                "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-            },
-        )
-
-        self.assertTrue(result)
-
-        channel_item = channel_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
-        )
-
-        self.assertIsNone(channel_item)

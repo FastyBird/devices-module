@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #     Copyright 2021. FastyBird s.r.o.
 #
 #     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +16,15 @@
 
 # Test dependencies
 import unittest
-from unittest.mock import patch, Mock
-from pony.orm import core as orm
+from unittest.mock import Mock, patch
 
 # Library libs
+from devices_module.entities.base import Base
 from devices_module.helpers import KeyHashHelpers
 
 
 class TestKeyHashUtils(unittest.TestCase):
-    @patch('devices_module.helpers.time')
+    @patch("devices_module.helpers.time")
     def test_default_generator(self, mock_time) -> None:
         mock_time.time_ns = Mock(return_value=1630831410968578000)
 
@@ -30,7 +32,7 @@ class TestKeyHashUtils(unittest.TestCase):
 
         entity = Mock()
 
-        self.assertEqual('5nFZ6Gt59', entity_key_generator.generate_key(entity))
+        self.assertEqual("5nFZ6Gt59", entity_key_generator.generate_key(entity))
 
     # -----------------------------------------------------------------------------
 
@@ -40,14 +42,14 @@ class TestKeyHashUtils(unittest.TestCase):
 
         entity = Mock()
 
-        self.assertEqual('custom-generated', entity_key_generator.generate_key(entity))
+        self.assertEqual("custom-generated", entity_key_generator.generate_key(entity))
 
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __custom_generator(entity: orm.Entity) -> str:
-        return 'custom-generated'
+    def __custom_generator(entity: Base) -> str:
+        return "custom-generated"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

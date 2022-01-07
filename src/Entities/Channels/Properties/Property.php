@@ -28,7 +28,7 @@ use Throwable;
  *     options={
  *       "collate"="utf8mb4_general_ci",
  *       "charset"="utf8mb4",
- *       "comment"="Communication channels properties"
+ *       "comment"="Device channels properties"
  *     },
  *     uniqueConstraints={
  *       @ORM\UniqueConstraint(name="channel_property_unique", columns={"property_identifier", "channel_id"}),

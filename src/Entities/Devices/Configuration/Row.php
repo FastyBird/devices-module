@@ -67,7 +67,7 @@ class Row extends Entities\Row implements IRow
 
 		$this->device = $device;
 
-		$device->addConfiguration($this);
+		$device->addConfigurationRow($this);
 	}
 
 	/**

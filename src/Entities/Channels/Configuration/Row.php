@@ -28,7 +28,7 @@ use Throwable;
  *     options={
  *       "collate"="utf8mb4_general_ci",
  *       "charset"="utf8mb4",
- *       "comment"="Communication channels configurations rows"
+ *       "comment"="Device channels configurations rows"
  *     },
  *     uniqueConstraints={
  *       @ORM\UniqueConstraint(name="channel_configuration_unique", columns={"configuration_identifier", "channel_id"}),
@@ -67,7 +67,7 @@ class Row extends Entities\Row implements IRow
 
 		$this->channel = $channel;
 
-		$channel->addConfiguration($this);
+		$channel->addConfigurationRow($this);
 	}
 
 	/**

@@ -36,7 +36,7 @@ use Throwable;
  *       "comment"="Devices"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="device_identifier_unique", columns={"device_identifier"}),
+ *       @ORM\UniqueConstraint(name="device_unique", columns={"device_identifier", "connector_id"}),
  *       @ORM\UniqueConstraint(name="device_key_unique", columns={"device_key"})
  *     },
  *     indexes={
@@ -76,7 +76,7 @@ class Device implements IDevice
 	/**
 	 * @var string|null
 	 *
-	 * @ORM\Column(type="string", name="device_key", length=50)
+	 * @ORM\Column(type="string", name="device_key", length=50, nullable=false)
 	 */
 	private ?string $key = null;
 
@@ -85,7 +85,7 @@ class Device implements IDevice
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="children")
-	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="device_id", nullable=true, onDelete="SET null")
+	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="device_id", nullable=true, onDelete="SET NULL")
 	 */
 	private ?Entities\Devices\IDevice $parent = null;
 
@@ -148,7 +148,7 @@ class Device implements IDevice
 	 * @var string|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_hardware_mac_address", length=150, nullable=true, options={"default": null})
+	 * @ORM\Column(type="string", name="device_hardware_mac_address", length=50, nullable=true, options={"default": null})
 	 */
 	private ?string $hardwareMacAddress = null;
 
@@ -241,21 +241,25 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeParent(): void
+	public function getParent(): ?IDevice
 	{
-		$this->parent = null;
+		return $this->parent;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addChild(IDevice $child): void
+	public function setParent(IDevice $device): void
 	{
-		// Check if collection does not contain inserting entity
-		if (!$this->children->contains($child)) {
-			// ...and assign it to collection
-			$this->children->add($child);
-		}
+		$this->parent = $device;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeParent(): void
+	{
+		$this->parent = null;
 	}
 
 	/**
@@ -286,6 +290,18 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
+	public function addChild(IDevice $child): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->children->contains($child)) {
+			// ...and assign it to collection
+			$this->children->add($child);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function removeChild(IDevice $child): void
 	{
 		// Check if collection contain removing entity...
@@ -298,337 +314,9 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addChannel(Entities\Channels\IChannel $channel): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->channels->contains($channel)) {
-			// ...and assign it to collection
-			$this->channels->add($channel);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getChannels(): array
-	{
-		return $this->channels->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setChannels(array $channels = []): void
-	{
-		$this->channels = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		/** @var Entities\Channels\IChannel $entity */
-		foreach ($channels as $entity) {
-			if (!$this->channels->contains($entity)) {
-				// ...and assign them to collection
-				$this->channels->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getChannel(string $id): ?Entities\Channels\IChannel
-	{
-		$found = $this->channels
-			->filter(function (Entities\Channels\IChannel $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeChannel(Entities\Channels\IChannel $channel): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->channels->contains($channel)) {
-			// ...and remove it from collection
-			$this->channels->removeElement($channel);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addControl(Entities\Devices\Controls\IControl $control): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->controls->contains($control)) {
-			// ...and assign it to collection
-			$this->controls->add($control);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getControl(string $name): ?Entities\Devices\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasControl(string $name): bool
-	{
-		return $this->findControl($name) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Devices\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeControl(Entities\Devices\Controls\IControl $control): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->controls->contains($control)) {
-			// ...and remove it from collection
-			$this->controls->removeElement($control);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addProperty(Entities\Devices\Properties\IProperty $property): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->properties->contains($property)) {
-			// ...and assign it to collection
-			$this->properties->add($property);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getProperties(): array
-	{
-		return $this->properties->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setProperties(array $properties = []): void
-	{
-		$this->properties = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($properties as $entity) {
-			if (!$this->properties->contains($entity)) {
-				// ...and assign them to collection
-				$this->properties->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getProperty(string $id): ?Entities\Devices\Properties\IProperty
-	{
-		$found = $this->properties
-			->filter(function (Entities\Devices\Properties\IProperty $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasProperty(string $property): bool
-	{
-		return $this->findProperty($property) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty
-	{
-		$found = $this->properties
-			->filter(function (Entities\Devices\Properties\IProperty $row) use ($property): bool {
-				return $property === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeProperty(Entities\Devices\Properties\IProperty $property): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->properties->contains($property)) {
-			// ...and remove it from collection
-			$this->properties->removeElement($property);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addConfiguration(Entities\Devices\Configuration\IRow $row): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->configuration->contains($row)) {
-			// ...and assign it to collection
-			$this->configuration->add($row);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfiguration(): array
-	{
-		return $this->configuration->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setConfiguration(array $configuration = []): void
-	{
-		$this->configuration = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($configuration as $entity) {
-			if (!$this->configuration->contains($entity)) {
-				// ...and assign them to collection
-				$this->configuration->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfigurationRow(string $id): ?Entities\Devices\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Devices\Configuration\IRow $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findConfiguration(?string $configuration): ?Entities\Devices\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Devices\Configuration\IRow $row) use ($configuration): bool {
-				return $configuration === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasConfiguration(): bool
-	{
-		return $this->configuration->count() > 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeConfiguration(Entities\Devices\Configuration\IRow $stat): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->configuration->contains($stat)) {
-			// ...and remove it from collection
-			$this->configuration->removeElement($stat);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return [
-			'id'         => $this->getPlainId(),
-			'key'        => $this->getKey(),
-			'identifier' => $this->getIdentifier(),
-			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
-			'enabled'    => $this->isEnabled(),
-
-			'hardware_version'      => $this->getHardwareVersion(),
-			'hardware_manufacturer' => $this->getHardwareManufacturer(),
-			'hardware_model'        => $this->getHardwareModel(),
-			'hardware_mac_address'  => $this->getHardwareMacAddress(),
-
-			'firmware_manufacturer' => $this->getFirmwareManufacturer(),
-			'firmware_version'      => $this->getFirmwareVersion(),
-
-			'params' => (array) $this->getParams(),
-
-			'owner'  => $this->getOwnerId(),
-		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getParent(): ?IDevice
-	{
-		return $this->parent;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setParent(IDevice $device): void
-	{
-		$this->parent = $device;
 	}
 
 	/**
@@ -682,6 +370,56 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getHardwareManufacturer()
+	{
+		if (ModulesMetadataTypes\HardwareManufacturerType::isValidValue($this->hardwareManufacturer)) {
+			return ModulesMetadataTypes\HardwareManufacturerType::get($this->hardwareManufacturer);
+		}
+
+		return $this->hardwareManufacturer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareManufacturer($manufacturer): void
+	{
+		if ($manufacturer instanceof ModulesMetadataTypes\HardwareManufacturerType) {
+			$this->hardwareManufacturer = $manufacturer->getValue();
+
+		} else {
+			$this->hardwareManufacturer = strtolower($manufacturer);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareModel()
+	{
+		if (ModulesMetadataTypes\DeviceModelType::isValidValue($this->hardwareModel)) {
+			return ModulesMetadataTypes\DeviceModelType::get($this->hardwareModel);
+		}
+
+		return $this->hardwareModel;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareModel($model): void
+	{
+		if ($model instanceof ModulesMetadataTypes\DeviceModelType) {
+			$this->hardwareModel = $model->getValue();
+
+		} else {
+			$this->hardwareModel = strtolower($model);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getHardwareVersion(): ?string
 	{
 		return $this->hardwareVersion;
@@ -693,38 +431,6 @@ class Device implements IDevice
 	public function setHardwareVersion(?string $version): void
 	{
 		$this->hardwareVersion = $version;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareManufacturer(): string
-	{
-		return $this->hardwareManufacturer;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareManufacturer(?string $manufacturer): void
-	{
-		$this->hardwareManufacturer = strtolower($manufacturer ?? ModulesMetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareModel(): string
-	{
-		return $this->hardwareModel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareModel(?string $model): void
-	{
-		$this->hardwareModel = strtolower($model ?? ModulesMetadataTypes\DeviceModelType::MODEL_CUSTOM);
 	}
 
 	/**
@@ -754,17 +460,26 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFirmwareManufacturer(): string
+	public function getFirmwareManufacturer()
 	{
+		if (ModulesMetadataTypes\FirmwareManufacturerType::isValidValue($this->firmwareManufacturer)) {
+			return ModulesMetadataTypes\FirmwareManufacturerType::get($this->firmwareManufacturer);
+		}
+
 		return $this->firmwareManufacturer;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setFirmwareManufacturer(?string $manufacturer): void
+	public function setFirmwareManufacturer($manufacturer): void
 	{
-		$this->firmwareManufacturer = strtolower($manufacturer ?? ModulesMetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC);
+		if ($manufacturer instanceof ModulesMetadataTypes\FirmwareManufacturerType) {
+			$this->firmwareManufacturer = $manufacturer->getValue();
+
+		} else {
+			$this->firmwareManufacturer = strtolower($manufacturer);
+		}
 	}
 
 	/**
@@ -784,17 +499,65 @@ class Device implements IDevice
 	}
 
 	/**
-	 * @return string[]
+	 * {@inheritDoc}
 	 */
-	private function getPlainControls(): array
+	public function getChannels(): array
 	{
-		$controls = [];
+		return $this->channels->toArray();
+	}
 
-		foreach ($this->getControls() as $control) {
-			$controls[] = $control->getName();
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setChannels(array $channels = []): void
+	{
+		$this->channels = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		/** @var Entities\Channels\IChannel $entity */
+		foreach ($channels as $entity) {
+			if (!$this->channels->contains($entity)) {
+				// ...and assign them to collection
+				$this->channels->add($entity);
+			}
 		}
+	}
 
-		return $controls;
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addChannel(Entities\Channels\IChannel $channel): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->channels->contains($channel)) {
+			// ...and assign it to collection
+			$this->channels->add($channel);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChannel(string $id): ?Entities\Channels\IChannel
+	{
+		$found = $this->channels
+			->filter(function (Entities\Channels\IChannel $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeChannel(Entities\Channels\IChannel $channel): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->channels->contains($channel)) {
+			// ...and remove it from collection
+			$this->channels->removeElement($channel);
+		}
 	}
 
 	/**
@@ -824,13 +587,231 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getOwnerId(): ?string
+	public function addControl(Entities\Devices\Controls\IControl $control): void
 	{
-		if ($this->parent !== null) {
-			return $this->parent->getOwnerId();
+		// Check if collection does not contain inserting entity
+		if (!$this->controls->contains($control)) {
+			// ...and assign it to collection
+			$this->controls->add($control);
 		}
+	}
 
-		return $this->owner;
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getControl(string $name): ?Entities\Devices\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeControl(Entities\Devices\Controls\IControl $control): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->controls->contains($control)) {
+			// ...and remove it from collection
+			$this->controls->removeElement($control);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasControl(string $name): bool
+	{
+		return $this->findControl($name) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findControl(string $name): ?Entities\Devices\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getProperties(): array
+	{
+		return $this->properties->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setProperties(array $properties = []): void
+	{
+		$this->properties = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($properties as $entity) {
+			if (!$this->properties->contains($entity)) {
+				// ...and assign them to collection
+				$this->properties->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addProperty(Entities\Devices\Properties\IProperty $property): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->properties->contains($property)) {
+			// ...and assign it to collection
+			$this->properties->add($property);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getProperty(string $id): ?Entities\Devices\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Devices\Properties\IProperty $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeProperty(Entities\Devices\Properties\IProperty $property): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->properties->contains($property)) {
+			// ...and remove it from collection
+			$this->properties->removeElement($property);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasProperty(string $property): bool
+	{
+		return $this->findProperty($property) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Devices\Properties\IProperty $row) use ($property): bool {
+				return $property === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConfiguration(): array
+	{
+		return $this->configuration->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setConfiguration(array $configuration = []): void
+	{
+		$this->configuration = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($configuration as $entity) {
+			if (!$this->configuration->contains($entity)) {
+				// ...and assign them to collection
+				$this->configuration->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addConfigurationRow(Entities\Devices\Configuration\IRow $row): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->configuration->contains($row)) {
+			// ...and assign it to collection
+			$this->configuration->add($row);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConfigurationRow(string $id): ?Entities\Devices\Configuration\IRow
+	{
+		$found = $this->configuration
+			->filter(function (Entities\Devices\Configuration\IRow $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeConfigurationRow(Entities\Devices\Configuration\IRow $stat): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->configuration->contains($stat)) {
+			// ...and remove it from collection
+			$this->configuration->removeElement($stat);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasConfigurationRow(string $configuration): bool
+	{
+		return $this->findConfigurationRow($configuration) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findConfigurationRow(?string $configuration): ?Entities\Devices\Configuration\IRow
+	{
+		$found = $this->configuration
+			->filter(function (Entities\Devices\Configuration\IRow $row) use ($configuration): bool {
+				return $configuration === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConnector(): ?Entities\Connectors\IConnector
+	{
+		return $this->connector;
 	}
 
 	/**
@@ -844,9 +825,43 @@ class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConnector(): ?Entities\Connectors\IConnector
+	public function getOwnerId(): ?string
 	{
-		return $this->connector;
+		if ($this->parent !== null) {
+			return $this->parent->getOwnerId();
+		}
+
+		return $this->owner;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+			'enabled'    => $this->isEnabled(),
+
+			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof ModulesMetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()->getValue() : $this->getHardwareManufacturer(),
+			'hardware_model'        => $this->getHardwareModel() instanceof ModulesMetadataTypes\DeviceModelType ? $this->getHardwareModel()->getValue() : $this->getHardwareModel(),
+			'hardware_version'      => $this->getHardwareVersion(),
+			'hardware_mac_address'  => $this->getHardwareMacAddress(),
+
+			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof ModulesMetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()->getValue() : $this->getFirmwareManufacturer(),
+			'firmware_version'      => $this->getFirmwareVersion(),
+
+			'params' => (array) $this->getParams(),
+
+			'connector'  => $this->getConnector() !== null ? $this->getConnector()->getPlainId() : null,
+
+			'owner'  => $this->getOwnerId(),
+		];
 	}
 
 }

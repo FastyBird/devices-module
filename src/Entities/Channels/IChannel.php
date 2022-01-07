@@ -38,28 +38,9 @@ interface IChannel extends Entities\IEntity,
 	public function getDevice(): Entities\Devices\IDevice;
 
 	/**
-	 * @param string|null $name
-	 *
-	 * @return void
+	 * @return string
 	 */
-	public function setName(?string $name): void;
-
-	/**
-	 * @return string|null
-	 */
-	public function getName(): ?string;
-
-	/**
-	 * @param string|null $comment
-	 *
-	 * @return void
-	 */
-	public function setComment(?string $comment = null): void;
-
-	/**
-	 * @return string|null
-	 */
-	public function getComment(): ?string;
+	public function getIdentifier(): string;
 
 	/**
 	 * @param string $identifier
@@ -69,9 +50,33 @@ interface IChannel extends Entities\IEntity,
 	public function setIdentifier(string $identifier): void;
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getIdentifier(): string;
+	public function getName(): ?string;
+
+	/**
+	 * @param string|null $name
+	 *
+	 * @return void
+	 */
+	public function setName(?string $name): void;
+
+	/**
+	 * @return string|null
+	 */
+	public function getComment(): ?string;
+
+	/**
+	 * @param string|null $comment
+	 *
+	 * @return void
+	 */
+	public function setComment(?string $comment = null): void;
+
+	/**
+	 * @return Entities\Channels\Properties\IProperty[]
+	 */
+	public function getProperties(): array;
 
 	/**
 	 * @param Entities\Channels\Properties\IProperty[] $properties
@@ -88,11 +93,6 @@ interface IChannel extends Entities\IEntity,
 	public function addProperty(Entities\Channels\Properties\IProperty $property): void;
 
 	/**
-	 * @return Entities\Channels\Properties\IProperty[]
-	 */
-	public function getProperties(): array;
-
-	/**
 	 * @param string $id
 	 *
 	 * @return Entities\Channels\Properties\IProperty|null
@@ -100,11 +100,11 @@ interface IChannel extends Entities\IEntity,
 	public function getProperty(string $id): ?Entities\Channels\Properties\IProperty;
 
 	/**
-	 * @param string $property
+	 * @param Properties\IProperty $property
 	 *
-	 * @return Properties\IProperty|null
+	 * @return void
 	 */
-	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty;
+	public function removeProperty(Entities\Channels\Properties\IProperty $property): void;
 
 	/**
 	 * @param string $property
@@ -114,16 +114,16 @@ interface IChannel extends Entities\IEntity,
 	public function hasProperty(string $property): bool;
 
 	/**
-	 * @return bool
+	 * @param string $property
+	 *
+	 * @return Properties\IProperty|null
 	 */
-	public function hasSettableProperty(): bool;
+	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty;
 
 	/**
-	 * @param Properties\IProperty $property
-	 *
-	 * @return void
+	 * @return Entities\Channels\Configuration\IRow[]
 	 */
-	public function removeProperty(Entities\Channels\Properties\IProperty $property): void;
+	public function getConfiguration(): array;
 
 	/**
 	 * @param Entities\Channels\Configuration\IRow[] $configuration
@@ -137,12 +137,7 @@ interface IChannel extends Entities\IEntity,
 	 *
 	 * @return void
 	 */
-	public function addConfiguration(Entities\Channels\Configuration\IRow $row): void;
-
-	/**
-	 * @return Entities\Channels\Configuration\IRow[]
-	 */
-	public function getConfiguration(): array;
+	public function addConfigurationRow(Entities\Channels\Configuration\IRow $row): void;
 
 	/**
 	 * @param string $id
@@ -152,23 +147,28 @@ interface IChannel extends Entities\IEntity,
 	public function getConfigurationRow(string $id): ?Entities\Channels\Configuration\IRow;
 
 	/**
-	 * @param string|null $configuration
-	 *
-	 * @return Entities\Channels\Configuration\IRow|null
-	 */
-	public function findConfiguration(?string $configuration): ?Entities\Channels\Configuration\IRow;
-
-	/**
-	 * @return bool
-	 */
-	public function hasConfiguration(): bool;
-
-	/**
 	 * @param Configuration\IRow $property
 	 *
 	 * @return void
 	 */
-	public function removeConfiguration(Entities\Channels\Configuration\IRow $property): void;
+	public function removeConfigurationRow(Entities\Channels\Configuration\IRow $property): void;
+
+	/**
+	 * @return bool
+	 */
+	public function hasConfigurationRow(string $configuration): bool;
+
+	/**
+	 * @param string|null $configuration
+	 *
+	 * @return Entities\Channels\Configuration\IRow|null
+	 */
+	public function findConfigurationRow(?string $configuration): ?Entities\Channels\Configuration\IRow;
+
+	/**
+	 * @return Entities\Channels\Controls\IControl[]
+	 */
+	public function getControls(): array;
 
 	/**
 	 * @param Entities\Channels\Controls\IControl[] $control
@@ -185,11 +185,6 @@ interface IChannel extends Entities\IEntity,
 	public function addControl(Entities\Channels\Controls\IControl $control): void;
 
 	/**
-	 * @return Entities\Channels\Controls\IControl[]
-	 */
-	public function getControls(): array;
-
-	/**
 	 * @param string $name
 	 *
 	 * @return Entities\Channels\Controls\IControl|null
@@ -197,11 +192,11 @@ interface IChannel extends Entities\IEntity,
 	public function getControl(string $name): ?Entities\Channels\Controls\IControl;
 
 	/**
-	 * @param string $name
+	 * @param Entities\Channels\Controls\IControl $control
 	 *
-	 * @return Entities\Channels\Controls\IControl|null
+	 * @return void
 	 */
-	public function findControl(string $name): ?Entities\Channels\Controls\IControl;
+	public function removeControl(Entities\Channels\Controls\IControl $control): void;
 
 	/**
 	 * @param string $name
@@ -211,11 +206,11 @@ interface IChannel extends Entities\IEntity,
 	public function hasControl(string $name): bool;
 
 	/**
-	 * @param Entities\Channels\Controls\IControl $control
+	 * @param string $name
 	 *
-	 * @return void
+	 * @return Entities\Channels\Controls\IControl|null
 	 */
-	public function removeControl(Entities\Channels\Controls\IControl $control): void;
+	public function findControl(string $name): ?Entities\Channels\Controls\IControl;
 
 	/**
 	 * @return mixed[]

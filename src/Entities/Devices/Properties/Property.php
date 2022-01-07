@@ -41,7 +41,7 @@ use Throwable;
  *     }
  * )
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="property_type", type="string", length=40)
+ * @ORM\DiscriminatorColumn(name="property_type", type="string", length=20)
  * @ORM\DiscriminatorMap({
  *    "static"   = "FastyBird\DevicesModule\Entities\Devices\Properties\StaticProperty",
  *    "dynamic"  = "FastyBird\DevicesModule\Entities\Devices\Properties\DynamicProperty"

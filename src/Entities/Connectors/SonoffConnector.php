@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Connectors;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 
 /**
  * @ORM\Entity
@@ -24,15 +25,12 @@ use FastyBird\DevicesModule\Entities;
 class SonoffConnector extends Entities\Connectors\Connector implements ISonoffConnector
 {
 
-	/** @var string */
-	protected string $type = 'sonoff';
-
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): string
+	public function getType(): ModulesMetadataTypes\ConnectorTypeType
 	{
-		return $this->type;
+		return ModulesMetadataTypes\ConnectorTypeType::get(ModulesMetadataTypes\ConnectorTypeType::TYPE_SONOFF);
 	}
 
 }

@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Schemas\Devices;
 
+use Consistence\Enum\Enum;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
@@ -112,12 +113,12 @@ class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 			'enabled' => $device->isEnabled(),
 
-			'hardware_model'        => $device->getHardwareModel(),
-			'hardware_manufacturer' => $device->getHardwareManufacturer(),
+			'hardware_manufacturer' => $device->getHardwareManufacturer() instanceof Enum ? $device->getHardwareManufacturer()->getValue() : $device->getHardwareManufacturer(),
+			'hardware_model'        => $device->getHardwareModel() instanceof Enum ? $device->getHardwareModel()->getValue() : $device->getHardwareModel(),
 			'hardware_version'      => $device->getHardwareVersion(),
 			'hardware_mac_address'  => $device->getHardwareMacAddress(),
 
-			'firmware_manufacturer' => $device->getFirmwareManufacturer(),
+			'firmware_manufacturer' => $device->getFirmwareManufacturer() instanceof Enum ? $device->getFirmwareManufacturer()->getValue() : $device->getFirmwareManufacturer(),
 			'firmware_version'      => $device->getFirmwareVersion(),
 
 			'owner' => $device->getOwnerId(),

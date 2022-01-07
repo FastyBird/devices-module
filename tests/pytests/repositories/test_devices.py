@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #     Copyright 2021. FastyBird s.r.o.
 #
 #     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +16,15 @@
 
 # Test dependencies
 import uuid
+
+# Library dependencies
 from kink import inject
+from modules_metadata.routing import RoutingKey
+from modules_metadata.types import ModuleOrigin
 
 # Library libs
-from devices_module.items import DeviceItem
-from devices_module.repositories import DevicesRepository
-from modules_metadata.routing import RoutingKey
+from devices_module.entities.device import DeviceEntity
+from devices_module.repositories.device import DevicesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -28,31 +33,25 @@ from tests.pytests.tests import DbTestCase
 class TestDevicesRepository(DbTestCase):
     @inject
     def test_repository_iterator(self, device_repository: DevicesRepository) -> None:
-        device_repository.initialize()
-
-        self.assertEqual(4, len(device_repository))
+        self.assertEqual(4, len(device_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
     def test_get_item(self, device_repository: DevicesRepository) -> None:
-        device_repository.initialize()
+        entity = device_repository.get_by_id(device_id=uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4))
 
-        device_item = device_repository.get_by_id(
-            uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4)
-        )
-
-        self.assertIsInstance(device_item, DeviceItem)
-        self.assertEqual("bLikkz", device_item.key)
+        self.assertIsInstance(entity, DeviceEntity)
+        self.assertEqual("bLikkz", entity.key)
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, device_repository: DevicesRepository) -> None:
-        device_repository.initialize()
+    def test_transform_to_dict(self, device_repository: DevicesRepository) -> None:
+        entity = device_repository.get_by_id(device_id=uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4))
 
-        result: bool = device_repository.create_from_exchange(
-            RoutingKey(RoutingKey.DEVICES_ENTITY_CREATED),
+        self.assertIsInstance(entity, DeviceEntity)
+        self.assertEqual(
             {
                 "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
                 "identifier": "first-device",
@@ -63,122 +62,20 @@ class TestDevicesRepository(DbTestCase):
                 "hardware_manufacturer": "itead",
                 "hardware_model": "sonoff_basic",
                 "hardware_version": "rev1",
-                "hardware_mac_address": "807d3a3dbe6d",
+                "hardware_mac_address": "80:7d:3a:3d:be:6d",
                 "firmware_manufacturer": "fastybird",
                 "firmware_version": None,
                 "parent": None,
+                "connector": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
+                "owner": "455354e8-96bd-4c29-84e7-9f10e1d4db4b",
             },
+            entity.to_dict(),
         )
-
-        self.assertTrue(result)
-
-        device_item = device_repository.get_by_id(
-            uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4)
+        self.assertIsInstance(
+            self.validate_exchange_data(
+                origin=ModuleOrigin.DEVICES_MODULE,
+                routing_key=RoutingKey.DEVICES_ENTITY_CREATED,
+                data=entity.to_dict(),
+            ),
+            dict,
         )
-
-        self.assertIsInstance(device_item, DeviceItem)
-        self.assertEqual("69786d15-fd0c-4d9f-9378-33287c2009fa", device_item.device_id.__str__())
-        self.assertEqual({
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-            "identifier": "first-device",
-            "key": "bLikkz",
-            "name": "First device",
-            "comment": None,
-            "enabled": True,
-            "hardware_manufacturer": "itead",
-            "hardware_model": "sonoff_basic",
-            "hardware_version": "rev1",
-            "hardware_mac_address": "807d3a3dbe6d",
-            "firmware_manufacturer": "fastybird",
-            "firmware_version": None,
-            "parent": None,
-        }, device_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_update_from_exchange(self, device_repository: DevicesRepository) -> None:
-        device_repository.initialize()
-
-        result: bool = device_repository.update_from_exchange(
-            RoutingKey(RoutingKey.DEVICES_ENTITY_UPDATED),
-            {
-                "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-                "identifier": "first-device",
-                "key": "bLikkz",
-                "name": "Renamed device",
-                "comment": "With custom comment",
-                "enabled": False,
-                "hardware_manufacturer": "itead",
-                "hardware_model": "sonoff_basic",
-                "hardware_version": "rev2",
-                "hardware_mac_address": "807d3a3dbe6d",
-                "firmware_manufacturer": "fastybird",
-                "firmware_version": "1.0",
-                "parent": None,
-            },
-        )
-
-        self.assertTrue(result)
-
-        device_item = device_repository.get_by_id(
-            uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4)
-        )
-
-        self.assertIsInstance(device_item, DeviceItem)
-        self.assertEqual("69786d15-fd0c-4d9f-9378-33287c2009fa", device_item.device_id.__str__())
-        self.assertEqual({
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-            "identifier": "first-device",
-            "key": "bLikkz",
-            "name": "Renamed device",
-            "comment": "With custom comment",
-            "enabled": False,
-            "hardware_manufacturer": "itead",
-            "hardware_model": "sonoff_basic",
-            "hardware_version": "rev2",
-            "hardware_mac_address": "807d3a3dbe6d",
-            "firmware_manufacturer": "fastybird",
-            "firmware_version": "1.0",
-            "parent": None,
-        }, device_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_delete_from_exchange(self, device_repository: DevicesRepository) -> None:
-        device_repository.initialize()
-
-        device_item = device_repository.get_by_id(
-            uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4)
-        )
-
-        self.assertIsInstance(device_item, DeviceItem)
-        self.assertEqual("69786d15-fd0c-4d9f-9378-33287c2009fa", device_item.device_id.__str__())
-
-        result: bool = device_repository.delete_from_exchange(
-            RoutingKey(RoutingKey.DEVICES_ENTITY_DELETED),
-            {
-                "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-                "identifier": "first-device",
-                "key": "bLikkz",
-                "name": "First device",
-                "comment": None,
-                "enabled": True,
-                "hardware_manufacturer": "itead",
-                "hardware_model": "sonoff_basic",
-                "hardware_version": "rev1",
-                "hardware_mac_address": "807d3a3dbe6d",
-                "firmware_manufacturer": "fastybird",
-                "firmware_version": None,
-                "parent": None,
-            },
-        )
-
-        self.assertTrue(result)
-
-        device_item = device_repository.get_by_id(
-            uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4)
-        )
-
-        self.assertIsNone(device_item)

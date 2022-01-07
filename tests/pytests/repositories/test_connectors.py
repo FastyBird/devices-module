@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #     Copyright 2021. FastyBird s.r.o.
 #
 #     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +16,15 @@
 
 # Test dependencies
 import uuid
+
+# Library dependencies
 from kink import inject
+from modules_metadata.routing import RoutingKey
+from modules_metadata.types import ModuleOrigin
 
 # Library libs
-from devices_module.items import ConnectorItem
-from devices_module.repositories import ConnectorsRepository
-from modules_metadata.routing import RoutingKey
+from devices_module.entities.connector import ConnectorEntity
+from devices_module.repositories.connector import ConnectorsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -28,120 +33,29 @@ from tests.pytests.tests import DbTestCase
 class TestConnectorsRepository(DbTestCase):
     @inject
     def test_repository_iterator(self, connector_repository: ConnectorsRepository) -> None:
-        connector_repository.initialize()
-
-        self.assertEqual(1, len(connector_repository))
+        self.assertEqual(1, len(connector_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
     def test_get_item(self, connector_repository: ConnectorsRepository) -> None:
-        connector_repository.initialize()
-
-        connector_item = connector_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
+        entity = connector_repository.get_by_id(
+            connector_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
-        self.assertIsInstance(connector_item, ConnectorItem)
-        self.assertEqual("bLikvZ", connector_item.key)
+        self.assertIsInstance(entity, ConnectorEntity)
+        self.assertEqual("bLikvZ", entity.key)
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, connector_repository: ConnectorsRepository) -> None:
-        connector_repository.initialize()
-
-        result: bool = connector_repository.create_from_exchange(
-            RoutingKey(RoutingKey.CONNECTORS_ENTITY_CREATED),
-            {
-                "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "type": "fb-mqtt",
-                "key": "bLikvZ",
-                "name": "FB MQTT",
-                "enabled": True,
-                "server": None,
-                "port": None,
-                "secured_port": None,
-                "username": None,
-            },
+    def test_transform_to_dict(self, connector_repository: ConnectorsRepository) -> None:
+        entity = connector_repository.get_by_id(
+            connector_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
-        self.assertTrue(result)
-
-        connector_item = connector_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
-        )
-
-        self.assertIsInstance(connector_item, ConnectorItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
-        self.assertEqual({
-            "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "type": "fb-mqtt",
-            "key": "bLikvZ",
-            "name": "FB MQTT",
-            "enabled": True,
-            "server": "127.0.0.1",
-            "port": 1883,
-            "secured_port": 8883,
-            "username": None,
-        }, connector_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_update_from_exchange(self, connector_repository: ConnectorsRepository) -> None:
-        connector_repository.initialize()
-
-        result: bool = connector_repository.update_from_exchange(
-            RoutingKey(RoutingKey.CONNECTORS_ENTITY_UPDATED),
-            {
-                "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "type": "fb-mqtt",
-                "key": "bLikvZ",
-                "name": "Renamed",
-                "enabled": False,
-                "server": "127.0.0.1",
-                "port": 1883,
-                "secured_port": None,
-                "username": "username",
-            },
-        )
-
-        self.assertTrue(result)
-
-        connector_item = connector_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
-        )
-
-        self.assertIsInstance(connector_item, ConnectorItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
-        self.assertEqual({
-            "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "type": "fb-mqtt",
-            "key": "bLikvZ",
-            "name": "Renamed",
-            "enabled": False,
-            "server": "127.0.0.1",
-            "port": 1883,
-            "secured_port": 8883,
-            "username": "username",
-        }, connector_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_delete_from_exchange(self, connector_repository: ConnectorsRepository) -> None:
-        connector_repository.initialize()
-
-        connector_item = connector_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
-        )
-
-        self.assertIsInstance(connector_item, ConnectorItem)
-        self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_item.connector_id.__str__())
-
-        result: bool = connector_repository.delete_from_exchange(
-            RoutingKey(RoutingKey.CONNECTORS_ENTITY_DELETED),
+        self.assertIsInstance(entity, ConnectorEntity)
+        self.assertEqual(
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "type": "fb-mqtt",
@@ -153,12 +67,13 @@ class TestConnectorsRepository(DbTestCase):
                 "secured_port": 8883,
                 "username": None,
             },
+            entity.to_dict(),
         )
-
-        self.assertTrue(result)
-
-        connector_item = connector_repository.get_by_id(
-            uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
+        self.assertIsInstance(
+            self.validate_exchange_data(
+                origin=ModuleOrigin.DEVICES_MODULE,
+                routing_key=RoutingKey.CONNECTORS_ENTITY_CREATED,
+                data=entity.to_dict(),
+            ),
+            dict,
         )
-
-        self.assertIsNone(connector_item)

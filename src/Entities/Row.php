@@ -141,6 +141,14 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getName(): ?string
 	{
 		return $this->name;
@@ -152,14 +160,6 @@ abstract class Row implements IRow
 	public function setName(?string $name): void
 	{
 		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getIdentifier(): string
-	{
-		return $this->identifier;
 	}
 
 	/**

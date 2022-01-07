@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Connectors;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 
 /**
@@ -24,9 +25,6 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
  */
 class FbMqttConnector extends Entities\Connectors\Connector implements IFbMqttConnector
 {
-
-	/** @var string */
-	protected string $type = 'fb-mqtt';
 
 	/**
 	 * @var string|null
@@ -55,9 +53,9 @@ class FbMqttConnector extends Entities\Connectors\Connector implements IFbMqttCo
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): string
+	public function getType(): ModulesMetadataTypes\ConnectorTypeType
 	{
-		return $this->type;
+		return ModulesMetadataTypes\ConnectorTypeType::get(ModulesMetadataTypes\ConnectorTypeType::TYPE_FB_BUS);
 	}
 
 	/**

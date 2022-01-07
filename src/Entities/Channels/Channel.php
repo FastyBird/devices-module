@@ -30,7 +30,7 @@ use Throwable;
  *     options={
  *       "collate"="utf8mb4_general_ci",
  *       "charset"="utf8mb4",
- *       "comment"="Communication channels"
+ *       "comment"="Device channels"
  *     },
  *     uniqueConstraints={
  *       @ORM\UniqueConstraint(name="channel_unique", columns={"channel_identifier", "device_id"}),
@@ -70,7 +70,7 @@ class Channel implements IChannel
 	 * @var string
 	 *
 	 * @IPubDoctrine\Crud(is="required")
-	 * @ORM\Column(type="string", name="channel_identifier", length=40, nullable=false)
+	 * @ORM\Column(type="string", name="channel_identifier", length=50, nullable=false)
 	 */
 	private string $identifier;
 
@@ -152,254 +152,25 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addProperty(Entities\Channels\Properties\IProperty $property): void
+	public function getDevice(): Entities\Devices\IDevice
 	{
-		// Check if collection does not contain inserting entity
-		if (!$this->properties->contains($property)) {
-			// ...and assign it to collection
-			$this->properties->add($property);
-		}
+		return $this->device;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getProperties(): array
+	public function getIdentifier(): string
 	{
-		return $this->properties->toArray();
+		return $this->identifier;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setProperties(array $properties = []): void
+	public function setIdentifier(string $identifier): void
 	{
-		$this->properties = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($properties as $entity) {
-			if (!$this->properties->contains($entity)) {
-				// ...and assign them to collection
-				$this->properties->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getProperty(string $id): ?Entities\Channels\Properties\IProperty
-	{
-		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\IProperty $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasProperty(string $property): bool
-	{
-		return $this->findProperty($property) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty
-	{
-		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\IProperty $row) use ($property): bool {
-				return $property === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasSettableProperty(): bool
-	{
-		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\IProperty $row): bool {
-				return $row->isSettable();
-			});
-
-		return !$found->isEmpty();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeProperty(Entities\Channels\Properties\IProperty $property): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->properties->contains($property)) {
-			// ...and remove it from collection
-			$this->properties->removeElement($property);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addConfiguration(Entities\Channels\Configuration\IRow $row): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->configuration->contains($row)) {
-			// ...and assign it to collection
-			$this->configuration->add($row);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfiguration(): array
-	{
-		return $this->configuration->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setConfiguration(array $configuration = []): void
-	{
-		$this->configuration = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($configuration as $entity) {
-			if (!$this->configuration->contains($entity)) {
-				// ...and assign them to collection
-				$this->configuration->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfigurationRow(string $id): ?Entities\Channels\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Channels\Configuration\IRow $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findConfiguration(?string $configuration): ?Entities\Channels\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Channels\Configuration\IRow $row) use ($configuration): bool {
-				return $configuration === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasConfiguration(): bool
-	{
-		return $this->configuration->count() > 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeConfiguration(Entities\Channels\Configuration\IRow $property): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->configuration->contains($property)) {
-			// ...and remove it from collection
-			$this->configuration->removeElement($property);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addControl(Entities\Channels\Controls\IControl $control): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->controls->contains($control)) {
-			// ...and assign it to collection
-			$this->controls->add($control);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getControl(string $name): ?Entities\Channels\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasControl(string $name): bool
-	{
-		return $this->findControl($name) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Channels\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeControl(Entities\Channels\Controls\IControl $control): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->controls->contains($control)) {
-			// ...and remove it from collection
-			$this->controls->removeElement($control);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return [
-			'id'         => $this->getPlainId(),
-			'key'        => $this->getKey(),
-			'identifier' => $this->getIdentifier(),
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
-
-			'params' => (array) $this->getParams(),
-
-			'device'  => $this->getDevice()->getPlainId(),
-		];
+		$this->identifier = $identifier;
 	}
 
 	/**
@@ -437,31 +208,165 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getIdentifier(): string
+	public function getProperties(): array
 	{
-		return $this->identifier;
+		return $this->properties->toArray();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setIdentifier(string $identifier): void
+	public function setProperties(array $properties = []): void
 	{
-		$this->identifier = $identifier;
+		$this->properties = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($properties as $entity) {
+			if (!$this->properties->contains($entity)) {
+				// ...and assign them to collection
+				$this->properties->add($entity);
+			}
+		}
 	}
 
 	/**
-	 * @return string[]
+	 * {@inheritDoc}
 	 */
-	private function getPlainControls(): array
+	public function addProperty(Entities\Channels\Properties\IProperty $property): void
 	{
-		$controls = [];
-
-		foreach ($this->getControls() as $control) {
-			$controls[] = $control->getName();
+		// Check if collection does not contain inserting entity
+		if (!$this->properties->contains($property)) {
+			// ...and assign it to collection
+			$this->properties->add($property);
 		}
+	}
 
-		return $controls;
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getProperty(string $id): ?Entities\Channels\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Channels\Properties\IProperty $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeProperty(Entities\Channels\Properties\IProperty $property): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->properties->contains($property)) {
+			// ...and remove it from collection
+			$this->properties->removeElement($property);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasProperty(string $property): bool
+	{
+		return $this->findProperty($property) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Channels\Properties\IProperty $row) use ($property): bool {
+				return $property === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConfiguration(): array
+	{
+		return $this->configuration->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setConfiguration(array $configuration = []): void
+	{
+		$this->configuration = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($configuration as $entity) {
+			if (!$this->configuration->contains($entity)) {
+				// ...and assign them to collection
+				$this->configuration->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addConfigurationRow(Entities\Channels\Configuration\IRow $row): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->configuration->contains($row)) {
+			// ...and assign it to collection
+			$this->configuration->add($row);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConfigurationRow(string $id): ?Entities\Channels\Configuration\IRow
+	{
+		$found = $this->configuration
+			->filter(function (Entities\Channels\Configuration\IRow $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeConfigurationRow(Entities\Channels\Configuration\IRow $property): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->configuration->contains($property)) {
+			// ...and remove it from collection
+			$this->configuration->removeElement($property);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasConfigurationRow(string $configuration): bool
+	{
+		return $this->hasConfigurationRow($configuration) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findConfigurationRow(?string $configuration): ?Entities\Channels\Configuration\IRow
+	{
+		$found = $this->configuration
+			->filter(function (Entities\Channels\Configuration\IRow $row) use ($configuration): bool {
+				return $configuration === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -491,9 +396,77 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
+	public function addControl(Entities\Channels\Controls\IControl $control): void
 	{
-		return $this->device;
+		// Check if collection does not contain inserting entity
+		if (!$this->controls->contains($control)) {
+			// ...and assign it to collection
+			$this->controls->add($control);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getControl(string $name): ?Entities\Channels\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeControl(Entities\Channels\Controls\IControl $control): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->controls->contains($control)) {
+			// ...and remove it from collection
+			$this->controls->removeElement($control);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findControl(string $name): ?Entities\Channels\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasControl(string $name): bool
+	{
+		return $this->findControl($name) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+
+			'params' => (array) $this->getParams(),
+
+			'device'  => $this->getDevice()->getPlainId(),
+		];
 	}
 
 }

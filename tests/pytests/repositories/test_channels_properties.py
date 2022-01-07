@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #     Copyright 2021. FastyBird s.r.o.
 #
 #     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +16,16 @@
 
 # Test dependencies
 import uuid
+
+# Library dependencies
 from kink import inject
+from modules_metadata.devices_module import PropertyType
+from modules_metadata.routing import RoutingKey
+from modules_metadata.types import ModuleOrigin
 
 # Library libs
-from devices_module.items import ChannelPropertyItem
-from devices_module.repositories import ChannelsPropertiesRepository
-from modules_metadata.routing import RoutingKey
+from devices_module.entities.channel import ChannelPropertyEntity
+from devices_module.repositories.channel import ChannelsPropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -28,130 +34,28 @@ from tests.pytests.tests import DbTestCase
 class TestChannelsPropertiesRepository(DbTestCase):
     @inject
     def test_repository_iterator(self, property_repository: ChannelsPropertiesRepository) -> None:
-        property_repository.initialize()
-
-        self.assertEqual(3, len(property_repository))
+        self.assertEqual(3, len(property_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
     def test_get_item(self, property_repository: ChannelsPropertiesRepository) -> None:
-        property_repository.initialize()
+        entity = property_repository.get_by_id(property_id=uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4))
 
-        property_item = property_repository.get_by_id(
-            uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
-        )
-
-        self.assertIsInstance(property_item, ChannelPropertyItem)
-        self.assertEqual("bLikx4", property_item.key)
+        self.assertIsInstance(entity, ChannelPropertyEntity)
+        self.assertEqual("bLikx4", entity.key)
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, property_repository: ChannelsPropertiesRepository) -> None:
-        property_repository.initialize()
+    def test_transform_to_dict(self, property_repository: ChannelsPropertiesRepository) -> None:
+        entity = property_repository.get_by_id(property_id=uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4))
 
-        result: bool = property_repository.create_from_exchange(
-            RoutingKey(RoutingKey.CHANNELS_PROPERTY_ENTITY_CREATED),
+        self.assertIsInstance(entity, ChannelPropertyEntity)
+        self.assertEqual(
             {
                 "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-                "key": "bLikx4",
-                "identifier": "switch",
-                "name": "new name",
-                "settable": True,
-                "queryable": True,
-                "data_type": "enum",
-                "unit": None,
-                "format": "off,on,toggle",
-                "invalid": None,
-                "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            },
-        )
-
-        self.assertTrue(result)
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
-        )
-
-        self.assertIsInstance(property_item, ChannelPropertyItem)
-        self.assertEqual("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", property_item.property_id.__str__())
-        self.assertEqual({
-            "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-            "name": "new name",
-            "identifier": "switch",
-            "key": "bLikx4",
-            "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            "queryable": True,
-            "settable": True,
-            "data_type": "enum",
-            "format": "off,on,toggle",
-            "invalid": None,
-            "unit": None,
-        }, property_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_update_from_exchange(self, property_repository: ChannelsPropertiesRepository) -> None:
-        property_repository.initialize()
-
-        result: bool = property_repository.update_from_exchange(
-            RoutingKey(RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED),
-            {
-                "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-                "key": "bLikx4",
-                "identifier": "switch",
-                "name": "Renamed",
-                "settable": False,
-                "queryable": True,
-                "data_type": "enum",
-                "unit": None,
-                "format": "off,on",
-                "invalid": None,
-                "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-            },
-        )
-
-        self.assertTrue(result)
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
-        )
-
-        self.assertIsInstance(property_item, ChannelPropertyItem)
-        self.assertEqual("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", property_item.property_id.__str__())
-        self.assertEqual({
-            "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-            "name": "Renamed",
-            "key": "bLikx4",
-            "identifier": "switch",
-            "queryable": True,
-            "settable": False,
-            "data_type": "enum",
-            "unit": None,
-            "format": "off,on",
-            "invalid": None,
-            "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-        }, property_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_delete_from_exchange(self, property_repository: ChannelsPropertiesRepository) -> None:
-        property_repository.initialize()
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
-        )
-
-        self.assertIsInstance(property_item, ChannelPropertyItem)
-        self.assertEqual("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", property_item.property_id.__str__())
-
-        result: bool = property_repository.delete_from_exchange(
-            RoutingKey(RoutingKey.CHANNELS_PROPERTY_ENTITY_DELETED),
-            {
-                "id": "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
+                "type": PropertyType.DYNAMIC.value,
                 "name": "switch",
                 "identifier": "switch",
                 "key": "bLikx4",
@@ -159,16 +63,18 @@ class TestChannelsPropertiesRepository(DbTestCase):
                 "queryable": True,
                 "settable": True,
                 "data_type": "enum",
-                "format": "off,on,toggle",
-                "invalid": None,
                 "unit": None,
+                "format": ["off", "on", "toggle"],
+                "invalid": None,
+                "number_of_decimals": None,
             },
+            entity.to_dict(),
         )
-
-        self.assertTrue(result)
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4)
+        self.assertIsInstance(
+            self.validate_exchange_data(
+                origin=ModuleOrigin.DEVICES_MODULE,
+                routing_key=RoutingKey.CHANNELS_PROPERTY_ENTITY_CREATED,
+                data=entity.to_dict(),
+            ),
+            dict,
         )
-
-        self.assertIsNone(property_item)

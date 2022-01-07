@@ -86,7 +86,7 @@ abstract class Property implements IProperty
 	 *
 	 * @Enum(class=ModulesMetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string_enum", name="property_data_type", nullable=true, options={"default": null})
+	 * @ORM\Column(type="string_enum", name="property_data_type", length=100, nullable=true, options={"default": null})
 	 */
 	protected $dataType = null;
 
@@ -94,7 +94,7 @@ abstract class Property implements IProperty
 	 * @var string|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="property_unit", nullable=true, options={"default": null})
+	 * @ORM\Column(type="string", name="property_unit", length=20, nullable=true, options={"default": null})
 	 */
 	protected ?string $unit = null;
 
@@ -231,13 +231,9 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setDataType(?string $dataType): void
+	public function setDataType(?ModulesMetadataTypes\DataTypeType $dataType): void
 	{
-		if ($dataType !== null && !ModulesMetadataTypes\DataTypeType::isValidValue($dataType)) {
-			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
-		}
-
-		$this->dataType = $dataType !== null ? ModulesMetadataTypes\DataTypeType::get($dataType) : null;
+		$this->dataType = $dataType !== null ? $dataType : null;
 	}
 
 	/**
@@ -261,9 +257,7 @@ abstract class Property implements IProperty
 	 */
 	public function getFormat(): ?array
 	{
-		$format = $this->format;
-
-		return $this->buildFormat($format);
+		return $this->buildFormat($this->format);
 	}
 
 	/**
@@ -283,9 +277,7 @@ abstract class Property implements IProperty
 	 */
 	public function getInvalid()
 	{
-		$invalid = $this->invalid;
-
-		if ($invalid === null) {
+		if ($this->invalid === null) {
 			return null;
 		}
 
@@ -298,17 +290,17 @@ abstract class Property implements IProperty
 				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
 				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
 			) {
-				if (is_numeric($invalid)) {
-					return intval($invalid);
+				if (is_numeric($this->invalid)) {
+					return intval($this->invalid);
 				}
 			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-				if (is_numeric($invalid)) {
-					return floatval($invalid);
+				if (is_numeric($this->invalid)) {
+					return floatval($this->invalid);
 				}
 			}
 		}
 
-		return $invalid;
+		return $this->invalid;
 	}
 
 	/**

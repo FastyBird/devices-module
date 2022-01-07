@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Entities\Connectors;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
@@ -69,7 +70,7 @@ abstract class Connector implements IConnector
 	/**
 	 * @var string
 	 *
-	 * @IPubDoctrine\Crud(is="required")
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="connector_name", length=40, nullable=false)
 	 */
 	private string $name;
@@ -126,9 +127,22 @@ abstract class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
+	abstract public function getType(): ModulesMetadataTypes\ConnectorTypeType;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getName(): string
 	{
 		return $this->name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setName(string $name): void
+	{
+		$this->name = $name;
 	}
 
 	/**
@@ -164,54 +178,6 @@ abstract class Connector implements IConnector
 	}
 
 	/**
-	 * @return string[]
-	 */
-	private function getPlainControls(): array
-	{
-		$controls = [];
-
-		foreach ($this->getControls() as $control) {
-			$controls[] = $control->getName();
-		}
-
-		return $controls;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getControl(string $name): ?Entities\Connectors\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Connectors\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Connectors\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Connectors\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasControl(string $name): bool
-	{
-		return $this->findControl($name) !== null;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public function setControls(array $controls = []): void
@@ -242,6 +208,19 @@ abstract class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getControl(string $name): ?Entities\Connectors\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Connectors\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function removeControl(Entities\Connectors\Controls\IControl $control): void
 	{
 		// Check if collection contain removing entity...
@@ -254,11 +233,32 @@ abstract class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
+	public function hasControl(string $name): bool
+	{
+		return $this->findControl($name) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findControl(string $name): ?Entities\Connectors\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Connectors\Controls\IControl $row) use ($name): bool {
+				return $name === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function toArray(): array
 	{
 		return [
 			'id'      => $this->getPlainId(),
-			'type'    => $this->getType(),
+			'type'    => $this->getType()->getValue(),
 			'name'    => $this->getName(),
 			'key'     => $this->getKey(),
 			'enabled' => $this->isEnabled(),

@@ -63,9 +63,9 @@ setup(
         "fastybird-exchange-plugin",
         "fastybird-modules-metadata",
         "kink",
-        "pony",
-        "setuptools",
         "mysqlclient",
+        "setuptools",
+        "SQLAlchemy",
     ],
     download_url="https://github.com/FastyBird/devices-module/archive/%s.tar.gz" % VERSION,
     classifiers=[

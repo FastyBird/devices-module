@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #     Copyright 2021. FastyBird s.r.o.
 #
 #     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +16,19 @@
 
 # Test dependencies
 import uuid
+
+# Library dependencies
 from kink import inject
+from modules_metadata.devices_module import PropertyType
+from modules_metadata.routing import RoutingKey
+from modules_metadata.types import ModuleOrigin
 
 # Library libs
-from devices_module.items import DevicePropertyItem
-from devices_module.repositories import DevicesPropertiesRepository
-from modules_metadata.routing import RoutingKey
+from devices_module.entities.device import (
+    DeviceDynamicPropertyEntity,
+    DeviceStaticPropertyEntity,
+)
+from devices_module.repositories.device import DevicesPropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
@@ -28,147 +37,47 @@ from tests.pytests.tests import DbTestCase
 class TestDevicesPropertiesRepository(DbTestCase):
     @inject
     def test_repository_iterator(self, property_repository: DevicesPropertiesRepository) -> None:
-        property_repository.initialize()
-
-        self.assertEqual(5, len(property_repository))
+        self.assertEqual(5, len(property_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
     def test_get_item(self, property_repository: DevicesPropertiesRepository) -> None:
-        property_repository.initialize()
+        entity = property_repository.get_by_id(property_id=uuid.UUID("3134ba8e-f134-4bf2-9c80-c977c4deb0fb", version=4))
 
-        property_item = property_repository.get_by_id(
-            uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
-        )
-
-        self.assertIsInstance(property_item, DevicePropertyItem)
-        self.assertEqual("bLikvh", property_item.key)
+        self.assertIsInstance(entity, DeviceStaticPropertyEntity)
+        self.assertEqual("bLykvV", entity.key)
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_create_from_exchange(self, property_repository: DevicesPropertiesRepository) -> None:
-        property_repository.initialize()
+    def test_transform_to_dict(self, property_repository: DevicesPropertiesRepository) -> None:
+        entity = property_repository.get_by_id(property_id=uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4))
 
-        result: bool = property_repository.create_from_exchange(
-            RoutingKey(RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED),
+        self.assertIsInstance(entity, DeviceDynamicPropertyEntity)
+        self.assertEqual(
             {
                 "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
+                "type": PropertyType.DYNAMIC.value,
                 "name": "rssi",
                 "identifier": "rssi",
                 "key": "bLikvh",
+                "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
                 "queryable": True,
                 "settable": False,
                 "data_type": "int",
+                "unit": None,
                 "format": None,
                 "invalid": None,
-                "unit": None,
-                "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
+                "number_of_decimals": None,
             },
+            entity.to_dict(),
         )
-
-        self.assertTrue(result)
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
+        self.assertIsInstance(
+            self.validate_exchange_data(
+                origin=ModuleOrigin.DEVICES_MODULE,
+                routing_key=RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED,
+                data=entity.to_dict(),
+            ),
+            dict,
         )
-
-        self.assertIsInstance(property_item, DevicePropertyItem)
-        self.assertEqual("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", property_item.property_id.__str__())
-        self.assertEqual({
-            "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-            "name": "rssi",
-            "identifier": "rssi",
-            "key": "bLikvh",
-            "queryable": True,
-            "settable": False,
-            "data_type": "int",
-            "format": None,
-            "invalid": None,
-            "unit": None,
-            "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-        }, property_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_update_from_exchange(self, property_repository: DevicesPropertiesRepository) -> None:
-        property_repository.initialize()
-
-        result: bool = property_repository.update_from_exchange(
-            RoutingKey(RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED),
-            {
-                "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-                "name": "Renamed",
-                "identifier": "rssi",
-                "key": "bLikvh",
-                "queryable": False,
-                "settable": False,
-                "data_type": "enum",
-                "format": "good,poor",
-                "invalid": None,
-                "unit": None,
-                "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-            },
-        )
-
-        self.assertTrue(result)
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
-        )
-
-        self.assertIsInstance(property_item, DevicePropertyItem)
-        self.assertEqual("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", property_item.property_id.__str__())
-        self.assertEqual({
-            "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-            "name": "Renamed",
-            "identifier": "rssi",
-            "key": "bLikvh",
-            "queryable": False,
-            "settable": False,
-            "data_type": "enum",
-            "format": "good,poor",
-            "invalid": None,
-            "unit": None,
-            "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-        }, property_item.to_dict())
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_delete_from_exchange(self, property_repository: DevicesPropertiesRepository) -> None:
-        property_repository.initialize()
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
-        )
-
-        self.assertIsInstance(property_item, DevicePropertyItem)
-        self.assertEqual("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", property_item.property_id.__str__())
-
-        result: bool = property_repository.delete_from_exchange(
-            RoutingKey(RoutingKey.DEVICES_PROPERTY_ENTITY_DELETED),
-            {
-                "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-                "name": "rssi",
-                "identifier": "rssi",
-                "key": "bLikvh",
-                "queryable": True,
-                "settable": False,
-                "data_type": "int",
-                "format": None,
-                "invalid": None,
-                "unit": None,
-                "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-            },
-        )
-
-        self.assertTrue(result)
-
-        property_item = property_repository.get_by_id(
-            uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4)
-        )
-
-        self.assertIsNone(property_item)

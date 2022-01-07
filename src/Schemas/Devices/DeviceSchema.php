@@ -142,7 +142,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public function getRelationships($device, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		$relationships = [
+		return [
 			self::RELATIONSHIPS_PROPERTIES    => [
 				self::RELATIONSHIP_DATA          => $device->getProperties(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
@@ -179,8 +179,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_RELATED => $device->getParent() !== null,
 			],
 		];
-
-		return $relationships;
 	}
 
 	/**

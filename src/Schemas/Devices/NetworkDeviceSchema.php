@@ -26,7 +26,7 @@ use FastyBird\DevicesModule\Schemas;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends DeviceSchema<Entities\Devices\ITuyaDevice>
+ * @phpstan-extends DeviceSchema<Entities\Devices\INetworkDevice>
  */
 final class NetworkDeviceSchema extends DeviceSchema
 {

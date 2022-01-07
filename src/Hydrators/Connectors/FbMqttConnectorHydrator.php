@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Hydrators\Connectors;
 
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Schemas;
 use IPub\JsonAPIDocument;
 
 /**

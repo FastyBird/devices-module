@@ -141,15 +141,15 @@ export interface FbBusConnectorUpdateInterface extends ConnectorUpdateInterface 
 }
 
 export interface ShellyConnectorUpdateInterface extends ConnectorUpdateInterface {
-
+  name?: string
 }
 
 export interface TuyaConnectorUpdateInterface extends ConnectorUpdateInterface {
-
+  name?: string
 }
 
 export interface SonoffConnectorUpdateInterface extends ConnectorUpdateInterface {
-
+  name?: string
 }
 
 export interface ModbusConnectorUpdateInterface extends ConnectorUpdateInterface {

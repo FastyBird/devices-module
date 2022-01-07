@@ -424,15 +424,11 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
 
         return true
       } catch (e: any) {
-        const channel = await Channel.find(payload.property.channelId)
-
-        if (channel !== null) {
-          // Replacing backup failed, we need to refresh whole list
-          await ChannelProperty.get(
-            channel,
-            payload.property.id,
-          )
-        }
+        // Replacing backup failed, we need to refresh whole list
+        await ChannelProperty.get(
+          channel,
+          payload.property.id,
+        )
 
         throw new OrmError(
           'devices-module.channel-properties.delete.failed',

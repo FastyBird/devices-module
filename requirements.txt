@@ -4,4 +4,4 @@ fastybird-modules-metadata>=0.19
 kink>=0.6
 setuptools>=57.4
 sqlalchemy[mypy]>=1.4
-sqlalchemy-events>=0.1
+pymysql>=1.0

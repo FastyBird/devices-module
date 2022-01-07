@@ -65,7 +65,8 @@ setup(
         "kink",
         "mysqlclient",
         "setuptools",
-        "SQLAlchemy",
+        "sqlalchemy",
+        "pymysql",
     ],
     download_url="https://github.com/FastyBird/devices-module/archive/%s.tar.gz" % VERSION,
     classifiers=[

@@ -19,8 +19,8 @@ import { PropertyInterface } from '@/lib/models/properties/types'
 // ============
 
 export enum DevicePropertyEntityTypes {
-  PROPERTY_DYNAMIC = 'devices-module/device-property-dynamic',
-  PROPERTY_STATIC = 'devices-module/device-property-static',
+  DYNAMIC = 'devices-module/device-property-dynamic',
+  STATIC = 'devices-module/device-property-static',
 }
 
 // ENTITY INTERFACE
@@ -48,7 +48,7 @@ interface DevicePropertyAttributesResponseInterface {
   queryable: boolean
   dataType: DataType | null
   unit: string | null
-  format: string[] | ((string | null)[])[] | (number | null)[] | null | string
+  format: string[] | ((string | null)[])[] | (number | null)[] | null
   invalid: string | number | null
   numberOfDecimals: number | null
 
@@ -89,9 +89,33 @@ export interface DevicePropertiesResponseInterface extends TJsonApiBody {
   included?: (DeviceDataResponseInterface)[]
 }
 
+// CREATE ENTITY INTERFACES
+// ========================
+
+export interface DevicePropertyCreateInterface {
+  type: DevicePropertyEntityTypes
+
+  identifier: string
+  name?: string | null
+  settable?: boolean
+  queryable?: boolean
+  dataType?: string | null
+  unit?: string | null
+  format?: string[] | ((string | null)[])[] | (number | null)[] | null
+  invalid?: string | number | null
+  numberOfDecimals?: number | null
+}
+
 // UPDATE ENTITY INTERFACES
 // ========================
 
 export interface DevicePropertyUpdateInterface {
   name?: string | null
+  settable?: boolean
+  queryable?: boolean
+  dataType?: string | null
+  unit?: string | null
+  format?: string[] | ((string | null)[])[] | (number | null)[] | null
+  invalid?: string | number | null
+  numberOfDecimals?: number | null
 }

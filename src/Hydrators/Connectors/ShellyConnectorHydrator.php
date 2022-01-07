@@ -33,6 +33,7 @@ final class ShellyConnectorHydrator extends ConnectorHydrator
 	/** @var string[] */
 	protected array $attributes = [
 		'name',
+		'enabled',
 	];
 
 	/**

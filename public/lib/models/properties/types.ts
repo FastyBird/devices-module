@@ -55,6 +55,8 @@ export enum ActorNameTypes {
 export interface PropertyInterface {
   id: string
 
+  draft: boolean
+
   key: string
   identifier: string
   name: string | null

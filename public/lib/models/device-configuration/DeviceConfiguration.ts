@@ -24,7 +24,7 @@ export default class DeviceConfiguration extends Configuration implements Device
 
   static fields(): Fields {
     return Object.assign(Configuration.fields(), {
-      type: this.string(DeviceConfigurationEntityTypes.CONFIGURATION),
+      type: this.string(''),
 
       device: this.belongsTo(Device, 'id'),
       deviceBackward: this.hasOne(Device, 'id', 'deviceId'),

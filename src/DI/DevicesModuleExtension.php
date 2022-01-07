@@ -216,8 +216,17 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->addTag('nette.inject');
 
 		// API schemas
-		$builder->addDefinition($this->prefix('schemas.device'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\DeviceSchema::class);
+		$builder->addDefinition($this->prefix('schemas.device.network'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\NetworkDeviceSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.device.local'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\LocalDeviceSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.device.virtual'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\VirtualDeviceSchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.device.homekit'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\HomekitDeviceSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Properties\DynamicPropertySchema::class);
@@ -268,17 +277,26 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 			->setType(Schemas\Connectors\Controls\ControlSchema::class);
 
 		// API hydrators
-		$builder->addDefinition($this->prefix('hydrators.device'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Devices\DeviceHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.device.network'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Devices\NetworkDeviceHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Channels\ChannelHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.device.local'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Devices\LocalDeviceHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.device.virtual'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Devices\VirtualDeviceHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.device.homekit'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Devices\HomekitDeviceHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\DeviceDynamicPropertyHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.device.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\DeviceStaticPropertyHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Channels\ChannelHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.channel.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\ChannelDynamicPropertyHydrator::class);

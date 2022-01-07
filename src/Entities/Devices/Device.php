@@ -51,7 +51,8 @@ use Throwable;
  * @ORM\DiscriminatorMap({
  *    "network" = "FastyBird\DevicesModule\Entities\Devices\NetworkDevice",
  *    "local"   = "FastyBird\DevicesModule\Entities\Devices\LocalDevice",
- *    "virtual" = "FastyBird\DevicesModule\Entities\Devices\VirtualDevice"
+ *    "virtual" = "FastyBird\DevicesModule\Entities\Devices\VirtualDevice",
+ *    "homekit" = "FastyBird\DevicesModule\Entities\Devices\HomekitDevice"
  * })
  * @ORM\MappedSuperclass
  */
@@ -80,14 +81,14 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="device_identifier", length=50, nullable=false)
 	 */
-	private string $identifier;
+	protected string $identifier;
 
 	/**
 	 * @var string|null
 	 *
 	 * @ORM\Column(type="string", name="device_key", length=50, nullable=false)
 	 */
-	private ?string $key = null;
+	protected ?string $key = null;
 
 	/**
 	 * @var Entities\Devices\IDevice|null
@@ -96,14 +97,14 @@ abstract class Device implements IDevice
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="children")
 	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="device_id", nullable=true, onDelete="SET NULL")
 	 */
-	private ?Entities\Devices\IDevice $parent = null;
+	protected ?Entities\Devices\IDevice $parent = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, IDevice>
 	 *
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="parent")
 	 */
-	private Common\Collections\Collection $children;
+	protected Common\Collections\Collection $children;
 
 	/**
 	 * @var string|null
@@ -111,7 +112,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_name", nullable=true, options={"default": null})
 	 */
-	private ?string $name;
+	protected ?string $name;
 
 	/**
 	 * @var string|null
@@ -119,7 +120,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="text", name="device_comment", nullable=true, options={"default": null})
 	 */
-	private ?string $comment = null;
+	protected ?string $comment = null;
 
 	/**
 	 * @var bool
@@ -127,7 +128,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="device_enabled", length=1, nullable=false, options={"default": true})
 	 */
-	private bool $enabled = true;
+	protected bool $enabled = true;
 
 	/**
 	 * @var string
@@ -135,7 +136,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_hardware_manufacturer", length=150, nullable=false, options={"default": "generic"})
 	 */
-	private $hardwareManufacturer;
+	protected $hardwareManufacturer;
 
 	/**
 	 * @var string
@@ -143,7 +144,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_hardware_model", length=150, nullable=false, options={"default": "custom"})
 	 */
-	private $hardwareModel;
+	protected $hardwareModel;
 
 	/**
 	 * @var string|null
@@ -151,7 +152,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_hardware_version", length=150, nullable=true, options={"default": null})
 	 */
-	private ?string $hardwareVersion = null;
+	protected ?string $hardwareVersion = null;
 
 	/**
 	 * @var string|null
@@ -159,7 +160,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_hardware_mac_address", length=50, nullable=true, options={"default": null})
 	 */
-	private ?string $hardwareMacAddress = null;
+	protected ?string $hardwareMacAddress = null;
 
 	/**
 	 * @var string
@@ -167,7 +168,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_firmware_manufacturer", length=150, nullable=false, options={"default": "generic"})
 	 */
-	private $firmwareManufacturer;
+	protected $firmwareManufacturer;
 
 	/**
 	 * @var string|null
@@ -175,7 +176,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_firmware_version", length=150, nullable=true, options={"default": null})
 	 */
-	private ?string $firmwareVersion = null;
+	protected ?string $firmwareVersion = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\IChannel>
@@ -183,7 +184,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private Common\Collections\Collection $channels;
+	protected Common\Collections\Collection $channels;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\Controls\IControl>
@@ -191,7 +192,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Controls\Control", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private Common\Collections\Collection $controls;
+	protected Common\Collections\Collection $controls;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\Properties\IProperty>
@@ -199,7 +200,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Properties\Property", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private Common\Collections\Collection $properties;
+	protected Common\Collections\Collection $properties;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\Configuration\IRow>
@@ -207,7 +208,7 @@ abstract class Device implements IDevice
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Configuration\Row", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private Common\Collections\Collection $configuration;
+	protected Common\Collections\Collection $configuration;
 
 	/**
 	 * @var Entities\Connectors\IConnector|null
@@ -216,7 +217,7 @@ abstract class Device implements IDevice
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="devices")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=true)
 	 */
-	private ?Entities\Connectors\IConnector $connector = null;
+	protected ?Entities\Connectors\IConnector $connector = null;
 
 	/**
 	 * @param string $identifier

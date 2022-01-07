@@ -125,3 +125,34 @@ export interface ConnectorUpdateInterface {
   name?: string
   enabled?: boolean
 }
+
+export interface FbMqttConnectorUpdateInterface extends ConnectorUpdateInterface {
+  server?: string | null
+  port?: number | null
+  securedPort?: number | null
+  username?: string | null
+  password?: string | null
+}
+
+export interface FbBusConnectorUpdateInterface extends ConnectorUpdateInterface {
+  address?: number | null
+  serialInterface?: string | null
+  baudRate?: number | null
+}
+
+export interface ShellyConnectorUpdateInterface extends ConnectorUpdateInterface {
+
+}
+
+export interface TuyaConnectorUpdateInterface extends ConnectorUpdateInterface {
+
+}
+
+export interface SonoffConnectorUpdateInterface extends ConnectorUpdateInterface {
+
+}
+
+export interface ModbusConnectorUpdateInterface extends ConnectorUpdateInterface {
+  serialInterface?: string | null
+  baudRate?: number | null
+}

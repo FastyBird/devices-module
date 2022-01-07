@@ -390,7 +390,7 @@ abstract class Property implements IProperty
 	 *
 	 * @return Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null
 	 */
-	private function buildFormat(?string $format): ?array
+	protected function buildFormat(?string $format): ?array
 	{
 		if ($format === null) {
 			return null;

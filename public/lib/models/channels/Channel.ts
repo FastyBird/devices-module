@@ -9,6 +9,7 @@ import capitalize from 'lodash/capitalize'
 import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import {
+  ChannelCreateInterface,
   ChannelEntityTypes,
   ChannelInterface,
   ChannelUpdateInterface,
@@ -29,7 +30,9 @@ export default class Channel extends Model implements ChannelInterface {
   static fields(): Fields {
     return {
       id: this.string(''),
-      type: this.string(ChannelEntityTypes.CHANNEL),
+      type: this.string(''),
+
+      draft: this.boolean(false),
 
       key: this.string(''),
       identifier: this.string(''),
@@ -51,6 +54,8 @@ export default class Channel extends Model implements ChannelInterface {
 
   id!: string
   type!: ChannelEntityTypes
+
+  draft!: boolean
 
   key!: string
   identifier!: string
@@ -130,10 +135,31 @@ export default class Channel extends Model implements ChannelInterface {
     })
   }
 
+  static async add(device: DeviceInterface, data: ChannelCreateInterface, id?: string | null, draft = true): Promise<Item<Channel>> {
+    return await Channel.dispatch('add', {
+      device,
+      id,
+      draft,
+      data,
+    })
+  }
+
   static async edit(channel: ChannelInterface, data: ChannelUpdateInterface): Promise<Item<Channel>> {
     return await Channel.dispatch('edit', {
       channel,
       data,
+    })
+  }
+
+  static async save(property: ChannelInterface): Promise<Item<Channel>> {
+    return await Channel.dispatch('save', {
+      property,
+    })
+  }
+
+  static async remove(property: ChannelInterface): Promise<boolean> {
+    return await Channel.dispatch('remove', {
+      property,
     })
   }
 

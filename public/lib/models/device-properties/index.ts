@@ -6,7 +6,9 @@ import {
   ModuleOrigin,
   DevicePropertyEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
-  DataType, normalizeValue, PropertyType,
+  DataType,
+  normalizeValue,
+  PropertyType,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -28,6 +30,7 @@ import {
   DevicePropertyResponseInterface,
   DevicePropertiesResponseInterface,
   DevicePropertyUpdateInterface,
+  DevicePropertyCreateInterface,
 } from '@/lib/models/device-properties/types'
 
 import {
@@ -39,6 +42,7 @@ import {
   JsonApiJsonPropertiesMapper,
 } from '@/lib/jsonapi'
 import { DevicePropertyJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
+import { v4 as uuid } from 'uuid'
 
 interface SemaphoreFetchingState {
   items: string[]
@@ -149,6 +153,81 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
     }
   },
 
+  async add({ commit }, payload: { device: DeviceInterface, id?: string | null, draft?: boolean, data: DevicePropertyCreateInterface }): Promise<Item<DeviceProperty>> {
+    const id = typeof payload.id !== 'undefined' && payload.id !== null && payload.id !== '' ? payload.id : uuid().toString()
+    const draft = typeof payload.draft !== 'undefined' ? payload.draft : false
+
+    commit('SET_SEMAPHORE', {
+      type: SemaphoreTypes.CREATING,
+      id,
+    })
+
+    try {
+      await DeviceProperty.insert({
+        data: Object.assign({}, payload.data, { id, draft, deviceId: payload.device.id }),
+      })
+    } catch (e: any) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.CREATING,
+        id,
+      })
+
+      throw new OrmError(
+        'devices-module.device-properties.create.failed',
+        e,
+        'Create new device property failed.',
+      )
+    }
+
+    const createdEntity = DeviceProperty.find(id)
+
+    if (createdEntity === null) {
+      await DeviceProperty.delete(id)
+
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.CREATING,
+        id,
+      })
+
+      throw new Error('devices-module.device-properties.create.failed')
+    }
+
+    if (draft) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.CREATING,
+        id,
+      })
+
+      return DeviceProperty.find(id)
+    } else {
+      try {
+        await DeviceProperty.api().post(
+          `${ModuleApiPrefix}/v1/devices/${payload.device.id}/properties`,
+          jsonApiFormatter.serialize({
+            stuff: createdEntity,
+          }),
+          apiOptions,
+        )
+
+        return DeviceProperty.find(id)
+      } catch (e: any) {
+        // Entity could not be created on api, we have to remove it from database
+        await DeviceProperty.delete(id)
+
+        throw new ApiError(
+          'devices-module.device-properties.create.failed',
+          e,
+          'Create new device property failed.',
+        )
+      } finally {
+        commit('CLEAR_SEMAPHORE', {
+          type: SemaphoreTypes.CREATING,
+          id,
+        })
+      }
+    }
+  },
+
   async edit({ state, commit }, payload: { property: DevicePropertyInterface, data: DevicePropertyUpdateInterface }): Promise<Item<DeviceProperty>> {
     if (state.semaphore.updating.includes(payload.property.id)) {
       throw new Error('devices-module.device-properties.update.inProgress')
@@ -235,6 +314,126 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
         type: SemaphoreTypes.UPDATING,
         id: payload.property.id,
       })
+    }
+  },
+
+  async save({ state, commit }, payload: { property: DevicePropertyInterface }): Promise<Item<DeviceProperty>> {
+    if (state.semaphore.updating.includes(payload.property.id)) {
+      throw new Error('devices-module.device-properties.save.inProgress')
+    }
+
+    if (!DeviceProperty.query().where('id', payload.property.id).where('draft', true).exists()) {
+      throw new Error('devices-module.device-properties.save.failed')
+    }
+
+    commit('SET_SEMAPHORE', {
+      type: SemaphoreTypes.UPDATING,
+      id: payload.property.id,
+    })
+
+    const entityToSave = DeviceProperty.find(payload.property.id)
+
+    if (entityToSave === null) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.UPDATING,
+        id: payload.property.id,
+      })
+
+      throw new Error('devices-module.device-properties.save.failed')
+    }
+
+    try {
+      await DeviceProperty.api().post(
+        `${ModuleApiPrefix}/v1/devices/${entityToSave.deviceId}/properties`,
+        jsonApiFormatter.serialize({
+          stuff: entityToSave,
+        }),
+        apiOptions,
+      )
+
+      return DeviceProperty.find(payload.property.id)
+    } catch (e: any) {
+      throw new ApiError(
+        'devices-module.device-properties.save.failed',
+        e,
+        'Save draft device failed.',
+      )
+    } finally {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.UPDATING,
+        id: payload.property.id,
+      })
+    }
+  },
+
+  async remove({ state, commit }, payload: { property: DevicePropertyInterface }): Promise<boolean> {
+    if (state.semaphore.deleting.includes(payload.property.id)) {
+      throw new Error('devices-module.device-properties.delete.inProgress')
+    }
+
+    if (!DeviceProperty.query().where('id', payload.property.id).exists()) {
+      return true
+    }
+
+    commit('SET_SEMAPHORE', {
+      type: SemaphoreTypes.DELETING,
+      id: payload.property.id,
+    })
+
+    try {
+      await DeviceProperty.delete(payload.property.id)
+    } catch (e: any) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.DELETING,
+        id: payload.property.id,
+      })
+
+      throw new OrmError(
+        'devices-module.device-properties.delete.failed',
+        e,
+        'Delete device failed.',
+      )
+    }
+
+    if (payload.property.draft) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.DELETING,
+        id: payload.property.id,
+      })
+
+      return true
+    } else {
+      try {
+        await DeviceProperty.api().delete(
+          `${ModuleApiPrefix}/v1/devices/${payload.property.deviceId}/properties/${payload.property.id}`,
+          {
+            save: false,
+          },
+        )
+
+        return true
+      } catch (e: any) {
+        const device = await Device.find(payload.property.deviceId)
+
+        if (device !== null) {
+          // Replacing backup failed, we need to refresh whole list
+          await DeviceProperty.get(
+            device,
+            payload.property.id,
+          )
+        }
+
+        throw new OrmError(
+          'devices-module.device-properties.delete.failed',
+          e,
+          'Delete device failed.',
+        )
+      } finally {
+        commit('CLEAR_SEMAPHORE', {
+          type: SemaphoreTypes.DELETING,
+          id: payload.property.id,
+        })
+      }
     }
   },
 
@@ -373,11 +572,11 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
             if (camelName === 'type') {
               switch (body[attrName]) {
                 case PropertyType.DYNAMIC:
-                  entityData[camelName] = DevicePropertyEntityTypes.PROPERTY_DYNAMIC
+                  entityData[camelName] = DevicePropertyEntityTypes.DYNAMIC
                   break
 
                 case PropertyType.STATIC:
-                  entityData[camelName] = DevicePropertyEntityTypes.PROPERTY_STATIC
+                  entityData[camelName] = DevicePropertyEntityTypes.STATIC
                   break
               }
             } else if (camelName === 'device') {

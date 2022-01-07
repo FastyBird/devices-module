@@ -15,7 +15,7 @@
   },
   "data" : [
     {
-      "type" : "devices-module/device",
+      "type" : "devices-module/device-virtual",
       "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596",
       "attributes" : {
         "key" : "bLikzr",
@@ -23,8 +23,8 @@
         "name" : "Child device",
         "comment" : "This is child",
         "enabled" : true,
-        "hardware_model" : "custom",
         "hardware_manufacturer" : "generic",
+        "hardware_model" : "custom",
         "hardware_version" : null,
         "hardware_mac_address" : null,
         "firmware_manufacturer" : "generic",
@@ -94,8 +94,7 @@
         },
         "connector" : {
           "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/connector",
-            "related" : "/devices-module/device/a1036ff8-6ee8-4405-aaed-58bae0814596/connector"
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/connector"
           },
           "data" : null
         },
@@ -105,7 +104,7 @@
             "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596"
           },
           "data" : {
-            "type" : "devices-module/device",
+            "type" : "devices-module/device-network",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }

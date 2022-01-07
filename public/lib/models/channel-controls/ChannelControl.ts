@@ -22,7 +22,7 @@ export default class ChannelControl extends Model implements ChannelControlInter
   static fields(): Fields {
     return {
       id: this.string(''),
-      type: this.string(ChannelControlEntityTypes.CONTROL),
+      type: this.string(''),
 
       name: this.string(''),
 

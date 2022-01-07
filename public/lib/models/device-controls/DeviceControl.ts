@@ -20,7 +20,7 @@ export default class DeviceControl extends Model implements DeviceControlInterfa
   static fields(): Fields {
     return {
       id: this.string(''),
-      type: this.string(DeviceControlEntityTypes.CONTROL),
+      type: this.string(''),
 
       name: this.string(''),
 

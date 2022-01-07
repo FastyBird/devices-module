@@ -81,11 +81,11 @@ class JsonApiJsonPropertiesMapper extends JsonPropertiesMapper implements IJsonP
               },
             )
           } else if (
-            get(relation, 'type') === DeviceEntityTypes.DEVICE
+            Object.values<string>(DeviceEntityTypes).includes(String(get(relation, 'type')).toLowerCase())
           ) {
             Object.assign(model, { deviceId: get(relation, 'id') })
           } else if (
-            get(relation, 'type') === ChannelEntityTypes.CHANNEL
+            Object.values<string>(ChannelEntityTypes).includes(String(get(relation, 'type')).toLowerCase())
           ) {
             Object.assign(model, { channelId: get(relation, 'id') })
           } else {

@@ -10,7 +10,7 @@
     "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
   },
   "data" : {
-    "type" : "devices-module/device",
+    "type" : "devices-module/device-network",
     "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
     "attributes" : {
       "key" : "bLikkz",
@@ -18,8 +18,8 @@
       "name" : "First device",
       "comment" : null,
       "enabled" : true,
-      "hardware_model" : "sonoff_basic",
       "hardware_manufacturer" : "itead",
+      "hardware_model" : "sonoff_basic",
       "hardware_version" : "rev1",
       "hardware_mac_address" : "80:7d:3a:3d:be:6d",
       "firmware_manufacturer" : "fastybird",
@@ -159,7 +159,7 @@
         },
         "data" : [
           {
-            "type" : "devices-module/device",
+            "type" : "devices-module/device-virtual",
             "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596"
           }
         ]
@@ -173,6 +173,12 @@
           "type" : "devices-module/connector-fb-mqtt",
           "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
+      },
+      "parent" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/parent"
+        },
+        "data" : null
       }
     },
     "links" : {

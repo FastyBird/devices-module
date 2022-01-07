@@ -20,6 +20,7 @@ import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import Channel from '@/lib/models/channels/Channel'
 import {
+  ChannelCreateInterface,
   ChannelEntityTypes,
   ChannelInterface,
   ChannelResponseInterface,
@@ -39,6 +40,7 @@ import { ChannelJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/li
 import ChannelProperty from '@/lib/models/channel-properties/ChannelProperty'
 import ChannelConfiguration from '@/lib/models/channel-configuration/ChannelConfiguration'
 import ChannelControl from '@/lib/models/channel-controls/ChannelControl'
+import { v4 as uuid } from 'uuid'
 
 interface SemaphoreFetchingState {
   items: string[]
@@ -174,6 +176,81 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     }
   },
 
+  async add({ commit }, payload: { device: DeviceInterface, id?: string | null, draft?: boolean, data: ChannelCreateInterface }): Promise<Item<Channel>> {
+    const id = typeof payload.id !== 'undefined' && payload.id !== null && payload.id !== '' ? payload.id : uuid().toString()
+    const draft = typeof payload.draft !== 'undefined' ? payload.draft : false
+
+    commit('SET_SEMAPHORE', {
+      type: SemaphoreTypes.CREATING,
+      id,
+    })
+
+    try {
+      await Channel.insert({
+        data: Object.assign({}, payload.data, { id, draft, deviceId: payload.device.id }),
+      })
+    } catch (e: any) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.CREATING,
+        id,
+      })
+
+      throw new OrmError(
+        'devices-module.channels.create.failed',
+        e,
+        'Create new channel failed.',
+      )
+    }
+
+    const createdEntity = Channel.find(id)
+
+    if (createdEntity === null) {
+      await Channel.delete(id)
+
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.CREATING,
+        id,
+      })
+
+      throw new Error('devices-module.channels.create.failed')
+    }
+
+    if (draft) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.CREATING,
+        id,
+      })
+
+      return Channel.find(id)
+    } else {
+      try {
+        await Channel.api().post(
+          `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels?include=properties,configuration,controls`,
+          jsonApiFormatter.serialize({
+            stuff: createdEntity,
+          }),
+          apiOptions,
+        )
+
+        return Channel.find(id)
+      } catch (e: any) {
+        // Entity could not be created on api, we have to remove it from database
+        await Channel.delete(id)
+
+        throw new ApiError(
+          'devices-module.channels.create.failed',
+          e,
+          'Create new channel failed.',
+        )
+      } finally {
+        commit('CLEAR_SEMAPHORE', {
+          type: SemaphoreTypes.CREATING,
+          id,
+        })
+      }
+    }
+  },
+
   async edit({ state, commit }, payload: { channel: ChannelInterface, data: ChannelUpdateInterface }): Promise<Item<Channel>> {
     if (state.semaphore.updating.includes(payload.channel.id)) {
       throw new Error('devices-module.channels.update.inProgress')
@@ -258,6 +335,126 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
         type: SemaphoreTypes.UPDATING,
         id: payload.channel.id,
       })
+    }
+  },
+
+  async save({ state, commit }, payload: { channel: ChannelInterface }): Promise<Item<Channel>> {
+    if (state.semaphore.updating.includes(payload.channel.id)) {
+      throw new Error('devices-module.channels.save.inProgress')
+    }
+
+    if (!Channel.query().where('id', payload.channel.id).where('draft', true).exists()) {
+      throw new Error('devices-module.channels.save.failed')
+    }
+
+    commit('SET_SEMAPHORE', {
+      type: SemaphoreTypes.UPDATING,
+      id: payload.channel.id,
+    })
+
+    const entityToSave = Channel.find(payload.channel.id)
+
+    if (entityToSave === null) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.UPDATING,
+        id: payload.channel.id,
+      })
+
+      throw new Error('devices-module.channels.save.failed')
+    }
+
+    try {
+      await Channel.api().post(
+        `${ModuleApiPrefix}/v1/devices/${entityToSave.deviceId}/channels?include=properties,configuration,controls`,
+        jsonApiFormatter.serialize({
+          stuff: entityToSave,
+        }),
+        apiOptions,
+      )
+
+      return Channel.find(payload.channel.id)
+    } catch (e: any) {
+      throw new ApiError(
+        'devices-module.channels.save.failed',
+        e,
+        'Save draft channel failed.',
+      )
+    } finally {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.UPDATING,
+        id: payload.channel.id,
+      })
+    }
+  },
+
+  async remove({ state, commit }, payload: { channel: ChannelInterface }): Promise<boolean> {
+    if (state.semaphore.deleting.includes(payload.channel.id)) {
+      throw new Error('devices-module.channels.delete.inProgress')
+    }
+
+    if (!Channel.query().where('id', payload.channel.id).exists()) {
+      return true
+    }
+
+    commit('SET_SEMAPHORE', {
+      type: SemaphoreTypes.DELETING,
+      id: payload.channel.id,
+    })
+
+    try {
+      await Channel.delete(payload.channel.id)
+    } catch (e: any) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.DELETING,
+        id: payload.channel.id,
+      })
+
+      throw new OrmError(
+        'devices-module.channels.delete.failed',
+        e,
+        'Delete channel failed.',
+      )
+    }
+
+    if (payload.channel.draft) {
+      commit('CLEAR_SEMAPHORE', {
+        type: SemaphoreTypes.DELETING,
+        id: payload.channel.id,
+      })
+
+      return true
+    } else {
+      try {
+        await Channel.api().delete(
+          `${ModuleApiPrefix}/v1/devices/${payload.channel.deviceId}/channels/${payload.channel.id}?include=properties,configuration,controls`,
+          {
+            save: false,
+          },
+        )
+
+        return true
+      } catch (e: any) {
+        const device = Device.find(payload.channel.deviceId)
+
+        if (device !== null) {
+          // Deleting entity on api failed, we need to refresh entity
+          await Channel.get(
+            device,
+            payload.channel.id,
+          )
+        }
+
+        throw new OrmError(
+          'devices-module.channels.delete.failed',
+          e,
+          'Delete channel failed.',
+        )
+      } finally {
+        commit('CLEAR_SEMAPHORE', {
+          type: SemaphoreTypes.DELETING,
+          id: payload.channel.id,
+        })
+      }
     }
   },
 

@@ -1,331 +1,331 @@
 {
-  "meta": {
-    "author": "FastyBird team",
-    "copyright": "FastyBird s.r.o"
+  "meta" : {
+    "author" : "FastyBird team",
+    "copyright" : "FastyBird s.r.o"
   },
-  "jsonapi": {
-    "version": "1.1"
+  "jsonapi" : {
+    "version" : "1.1"
   },
-  "links": {
-    "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration"
+  "links" : {
+    "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration"
   },
-  "data": [
+  "data" : [
     {
-      "type": "devices-module/device-configuration",
-      "id": "138c6cfc-ed49-476b-9f1e-6ee1dcb24f0b",
-      "attributes": {
-        "key": "bLikmS",
-        "identifier": "sensor_expected_power",
-        "name": null,
-        "comment": null,
-        "data_type": "int",
-        "default": null,
-        "min": 0,
-        "max": 500,
-        "step": 1
+      "type" : "devices-module/device-configuration",
+      "id" : "138c6cfc-ed49-476b-9f1e-6ee1dcb24f0b",
+      "attributes" : {
+        "key" : "bLikmS",
+        "identifier" : "sensor_expected_power",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "int",
+        "default" : null,
+        "min" : 0,
+        "max" : 500,
+        "step" : 1
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/138c6cfc-ed49-476b-9f1e-6ee1dcb24f0b"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/138c6cfc-ed49-476b-9f1e-6ee1dcb24f0b"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "19eb2b65-abce-4061-b591-4ff1a4b1500f",
-      "attributes": {
-        "key": "bLikvA",
-        "identifier": "btn_delay",
-        "name": null,
-        "comment": null,
-        "data_type": "int",
-        "default": "500",
-        "min": 0,
-        "max": 1000,
-        "step": 100
+      "type" : "devices-module/device-configuration",
+      "id" : "19eb2b65-abce-4061-b591-4ff1a4b1500f",
+      "attributes" : {
+        "key" : "bLikvA",
+        "identifier" : "btn_delay",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "int",
+        "default" : "500",
+        "min" : 0,
+        "max" : 1000,
+        "step" : 100
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/19eb2b65-abce-4061-b591-4ff1a4b1500f"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/19eb2b65-abce-4061-b591-4ff1a4b1500f"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "1b061a97-4d99-4732-9ea5-ea2eb777e970",
-      "attributes": {
-        "key": "bLikvL",
-        "identifier": "sensor_energy_units",
-        "name": null,
-        "comment": null,
-        "data_type": "enum",
-        "default": "0",
-        "values": [
+      "type" : "devices-module/device-configuration",
+      "id" : "1b061a97-4d99-4732-9ea5-ea2eb777e970",
+      "attributes" : {
+        "key" : "bLikvL",
+        "identifier" : "sensor_energy_units",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "enum",
+        "default" : "0",
+        "values" : [
           {
-            "name": "joules",
-            "value": "0"
+            "name" : "joules",
+            "value" : "0"
           },
           {
-            "name": "kilowatts_hours",
-            "value": "1"
+            "name" : "kilowatts_hours",
+            "value" : "1"
           }
         ]
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/1b061a97-4d99-4732-9ea5-ea2eb777e970"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/1b061a97-4d99-4732-9ea5-ea2eb777e970"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "20fba951-e76d-4d6b-a572-dec02c6d8de8",
-      "attributes": {
-        "key": "bLikvZ",
-        "identifier": "sensor_expected_current",
-        "name": null,
-        "comment": null,
-        "data_type": "int",
-        "default": null,
-        "min": 0,
-        "max": 500,
-        "step": 1
+      "type" : "devices-module/device-configuration",
+      "id" : "20fba951-e76d-4d6b-a572-dec02c6d8de8",
+      "attributes" : {
+        "key" : "bLikvZ",
+        "identifier" : "sensor_expected_current",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "int",
+        "default" : null,
+        "min" : 0,
+        "max" : 500,
+        "step" : 1
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/20fba951-e76d-4d6b-a572-dec02c6d8de8"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/20fba951-e76d-4d6b-a572-dec02c6d8de8"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
-      "attributes": {
-        "key": "bLikwv",
-        "identifier": "sensor_expected_voltage",
-        "name": null,
-        "comment": null,
-        "data_type": "int",
-        "default": null,
-        "min": 0,
-        "max": 500,
-        "step": 1
+      "type" : "devices-module/device-configuration",
+      "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
+      "attributes" : {
+        "key" : "bLikwv",
+        "identifier" : "sensor_expected_voltage",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "int",
+        "default" : null,
+        "min" : 0,
+        "max" : 500,
+        "step" : 1
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "4897727b-b74e-47ae-a0e7-953c8f3e4f06",
-      "attributes": {
-        "key": "bLikw8",
-        "identifier": "sensor_save_interval",
-        "name": null,
-        "comment": null,
-        "data_type": "int",
-        "default": "0",
-        "min": 0,
-        "max": 200,
-        "step": 1
+      "type" : "devices-module/device-configuration",
+      "id" : "4897727b-b74e-47ae-a0e7-953c8f3e4f06",
+      "attributes" : {
+        "key" : "bLikw8",
+        "identifier" : "sensor_save_interval",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "int",
+        "default" : "0",
+        "min" : 0,
+        "max" : 200,
+        "step" : 1
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/4897727b-b74e-47ae-a0e7-953c8f3e4f06"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/4897727b-b74e-47ae-a0e7-953c8f3e4f06"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "81bdf07b-7dc9-4e3a-98b1-4dc5e9f16b55",
-      "attributes": {
-        "key": "bLikwJ",
-        "identifier": "sensor_read_interval",
-        "name": null,
-        "comment": null,
-        "data_type": "enum",
-        "default": "6",
-        "values": [
+      "type" : "devices-module/device-configuration",
+      "id" : "81bdf07b-7dc9-4e3a-98b1-4dc5e9f16b55",
+      "attributes" : {
+        "key" : "bLikwJ",
+        "identifier" : "sensor_read_interval",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "enum",
+        "default" : "6",
+        "values" : [
           {
-            "name": "1",
-            "value": "1"
+            "name" : "1",
+            "value" : "1"
           },
           {
-            "name": "6",
-            "value": "6"
+            "name" : "6",
+            "value" : "6"
           },
           {
-            "name": "10",
-            "value": "10"
+            "name" : "10",
+            "value" : "10"
           },
           {
-            "name": "15",
-            "value": "15"
+            "name" : "15",
+            "value" : "15"
           },
           {
-            "name": "30",
-            "value": "30"
+            "name" : "30",
+            "value" : "30"
           },
           {
-            "name": "60",
-            "value": "60"
+            "name" : "60",
+            "value" : "60"
           },
           {
-            "name": "300",
-            "value": "300"
+            "name" : "300",
+            "value" : "300"
           },
           {
-            "name": "600",
-            "value": "600"
+            "name" : "600",
+            "value" : "600"
           },
           {
-            "name": "900",
-            "value": "900"
+            "name" : "900",
+            "value" : "900"
           },
           {
-            "name": "1800",
-            "value": "1800"
+            "name" : "1800",
+            "value" : "1800"
           },
           {
-            "name": "3600",
-            "value": "3600"
+            "name" : "3600",
+            "value" : "3600"
           }
         ]
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/81bdf07b-7dc9-4e3a-98b1-4dc5e9f16b55"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/81bdf07b-7dc9-4e3a-98b1-4dc5e9f16b55"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "8a41d824-b1db-4548-b07e-606117dd7309",
-      "attributes": {
-        "key": "bLikwR",
-        "identifier": "sensor_report_interval",
-        "name": null,
-        "comment": null,
-        "data_type": "int",
-        "default": "10",
-        "min": 1,
-        "max": 60,
-        "step": 1
+      "type" : "devices-module/device-configuration",
+      "id" : "8a41d824-b1db-4548-b07e-606117dd7309",
+      "attributes" : {
+        "key" : "bLikwR",
+        "identifier" : "sensor_report_interval",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "int",
+        "default" : "10",
+        "min" : 1,
+        "max" : 60,
+        "step" : 1
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/8a41d824-b1db-4548-b07e-606117dd7309"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/8a41d824-b1db-4548-b07e-606117dd7309"
       }
     },
     {
-      "type": "devices-module/device-configuration",
-      "id": "8d933e4c-1fc9-4361-ba09-eebee4592776",
-      "attributes": {
-        "key": "bLikwZ",
-        "identifier": "sensor_power_units",
-        "name": null,
-        "comment": null,
-        "data_type": "enum",
-        "default": "0",
-        "values": [
+      "type" : "devices-module/device-configuration",
+      "id" : "8d933e4c-1fc9-4361-ba09-eebee4592776",
+      "attributes" : {
+        "key" : "bLikwZ",
+        "identifier" : "sensor_power_units",
+        "name" : null,
+        "comment" : null,
+        "data_type" : "enum",
+        "default" : "0",
+        "values" : [
           {
-            "name": "watts",
-            "value": "0"
+            "name" : "watts",
+            "value" : "0"
           },
           {
-            "name": "kilowatts",
-            "value": "1"
+            "name" : "kilowatts",
+            "value" : "1"
           }
         ]
       },
-      "relationships": {
-        "device": {
-          "links": {
-            "related": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
+      "relationships" : {
+        "device" : {
+          "links" : {
+            "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
-          "data": {
-            "type": "devices-module/device",
-            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          "data" : {
+            "type" : "devices-module/device-network",
+            "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
       },
-      "links": {
-        "self": "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/8d933e4c-1fc9-4361-ba09-eebee4592776"
+      "links" : {
+        "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/configuration/8d933e4c-1fc9-4361-ba09-eebee4592776"
       }
     }
   ]

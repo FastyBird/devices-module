@@ -38,7 +38,7 @@ export default class Device extends Model implements DeviceInterface {
   static fields(): Fields {
     return {
       id: this.string(''),
-      type: this.string(DeviceEntityTypes.DEVICE),
+      type: this.string(''),
 
       draft: this.boolean(false),
 
@@ -186,8 +186,9 @@ export default class Device extends Model implements DeviceInterface {
     })
   }
 
-  static async add(data: DeviceCreateInterface, id?: string | null, draft = true): Promise<Item<Device>> {
+  static async add(connector: ConnectorInterface, data: DeviceCreateInterface, id?: string | null, draft = true): Promise<Item<Device>> {
     return await Device.dispatch('add', {
+      connector,
       id,
       draft,
       data,

@@ -19,6 +19,8 @@ export default class Property extends Model implements PropertyInterface {
     return {
       id: this.string(''),
 
+      draft: this.boolean(false),
+
       key: this.string(''),
       identifier: this.string(''),
       name: this.string(null).nullable(),
@@ -95,6 +97,8 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   id!: string
+
+  draft!: boolean
 
   key!: string
   identifier!: string

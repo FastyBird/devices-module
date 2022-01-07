@@ -36,6 +36,7 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 	/** @var string[] */
 	protected array $attributes = [
 		'name',
+		'enabled',
 	];
 
 	/** @var string */
@@ -64,6 +65,16 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 		}
 
 		return (string) $attributes->get('name');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return bool
+	 */
+	protected function hydrateEnabledAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
+	{
+		return is_scalar($attributes->get('enabled')) && (bool) $attributes->get('enabled');
 	}
 
 }

@@ -8,6 +8,7 @@ import capitalize from 'lodash/capitalize'
 import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
 import {
+  ChannelPropertyCreateInterface,
   ChannelPropertyEntityTypes,
   ChannelPropertyInterface,
   ChannelPropertyUpdateInterface,
@@ -25,7 +26,7 @@ export default class ChannelProperty extends Property implements ChannelProperty
 
   static fields(): Fields {
     return Object.assign(Property.fields(), {
-      type: this.string(ChannelPropertyEntityTypes.PROPERTY_DYNAMIC),
+      type: this.string(''),
 
       channel: this.belongsTo(Channel, 'id'),
       channelBackward: this.hasOne(Channel, 'id', 'channelId'),
@@ -122,10 +123,31 @@ export default class ChannelProperty extends Property implements ChannelProperty
     })
   }
 
+  static async add(channel: ChannelInterface, data: ChannelPropertyCreateInterface, id?: string | null, draft = true): Promise<Item<ChannelProperty>> {
+    return await ChannelProperty.dispatch('add', {
+      channel,
+      id,
+      draft,
+      data,
+    })
+  }
+
   static async edit(property: ChannelPropertyInterface, data: ChannelPropertyUpdateInterface): Promise<Item<ChannelProperty>> {
     return await ChannelProperty.dispatch('edit', {
       property,
       data,
+    })
+  }
+
+  static async save(property: ChannelPropertyInterface): Promise<Item<ChannelProperty>> {
+    return await ChannelProperty.dispatch('save', {
+      property,
+    })
+  }
+
+  static async remove(property: ChannelPropertyInterface): Promise<boolean> {
+    return await ChannelProperty.dispatch('remove', {
+      property,
     })
   }
 

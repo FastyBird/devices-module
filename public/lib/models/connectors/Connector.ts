@@ -7,7 +7,12 @@ import {
 import {
   ConnectorEntityTypes,
   ConnectorInterface,
-  ConnectorUpdateInterface,
+  FbBusConnectorUpdateInterface,
+  FbMqttConnectorUpdateInterface,
+  ModbusConnectorUpdateInterface,
+  ShellyConnectorUpdateInterface,
+  SonoffConnectorUpdateInterface,
+  TuyaConnectorUpdateInterface,
 } from '@/lib/models/connectors/types'
 import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
@@ -84,7 +89,7 @@ export default class Connector extends Model implements ConnectorInterface {
     return await Connector.dispatch('fetch')
   }
 
-  static async edit(connector: ConnectorInterface, data: ConnectorUpdateInterface): Promise<Item<Connector>> {
+  static async edit(connector: ConnectorInterface, data: FbMqttConnectorUpdateInterface | FbBusConnectorUpdateInterface | ShellyConnectorUpdateInterface | TuyaConnectorUpdateInterface | SonoffConnectorUpdateInterface | ModbusConnectorUpdateInterface): Promise<Item<Connector>> {
     return await Connector.dispatch('edit', {
       connector,
       data,

@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
+use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -61,21 +62,36 @@ class DevicesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\IChannelsManager */
 	protected Models\Channels\IChannelsManager $channelsManager;
 
-	/** @var Hydrators\Devices\DeviceHydrator */
-	private Hydrators\Devices\DeviceHydrator $deviceHydrator;
+	/** @var Hydrators\Devices\NetworkDeviceHydrator */
+	private Hydrators\Devices\NetworkDeviceHydrator $networkDeviceHydrator;
+
+	/** @var Hydrators\Devices\LocalDeviceHydrator */
+	private Hydrators\Devices\LocalDeviceHydrator $localDeviceHydrator;
+
+	/** @var Hydrators\Devices\VirtualDeviceHydrator */
+	private Hydrators\Devices\VirtualDeviceHydrator $virtualDeviceHydrator;
+
+	/** @var Hydrators\Devices\HomekitDeviceHydrator */
+	private Hydrators\Devices\HomekitDeviceHydrator $homekitDeviceHydrator;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Devices\IDevicesManager $devicesManager,
 		Models\Channels\IChannelRepository $channelRepository,
 		Models\Channels\IChannelsManager $channelsManager,
-		Hydrators\Devices\DeviceHydrator $deviceHydrator
+		Hydrators\Devices\NetworkDeviceHydrator $networkDeviceHydrator,
+		Hydrators\Devices\LocalDeviceHydrator $localDeviceHydrator,
+		Hydrators\Devices\VirtualDeviceHydrator $virtualDeviceHydrator,
+		Hydrators\Devices\HomekitDeviceHydrator $homekitDeviceHydrator
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->devicesManager = $devicesManager;
 		$this->channelRepository = $channelRepository;
 		$this->channelsManager = $channelsManager;
-		$this->deviceHydrator = $deviceHydrator;
+		$this->networkDeviceHydrator = $networkDeviceHydrator;
+		$this->localDeviceHydrator = $localDeviceHydrator;
+		$this->virtualDeviceHydrator = $virtualDeviceHydrator;
+		$this->homekitDeviceHydrator = $homekitDeviceHydrator;
 	}
 
 	/**
@@ -132,12 +148,38 @@ class DevicesV1Controller extends BaseV1Controller
 	): WebServerHttp\Response {
 		$document = $this->createDocument($request);
 
-		if ($document->getResource()->getType() === Schemas\Devices\DeviceSchema::SCHEMA_TYPE) {
+		if (
+			$document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE
+			|| $document->getResource()->getType() === Schemas\Devices\LocalDeviceSchema::SCHEMA_TYPE
+			|| $document->getResource()->getType() === Schemas\Devices\VirtualDeviceSchema::SCHEMA_TYPE
+			|| $document->getResource()->getType() === Schemas\Devices\HomekitDeviceSchema::SCHEMA_TYPE
+		) {
 			try {
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$device = $this->devicesManager->create($this->deviceHydrator->hydrate($document));
+				if ($document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE) {
+					$device = $this->devicesManager->create($this->networkDeviceHydrator->hydrate($document));
+
+				} elseif ($document->getResource()->getType() === Schemas\Devices\LocalDeviceSchema::SCHEMA_TYPE) {
+					$device = $this->devicesManager->create($this->localDeviceHydrator->hydrate($document));
+
+				} elseif ($document->getResource()->getType() === Schemas\Devices\VirtualDeviceSchema::SCHEMA_TYPE) {
+					$device = $this->devicesManager->create($this->virtualDeviceHydrator->hydrate($document));
+
+				} elseif ($document->getResource()->getType() === Schemas\Devices\HomekitDeviceSchema::SCHEMA_TYPE) {
+					$device = $this->devicesManager->create($this->homekitDeviceHydrator->hydrate($document));
+
+				} else {
+					throw new JsonApiExceptions\JsonApiErrorException(
+						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+						$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+						$this->translator->translate('//devices-module.base.messages.invalidType.message'),
+						[
+							'pointer' => '/data/type',
+						]
+					);
+				}
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -199,6 +241,7 @@ class DevicesV1Controller extends BaseV1Controller
 				);
 
 			} catch (Throwable $ex) {
+				var_dump($ex->getMessage());
 				// Log caught exception
 				$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
 					'exception' => [
@@ -264,8 +307,29 @@ class DevicesV1Controller extends BaseV1Controller
 			// Start transaction connection to the database
 			$this->getOrmConnection()->beginTransaction();
 
-			if ($document->getResource()->getType() === Schemas\Devices\DeviceSchema::SCHEMA_TYPE) {
-				$updateDeviceData = $this->deviceHydrator->hydrate($document, $device);
+			if (
+				$document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE
+				&& $device instanceof Entities\Devices\INetworkDevice
+			) {
+				$updateDeviceData = $this->networkDeviceHydrator->hydrate($document, $device);
+
+			} elseif (
+				$document->getResource()->getType() === Schemas\Devices\LocalDeviceSchema::SCHEMA_TYPE
+				&& $device instanceof Entities\Devices\ILocalDevice
+			) {
+				$updateDeviceData = $this->localDeviceHydrator->hydrate($document, $device);
+
+			} elseif (
+				$document->getResource()->getType() === Schemas\Devices\VirtualDeviceSchema::SCHEMA_TYPE
+				&& $device instanceof Entities\Devices\IVirtualDevice
+			) {
+				$updateDeviceData = $this->virtualDeviceHydrator->hydrate($document, $device);
+
+			} elseif (
+				$document->getResource()->getType() === Schemas\Devices\HomekitDeviceSchema::SCHEMA_TYPE
+				&& $device instanceof Entities\Devices\IHomekitDevice
+			) {
+				$updateDeviceData = $this->homekitDeviceHydrator->hydrate($document, $device);
 
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(

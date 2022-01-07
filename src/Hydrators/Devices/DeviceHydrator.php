@@ -28,9 +28,10 @@ use IPub\JsonAPIDocument;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends JsonApiHydrators\Hydrator<Entities\Devices\IDevice>
+ * @phpstan-template  TEntityClass of Entities\Devices\IDevice
+ * @phpstan-extends   JsonApiHydrators\Hydrator<TEntityClass>
  */
-class DeviceHydrator extends JsonApiHydrators\Hydrator
+abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 {
 
 	/** @var string[] */
@@ -49,14 +50,6 @@ class DeviceHydrator extends JsonApiHydrators\Hydrator
 
 	/** @var string */
 	protected string $translationDomain = 'devices-module.devices';
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getEntityName(): string
-	{
-		return Entities\Devices\Device::class;
-	}
 
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject $attributes

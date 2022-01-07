@@ -8,7 +8,8 @@ import {
 
 import {
   DeviceInterface,
-  DeviceEntityTypes, DeviceDataResponseInterface,
+  DeviceEntityTypes,
+  DeviceDataResponseInterface,
 } from '@/lib/models/devices/types'
 import {
   ChannelPropertyInterface,
@@ -35,6 +36,8 @@ export enum ChannelEntityTypes {
 export interface ChannelInterface {
   id: string
   type: ChannelEntityTypes
+
+  draft: boolean
 
   key: string
   identifier: string
@@ -122,6 +125,17 @@ export interface ChannelResponseInterface extends TJsonApiBody {
 export interface ChannelsResponseInterface extends TJsonApiBody {
   data: ChannelDataResponseInterface[]
   included?: (DeviceDataResponseInterface | ChannelPropertyDataResponseInterface | ChannelConfigurationDataResponseInterface | ChannelControlDataResponseInterface)[]
+}
+
+// CREATE ENTITY INTERFACES
+// ========================
+
+export interface ChannelCreateInterface {
+  type: ChannelEntityTypes
+
+  identifier: string
+  name?: string | null
+  comment?: string | null
 }
 
 // UPDATE ENTITY INTERFACES

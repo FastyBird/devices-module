@@ -33,6 +33,7 @@ final class TuyaConnectorHydrator extends ConnectorHydrator
 	/** @var string[] */
 	protected array $attributes = [
 		'name',
+		'enabled',
 	];
 
 	/**

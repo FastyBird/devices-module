@@ -20,7 +20,7 @@ export default class ConnectorControl extends Model implements ConnectorControlI
   static fields(): Fields {
     return {
       id: this.string(''),
-      type: this.string(ConnectorControlEntityTypes.CONTROL),
+      type: this.string(''),
 
       name: this.string(''),
 

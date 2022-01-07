@@ -73,14 +73,14 @@ abstract class Connector implements IConnector
 	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="connector_name", length=40, nullable=false)
 	 */
-	private string $name;
+	protected string $name;
 
 	/**
 	 * @var string|null
 	 *
 	 * @ORM\Column(type="string", name="connector_key", length=50)
 	 */
-	private ?string $key = null;
+	protected ?string $key = null;
 
 	/**
 	 * @var bool
@@ -88,7 +88,7 @@ abstract class Connector implements IConnector
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="connector_enabled", length=1, nullable=false, options={"default": true})
 	 */
-	private bool $enabled = true;
+	protected bool $enabled = true;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Devices\IDevice>
@@ -96,7 +96,7 @@ abstract class Connector implements IConnector
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private Common\Collections\Collection $devices;
+	protected Common\Collections\Collection $devices;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Connectors\Controls\IControl>
@@ -104,7 +104,7 @@ abstract class Connector implements IConnector
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Controls\Control", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
-	private Common\Collections\Collection $controls;
+	protected Common\Collections\Collection $controls;
 
 	/**
 	 * @param string $name

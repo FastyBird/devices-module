@@ -31,7 +31,10 @@ import { ConnectorInterface } from '@/lib/models/connectors/types'
 // ============
 
 export enum DeviceEntityTypes {
-  DEVICE = 'devices-module/device',
+  NETWORK = 'devices-module/device-network',
+  LOCAL = 'devices-module/device-local',
+  VIRUTAL = 'devices-module/device-virtual',
+  HOMEKIT = 'devices-module/device-homekit',
 }
 
 // ENTITY INTERFACE
@@ -173,6 +176,8 @@ export interface DevicesResponseInterface extends TJsonApiBody {
 // ========================
 
 export interface DeviceCreateInterface {
+  type: DeviceEntityTypes
+
   identifier: string
   name?: string | null
   comment?: string | null

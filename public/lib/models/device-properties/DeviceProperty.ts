@@ -9,6 +9,7 @@ import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import Property from '@/lib/models/properties/Property'
 import {
+  DevicePropertyCreateInterface,
   DevicePropertyEntityTypes,
   DevicePropertyInterface,
   DevicePropertyUpdateInterface,
@@ -23,7 +24,7 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
 
   static fields(): Fields {
     return Object.assign(Property.fields(), {
-      type: this.string(DevicePropertyEntityTypes.PROPERTY_DYNAMIC),
+      type: this.string(''),
 
       device: this.belongsTo(Device, 'id'),
       deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
@@ -77,10 +78,31 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
     })
   }
 
+  static async add(device: DeviceInterface, data: DevicePropertyCreateInterface, id?: string | null, draft = true): Promise<Item<DeviceProperty>> {
+    return await DeviceProperty.dispatch('add', {
+      device,
+      id,
+      draft,
+      data,
+    })
+  }
+
   static async edit(property: DevicePropertyInterface, data: DevicePropertyUpdateInterface): Promise<Item<DeviceProperty>> {
     return await DeviceProperty.dispatch('edit', {
       property,
       data,
+    })
+  }
+
+  static async save(property: DevicePropertyInterface): Promise<Item<DeviceProperty>> {
+    return await DeviceProperty.dispatch('save', {
+      property,
+    })
+  }
+
+  static async remove(property: DevicePropertyInterface): Promise<boolean> {
+    return await DeviceProperty.dispatch('remove', {
+      property,
     })
   }
 

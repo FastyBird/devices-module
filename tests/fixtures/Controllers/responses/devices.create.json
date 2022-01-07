@@ -10,7 +10,7 @@
     "self" : "/v1/devices"
   },
   "data" : {
-    "type" : "devices-module/device",
+    "type" : "devices-module/device-network",
     "id" : "bbbf5caa-b30e-4558-b83a-699617958cea",
     "attributes" : {
       "key" : "bJtCcu",
@@ -96,6 +96,12 @@
           "type" : "devices-module/connector-fb-mqtt",
           "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
+      },
+      "parent" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/parent"
+        },
+        "data" : null
       }
     },
     "links" : {

@@ -19,8 +19,8 @@ import { PropertyInterface } from '@/lib/models/properties/types'
 // ============
 
 export enum ChannelPropertyEntityTypes {
-  PROPERTY_DYNAMIC = 'devices-module/channel-property-dynamic',
-  PROPERTY_STATIC = 'devices-module/channel-property-static',
+  DYNAMIC = 'devices-module/channel-property-dynamic',
+  STATIC = 'devices-module/channel-property-static',
 }
 
 // ENTITY INTERFACE
@@ -89,9 +89,33 @@ export interface ChannelPropertiesResponseInterface extends TJsonApiBody {
   included?: (ChannelDataResponseInterface)[]
 }
 
+// CREATE ENTITY INTERFACES
+// ========================
+
+export interface ChannelPropertyCreateInterface {
+  type: ChannelPropertyEntityTypes
+
+  identifier: string
+  name?: string | null
+  settable?: boolean
+  queryable?: boolean
+  dataType?: string | null
+  unit?: string | null
+  format?: string[] | ((string | null)[])[] | (number | null)[] | null
+  invalid?: string | number | null
+  numberOfDecimals?: number | null
+}
+
 // UPDATE ENTITY INTERFACES
 // ========================
 
 export interface ChannelPropertyUpdateInterface {
   name?: string | null
+  settable?: boolean
+  queryable?: boolean
+  dataType?: string | null
+  unit?: string | null
+  format?: string[] | ((string | null)[])[] | (number | null)[] | null
+  invalid?: string | number | null
+  numberOfDecimals?: number | null
 }

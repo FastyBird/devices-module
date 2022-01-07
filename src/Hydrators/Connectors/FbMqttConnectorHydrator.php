@@ -16,6 +16,8 @@
 namespace FastyBird\DevicesModule\Hydrators\Connectors;
 
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Schemas;
+use IPub\JsonAPIDocument;
 
 /**
  * FB MQTT Connector entity hydrator
@@ -32,12 +34,14 @@ final class FbMqttConnectorHydrator extends ConnectorHydrator
 
 	/** @var string[] */
 	protected array $attributes = [
-		'name',
-		'server',
-		'port',
-		'secured_port',
-		'username',
-		'password',
+		0 => 'name',
+		1 => 'enabled',
+		2 => 'server',
+		3 => 'port',
+		4 => 'username',
+		5 => 'password',
+
+		'secured_port' => 'securedPort',
 	];
 
 	/**
@@ -46,6 +50,91 @@ final class FbMqttConnectorHydrator extends ConnectorHydrator
 	protected function getEntityName(): string
 	{
 		return Entities\Connectors\FbMqttConnector::class;
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return string|null
+	 */
+	protected function hydrateServerAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	{
+		if (
+			!is_scalar($attributes->get('server'))
+			|| (string) $attributes->get('server') === ''
+		) {
+			return null;
+		}
+
+		return (string) $attributes->get('server');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return string|null
+	 */
+	protected function hydratePortAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?int
+	{
+		if (
+			!is_scalar($attributes->get('port'))
+			|| (string) $attributes->get('port') === ''
+		) {
+			return null;
+		}
+
+		return (int) $attributes->get('port');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return string|null
+	 */
+	protected function hydrateSecuredPortAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?int
+	{
+		if (
+			!is_scalar($attributes->get('secured_port'))
+			|| (string) $attributes->get('secured_port') === ''
+		) {
+			return null;
+		}
+
+		return (int) $attributes->get('secured_port');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return string|null
+	 */
+	protected function hydrateUsernameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	{
+		if (
+			!is_scalar($attributes->get('username'))
+			|| (string) $attributes->get('username') === ''
+		) {
+			return null;
+		}
+
+		return (string) $attributes->get('username');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return string|null
+	 */
+	protected function hydratePasswordAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	{
+		if (
+			!is_scalar($attributes->get('password'))
+			|| (string) $attributes->get('password') === ''
+		) {
+			return null;
+		}
+
+		return (string) $attributes->get('password');
 	}
 
 }

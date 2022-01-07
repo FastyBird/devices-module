@@ -16,7 +16,7 @@
   },
   "data" : [
     {
-      "type": "devices-module/device-property-static",
+      "type" : "devices-module/device-property-static",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
         "key" : "bLykvV",
@@ -37,7 +37,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "devices-module/device",
+            "type" : "devices-module/device-network",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }

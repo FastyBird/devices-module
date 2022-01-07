@@ -23,24 +23,22 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
     const exceptProps = ['id', '$id', 'type', 'draft', RELATIONSHIP_NAMES_PROP]
 
     if (
-      model.type === ChannelEntityTypes.CHANNEL
-      || model.type === DevicePropertyEntityTypes.PROPERTY_DYNAMIC
-      || model.type === DevicePropertyEntityTypes.PROPERTY_STATIC
-      || model.type === DeviceConfigurationEntityTypes.CONFIGURATION
+      Object.values<string>(ChannelEntityTypes).includes(model.type)
+      || Object.values<string>(DevicePropertyEntityTypes).includes(model.type)
+      || Object.values<string>(DeviceConfigurationEntityTypes).includes(model.type)
     ) {
       exceptProps.push('deviceId')
       exceptProps.push('device')
       exceptProps.push('deviceBackward')
     } else if (
-      model.type === ChannelPropertyEntityTypes.PROPERTY_DYNAMIC
-      || model.type === ChannelPropertyEntityTypes.PROPERTY_STATIC
-      || model.type === ChannelConfigurationEntityTypes.CONFIGURATION
+      Object.values<string>(ChannelPropertyEntityTypes).includes(model.type)
+      || Object.values<string>(ChannelConfigurationEntityTypes).includes(model.type)
     ) {
       exceptProps.push('channelId')
       exceptProps.push('channel')
       exceptProps.push('channelBackward')
     } else if (
-      model.type === DeviceEntityTypes.DEVICE
+      Object.values<string>(DeviceEntityTypes).includes(model.type)
     ) {
       exceptProps.push('connectorId')
       exceptProps.push('connector')

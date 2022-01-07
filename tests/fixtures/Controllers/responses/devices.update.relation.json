@@ -141,7 +141,7 @@
         }
       }
     },
-    "type" : "devices-module/device"
+    "type" : "devices-module/device-network"
   },
   "jsonapi" : {
     "version" : "1.1"

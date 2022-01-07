@@ -51,6 +51,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same('fb.bus.entity.created.device', $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
+					'type'                  => 'local',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
@@ -80,7 +81,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$entityManager
 		);
 
-		$entity = new Entities\Devices\Device('device-name', 'device-name');
+		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
@@ -106,6 +107,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same('fb.bus.entity.updated.device', $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
+					'type'                  => 'local',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
@@ -135,7 +137,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$entityManager
 		);
 
-		$entity = new Entities\Devices\Device('device-name', 'device-name');
+		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
@@ -160,6 +162,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same('fb.bus.entity.deleted.device', $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
+					'type'                  => 'local',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
@@ -179,7 +182,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			})
 			->times(1);
 
-		$entity = new Entities\Devices\Device('device-name', 'device-name');
+		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 

@@ -8,6 +8,7 @@ import {
   HardwareManufacturer,
   DeviceModel,
   FirmwareManufacturer,
+  DeviceType,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -25,6 +26,7 @@ import uniq from 'lodash/uniq'
 import Device from '@/lib/models/devices/Device'
 import {
   DeviceCreateInterface,
+  DeviceEntityTypes,
   DeviceInterface,
   DeviceResponseInterface,
   DevicesResponseInterface,
@@ -44,6 +46,7 @@ import { DeviceJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib
 import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
 import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfiguration'
 import DeviceControl from '@/lib/models/device-controls/DeviceControl'
+import { ConnectorInterface } from '@/lib/models/connectors/types'
 
 interface SemaphoreFetchingState {
   items: boolean
@@ -197,7 +200,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     }
   },
 
-  async add({ commit }, payload: { id?: string | null, draft?: boolean, data: DeviceCreateInterface }): Promise<Item<Device>> {
+  async add({ commit }, payload: { connector: ConnectorInterface, id?: string | null, draft?: boolean, data: DeviceCreateInterface }): Promise<Item<Device>> {
     const id = typeof payload.id !== 'undefined' && payload.id !== null && payload.id !== '' ? payload.id : uuid().toString()
     const draft = typeof payload.draft !== 'undefined' ? payload.draft : false
 
@@ -208,7 +211,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.insert({
-        data: Object.assign({}, payload.data, { id, draft }),
+        data: Object.assign({}, payload.data, { id, draft, connectorId: payload.connector.id }),
       })
     } catch (e: any) {
       commit('CLEAR_SEMAPHORE', {
@@ -536,7 +539,27 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           .forEach((attrName) => {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
-            entityData[camelName] = body[attrName]
+            if (camelName === 'type') {
+              switch (body[attrName]) {
+                case DeviceType.NETWORK:
+                  entityData[camelName] = DeviceEntityTypes.NETWORK
+                  break
+
+                case DeviceType.LOCAL:
+                  entityData[camelName] = DeviceEntityTypes.LOCAL
+                  break
+
+                case DeviceType.VIRTUAL:
+                  entityData[camelName] = DeviceEntityTypes.VIRUTAL
+                  break
+
+                case DeviceType.HOMEKIT:
+                  entityData[camelName] = DeviceEntityTypes.HOMEKIT
+                  break
+              }
+            } else {
+              entityData[camelName] = body[attrName]
+            }
           })
 
         try {

@@ -64,11 +64,11 @@ class DevicesManager(BaseManager[DeviceEntity]):
 
     # -----------------------------------------------------------------------------
 
-    def create(self, data: Dict) -> DeviceEntity:
+    def create(self, data: Dict, device_type: Type[DeviceEntity]) -> DeviceEntity:
         """Create new device entity"""
         return super().create_entity(
             data={**data, **{"device_id": data.get("id", None)}},
-            entity_type=DeviceEntity,
+            entity_type=device_type,
             required_fields=self.__REQUIRED_FIELDS,
             writable_fields=self.__WRITABLE_FIELDS,
         )

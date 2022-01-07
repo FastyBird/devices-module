@@ -46,8 +46,16 @@ use Throwable;
  *       @ORM\Index(name="device_enabled_idx", columns={"device_enabled"})
  *     }
  * )
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="device_type", type="string", length=40)
+ * @ORM\DiscriminatorMap({
+ *    "network" = "FastyBird\DevicesModule\Entities\Devices\NetworkDevice",
+ *    "local"   = "FastyBird\DevicesModule\Entities\Devices\LocalDevice",
+ *    "virtual" = "FastyBird\DevicesModule\Entities\Devices\VirtualDevice"
+ * })
+ * @ORM\MappedSuperclass
  */
-class Device implements IDevice
+abstract class Device implements IDevice
 {
 
 	use Entities\TKey;
@@ -842,6 +850,7 @@ class Device implements IDevice
 	{
 		return [
 			'id'         => $this->getPlainId(),
+			'type'       => $this->getType()->getValue(),
 			'key'        => $this->getKey(),
 			'identifier' => $this->getIdentifier(),
 			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,

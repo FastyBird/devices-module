@@ -19,6 +19,7 @@ import uuid
 
 # Library dependencies
 from kink import inject
+from modules_metadata.devices_module import DeviceType
 from modules_metadata.routing import RoutingKey
 from modules_metadata.types import ModuleOrigin
 
@@ -54,6 +55,7 @@ class TestDevicesRepository(DbTestCase):
         self.assertEqual(
             {
                 "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
+                "type": DeviceType.NETWORK.value,
                 "identifier": "first-device",
                 "key": "bLikkz",
                 "name": "First device",

@@ -36,6 +36,11 @@ interface IDevice extends Entities\IEntity,
 {
 
 	/**
+	 * @return ModulesMetadataTypes\DeviceTypeType
+	 */
+	public function getType(): ModulesMetadataTypes\DeviceTypeType;
+
+	/**
 	 * @return IDevice|null
 	 */
 	public function getParent(): ?IDevice;

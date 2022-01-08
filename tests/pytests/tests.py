@@ -28,7 +28,6 @@ from exchange_plugin.bootstrap import (
 # Library dependencies
 from modules_metadata.loader import load_schema_by_routing_key
 from modules_metadata.routing import RoutingKey
-from modules_metadata.types import ModuleOrigin
 from modules_metadata.validator import validate
 from MySQLdb import OperationalError
 from MySQLdb.cursors import Cursor

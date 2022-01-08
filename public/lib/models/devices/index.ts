@@ -481,6 +481,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     if (
       ![
+        RoutingKeys.DEVICES_ENTITY_REPORTED,
         RoutingKeys.DEVICES_ENTITY_CREATED,
         RoutingKeys.DEVICES_ENTITY_UPDATED,
         RoutingKeys.DEVICES_ENTITY_DELETED,
@@ -527,7 +528,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.DEVICES_ENTITY_REPORTED ? SemaphoreTypes.GETTING : (payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING),
           id: body.id,
         })
 

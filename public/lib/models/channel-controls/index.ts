@@ -5,7 +5,9 @@ import {
   ModuleOrigin,
   ChannelControlEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
+  GlobalRoutes as GlobalRoutingKeys,
   DataType,
+  ControlAction,
 } from '@fastybird/modules-metadata'
 
 import {
@@ -167,9 +169,10 @@ const moduleActions: ActionTree<ChannelControlState, unknown> = {
 
     return new Promise((resolve, reject) => {
       ChannelControl.wamp().call<{ data: string }>({
-        routing_key: RoutingKeys.CHANNELS_CONTROL_DATA,
+        routing_key: GlobalRoutingKeys.CHANNELS_CONTROL_DATA,
         origin: ChannelControl.$devicesModuleOrigin,
         data: {
+          action: ControlAction.SET,
           device: device.id,
           channel: channel.id,
           control: payload.control.id,
@@ -196,6 +199,7 @@ const moduleActions: ActionTree<ChannelControlState, unknown> = {
 
     if (
       ![
+        RoutingKeys.CHANNELS_CONTROL_ENTITY_REPORTED,
         RoutingKeys.CHANNELS_CONTROL_ENTITY_CREATED,
         RoutingKeys.CHANNELS_CONTROL_ENTITY_UPDATED,
         RoutingKeys.CHANNELS_CONTROL_ENTITY_DELETED,
@@ -242,7 +246,7 @@ const moduleActions: ActionTree<ChannelControlState, unknown> = {
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.CHANNELS_CONTROL_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+          type: payload.routingKey === RoutingKeys.CHANNELS_CONTROL_ENTITY_REPORTED ? SemaphoreTypes.GETTING : (payload.routingKey === RoutingKeys.CHANNELS_CONTROL_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING),
           id: body.id,
         })
 

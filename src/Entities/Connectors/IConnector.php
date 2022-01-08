@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Connectors;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineTimestampable;
 
 /**
@@ -29,6 +30,7 @@ use IPub\DoctrineTimestampable;
  */
 interface IConnector extends Entities\IEntity,
 	Entities\IEntityParams,
+	SimpleAuthEntities\IEntityOwner,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 
@@ -70,27 +72,6 @@ interface IConnector extends Entities\IEntity,
 	public function getControls(): array;
 
 	/**
-	 * @param string $name
-	 *
-	 * @return Entities\Connectors\Controls\IControl|null
-	 */
-	public function getControl(string $name): ?Entities\Connectors\Controls\IControl;
-
-	/**
-	 * @param string $name
-	 *
-	 * @return Entities\Connectors\Controls\IControl|null
-	 */
-	public function findControl(string $name): ?Entities\Connectors\Controls\IControl;
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
-	public function hasControl(string $name): bool;
-
-	/**
 	 * @param Entities\Connectors\Controls\IControl[] $control
 	 *
 	 * @return void
@@ -105,6 +86,13 @@ interface IConnector extends Entities\IEntity,
 	public function addControl(Entities\Connectors\Controls\IControl $control): void;
 
 	/**
+	 * @param string $name
+	 *
+	 * @return Entities\Connectors\Controls\IControl|null
+	 */
+	public function getControl(string $name): ?Entities\Connectors\Controls\IControl;
+
+	/**
 	 * @param Entities\Connectors\Controls\IControl $control
 	 *
 	 * @return void
@@ -112,8 +100,17 @@ interface IConnector extends Entities\IEntity,
 	public function removeControl(Entities\Connectors\Controls\IControl $control): void;
 
 	/**
-	 * @return mixed[]
+	 * @param string $name
+	 *
+	 * @return Entities\Connectors\Controls\IControl|null
 	 */
-	public function toArray(): array;
+	public function findControl(string $name): ?Entities\Connectors\Controls\IControl;
+
+	/**
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public function hasControl(string $name): bool;
 
 }

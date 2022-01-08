@@ -112,7 +112,10 @@ class Control implements IControl
 		return [
 			'id'     => $this->getPlainId(),
 			'name'   => $this->getName(),
+
 			'device' => $this->getDevice()->getPlainId(),
+
+			'owner' => $this->getDevice()->getOwnerId(),
 		];
 	}
 

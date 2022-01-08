@@ -17,7 +17,7 @@
 # pylint: disable=comparison-with-callable
 
 """
-Devices module repositories
+Devices module connecotr repositories module
 """
 
 # Python base dependencies
@@ -105,7 +105,7 @@ class ConnectorsControlsRepository:
         return (
             self.__session.query(ConnectorControlEntity)
             .filter(
-                ConnectorControlEntity.connector.id == connector_id.bytes
+                ConnectorControlEntity.connector_id == connector_id.bytes
                 and ConnectorControlEntity.name == control_name
             )
             .first()
@@ -123,6 +123,6 @@ class ConnectorsControlsRepository:
         """Find all connectors controls for connector"""
         return (
             self.__session.query(ConnectorControlEntity)
-            .filter(ConnectorControlEntity.connector.id == connector_id.bytes)
+            .filter(ConnectorControlEntity.connector_id == connector_id.bytes)
             .all()
         )

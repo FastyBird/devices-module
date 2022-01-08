@@ -24,9 +24,8 @@ Devices module DI container
 from kink import di
 from sqlalchemy.orm import Session as OrmSession
 
-from devices_module.helpers import KeyHashHelpers
-
 # Library libs
+from devices_module.helpers import KeyHashHelpers
 from devices_module.managers.channel import (
     ChannelConfigurationManager,
     ChannelControlsManager,
@@ -62,9 +61,7 @@ from devices_module.repositories.device import (
 from devices_module.subscriber import EntitiesSubscriber, EntityCreatedSubscriber
 
 
-def create_container(
-    database_session: OrmSession,
-) -> None:
+def create_container(database_session: OrmSession) -> None:
     """Register devices module services"""
     di[KeyHashHelpers] = KeyHashHelpers()
     di["fb-devices-module_helpers-key-hash"] = di[KeyHashHelpers]

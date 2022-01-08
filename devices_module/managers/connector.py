@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module repositories
+Devices module connector managers module
 """
 
 # Python base dependencies

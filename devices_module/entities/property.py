@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module models connector entity module
+Devices module property entities module
 """
 
 # Python base dependencies
@@ -27,9 +27,9 @@ from typing import Dict, List, Optional, Tuple, Union
 # Library dependencies
 from fastnumbers import fast_float, fast_int
 from modules_metadata.devices_module import PropertyType
-from modules_metadata.helpers import ValueHelper
+from modules_metadata.helpers import normalize_value
 from modules_metadata.types import ButtonPayload, DataType, SwitchPayload
-from sqlalchemy import BINARY, Boolean, Column, Integer, String
+from sqlalchemy import BINARY, BOOLEAN, VARCHAR, Column, Integer
 
 # Library libs
 from devices_module.exceptions import InvalidArgumentException, InvalidStateException
@@ -48,34 +48,34 @@ class PropertyMixin:
     __property_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="property_id", default=uuid.uuid4
     )
-    __identifier: str = Column(String(50), name="property_identifier", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(String(50), name="property_key", unique=True, nullable=False)  # type: ignore[assignment]
+    __identifier: str = Column(VARCHAR(50), name="property_identifier", nullable=False)  # type: ignore[assignment]
+    __key: str = Column(VARCHAR(50), name="property_key", unique=True, nullable=False)  # type: ignore[assignment]
     __name: Optional[str] = Column(  # type: ignore[assignment]
-        String(255), name="property_name", nullable=True, default=None
+        VARCHAR(255), name="property_name", nullable=True, default=None
     )
     __settable: bool = Column(  # type: ignore[assignment]
-        Boolean, name="property_settable", nullable=False, default=False
+        BOOLEAN, name="property_settable", nullable=False, default=False
     )
     __queryable: bool = Column(  # type: ignore[assignment]
-        Boolean, name="property_queryable", nullable=False, default=False
+        BOOLEAN, name="property_queryable", nullable=False, default=False
     )
     __data_type: Optional[str] = Column(  # type: ignore[assignment]
-        String(100), name="property_data_type", nullable=True, default=None
+        VARCHAR(100), name="property_data_type", nullable=True, default=None
     )
     __unit: Optional[str] = Column(  # type: ignore[assignment]
-        String(20), name="property_unit", nullable=True, default=None
+        VARCHAR(20), name="property_unit", nullable=True, default=None
     )
     __format: Optional[str] = Column(  # type: ignore[assignment]
-        String(255), name="property_format", nullable=True, default=None
+        VARCHAR(255), name="property_format", nullable=True, default=None
     )
     __invalid: Optional[str] = Column(  # type: ignore[assignment]
-        String(255), name="property_invalid", nullable=True, default=None
+        VARCHAR(255), name="property_invalid", nullable=True, default=None
     )
     __number_of_decimals: Optional[int] = Column(  # type: ignore[assignment]
         Integer, name="property_number_of_decimals", nullable=True, default=None
     )
     __value: Optional[str] = Column(  # type: ignore[assignment]
-        String(255), name="property_value", nullable=True, default=None
+        VARCHAR(255), name="property_value", nullable=True, default=None
     )
 
     # -----------------------------------------------------------------------------
@@ -282,7 +282,7 @@ class PropertyMixin:
         if self.data_type is None:
             return None
 
-        return ValueHelper.normalize_value(data_type=self.data_type, value=self.__value, value_format=self.format)
+        return normalize_value(data_type=self.data_type, value=self.__value, value_format=self.format)
 
     # -----------------------------------------------------------------------------
 

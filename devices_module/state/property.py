@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module entities module
+Devices module property state module
 """
 
 # Python base dependencies

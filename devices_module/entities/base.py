@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module models connector entity module
+Devices module base entities module
 """
 
 # Python base dependencies

@@ -21,7 +21,6 @@ import uuid
 from kink import inject
 from modules_metadata.devices_module import PropertyType
 from modules_metadata.routing import RoutingKey
-from modules_metadata.types import ModuleOrigin
 
 # Library libs
 from devices_module.entities.device import (
@@ -70,13 +69,13 @@ class TestDevicesPropertiesRepository(DbTestCase):
                 "format": None,
                 "invalid": None,
                 "number_of_decimals": None,
+                "owner": "455354e8-96bd-4c29-84e7-9f10e1d4db4b",
             },
             entity.to_dict(),
         )
         self.assertIsInstance(
             self.validate_exchange_data(
-                origin=ModuleOrigin.DEVICES_MODULE,
-                routing_key=RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED,
+                routing_key=RoutingKey.DEVICES_PROPERTY_ENTITY_REPORTED,
                 data=entity.to_dict(),
             ),
             dict,

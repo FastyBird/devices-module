@@ -28,9 +28,6 @@ use FastyBird\DevicesModule\Entities;
 interface IProperty extends Entities\IProperty
 {
 
-	public const COLOR_DATA_TYPE_FORMAT_RGB = 'rgb';
-	public const COLOR_DATA_TYPE_FORMAT_HSV = 'hsv';
-
 	/**
 	 * @return Entities\Channels\IChannel
 	 */

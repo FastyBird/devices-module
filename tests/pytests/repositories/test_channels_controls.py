@@ -20,7 +20,6 @@ import uuid
 # Library dependencies
 from kink import inject
 from modules_metadata.routing import RoutingKey
-from modules_metadata.types import ModuleOrigin
 
 # Library libs
 from devices_module.entities.channel import ChannelControlEntity
@@ -56,13 +55,13 @@ class TestChannelsControlsRepository(DbTestCase):
                 "id": "15db9bef-3b57-4a87-bf67-e3c19fc3ba34",
                 "name": "configure",
                 "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
+                "owner": "455354e8-96bd-4c29-84e7-9f10e1d4db4b",
             },
             entity.to_dict(),
         )
         self.assertIsInstance(
             self.validate_exchange_data(
-                origin=ModuleOrigin.DEVICES_MODULE,
-                routing_key=RoutingKey.CHANNELS_CONTROL_ENTITY_CREATED,
+                routing_key=RoutingKey.CHANNELS_CONTROL_ENTITY_REPORTED,
                 data=entity.to_dict(),
             ),
             dict,

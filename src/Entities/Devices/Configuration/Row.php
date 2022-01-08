@@ -73,19 +73,21 @@ class Row extends Entities\Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
+	public function getDevice(): Entities\Devices\IDevice
 	{
-		return array_merge(parent::toArray(), [
-			'device' => $this->getDevice()->getPlainId(),
-		]);
+		return $this->device;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
+	public function toArray(): array
 	{
-		return $this->device;
+		return array_merge(parent::toArray(), [
+			'device' => $this->getDevice()->getPlainId(),
+
+			'owner' => $this->getDevice()->getOwnerId(),
+		]);
 	}
 
 }

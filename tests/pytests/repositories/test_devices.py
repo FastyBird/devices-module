@@ -21,7 +21,6 @@ import uuid
 from kink import inject
 from modules_metadata.devices_module import DeviceType
 from modules_metadata.routing import RoutingKey
-from modules_metadata.types import ModuleOrigin
 
 # Library libs
 from devices_module.entities.device import DeviceEntity
@@ -75,8 +74,7 @@ class TestDevicesRepository(DbTestCase):
         )
         self.assertIsInstance(
             self.validate_exchange_data(
-                origin=ModuleOrigin.DEVICES_MODULE,
-                routing_key=RoutingKey.DEVICES_ENTITY_CREATED,
+                routing_key=RoutingKey.DEVICES_ENTITY_REPORTED,
                 data=entity.to_dict(),
             ),
             dict,

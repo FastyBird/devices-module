@@ -160,9 +160,4 @@ interface IRow extends IEntity,
 	 */
 	public function setValues(array $values): void;
 
-	/**
-	 * @return mixed[]
-	 */
-	public function toArray(): array;
-
 }

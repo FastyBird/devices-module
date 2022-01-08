@@ -19,6 +19,7 @@ use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
@@ -55,6 +56,7 @@ abstract class Connector implements IConnector
 	use Entities\TKey;
 	use Entities\TEntity;
 	use Entities\TEntityParams;
+	use SimpleAuthEntities\TEntityOwner;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
@@ -262,6 +264,8 @@ abstract class Connector implements IConnector
 			'name'    => $this->getName(),
 			'key'     => $this->getKey(),
 			'enabled' => $this->isEnabled(),
+
+			'owner' => $this->getOwnerId(),
 		];
 	}
 

@@ -15,5 +15,5 @@
 #     limitations under the License.
 
 """
-Devices module entities module
+Devices module managers module
 """

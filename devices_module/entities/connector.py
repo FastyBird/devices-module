@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module models connector entity module
+Devices module connector entities module
 """
 
 # Python base dependencies
@@ -25,11 +25,11 @@ from typing import Dict, List, Optional, Union
 
 # Library dependencies
 from modules_metadata.devices_module import ConnectorType
-from sqlalchemy import BINARY, JSON, Boolean, Column, ForeignKey, String
+from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, ForeignKey
 from sqlalchemy.orm import relationship
 
 # Library libs
-import devices_module  # pylint: disable=unused-import
+import devices_module.entities  # pylint: disable=unused-import
 from devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
 
 
@@ -45,24 +45,26 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __tablename__: str = "fb_connectors"
 
-    _type: str = Column(String(40), name="connector_type", nullable=False)  # type: ignore[assignment]
+    _type: str = Column(VARCHAR(40), name="connector_type", nullable=False)  # type: ignore[assignment]
 
     __connector_id: bytes = Column(BINARY(16), primary_key=True, name="connector_id")  # type: ignore[assignment]
-    __name: str = Column(String(40), name="connector_name", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(String(50), name="connector_key", nullable=False, unique=True)  # type: ignore[assignment]
+    __name: str = Column(VARCHAR(40), name="connector_name", nullable=False)  # type: ignore[assignment]
+    __key: str = Column(VARCHAR(50), name="connector_key", nullable=False, unique=True)  # type: ignore[assignment]
     __enabled: bool = Column(  # type: ignore[assignment]
-        Boolean, name="connector_enabled", nullable=False, default=True
+        BOOLEAN, name="connector_enabled", nullable=False, default=True
     )
+
+    __owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
 
     __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     controls: List["ConnectorControlEntity"] = relationship(  # type: ignore[assignment]
         "ConnectorControlEntity",
         back_populates="connector",
-        cascade="all, delete-orphan",
+        cascade="delete, delete-orphan",
     )
-    devices: List["devices_module.entities.device.DeviceEntity"] = relationship(  # type: ignore[assignment]
-        "devices_module.entities.device.DeviceEntity",
+    devices: List["entities.device.DeviceEntity"] = relationship(  # type: ignore[assignment,name-defined]
+        "entities.device.DeviceEntity",
         back_populates="connector",
     )
 
@@ -139,6 +141,20 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     # -----------------------------------------------------------------------------
 
     @property
+    def owner(self) -> Optional[str]:
+        """Connector owner identifier"""
+        return self.__owner
+
+    # -----------------------------------------------------------------------------
+
+    @owner.setter
+    def owner(self, owner: Optional[str]) -> None:
+        """Connector owner identifier setter"""
+        self.__owner = owner
+
+    # -----------------------------------------------------------------------------
+
+    @property
     def params(self) -> Dict:
         """Connector params"""
         return self.__params if self.__params is not None else {}
@@ -160,6 +176,7 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             "key": self.key,
             "name": self.name,
             "enabled": self.enabled,
+            "owner": self.owner,
         }
 
 
@@ -555,9 +572,9 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     __tablename__: str = "fb_connectors_controls"
 
     __control_id: bytes = Column(BINARY(16), primary_key=True, name="control_id")  # type: ignore[assignment]
-    __name: str = Column(String(100), name="control_name", nullable=False)  # type: ignore[assignment]
+    __name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
-    __connector_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+    connector_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_connectors.connector_id", ondelete="CASCADE"), name="connector_id"
     )
 
@@ -589,7 +606,7 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     # -----------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Union[str, str]]:
+    def to_dict(self) -> Dict[str, Union[str, None]]:
         """Transform entity to dictionary"""
         return {
             **super().to_dict(),
@@ -597,5 +614,6 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
                 "id": self.id.__str__(),
                 "name": self.name,
                 "connector": self.connector.id.__str__(),
+                "owner": self.connector.owner,
             },
         }

@@ -380,9 +380,4 @@ interface IDevice extends Entities\IEntity,
 	 */
 	public function setConnector(?Entities\Connectors\IConnector $connector): void;
 
-	/**
-	 * @return mixed[]
-	 */
-	public function toArray(): array;
-
 }

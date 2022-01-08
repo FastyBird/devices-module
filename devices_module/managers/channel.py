@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Channels module repositories
+Devices module channel managers module
 """
 
 # Python base dependencies

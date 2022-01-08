@@ -23,9 +23,15 @@ from exchange_plugin.publisher import Publisher
 from kink import inject
 
 # Library libs
-from devices_module.entities.device import DevicePropertyEntity, DeviceDynamicPropertyEntity
+from devices_module.entities.device import (
+    DeviceDynamicPropertyEntity,
+    DevicePropertyEntity,
+)
 from devices_module.managers.device import DevicePropertiesManager
-from devices_module.repositories.device import DevicesPropertiesRepository, DevicesRepository
+from devices_module.repositories.device import (
+    DevicesPropertiesRepository,
+    DevicesRepository,
+)
 
 # Tests libs
 from tests.pytests.tests import DbTestCase

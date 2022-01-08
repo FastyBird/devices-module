@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module repositories
+Devices module base manager module
 """
 
 # Python base dependencies
@@ -41,7 +41,7 @@ class BaseManager(Generic[T], ABC):
     Connector controls manager
 
     @package        FastyBird:DevicesModule!
-    @module         managers/device
+    @module         managers/base
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -79,7 +79,11 @@ class BaseManager(Generic[T], ABC):
 
         for key, value in data.items():
             if hasattr(entity, key) and key in writable_fields:
-                setattr(entity, key, value)
+                try:
+                    setattr(entity, key, value)
+
+                except AttributeError:
+                    pass
 
         self.__session.add(entity)
         self.__session.commit()
@@ -103,7 +107,11 @@ class BaseManager(Generic[T], ABC):
 
         for key, value in data.items():
             if hasattr(stored_entity, key) and key in writable_fields:
-                setattr(stored_entity, key, value)
+                try:
+                    setattr(stored_entity, key, value)
+
+                except AttributeError:
+                    pass
 
         self.__session.commit()
 

@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module helpers
+Devices module helpers module
 """
 
 # Python base dependencies

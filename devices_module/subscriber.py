@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module data exchange
+Devices module subscriber module
 """
 
 # Python base dependencies
@@ -58,7 +58,7 @@ class EntityCreatedSubscriber:
     New entity creation subscriber
 
     @package        FastyBird:DevicesModule!
-    @module         exchange
+    @module         subscriber
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -82,7 +82,7 @@ class EntityUpdatedSubscriber:
     Existing entity update subscriber
 
     @package        FastyBird:DevicesModule!
-    @module         exchange
+    @module         subscriber
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -107,7 +107,7 @@ class EntitiesSubscriber:
     Data exchanges utils
 
     @package        FastyBird:DevicesModule!
-    @module         exchange
+    @module         subscriber
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """

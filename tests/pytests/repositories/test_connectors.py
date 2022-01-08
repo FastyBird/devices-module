@@ -20,7 +20,6 @@ import uuid
 # Library dependencies
 from kink import inject
 from modules_metadata.routing import RoutingKey
-from modules_metadata.types import ModuleOrigin
 
 # Library libs
 from devices_module.entities.connector import ConnectorEntity
@@ -66,13 +65,13 @@ class TestConnectorsRepository(DbTestCase):
                 "port": 1883,
                 "secured_port": 8883,
                 "username": None,
+                "owner": None,
             },
             entity.to_dict(),
         )
         self.assertIsInstance(
             self.validate_exchange_data(
-                origin=ModuleOrigin.DEVICES_MODULE,
-                routing_key=RoutingKey.CONNECTORS_ENTITY_CREATED,
+                routing_key=RoutingKey.CONNECTORS_ENTITY_REPORTED,
                 data=entity.to_dict(),
             ),
             dict,

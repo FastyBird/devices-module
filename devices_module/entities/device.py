@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module models connector entity module
+Devices module device entities module
 """
 
 # Python base dependencies
@@ -36,13 +36,13 @@ from modules_metadata.devices_module import (
 from modules_metadata.types import ButtonPayload, SwitchPayload
 from sqlalchemy import (
     BINARY,
+    BOOLEAN,
     JSON,
-    Boolean,
+    TEXT,
+    VARCHAR,
     Column,
     ForeignKey,
     Index,
-    String,
-    Text,
     UniqueConstraint,
 )
 from sqlalchemy.orm import backref, relationship
@@ -81,49 +81,49 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         },
     )
 
-    _type: str = Column(String(40), name="device_type", nullable=False)  # type: ignore[assignment]
+    _type: str = Column(VARCHAR(40), name="device_type", nullable=False)  # type: ignore[assignment]
 
     __device_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="device_id", default=uuid.uuid4
     )
-    __identifier: str = Column(String(50), name="device_identifier", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(String(50), name="device_key", nullable=False, unique=True)  # type: ignore[assignment]
+    __identifier: str = Column(VARCHAR(50), name="device_identifier", nullable=False)  # type: ignore[assignment]
+    __key: str = Column(VARCHAR(50), name="device_key", nullable=False, unique=True)  # type: ignore[assignment]
     __name: Optional[str] = Column(  # type: ignore[assignment]
-        String(255), name="device_name", nullable=True, default=None
+        VARCHAR(255), name="device_name", nullable=True, default=None
     )
     __comment: Optional[str] = Column(  # type: ignore[assignment]
-        Text, name="device_comment", nullable=True, default=None
+        TEXT, name="device_comment", nullable=True, default=None
     )
-    __enabled: bool = Column(Boolean, name="device_enabled", nullable=False, default=True)  # type: ignore[assignment]
+    __enabled: bool = Column(BOOLEAN, name="device_enabled", nullable=False, default=True)  # type: ignore[assignment]
 
     __hardware_manufacturer: str = Column(  # type: ignore[assignment]
-        String(150), name="device_hardware_manufacturer", nullable=False, default="generic"
+        VARCHAR(150), name="device_hardware_manufacturer", nullable=False, default="generic"
     )
     __hardware_model: str = Column(  # type: ignore[assignment]
-        String(150), name="device_hardware_model", nullable=False, default="custom"
+        VARCHAR(150), name="device_hardware_model", nullable=False, default="custom"
     )
     __hardware_version: Optional[str] = Column(  # type: ignore[assignment]
-        String(150), name="device_hardware_version", nullable=True, default=None
+        VARCHAR(150), name="device_hardware_version", nullable=True, default=None
     )
     __hardware_mac_address: Optional[str] = Column(  # type: ignore[assignment]
-        String(50), name="device_hardware_mac_address", nullable=True, default=None
+        VARCHAR(50), name="device_hardware_mac_address", nullable=True, default=None
     )
 
     __firmware_manufacturer: str = Column(  # type: ignore[assignment]
-        String(150), name="device_firmware_manufacturer", nullable=False, default="generic"
+        VARCHAR(150), name="device_firmware_manufacturer", nullable=False, default="generic"
     )
     __firmware_version: Optional[str] = Column(  # type: ignore[assignment]
-        String(150), name="device_firmware_version", nullable=True, default=None
+        VARCHAR(150), name="device_firmware_version", nullable=True, default=None
     )
 
-    __owner: Optional[str] = Column(String(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
+    __owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
 
     __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
-    __parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+    parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id", ondelete="SET NULL"), name="parent_id", nullable=True
     )
-    __connector_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+    connector_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=True
     )
 
@@ -134,17 +134,17 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     properties: List["DevicePropertyEntity"] = relationship(  # type: ignore[assignment]
         "DevicePropertyEntity",
         back_populates="device",
-        cascade="all, delete-orphan",
+        cascade="delete, delete-orphan",
     )
     configuration: List["DeviceConfigurationEntity"] = relationship(  # type: ignore[assignment]
         "DeviceConfigurationEntity",
         back_populates="device",
-        cascade="all, delete-orphan",
+        cascade="delete, delete-orphan",
     )
     controls: List["DeviceControlEntity"] = relationship(  # type: ignore[assignment]
         "DeviceControlEntity",
         back_populates="device",
-        cascade="all, delete-orphan",
+        cascade="delete, delete-orphan",
     )
 
     channels: List["entities.channel.ChannelEntity"] = relationship(  # type: ignore[assignment,name-defined]
@@ -542,9 +542,9 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
         },
     )
 
-    _type: str = Column(String(20), name="property_type", nullable=False)  # type: ignore[assignment]
+    _type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
-    __device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+    device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id"), name="device_id"
     )
 
@@ -593,6 +593,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
         return {
             **{
                 "device": self.device.id.__str__(),
+                "owner": self.device.owner,
             },
             **super().to_dict(),
         }
@@ -662,7 +663,7 @@ class DeviceConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, Configur
         },
     )
 
-    __device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+    device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id"
     )
 
@@ -682,6 +683,7 @@ class DeviceConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, Configur
         return {
             **{
                 "device": self.device.id.__str__(),
+                "owner": self.device.owner,
             },
             **super().to_dict(),
         }
@@ -713,9 +715,9 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     __control_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="control_id", default=uuid.uuid4
     )
-    __name: str = Column(String(100), name="control_name", nullable=False)  # type: ignore[assignment]
+    __name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
-    __device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+    device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id"
     )
 
@@ -748,7 +750,7 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     # -----------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Union[str, str]]:
+    def to_dict(self) -> Dict[str, Union[str, None]]:
         """Transform entity to dictionary"""
         return {
             **super().to_dict(),
@@ -756,5 +758,6 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
                 "id": self.id.__str__(),
                 "name": self.name,
                 "device": self.device.id.__str__(),
+                "owner": self.device.owner,
             },
         }

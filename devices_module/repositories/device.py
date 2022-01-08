@@ -17,7 +17,7 @@
 # pylint: disable=comparison-with-callable
 
 """
-Devices module repositories
+Devices module device repositories module
 """
 
 # Python base dependencies
@@ -76,7 +76,7 @@ class DevicesRepository:
             self.__session.query(DeviceEntity)
             .filter(
                 DeviceEntity.connector is not None
-                and DeviceEntity.connector.id == connector_id.bytes
+                and DeviceEntity.connector_id == connector_id.bytes
                 and DeviceEntity.identifier == device_identifier
             )
             .first()
@@ -94,7 +94,7 @@ class DevicesRepository:
         """Find all devices for parent device"""
         return (
             self.__session.query(DeviceEntity)
-            .filter(DeviceEntity.parent is not None and DeviceEntity.parent.id == device_id.bytes)
+            .filter(DeviceEntity.parent is not None and DeviceEntity.parent_id == device_id.bytes)
             .all()
         )
 
@@ -104,7 +104,7 @@ class DevicesRepository:
         """Find all devices for connector"""
         return (
             self.__session.query(DeviceEntity)
-            .filter(DeviceEntity.connector is not None and DeviceEntity.connector.id == connector_id.bytes)
+            .filter(DeviceEntity.connector is not None and DeviceEntity.connector_id == connector_id.bytes)
             .all()
         )
 
@@ -148,7 +148,7 @@ class DevicesPropertiesRepository:
         return (
             self.__session.query(DevicePropertyEntity)
             .filter(
-                DevicePropertyEntity.device.id == device_id.bytes and DevicePropertyEntity.key == property_identifier
+                DevicePropertyEntity.device_id == device_id.bytes and DevicePropertyEntity.key == property_identifier
             )
             .first()
         )
@@ -164,7 +164,7 @@ class DevicesPropertiesRepository:
     def get_all_by_device(self, device_id: uuid.UUID) -> List[DevicePropertyEntity]:
         """Find all devices properties for device"""
         return (
-            self.__session.query(DevicePropertyEntity).filter(DevicePropertyEntity.device.id == device_id.bytes).all()
+            self.__session.query(DevicePropertyEntity).filter(DevicePropertyEntity.device_id == device_id.bytes).all()
         )
 
 
@@ -213,7 +213,7 @@ class DevicesConfigurationRepository:
         return (
             self.__session.query(DeviceConfigurationEntity)
             .filter(
-                DeviceConfigurationEntity.device.id == device_id.bytes
+                DeviceConfigurationEntity.device_id == device_id.bytes
                 and DeviceConfigurationEntity.identifier == configuration_identifier
             )
             .first()
@@ -231,7 +231,7 @@ class DevicesConfigurationRepository:
         """Find all devices configuration for device"""
         return (
             self.__session.query(DeviceConfigurationEntity)
-            .filter(DeviceConfigurationEntity.device.id == device_id.bytes)
+            .filter(DeviceConfigurationEntity.device_id == device_id.bytes)
             .all()
         )
 
@@ -268,7 +268,7 @@ class DevicesControlsRepository:
         """Find control by provided name"""
         return (
             self.__session.query(DeviceControlEntity)
-            .filter(DeviceControlEntity.device.id == device_id.bytes and DeviceControlEntity.name == control_name)
+            .filter(DeviceControlEntity.device_id == device_id.bytes and DeviceControlEntity.name == control_name)
             .first()
         )
 
@@ -282,4 +282,4 @@ class DevicesControlsRepository:
 
     def get_all_by_device(self, device_id: uuid.UUID) -> List[DeviceControlEntity]:
         """Find all devices controls for device"""
-        return self.__session.query(DeviceControlEntity).filter(DeviceControlEntity.device.id == device_id.bytes).all()
+        return self.__session.query(DeviceControlEntity).filter(DeviceControlEntity.device_id == device_id.bytes).all()

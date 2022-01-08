@@ -212,9 +212,4 @@ interface IChannel extends Entities\IEntity,
 	 */
 	public function findControl(string $name): ?Entities\Channels\Controls\IControl;
 
-	/**
-	 * @return mixed[]
-	 */
-	public function toArray(): array;
-
 }

@@ -29,19 +29,6 @@ interface IProperty extends Entities\IProperty
 {
 
 	/**
-	 * System known properties
-	 */
-	public const PROPERTY_IP_ADDRESS = 'ip-address';
-	public const PROPERTY_STATUS_LED = 'status-led';
-	public const PROPERTY_INTERVAL = 'interval';
-	public const PROPERTY_UPTIME = 'uptime';
-	public const PROPERTY_FREE_HEAP = 'free-heap';
-	public const PROPERTY_CPU_LOAD = 'cpu-load';
-	public const PROPERTY_VCC = 'vcc';
-	public const PROPERTY_SSID = 'ssid';
-	public const PROPERTY_RSSI = 'rssi';
-
-	/**
 	 * @return Entities\Devices\IDevice
 	 */
 	public function getDevice(): Entities\Devices\IDevice;

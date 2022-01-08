@@ -23,7 +23,11 @@ from exchange_plugin.publisher import Publisher
 from kink import inject
 
 # Library libs
-from devices_module.entities.connector import ConnectorEntity, FbBusConnectorEntity, FbMqttConnectorEntity
+from devices_module.entities.connector import (
+    ConnectorEntity,
+    FbBusConnectorEntity,
+    FbMqttConnectorEntity,
+)
 from devices_module.managers.connector import ConnectorsManager
 from devices_module.repositories.connector import ConnectorsRepository
 

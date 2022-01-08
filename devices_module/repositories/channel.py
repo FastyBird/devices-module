@@ -17,7 +17,7 @@
 # pylint: disable=comparison-with-callable
 
 """
-Devices module repositories
+Devices module channel repositories module
 """
 
 # Python base dependencies
@@ -74,7 +74,7 @@ class ChannelsRepository:
         """Find channel by provided identifier"""
         return (
             self.__session.query(ChannelEntity)
-            .filter(ChannelEntity.device.id == device_id.bytes and ChannelEntity.identifier == channel_identifier)
+            .filter(ChannelEntity.device_id == device_id.bytes and ChannelEntity.identifier == channel_identifier)
             .first()
         )
 
@@ -88,7 +88,7 @@ class ChannelsRepository:
 
     def get_all_by_device(self, device_id: uuid.UUID) -> List[ChannelEntity]:
         """Find all channels for device"""
-        return self.__session.query(ChannelEntity).filter(ChannelEntity.device.id == device_id.bytes).all()
+        return self.__session.query(ChannelEntity).filter(ChannelEntity.device_id == device_id.bytes).all()
 
 
 class ChannelsPropertiesRepository:
@@ -130,7 +130,7 @@ class ChannelsPropertiesRepository:
         return (
             self.__session.query(ChannelPropertyEntity)
             .filter(
-                ChannelPropertyEntity.channel.id == channel_id.bytes
+                ChannelPropertyEntity.channel_id == channel_id.bytes
                 and ChannelPropertyEntity.key == property_identifier
             )
             .first()
@@ -148,7 +148,7 @@ class ChannelsPropertiesRepository:
         """Find all channels properties for channel"""
         return (
             self.__session.query(ChannelPropertyEntity)
-            .filter(ChannelPropertyEntity.channel.id == channel_id.bytes)
+            .filter(ChannelPropertyEntity.channel_id == channel_id.bytes)
             .all()
         )
 
@@ -198,7 +198,7 @@ class ChannelsConfigurationRepository:
         return (
             self.__session.query(ChannelConfigurationEntity)
             .filter(
-                ChannelConfigurationEntity.channel.id == channel_id.bytes
+                ChannelConfigurationEntity.channel_id == channel_id.bytes
                 and ChannelConfigurationEntity.identifier == configuration_identifier
             )
             .first()
@@ -216,7 +216,7 @@ class ChannelsConfigurationRepository:
         """Find all channels configuration for channel"""
         return (
             self.__session.query(ChannelConfigurationEntity)
-            .filter(ChannelConfigurationEntity.channel.id == channel_id.bytes)
+            .filter(ChannelConfigurationEntity.channel_id == channel_id.bytes)
             .all()
         )
 
@@ -253,7 +253,7 @@ class ChannelsControlsRepository:
         """Find control by provided name"""
         return (
             self.__session.query(ChannelControlEntity)
-            .filter(ChannelControlEntity.channel.id == channel_id.bytes and ChannelControlEntity.name == control_name)
+            .filter(ChannelControlEntity.channel_id == channel_id.bytes and ChannelControlEntity.name == control_name)
             .first()
         )
 
@@ -268,5 +268,5 @@ class ChannelsControlsRepository:
     def get_all_by_channel(self, channel_id: uuid.UUID) -> List[ChannelControlEntity]:
         """Find all channels controls for channel"""
         return (
-            self.__session.query(ChannelControlEntity).filter(ChannelControlEntity.channel.id == channel_id.bytes).all()
+            self.__session.query(ChannelControlEntity).filter(ChannelControlEntity.channel_id == channel_id.bytes).all()
         )

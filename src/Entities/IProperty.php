@@ -150,9 +150,4 @@ interface IProperty extends IEntity,
 	 */
 	public function setValue(?string $value): void;
 
-	/**
-	 * @return mixed[]
-	 */
-	public function toArray(): array;
-
 }

@@ -82,19 +82,21 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
+	public function getChannel(): Entities\Channels\IChannel
 	{
-		return array_merge(parent::toArray(), [
-			'channel' => $this->getChannel()->getPlainId(),
-		]);
+		return $this->channel;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
+	public function toArray(): array
 	{
-		return $this->channel;
+		return array_merge(parent::toArray(), [
+			'channel' => $this->getChannel()->getPlainId(),
+
+			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
+		]);
 	}
 
 }

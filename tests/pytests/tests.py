@@ -20,15 +20,16 @@ import os
 import unittest
 from typing import Dict
 
-# Library dependencies
-from modules_metadata.loader import load_schema
-from modules_metadata.validator import validate
-from modules_metadata.routing import RoutingKey
-from modules_metadata.types import ModuleOrigin
 import MySQLdb
 from exchange_plugin.bootstrap import (
     create_container as exchange_plugin_create_container,
 )
+
+# Library dependencies
+from modules_metadata.loader import load_schema_by_routing_key
+from modules_metadata.routing import RoutingKey
+from modules_metadata.types import ModuleOrigin
+from modules_metadata.validator import validate
 from MySQLdb import OperationalError
 from MySQLdb.cursors import Cursor
 from sqlalchemy import create_engine
@@ -52,9 +53,9 @@ class DbTestCase(unittest.TestCase):
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def validate_exchange_data(origin: ModuleOrigin, routing_key: RoutingKey, data: Dict) -> Dict:
+    def validate_exchange_data(routing_key: RoutingKey, data: Dict) -> Dict:
         """Validate received exchange message against defined schema"""
-        schema: str = load_schema(origin, routing_key)
+        schema: str = load_schema_by_routing_key(routing_key)
 
         return validate(json.dumps(data), schema)
 

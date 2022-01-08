@@ -463,7 +463,9 @@ class Channel implements IChannel
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),
 
-			'device'  => $this->getDevice()->getPlainId(),
+			'device' => $this->getDevice()->getPlainId(),
+
+			'owner' => $this->getDevice()->getOwnerId(),
 		];
 	}
 

@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-Devices module models connector entity module
+Devices module configuration entities module
 """
 
 # Python base dependencies
@@ -28,7 +28,7 @@ from modules_metadata.devices_module import (
     ConfigurationSelectFieldAttribute,
 )
 from modules_metadata.types import DataType
-from sqlalchemy import BINARY, JSON, Column, String, Text
+from sqlalchemy import BINARY, JSON, TEXT, VARCHAR, Column
 
 
 class ConfigurationMixin:
@@ -44,20 +44,20 @@ class ConfigurationMixin:
     __configuration_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="configuration_id", default=uuid.uuid4
     )
-    __identifier: str = Column(String(50), name="configuration_identifier", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(String(50), name="configuration_key", unique=True, nullable=False)  # type: ignore[assignment]
+    __identifier: str = Column(VARCHAR(50), name="configuration_identifier", nullable=False)  # type: ignore[assignment]
+    __key: str = Column(VARCHAR(50), name="configuration_key", unique=True, nullable=False)  # type: ignore[assignment]
     __name: Optional[str] = Column(  # type: ignore[assignment]
-        String(255), name="configuration_name", nullable=True, default=None
+        VARCHAR(255), name="configuration_name", nullable=True, default=None
     )
     __comment: Optional[str] = Column(  # type: ignore[assignment]
-        Text, name="configuration_comment", nullable=True, default=None
+        TEXT, name="configuration_comment", nullable=True, default=None
     )
-    __data_type: str = Column(String(100), name="configuration_data_type", nullable=False)  # type: ignore[assignment]
+    __data_type: str = Column(VARCHAR(100), name="configuration_data_type", nullable=False)  # type: ignore[assignment]
     __default: Optional[str] = Column(  # type: ignore[assignment]
-        String(50), name="configuration_default", nullable=True, default=None
+        VARCHAR(50), name="configuration_default", nullable=True, default=None
     )
     __value: Optional[str] = Column(  # type: ignore[assignment]
-        String(50), name="configuration_value", nullable=True, default=None
+        VARCHAR(50), name="configuration_value", nullable=True, default=None
     )
 
     __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]

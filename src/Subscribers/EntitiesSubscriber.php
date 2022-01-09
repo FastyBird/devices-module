@@ -50,8 +50,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/** @var Helpers\EntityKeyHelper */
 	private Helpers\EntityKeyHelper $entityKeyGenerator;
 
-	/** @var Models\States\IPropertyRepository|null */
-	private ?Models\States\IPropertyRepository $propertyStateRepository;
+	/** @var Models\States\IDevicePropertyRepository|null */
+	private ?Models\States\IDevicePropertyRepository $devicePropertyStateRepository;
+
+	/** @var Models\States\IChannelPropertyRepository|null */
+	private ?Models\States\IChannelPropertyRepository $channelPropertyStateRepository;
 
 	/** @var ExchangePluginPublisher\IPublisher */
 	private ExchangePluginPublisher\IPublisher $publisher;
@@ -63,11 +66,13 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		Helpers\EntityKeyHelper $entityKeyGenerator,
 		ExchangePluginPublisher\IPublisher $publisher,
 		ORM\EntityManagerInterface $entityManager,
-		?Models\States\IPropertyRepository $propertyStateRepository = null
+		?Models\States\IDevicePropertyRepository $devicePropertyStateRepository = null,
+		?Models\States\IChannelPropertyRepository $channelPropertyStateRepository = null
 	)
 	{
 		$this->entityKeyGenerator = $entityKeyGenerator;
-		$this->propertyStateRepository = $propertyStateRepository;
+		$this->devicePropertyStateRepository = $devicePropertyStateRepository;
+		$this->channelPropertyStateRepository = $channelPropertyStateRepository;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
 	}
@@ -274,14 +279,29 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 		if ($publishRoutingKey !== null) {
 			if (
-				(
-					$entity instanceof Entities\Devices\Properties\IProperty
-					|| $entity instanceof Entities\Channels\Properties\IProperty
-				)
+				$entity instanceof Entities\Devices\Properties\IProperty
 				&& $entity->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->propertyStateRepository !== null
+				&& $this->devicePropertyStateRepository !== null
 			) {
-				$state = $this->propertyStateRepository->findOne($entity->getId());
+				$state = $this->devicePropertyStateRepository->findOne($entity->getId());
+
+				$dataType = $entity->getDataType();
+
+				$this->publisher->publish(
+					ModulesMetadataTypes\ModuleOriginType::get(ModulesMetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
+					$publishRoutingKey,
+					Utils\ArrayHash::from(array_merge($state !== null ? [
+						'actual_value' => $dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
+						'expected_value' => $dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
+						'pending' => $state->isPending(),
+					] : [], $entity->toArray()))
+				);
+			} elseif (
+				$entity instanceof Entities\Channels\Properties\IProperty
+				&& $entity->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
+				&& $this->channelPropertyStateRepository !== null
+			) {
+				$state = $this->channelPropertyStateRepository->findOne($entity->getId());
 
 				$dataType = $entity->getDataType();
 

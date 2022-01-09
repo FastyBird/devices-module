@@ -15,11 +15,8 @@
 
 namespace FastyBird\DevicesModule\Models\States;
 
-use FastyBird\DevicesModule\States;
-use Ramsey\Uuid;
-
 /**
- * Channel property repository interface
+ * Property repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -28,14 +25,5 @@ use Ramsey\Uuid;
  */
 interface IPropertyRepository
 {
-
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return States\IProperty|null
-	 */
-	public function findOne(
-		Uuid\UuidInterface $id
-	): ?States\IProperty;
 
 }

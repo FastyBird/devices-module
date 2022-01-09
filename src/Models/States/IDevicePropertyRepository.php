@@ -1,29 +1,41 @@
 <?php declare(strict_types = 1);
 
 /**
- * IPropertiesManager.php
+ * IDevicePropertyRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- * @since          0.1.0
+ * @since          0.9.0
  *
- * @date           03.03.20
+ * @date           09.01.22
  */
 
 namespace FastyBird\DevicesModule\Models\States;
 
+use FastyBird\DevicesModule\States;
+use Ramsey\Uuid;
+
 /**
- * Base properties manager interface
+ * Device property repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IPropertiesManager
+interface IDevicePropertyRepository extends IPropertyRepository
 {
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return States\IDeviceProperty|null
+	 */
+	public function findOne(
+		Uuid\UuidInterface $id
+	): ?States\IDeviceProperty;
 
 }

@@ -36,7 +36,7 @@
     "ext-bcmath" : "*",
     "contributte/translation": "^0.8",
     "cweagans/composer-patches": "^1.7",
-    "fastybird/database-plugin": "^0.2",
+    "fastybird/database-plugin": "^0.3",
     "fastybird/exchange-plugin": "^0.5",
     "fastybird/json-api": "^0.1",
     "fastybird/modules-metadata": "^0.22",

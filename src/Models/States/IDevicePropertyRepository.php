@@ -15,8 +15,8 @@
 
 namespace FastyBird\DevicesModule\Models\States;
 
+use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\States;
-use Ramsey\Uuid;
 
 /**
  * Device property repository interface
@@ -30,12 +30,12 @@ interface IDevicePropertyRepository extends IPropertyRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface $id
+	 * @param Entities\Devices\Properties\IProperty $property
 	 *
 	 * @return States\IDeviceProperty|null
 	 */
 	public function findOne(
-		Uuid\UuidInterface $id
+		Entities\Devices\Properties\IProperty $property
 	): ?States\IDeviceProperty;
 
 }

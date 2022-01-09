@@ -283,7 +283,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				&& $entity->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
 				&& $this->devicePropertyStateRepository !== null
 			) {
-				$state = $this->devicePropertyStateRepository->findOne($entity->getId());
+				$state = $this->devicePropertyStateRepository->findOne($entity);
 
 				$dataType = $entity->getDataType();
 
@@ -301,7 +301,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				&& $entity->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
 				&& $this->channelPropertyStateRepository !== null
 			) {
-				$state = $this->channelPropertyStateRepository->findOne($entity->getId());
+				$state = $this->channelPropertyStateRepository->findOne($entity);
 
 				$dataType = $entity->getDataType();
 

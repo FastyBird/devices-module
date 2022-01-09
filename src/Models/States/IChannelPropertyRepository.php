@@ -15,8 +15,8 @@
 
 namespace FastyBird\DevicesModule\Models\States;
 
+use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\States;
-use Ramsey\Uuid;
 
 /**
  * Channel property repository interface
@@ -30,12 +30,12 @@ interface IChannelPropertyRepository extends IPropertyRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface $id
+	 * @param Entities\Channels\Properties\IProperty $property
 	 *
 	 * @return States\IChannelProperty|null
 	 */
 	public function findOne(
-		Uuid\UuidInterface $id
+		Entities\Channels\Properties\IProperty $property
 	): ?States\IChannelProperty;
 
 }

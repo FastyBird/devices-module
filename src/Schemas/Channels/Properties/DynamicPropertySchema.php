@@ -43,12 +43,12 @@ final class DynamicPropertySchema extends PropertySchema
 	 */
 	public const SCHEMA_TYPE = 'devices-module/channel-property-dynamic';
 
-	/** @var Models\States\IPropertyRepository|null */
-	private ?Models\States\IPropertyRepository $propertyRepository;
+	/** @var Models\States\IChannelPropertyRepository|null */
+	private ?Models\States\IChannelPropertyRepository $propertyRepository;
 
 	public function __construct(
 		Routing\IRouter $router,
-		?Models\States\IPropertyRepository $propertyRepository
+		?Models\States\IChannelPropertyRepository $propertyRepository
 	) {
 		parent::__construct($router);
 
@@ -83,7 +83,7 @@ final class DynamicPropertySchema extends PropertySchema
 	{
 		$dataType = $property->getDataType();
 
-		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property->getId());
+		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property);
 
 		$actualValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
 		$expectedValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;

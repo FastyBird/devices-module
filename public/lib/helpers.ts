@@ -1,4 +1,4 @@
-import { DataType } from '@fastybird/modules-metadata'
+import { DataType } from '@fastybird/metadata'
 
 export const cleanInvalid = (
   dataType: string | null,

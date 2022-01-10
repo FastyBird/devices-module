@@ -1,17 +1,17 @@
 import { Item } from '@vuex-orm/core'
 import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema
-  from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.property.json'
+  from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.channel.property.json'
 import {
   ModuleOrigin,
   ChannelPropertyEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
-  GlobalRoutes as GlobalRoutingKeys,
+  ActionRoutes,
   DataType,
   normalizeValue,
   PropertyType,
   PropertyAction,
-} from '@fastybird/modules-metadata'
+} from '@fastybird/metadata'
 
 import {
   ActionTree,
@@ -486,7 +486,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
 
     return new Promise((resolve, reject) => {
       ChannelProperty.wamp().call<{ data: string }>({
-        routing_key: GlobalRoutingKeys.CHANNELS_PROPERTIES_DATA,
+        routing_key: ActionRoutes.CHANNEL_PROPERTY,
         origin: ChannelProperty.$devicesModuleOrigin,
         data: {
           action: PropertyAction.SET,

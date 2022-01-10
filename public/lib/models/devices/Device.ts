@@ -9,7 +9,7 @@ import {
   HardwareManufacturer,
   DeviceConnectionState,
   DevicePropertyName,
-} from '@fastybird/modules-metadata'
+} from '@fastybird/metadata'
 
 import capitalize from 'lodash/capitalize'
 

@@ -1,14 +1,14 @@
 import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema
-  from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.control.json'
+  from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.channel.control.json'
 import {
   ModuleOrigin,
   ChannelControlEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
-  GlobalRoutes as GlobalRoutingKeys,
+  ActionRoutes,
   DataType,
   ControlAction,
-} from '@fastybird/modules-metadata'
+} from '@fastybird/metadata'
 
 import {
   ActionTree,
@@ -169,7 +169,7 @@ const moduleActions: ActionTree<ChannelControlState, unknown> = {
 
     return new Promise((resolve, reject) => {
       ChannelControl.wamp().call<{ data: string }>({
-        routing_key: GlobalRoutingKeys.CHANNELS_CONTROL_DATA,
+        routing_key: ActionRoutes.CHANNEL,
         origin: ChannelControl.$devicesModuleOrigin,
         data: {
           action: ControlAction.SET,

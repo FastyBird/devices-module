@@ -1,10 +1,10 @@
 import { Item } from '@vuex-orm/core'
-import * as exchangeEntitySchema from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.channel.json'
+import * as exchangeEntitySchema from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.channel.json'
 import {
   ModuleOrigin,
   ChannelEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
-} from '@fastybird/modules-metadata'
+} from '@fastybird/metadata'
 
 import {
   ActionTree,

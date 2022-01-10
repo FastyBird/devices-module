@@ -1,4 +1,4 @@
-import { ModulePrefix } from '@fastybird/modules-metadata'
+import { ModulePrefix } from '@fastybird/metadata'
 
 import { TJsonaModel } from 'jsona/lib/JsonaTypes'
 

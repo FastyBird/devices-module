@@ -1,5 +1,5 @@
 import { Fields, Model } from '@vuex-orm/core'
-import { DataType, HardwareManufacturer, normalizeValue } from '@fastybird/modules-metadata'
+import { DataType, HardwareManufacturer, normalizeValue } from '@fastybird/metadata'
 
 import {
   PropertyCommandResult,

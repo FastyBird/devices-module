@@ -1,5 +1,5 @@
 import { Item } from '@vuex-orm/core'
-import * as exchangeEntitySchema from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.device.json'
+import * as exchangeEntitySchema from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.device.json'
 import {
   ModuleOrigin,
   DeviceEntity as ExchangeEntity,
@@ -9,7 +9,7 @@ import {
   DeviceModel,
   FirmwareManufacturer,
   DeviceType,
-} from '@fastybird/modules-metadata'
+} from '@fastybird/metadata'
 
 import {
   ActionTree,

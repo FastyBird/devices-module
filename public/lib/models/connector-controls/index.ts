@@ -1,14 +1,14 @@
 import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema
-  from '@fastybird/modules-metadata/resources/schemas/devices-module/entity.connector.control.json'
+  from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.connector.control.json'
 import {
   ModuleOrigin,
   ConnectorControlEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
-  GlobalRoutes as GlobalRoutingKeys,
+  ActionRoutes,
   DataType,
   ControlAction,
-} from '@fastybird/modules-metadata'
+} from '@fastybird/metadata'
 
 import {
   ActionTree,
@@ -162,7 +162,7 @@ const moduleActions: ActionTree<ConnectorControlState, unknown> = {
 
     return new Promise((resolve, reject) => {
       ConnectorControl.wamp().call<{ data: string }>({
-        routing_key: GlobalRoutingKeys.CONNECTORS_CONTROL_DATA,
+        routing_key: ActionRoutes.CONNECTOR,
         origin: ConnectorControl.$devicesModuleOrigin,
         data: {
           action: ControlAction.SET,

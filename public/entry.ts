@@ -1,4 +1,4 @@
-import { ModuleOrigin } from '@fastybird/modules-metadata'
+import { ModuleOrigin } from '@fastybird/metadata'
 import { Plugin } from '@vuex-orm/core/dist/src/plugins/use'
 
 import Device from '@/lib/models/devices/Device'

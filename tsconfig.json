@@ -18,7 +18,7 @@
     "baseUrl": ".",
     "types": [
       "node",
-      "@fastybird/modules-metadata",
+      "@fastybird/metadata",
       "@fastybird/vue-wamp-v1",
       "@fastybird/vuex-orm-wamp",
       "@types/lodash",

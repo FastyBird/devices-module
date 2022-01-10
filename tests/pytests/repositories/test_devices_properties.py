@@ -23,10 +23,7 @@ from metadata.devices_module import PropertyType
 from metadata.routing import RoutingKey
 
 # Library libs
-from devices_module.entities.device import (
-    DeviceDynamicPropertyEntity,
-    DeviceStaticPropertyEntity,
-)
+from devices_module.entities.device import DeviceStaticPropertyEntity
 from devices_module.repositories.device import DevicesPropertiesRepository
 
 # Tests libs
@@ -51,25 +48,27 @@ class TestDevicesPropertiesRepository(DbTestCase):
 
     @inject
     def test_transform_to_dict(self, property_repository: DevicesPropertiesRepository) -> None:
-        entity = property_repository.get_by_id(property_id=uuid.UUID("28bc0d38-2f7c-4a71-aa74-27b102f8df4c", version=4))
+        entity = property_repository.get_by_id(property_id=uuid.UUID("3134ba8e-f134-4bf2-9c80-c977c4deb0fb", version=4))
 
-        self.assertIsInstance(entity, DeviceDynamicPropertyEntity)
+        self.assertIsInstance(entity, DeviceStaticPropertyEntity)
         self.assertEqual(
             {
-                "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-                "type": PropertyType.DYNAMIC.value,
-                "name": "rssi",
-                "identifier": "rssi",
-                "key": "bLikvh",
+                "id": "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
+                "type": PropertyType.STATIC.value,
+                "name": "password",
+                "identifier": "password",
+                "key": "bLykvV",
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-                "queryable": True,
-                "settable": False,
-                "data_type": "int",
+                "queryable": False,
+                "settable": True,
+                "data_type": "string",
                 "unit": None,
                 "format": None,
                 "invalid": None,
                 "number_of_decimals": None,
                 "owner": "455354e8-96bd-4c29-84e7-9f10e1d4db4b",
+                "value": "device-password",
+                "default": None,
             },
             entity.to_dict(),
         )

@@ -25,7 +25,6 @@ from abc import ABC
 from typing import Dict, Generic, List, Optional, Type, TypeVar
 
 # Library dependencies
-from kink import inject
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
@@ -35,7 +34,6 @@ from devices_module.exceptions import InvalidStateException
 T = TypeVar("T")  # pylint: disable=invalid-name
 
 
-@inject
 class BaseManager(Generic[T], ABC):
     """
     Connector controls manager

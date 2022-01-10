@@ -17,7 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Connectors;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
  * @ORM\Entity
@@ -28,9 +28,9 @@ class ShellyConnector extends Entities\Connectors\Connector implements IShellyCo
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): ModulesMetadataTypes\ConnectorTypeType
+	public function getType(): MetadataTypes\ConnectorTypeType
 	{
-		return ModulesMetadataTypes\ConnectorTypeType::get(ModulesMetadataTypes\ConnectorTypeType::TYPE_SHELLY);
+		return MetadataTypes\ConnectorTypeType::get(MetadataTypes\ConnectorTypeType::TYPE_SHELLY);
 	}
 
 }

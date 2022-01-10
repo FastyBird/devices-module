@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -187,7 +187,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				),
 				true,
 				[
-					'count' => $channel->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($channel->getConfiguration()) : 0,
+					'count' => $channel->hasControl(MetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($channel->getConfiguration()) : 0,
 				]
 			);
 

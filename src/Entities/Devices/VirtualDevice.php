@@ -17,7 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Devices;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
  * @ORM\Entity
@@ -28,9 +28,9 @@ class VirtualDevice extends Entities\Devices\Device implements IVirtualDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): ModulesMetadataTypes\DeviceTypeType
+	public function getType(): MetadataTypes\DeviceTypeType
 	{
-		return ModulesMetadataTypes\DeviceTypeType::get(ModulesMetadataTypes\DeviceTypeType::TYPE_VIRTUAL);
+		return MetadataTypes\DeviceTypeType::get(MetadataTypes\DeviceTypeType::TYPE_VIRTUAL);
 	}
 
 }

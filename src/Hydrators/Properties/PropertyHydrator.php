@@ -17,7 +17,7 @@ namespace FastyBird\DevicesModule\Hydrators\Properties;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\JsonAPIDocument;
 
 /**
@@ -92,19 +92,19 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *
-	 * @return ModulesMetadataTypes\DataTypeType|null
+	 * @return MetadataTypes\DataTypeType|null
 	 */
-	protected function hydrateDataTypeAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?ModulesMetadataTypes\DataTypeType
+	protected function hydrateDataTypeAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?MetadataTypes\DataTypeType
 	{
 		if (
 			!is_scalar($attributes->get('data_type'))
 			|| (string) $attributes->get('data_type') === ''
-			|| !ModulesMetadataTypes\DataTypeType::isValidValue((string) $attributes->get('data_type'))
+			|| !MetadataTypes\DataTypeType::isValidValue((string) $attributes->get('data_type'))
 		) {
 			return null;
 		}
 
-		return ModulesMetadataTypes\DataTypeType::get((string) $attributes->get('data_type'));
+		return MetadataTypes\DataTypeType::get((string) $attributes->get('data_type'));
 	}
 
 	/**
@@ -138,11 +138,11 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 			if (
 				$rawDataType !== null
 				&& is_scalar($rawDataType)
-				&& ModulesMetadataTypes\DataTypeType::isValidValue((string) $rawDataType)
+				&& MetadataTypes\DataTypeType::isValidValue((string) $rawDataType)
 			) {
-				$dataType = ModulesMetadataTypes\DataTypeType::get((string) $rawDataType);
+				$dataType = MetadataTypes\DataTypeType::get((string) $rawDataType);
 
-				if ($dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+				if ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 					return implode(',', array_map(function ($item): string {
 						return is_array($item) ? implode(':', $item) : $item;
 					}, $rawFormat));

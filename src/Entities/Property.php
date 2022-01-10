@@ -18,8 +18,8 @@ namespace FastyBird\DevicesModule\Entities;
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Helpers as MetadataHelpers;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
@@ -82,9 +82,9 @@ abstract class Property implements IProperty
 	protected bool $queryable = false;
 
 	/**
-	 * @var ModulesMetadataTypes\DataTypeType|null
+	 * @var MetadataTypes\DataTypeType|null
 	 *
-	 * @Enum(class=ModulesMetadataTypes\DataTypeType::class)
+	 * @Enum(class=MetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="property_data_type", length=100, nullable=true, options={"default": null})
 	 */
@@ -131,6 +131,14 @@ abstract class Property implements IProperty
 	protected $value = null;
 
 	/**
+	 * @var mixed|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="property_default", nullable=true, options={"default": null})
+	 */
+	protected $default = null;
+
+	/**
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -145,7 +153,7 @@ abstract class Property implements IProperty
 		$this->identifier = $identifier;
 
 		// Static property can not be set or read from device/channel property
-		if ($this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			$this->settable = false;
 			$this->queryable = false;
 		}
@@ -154,7 +162,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function getType(): ModulesMetadataTypes\PropertyTypeType;
+	abstract public function getType(): MetadataTypes\PropertyTypeType;
 
 	/**
 	 * {@inheritDoc}
@@ -193,7 +201,7 @@ abstract class Property implements IProperty
 	 */
 	public function setSettable(bool $settable): void
 	{
-		if ($settable && $this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($settable && $this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidArgumentException('Static type property can not be settable');
 		}
 
@@ -213,7 +221,7 @@ abstract class Property implements IProperty
 	 */
 	public function setQueryable(bool $queryable): void
 	{
-		if ($queryable && $this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($queryable && $this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidArgumentException('Static type property can not be queryable');
 		}
 
@@ -223,7 +231,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDataType(): ?ModulesMetadataTypes\DataTypeType
+	public function getDataType(): ?MetadataTypes\DataTypeType
 	{
 		return $this->dataType;
 	}
@@ -231,7 +239,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setDataType(?ModulesMetadataTypes\DataTypeType $dataType): void
+	public function setDataType(?MetadataTypes\DataTypeType $dataType): void
 	{
 		$this->dataType = $dataType;
 	}
@@ -283,17 +291,17 @@ abstract class Property implements IProperty
 
 		if ($this->dataType !== null) {
 			if (
-				$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 			) {
 				if (is_numeric($this->invalid)) {
 					return intval($this->invalid);
 				}
-			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 				if (is_numeric($this->invalid)) {
 					return floatval($this->invalid);
 				}
@@ -332,7 +340,7 @@ abstract class Property implements IProperty
 	 */
 	public function getValue()
 	{
-		if (!$this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
 		}
 
@@ -344,7 +352,7 @@ abstract class Property implements IProperty
 			return null;
 		}
 
-		return ModulesMetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
+		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
 	}
 
 	/**
@@ -352,7 +360,43 @@ abstract class Property implements IProperty
 	 */
 	public function setValue(?string $value): void
 	{
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
+		}
+
 		$this->value = $value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDefault()
+	{
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
+		}
+
+		if ($this->default === null) {
+			return null;
+		}
+
+		if ($this->getDataType() === null) {
+			return null;
+		}
+
+		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->default, $this->getFormat());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDefault(?string $default): void
+	{
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Default value is not allowed for property type: %s', $this->getType()->getValue()));
+		}
+
+		$this->default = $default;
 	}
 
 	/**
@@ -376,12 +420,13 @@ abstract class Property implements IProperty
 
 		];
 
-		if (!$this->getType()->equalsValue(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			return $data;
 		}
 
 		return array_merge($data, [
-			'value' => $this->getValue(),
+			'value'   => $this->getValue(),
+			'default' => $this->getDefault(),
 		]);
 	}
 
@@ -398,12 +443,12 @@ abstract class Property implements IProperty
 
 		if ($this->dataType !== null) {
 			if (
-				$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-				|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 			) {
 				[$min, $max] = explode(':', $format) + [null, null];
 
@@ -418,7 +463,7 @@ abstract class Property implements IProperty
 				if ($min === null && $max !== null) {
 					return [null, intval($max)];
 				}
-			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 				[$min, $max] = explode(':', $format) + [null, null];
 
 				if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
@@ -432,7 +477,7 @@ abstract class Property implements IProperty
 				if ($min === null && $max !== null) {
 					return [null, floatval($max)];
 				}
-			} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 				return array_map(function (string $item) {
 					if (strpos($item, ':') === false) {
 						return $item;

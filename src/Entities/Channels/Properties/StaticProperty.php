@@ -16,7 +16,7 @@
 namespace FastyBird\DevicesModule\Entities\Channels\Properties;
 
 use Doctrine\ORM\Mapping as ORM;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
  * @ORM\Entity
@@ -27,9 +27,9 @@ class StaticProperty extends Property implements IStaticProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): ModulesMetadataTypes\PropertyTypeType
+	public function getType(): MetadataTypes\PropertyTypeType
 	{
-		return ModulesMetadataTypes\PropertyTypeType::get(ModulesMetadataTypes\PropertyTypeType::TYPE_STATIC);
+		return MetadataTypes\PropertyTypeType::get(MetadataTypes\PropertyTypeType::TYPE_STATIC);
 	}
 
 }

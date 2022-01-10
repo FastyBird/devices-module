@@ -25,14 +25,12 @@ import uuid
 from typing import List, Optional
 
 # Library dependencies
-from kink import inject
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
 from devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
 
 
-@inject
 class ConnectorsRepository:
     """
     Connectors repository

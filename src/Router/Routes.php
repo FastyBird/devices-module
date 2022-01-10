@@ -18,7 +18,7 @@ namespace FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Middleware;
-use FastyBird\ModulesMetadata;
+use FastyBird\Metadata;
 use FastyBird\SimpleAuth\Middleware as SimpleAuthMiddleware;
 use FastyBird\WebServer\Router as WebServerRouter;
 use IPub\SlimRouter\Routing;
@@ -81,6 +81,9 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Middleware\AccessMiddleware */
 	private Middleware\AccessMiddleware $devicesAccessControlMiddleware;
 
+	/** @var Middleware\PagingMiddleware */
+	private Middleware\PagingMiddleware $pagingMiddleware;
+
 	/** @var SimpleAuthMiddleware\AccessMiddleware */
 	private SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware;
 
@@ -101,6 +104,7 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\ConnectorsV1Controller $connectorsV1Controller,
 		Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller,
 		Middleware\AccessMiddleware $devicesAccessControlMiddleware,
+		Middleware\PagingMiddleware $pagingMiddleware,
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
 		SimpleAuthMiddleware\UserMiddleware $userMiddleware
 	) {
@@ -119,6 +123,7 @@ class Routes implements WebServerRouter\IRoutes
 		$this->connectorControlsV1Controller = $connectorControlsV1Controller;
 
 		$this->devicesAccessControlMiddleware = $devicesAccessControlMiddleware;
+		$this->pagingMiddleware = $pagingMiddleware;
 		$this->accessControlMiddleware = $accessControlMiddleware;
 		$this->userMiddleware = $userMiddleware;
 	}
@@ -131,7 +136,7 @@ class Routes implements WebServerRouter\IRoutes
 	public function registerRoutes(Routing\IRouter $router): void
 	{
 		if ($this->usePrefix) {
-			$routes = $router->group('/' . ModulesMetadata\Constants::MODULE_DEVICES_PREFIX, function (Routing\RouteCollector $group): void {
+			$routes = $router->group('/' . Metadata\Constants::MODULE_DEVICES_PREFIX, function (Routing\RouteCollector $group): void {
 				$this->buildRoutes($group);
 			});
 
@@ -142,6 +147,7 @@ class Routes implements WebServerRouter\IRoutes
 		$routes->addMiddleware($this->accessControlMiddleware);
 		$routes->addMiddleware($this->userMiddleware);
 		$routes->addMiddleware($this->devicesAccessControlMiddleware);
+		$routes->addMiddleware($this->pagingMiddleware);
 	}
 
 	/**

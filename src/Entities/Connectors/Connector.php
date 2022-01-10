@@ -18,7 +18,7 @@ namespace FastyBird\DevicesModule\Entities\Connectors;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -129,7 +129,7 @@ abstract class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function getType(): ModulesMetadataTypes\ConnectorTypeType;
+	abstract public function getType(): MetadataTypes\ConnectorTypeType;
 
 	/**
 	 * {@inheritDoc}

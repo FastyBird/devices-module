@@ -21,9 +21,6 @@ Devices module device managers module
 # Python base dependencies
 from typing import Dict, List, Type, Union
 
-# Library dependencies
-from kink import inject
-
 # Library libs
 from devices_module.entities.device import (
     DeviceConfigurationEntity,
@@ -36,7 +33,6 @@ from devices_module.entities.device import (
 from devices_module.managers.base import BaseManager
 
 
-@inject
 class DevicesManager(BaseManager[DeviceEntity]):
     """
     Devices manager
@@ -91,7 +87,6 @@ class DevicesManager(BaseManager[DeviceEntity]):
         return super().delete_entity(entity_id=device.id, entity_type=DeviceEntity)
 
 
-@inject
 class DevicePropertiesManager(BaseManager[DevicePropertyEntity]):
     """
     Device properties manager
@@ -148,7 +143,6 @@ class DevicePropertiesManager(BaseManager[DevicePropertyEntity]):
         return super().delete_entity(entity_id=device_property.id, entity_type=DevicePropertyEntity)
 
 
-@inject
 class DeviceConfigurationManager(BaseManager[DeviceConfigurationEntity]):
     """
     Device configuration manager
@@ -191,7 +185,6 @@ class DeviceConfigurationManager(BaseManager[DeviceConfigurationEntity]):
         return super().delete_entity(entity_id=device_configuration.id, entity_type=DeviceConfigurationEntity)
 
 
-@inject
 class DeviceControlsManager(BaseManager[DeviceControlEntity]):
     """
     Device controls manager

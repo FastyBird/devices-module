@@ -15,10 +15,10 @@
 
 namespace FastyBird\DevicesModule\Middleware;
 
-use Contributte\Translation;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use FastyBird\SimpleAuth\Exceptions as SimpleAuthExceptions;
 use Fig\Http\Message\StatusCodeInterface;
+use Nette\Localization;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -35,11 +35,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class AccessMiddleware implements MiddlewareInterface
 {
 
-	/** @var Translation\Translator */
-	private Translation\Translator $translator;
+	/** @var Localization\Translator */
+	private Localization\Translator $translator;
 
 	public function __construct(
-		Translation\Translator $translator
+		Localization\Translator $translator
 	) {
 		$this->translator = $translator;
 	}
@@ -51,7 +51,6 @@ final class AccessMiddleware implements MiddlewareInterface
 	 * @return ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\JsonApiErrorException
-	 * @throws Translation\Exceptions\InvalidArgument
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{

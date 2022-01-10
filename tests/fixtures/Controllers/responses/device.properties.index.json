@@ -57,7 +57,8 @@
         "format" : null,
         "invalid" : null,
         "number_of_decimals" : null,
-        "value" : "device-password"
+        "value" : "device-password",
+        "default" : null
       },
       "relationships" : {
         "device" : {
@@ -91,7 +92,8 @@
         ],
         "invalid" : null,
         "number_of_decimals" : null,
-        "value" : "on"
+        "value" : "on",
+        "default" : null
       },
       "relationships" : {
         "device" : {
@@ -155,7 +157,8 @@
         "format" : null,
         "invalid" : null,
         "number_of_decimals" : null,
-        "value" : "device-username"
+        "value" : "device-username",
+        "default" : null
       },
       "relationships" : {
         "device" : {

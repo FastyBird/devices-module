@@ -14,9 +14,7 @@ php:
     date.timezone: Europe/Prague
 
 extensions:
-    contributteConsole                  : Contributte\Console\DI\ConsoleExtension(%consoleMode%)
     contributteTranslation              : Contributte\Translation\DI\TranslationExtension
-    contributteEvents                   : Contributte\EventDispatcher\DI\EventDispatcherExtension
     nettrineAnnotations                 : Nettrine\Annotations\DI\AnnotationsExtension
     nettrineCache                       : Nettrine\Cache\DI\CacheExtension
     nettrineDbal                        : Nettrine\DBAL\DI\DbalExtension
@@ -33,18 +31,9 @@ extensions:
     fbSimpleAuth                        : FastyBird\SimpleAuth\DI\SimpleAuthExtension
     fbSocketServerFactory               : FastyBird\SocketServerFactory\DI\SocketServerFactoryExtension
     fbWebServer                         : FastyBird\WebServer\DI\WebServerExtension(%consoleMode%)
-    fbExchangePlugin                    : FastyBird\ExchangePlugin\DI\ExchangePluginExtension
-    fbDatabasePlugin                    : FastyBird\DatabasePlugin\DI\DatabasePluginExtension
 
-contributteConsole:
-    name: FastyBird:DevicesModule!
-    version: '1.0'
-    catchExceptions: true
-    autoExit: true
-    url: http://devices-module.fastybird.com
-    lazy: false
-    helperSet: \Symfony\Component\Console\Helper\HelperSet
-    helpers: []
+services:
+    - {factory: Symfony\Component\Console\Application}
 
 contributteTranslation:
     locales:

@@ -24,7 +24,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Dict, Union
 
-from modules_metadata.types import ButtonPayload, SwitchPayload
+from metadata.types import ButtonPayload, SwitchPayload
 
 
 class PropertyState(ABC):

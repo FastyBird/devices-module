@@ -18,7 +18,7 @@ namespace FastyBird\DevicesModule\Entities;
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Nette\Utils;
@@ -75,9 +75,9 @@ abstract class Row implements IRow
 	protected ?string $comment = null;
 
 	/**
-	 * @var ModulesMetadataTypes\DataTypeType
+	 * @var MetadataTypes\DataTypeType
 	 *
-	 * @Enum(class=ModulesMetadataTypes\DataTypeType::class)
+	 * @Enum(class=MetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string_enum", name="configuration_data_type", nullable=false)
 	 */
@@ -181,7 +181,7 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDataType(): ModulesMetadataTypes\DataTypeType
+	public function getDataType(): MetadataTypes\DataTypeType
 	{
 		return $this->dataType;
 	}
@@ -191,11 +191,11 @@ abstract class Row implements IRow
 	 */
 	public function setDataType(string $dataType): void
 	{
-		if (!ModulesMetadataTypes\DataTypeType::isValidValue($dataType)) {
+		if (!MetadataTypes\DataTypeType::isValidValue($dataType)) {
 			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
 		}
 
-		$this->dataType = ModulesMetadataTypes\DataTypeType::get($dataType);
+		$this->dataType = MetadataTypes\DataTypeType::get($dataType);
 	}
 
 	/**
@@ -223,20 +223,20 @@ abstract class Row implements IRow
 			return null;
 		}
 
-		if ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+		if ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 			return (float) $this->value;
 
 		} elseif (
-			$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			return (int) $this->value;
 
-		} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
+		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
 			return in_array(strtolower((string) $this->value), ['true', 't', 'yes', 'y', '1', 'on'], true);
 		}
 
@@ -257,19 +257,19 @@ abstract class Row implements IRow
 	public function getMin(): ?float
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
 		if ($this->hasMin()) {
-			return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN);
+			return (float) $this->getParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN);
 		}
 
 		return null;
@@ -281,19 +281,19 @@ abstract class Row implements IRow
 	public function setMin(?float $min): void
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
 		if ($this->getMin() !== $min) {
-			$this->setParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN, $min);
+			$this->setParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN, $min);
 		}
 	}
 
@@ -303,18 +303,18 @@ abstract class Row implements IRow
 	public function hasMin(): bool
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN) !== null;
+		return $this->getParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN) !== null;
 	}
 
 	/**
@@ -323,19 +323,19 @@ abstract class Row implements IRow
 	public function getMax(): ?float
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
 		if ($this->hasMax()) {
-			return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX);
+			return (float) $this->getParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX);
 		}
 
 		return null;
@@ -347,19 +347,19 @@ abstract class Row implements IRow
 	public function setMax(?float $max): void
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
 		if ($this->getMax() !== $max) {
-			$this->setParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX, $max);
+			$this->setParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX, $max);
 		}
 	}
 
@@ -369,18 +369,18 @@ abstract class Row implements IRow
 	public function hasMax(): bool
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX) !== null;
+		return $this->getParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX) !== null;
 	}
 
 	/**
@@ -389,19 +389,19 @@ abstract class Row implements IRow
 	public function getStep(): ?float
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
 		if ($this->hasStep()) {
-			return (float) $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP);
+			return (float) $this->getParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP);
 		}
 
 		return null;
@@ -413,19 +413,19 @@ abstract class Row implements IRow
 	public function setStep(?float $step): void
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
 		if ($this->getStep() !== $step) {
-			$this->setParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP, $step);
+			$this->setParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP, $step);
 		}
 	}
 
@@ -435,18 +435,18 @@ abstract class Row implements IRow
 	public function hasStep(): bool
 	{
 		if (
-			!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			&& !$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			&& !$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam(ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP) !== null;
+		return $this->getParam(MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP) !== null;
 	}
 
 	/**
@@ -454,11 +454,11 @@ abstract class Row implements IRow
 	 */
 	public function getValues(): array
 	{
-		if (!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+		if (!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		return $this->getParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
+		return $this->getParam(MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
 	}
 
 	/**
@@ -466,11 +466,11 @@ abstract class Row implements IRow
 	 */
 	public function setValues(array $values): void
 	{
-		if (!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+		if (!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		$this->setParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
+		$this->setParam(MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
 
 		foreach ($values as $value) {
 			$this->addValue($value);
@@ -484,11 +484,11 @@ abstract class Row implements IRow
 	 */
 	private function addValue(Utils\ArrayHash $value): void
 	{
-		if (!$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+		if (!$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			throw new Exceptions\InvalidStateException(sprintf('This method is not allowed for %s data type', $this->dataType->getValue()));
 		}
 
-		$values = $this->getParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
+		$values = $this->getParam(MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, []);
 
 		if ($value->offsetExists('value') && $value->offsetExists('name')) {
 			$values[] = [
@@ -497,7 +497,7 @@ abstract class Row implements IRow
 			];
 		}
 
-		$this->setParam(ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, $values);
+		$this->setParam(MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, $values);
 	}
 
 	/**
@@ -516,23 +516,23 @@ abstract class Row implements IRow
 		];
 
 		if (
-			$this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			|| $this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			return array_merge($data, [
-				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN  => $this->getMin(),
-				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX  => $this->getMax(),
-				ModulesMetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP => $this->getStep(),
+				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN  => $this->getMin(),
+				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX  => $this->getMax(),
+				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP => $this->getStep(),
 			]);
 
-		} elseif ($this->dataType->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			return array_merge($data, [
-				ModulesMetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES => $this->getValues(),
+				MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES => $this->getValues(),
 			]);
 		}
 

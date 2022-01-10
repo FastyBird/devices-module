@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\DI;
 
-use Contributte\Translation;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Commands;
 use FastyBird\DevicesModule\Controllers;
@@ -42,7 +41,7 @@ use stdClass;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class DevicesModuleExtension extends DI\CompilerExtension implements Translation\DI\TranslationProviderInterface
+class DevicesModuleExtension extends DI\CompilerExtension
 {
 
 	/**
@@ -85,6 +84,9 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 		// Http router
 		$builder->addDefinition($this->prefix('middleware.access'), new DI\Definitions\ServiceDefinition())
 			->setType(Middleware\AccessMiddleware::class);
+
+		$builder->addDefinition($this->prefix('middleware.pagging'), new DI\Definitions\ServiceDefinition())
+			->setType(Middleware\PagingMiddleware::class);
 
 		$builder->addDefinition($this->prefix('router.routes'), new DI\Definitions\ServiceDefinition())
 			->setType(Router\Routes::class)
@@ -395,16 +397,6 @@ class DevicesModuleExtension extends DI\CompilerExtension implements Translation
 
 		$connectorsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsControlsManager');
 		$connectorsControlsManagerService->setBody('return new ' . Models\Connectors\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Controls\Control::class . '\'));');
-	}
-
-	/**
-	 * @return string[]
-	 */
-	public function getTranslationResources(): array
-	{
-		return [
-			__DIR__ . '/../Translations',
-		];
 	}
 
 }

@@ -23,7 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -219,7 +219,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				),
 				true,
 				[
-					'count' => $device->hasControl(ModulesMetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($device->getConfiguration()) : 0,
+					'count' => $device->hasControl(MetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($device->getConfiguration()) : 0,
 				]
 			);
 

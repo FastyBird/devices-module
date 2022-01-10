@@ -24,7 +24,7 @@ from abc import abstractmethod
 from typing import Dict, List, Optional, Union
 
 # Library dependencies
-from modules_metadata.devices_module import ConnectorType
+from metadata.devices_module import ConnectorType
 from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, ForeignKey
 from sqlalchemy.orm import relationship
 

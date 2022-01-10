@@ -29,7 +29,8 @@
         "format" : null,
         "invalid" : null,
         "number_of_decimals" : null,
-        "value" : "device-password"
+        "value" : "device-password",
+        "default" : null
       },
       "relationships" : {
         "device" : {

@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Commands;
 
-use FastyBird\DatabasePlugin\Helpers as DatabasePluginHelpers;
+use Psr\Log;
 use RuntimeException;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
@@ -34,16 +34,16 @@ use Throwable;
 class InitializeCommand extends Console\Command\Command
 {
 
-	/** @var DatabasePluginHelpers\Database */
-	private DatabasePluginHelpers\Database $database;
+	/** @var Log\LoggerInterface */
+	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		DatabasePluginHelpers\Database $database,
+		?Log\LoggerInterface $logger = null,
 		?string $name = null
 	) {
 		parent::__construct($name);
 
-		$this->database = $database;
+		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
 	/**
@@ -87,51 +87,52 @@ class InitializeCommand extends Console\Command\Command
 			return 0;
 		}
 
-		$io->section('Checking database connection');
-
 		try {
-			if (!$this->database->ping()) {
-				$io->error('Connection to the database could not be established. Check configuration.');
+			$io->section('Preparing module database');
+
+			$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
+
+			$result = $databaseCmd->run(new Input\ArrayInput([
+				'--force' => true,
+			]), $output);
+
+			if ($result !== 0) {
+				$io->error('Something went wrong, initialization could not be finished.');
 
 				return 1;
 			}
+
+			$databaseProxiesCmd = $symfonyApp->find('orm:generate-proxies');
+
+			$result = $databaseProxiesCmd->run(new Input\ArrayInput([
+				'--quiet' => true,
+			]), $output);
+
+			if ($result !== 0) {
+				$io->error('Something went wrong, initialization could not be finished.');
+
+				return 1;
+			}
+
+			$io->newLine(3);
+
+			$io->success('Devices module has been successfully initialized and can be now started.');
+
+			return 0;
+
 		} catch (Throwable $ex) {
-			$io->error('Something went wrong, initialization could not be finished.');
+			// Log caught exception
+			$this->logger->error('[FB:DEVICES_MODULE:CMD] ' . $ex->getMessage(), [
+				'exception' => [
+					'message' => $ex->getMessage(),
+					'code'    => $ex->getCode(),
+				],
+			]);
+
+			$io->error('Something went wrong, initialization could not be finished. Error was logged.');
 
 			return 1;
 		}
-
-		$io->section('Preparing module database');
-
-		$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
-
-		$result = $databaseCmd->run(new Input\ArrayInput([
-			'--force' => true,
-		]), $output);
-
-		if ($result !== 0) {
-			$io->error('Something went wrong, initialization could not be finished.');
-
-			return 1;
-		}
-
-		$databaseProxiesCmd = $symfonyApp->find('orm:generate-proxies');
-
-		$result = $databaseProxiesCmd->run(new Input\ArrayInput([
-			'--quiet' => true,
-		]), $output);
-
-		if ($result !== 0) {
-			$io->error('Something went wrong, initialization could not be finished.');
-
-			return 1;
-		}
-
-		$io->newLine(3);
-
-		$io->success('Devices module has been successfully initialized and can be now started.');
-
-		return 0;
 	}
 
 }

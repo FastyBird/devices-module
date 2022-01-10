@@ -19,7 +19,7 @@ use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -236,10 +236,10 @@ abstract class Device implements IDevice
 		$this->identifier = $identifier;
 		$this->name = $name;
 
-		$this->hardwareManufacturer = ModulesMetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC;
-		$this->hardwareModel = ModulesMetadataTypes\DeviceModelType::MODEL_CUSTOM;
+		$this->hardwareManufacturer = MetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC;
+		$this->hardwareModel = MetadataTypes\DeviceModelType::MODEL_CUSTOM;
 
-		$this->firmwareManufacturer = ModulesMetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC;
+		$this->firmwareManufacturer = MetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC;
 
 		$this->children = new Common\Collections\ArrayCollection();
 		$this->channels = new Common\Collections\ArrayCollection();
@@ -382,8 +382,8 @@ abstract class Device implements IDevice
 	 */
 	public function getHardwareManufacturer()
 	{
-		if (ModulesMetadataTypes\HardwareManufacturerType::isValidValue($this->hardwareManufacturer)) {
-			return ModulesMetadataTypes\HardwareManufacturerType::get($this->hardwareManufacturer);
+		if (MetadataTypes\HardwareManufacturerType::isValidValue($this->hardwareManufacturer)) {
+			return MetadataTypes\HardwareManufacturerType::get($this->hardwareManufacturer);
 		}
 
 		return $this->hardwareManufacturer;
@@ -394,7 +394,7 @@ abstract class Device implements IDevice
 	 */
 	public function setHardwareManufacturer($manufacturer): void
 	{
-		if ($manufacturer instanceof ModulesMetadataTypes\HardwareManufacturerType) {
+		if ($manufacturer instanceof MetadataTypes\HardwareManufacturerType) {
 			$this->hardwareManufacturer = $manufacturer->getValue();
 
 		} else {
@@ -407,8 +407,8 @@ abstract class Device implements IDevice
 	 */
 	public function getHardwareModel()
 	{
-		if (ModulesMetadataTypes\DeviceModelType::isValidValue($this->hardwareModel)) {
-			return ModulesMetadataTypes\DeviceModelType::get($this->hardwareModel);
+		if (MetadataTypes\DeviceModelType::isValidValue($this->hardwareModel)) {
+			return MetadataTypes\DeviceModelType::get($this->hardwareModel);
 		}
 
 		return $this->hardwareModel;
@@ -419,7 +419,7 @@ abstract class Device implements IDevice
 	 */
 	public function setHardwareModel($model): void
 	{
-		if ($model instanceof ModulesMetadataTypes\DeviceModelType) {
+		if ($model instanceof MetadataTypes\DeviceModelType) {
 			$this->hardwareModel = $model->getValue();
 
 		} else {
@@ -472,8 +472,8 @@ abstract class Device implements IDevice
 	 */
 	public function getFirmwareManufacturer()
 	{
-		if (ModulesMetadataTypes\FirmwareManufacturerType::isValidValue($this->firmwareManufacturer)) {
-			return ModulesMetadataTypes\FirmwareManufacturerType::get($this->firmwareManufacturer);
+		if (MetadataTypes\FirmwareManufacturerType::isValidValue($this->firmwareManufacturer)) {
+			return MetadataTypes\FirmwareManufacturerType::get($this->firmwareManufacturer);
 		}
 
 		return $this->firmwareManufacturer;
@@ -484,7 +484,7 @@ abstract class Device implements IDevice
 	 */
 	public function setFirmwareManufacturer($manufacturer): void
 	{
-		if ($manufacturer instanceof ModulesMetadataTypes\FirmwareManufacturerType) {
+		if ($manufacturer instanceof MetadataTypes\FirmwareManufacturerType) {
 			$this->firmwareManufacturer = $manufacturer->getValue();
 
 		} else {
@@ -859,12 +859,12 @@ abstract class Device implements IDevice
 			'comment'    => $this->getComment(),
 			'enabled'    => $this->isEnabled(),
 
-			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof ModulesMetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()->getValue() : $this->getHardwareManufacturer(),
-			'hardware_model'        => $this->getHardwareModel() instanceof ModulesMetadataTypes\DeviceModelType ? $this->getHardwareModel()->getValue() : $this->getHardwareModel(),
+			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof MetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()->getValue() : $this->getHardwareManufacturer(),
+			'hardware_model'        => $this->getHardwareModel() instanceof MetadataTypes\DeviceModelType ? $this->getHardwareModel()->getValue() : $this->getHardwareModel(),
 			'hardware_version'      => $this->getHardwareVersion(),
 			'hardware_mac_address'  => $this->getHardwareMacAddress(),
 
-			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof ModulesMetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()->getValue() : $this->getFirmwareManufacturer(),
+			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof MetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()->getValue() : $this->getFirmwareManufacturer(),
 			'firmware_version'      => $this->getFirmwareVersion(),
 
 			'connector'  => $this->getConnector() !== null ? $this->getConnector()->getPlainId() : null,

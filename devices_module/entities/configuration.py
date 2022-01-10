@@ -23,11 +23,11 @@ import uuid
 from typing import Dict, List, Optional, Union
 
 # Library dependencies
-from modules_metadata.devices_module import (
+from metadata.devices_module import (
     ConfigurationNumberFieldAttribute,
     ConfigurationSelectFieldAttribute,
 )
-from modules_metadata.types import DataType
+from metadata.types import DataType
 from sqlalchemy import BINARY, JSON, TEXT, VARCHAR, Column
 
 

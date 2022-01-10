@@ -19,8 +19,8 @@ import uuid
 
 # Library dependencies
 from kink import inject
-from modules_metadata.devices_module import DeviceType
-from modules_metadata.routing import RoutingKey
+from metadata.devices_module import DeviceType
+from metadata.routing import RoutingKey
 
 # Library libs
 from devices_module.entities.device import DeviceEntity

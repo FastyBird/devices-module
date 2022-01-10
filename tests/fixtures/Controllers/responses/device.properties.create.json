@@ -27,7 +27,8 @@
       ],
       "invalid" : null,
       "number_of_decimals" : null,
-      "value" : null
+      "value" : null,
+      "default" : null
     },
     "relationships" : {
       "device" : {

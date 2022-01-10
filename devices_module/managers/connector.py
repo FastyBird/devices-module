@@ -21,15 +21,11 @@ Devices module connector managers module
 # Python base dependencies
 from typing import Dict, List, Type
 
-# Library dependencies
-from kink import inject
-
 # Library libs
 from devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
 from devices_module.managers.base import BaseManager
 
 
-@inject
 class ConnectorsManager(BaseManager[ConnectorEntity]):
     """
     Connectors manager
@@ -83,7 +79,6 @@ class ConnectorsManager(BaseManager[ConnectorEntity]):
         return super().delete_entity(entity_id=connector.id, entity_type=ConnectorEntity)
 
 
-@inject
 class ConnectorControlsManager(BaseManager[ConnectorControlEntity]):
     """
     Connector controls manager

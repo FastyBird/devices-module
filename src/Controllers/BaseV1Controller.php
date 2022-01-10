@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Controllers;
 
-use Contributte\Translation;
 use Doctrine\DBAL\Connection;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Exceptions;
@@ -26,6 +25,7 @@ use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\JsonAPIDocument;
 use Nette;
+use Nette\Localization;
 use Nette\Utils;
 use Psr\Http\Message;
 use Psr\Log;
@@ -46,8 +46,8 @@ abstract class BaseV1Controller
 	/** @var string */
 	protected string $translationDomain = '';
 
-	/** @var Translation\PrefixedTranslator */
-	protected Translation\PrefixedTranslator $translator;
+	/** @var Localization\Translator */
+	protected Localization\Translator $translator;
 
 	/** @var Persistence\ManagerRegistry */
 	protected Persistence\ManagerRegistry $managerRegistry;
@@ -56,13 +56,13 @@ abstract class BaseV1Controller
 	protected Log\LoggerInterface $logger;
 
 	/**
-	 * @param Translation\Translator $translator
+	 * @param Localization\Translator $translator
 	 *
 	 * @return void
 	 */
-	public function injectTranslator(Translation\Translator $translator): void
+	public function injectTranslator(Localization\Translator $translator): void
 	{
-		$this->translator = new Translation\PrefixedTranslator($translator, $this->translationDomain);
+		$this->translator = $translator;
 	}
 
 	/**

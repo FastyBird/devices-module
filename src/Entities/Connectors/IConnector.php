@@ -16,7 +16,7 @@
 namespace FastyBird\DevicesModule\Entities\Connectors;
 
 use FastyBird\DevicesModule\Entities;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineTimestampable;
 
@@ -35,9 +35,9 @@ interface IConnector extends Entities\IEntity,
 {
 
 	/**
-	 * @return ModulesMetadataTypes\ConnectorTypeType
+	 * @return MetadataTypes\ConnectorTypeType
 	 */
-	public function getType(): ModulesMetadataTypes\ConnectorTypeType;
+	public function getType(): MetadataTypes\ConnectorTypeType;
 
 	/**
 	 * @return string

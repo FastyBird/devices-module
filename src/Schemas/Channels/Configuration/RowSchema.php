@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -91,13 +91,13 @@ final class RowSchema extends JsonApiSchemas\JsonApiSchema
 		];
 
 		if (
-			$row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT)
-			|| $row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			$row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			|| $row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			return array_merge($attributes, [
 				'min'  => $row->getMin(),
@@ -105,7 +105,7 @@ final class RowSchema extends JsonApiSchemas\JsonApiSchema
 				'step' => $row->getStep(),
 			]);
 
-		} elseif ($row->getDataType()->equalsValue(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+		} elseif ($row->getDataType()->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			return array_merge($attributes, [
 				'values' => $row->getValues(),
 			]);

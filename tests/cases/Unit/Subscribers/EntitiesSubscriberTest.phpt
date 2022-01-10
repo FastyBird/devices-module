@@ -4,10 +4,10 @@ namespace Tests\Cases;
 
 use Doctrine\ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Exchange;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Subscribers;
-use FastyBird\ExchangePlugin\Publisher as ExchangePluginPublisher;
-use FastyBird\ModulesMetadata;
+use FastyBird\Metadata;
 use Mockery;
 use Nette\Utils;
 use Ninjify\Nunjuck\TestCase\BaseMockeryTestCase;
@@ -24,7 +24,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testSubscriberEvents(): void
 	{
-		$publisher = Mockery::mock(ExchangePluginPublisher\IPublisher::class);
+		$publisher = Mockery::mock(Exchange\IPublisher::class);
 
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 
@@ -32,8 +32,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,
-			$publisher,
-			$entityManager
+			$entityManager,
+			$publisher
 		);
 
 		Assert::same(['preFlush', 'onFlush', 'prePersist', 'postPersist', 'postUpdate'], $subscriber->getSubscribedEvents());
@@ -41,14 +41,14 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishCreatedEntity(): void
 	{
-		$publisher = Mockery::mock(ExchangePluginPublisher\IPublisher::class);
+		$publisher = Mockery::mock(Exchange\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
-				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
-				Assert::same('fb.bus.entity.created.device', $key);
+				Assert::same(Metadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
+				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_CREATED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'local',
@@ -77,8 +77,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,
-			$publisher,
-			$entityManager
+			$entityManager,
+			$publisher
 		);
 
 		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
@@ -97,14 +97,14 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishUpdatedEntity(): void
 	{
-		$publisher = Mockery::mock(ExchangePluginPublisher\IPublisher::class);
+		$publisher = Mockery::mock(Exchange\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
-				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
-				Assert::same('fb.bus.entity.updated.device', $key);
+				Assert::same(Metadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
+				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_UPDATED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'local',
@@ -133,8 +133,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,
-			$publisher,
-			$entityManager
+			$entityManager,
+			$publisher
 		);
 
 		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
@@ -152,14 +152,14 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishDeletedEntity(): void
 	{
-		$publisher = Mockery::mock(ExchangePluginPublisher\IPublisher::class);
+		$publisher = Mockery::mock(Exchange\IPublisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
-				Assert::same(ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
-				Assert::same('fb.bus.entity.deleted.device', $key);
+				Assert::same(Metadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
+				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_DELETED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'local',
@@ -210,8 +210,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityKeyHelper,
-			$publisher,
-			$entityManager
+			$entityManager,
+			$publisher
 		);
 
 		$subscriber->onFlush();

@@ -21,9 +21,6 @@ Devices module channel managers module
 # Python base dependencies
 from typing import Dict, List, Type, Union
 
-# Library dependencies
-from kink import inject
-
 # Library libs
 from devices_module.entities.channel import (
     ChannelConfigurationEntity,
@@ -36,12 +33,11 @@ from devices_module.entities.channel import (
 from devices_module.managers.base import BaseManager
 
 
-@inject
 class ChannelsManager(BaseManager[ChannelEntity]):
     """
     Device channels manager
 
-    @package        FastyBird:ChannelsModule!
+    @package        FastyBird:DevicesModule!
     @module         managers/channel
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
@@ -79,12 +75,11 @@ class ChannelsManager(BaseManager[ChannelEntity]):
         return super().delete_entity(entity_id=channel.id, entity_type=ChannelEntity)
 
 
-@inject
 class ChannelPropertiesManager(BaseManager[ChannelPropertyEntity]):
     """
     Device channel properties manager
 
-    @package        FastyBird:ChannelsModule!
+    @package        FastyBird:DevicesModule!
     @module         managers/channel
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
@@ -136,12 +131,11 @@ class ChannelPropertiesManager(BaseManager[ChannelPropertyEntity]):
         return super().delete_entity(entity_id=channel_property.id, entity_type=ChannelPropertyEntity)
 
 
-@inject
 class ChannelConfigurationManager(BaseManager[ChannelConfigurationEntity]):
     """
     Device channel configuration manager
 
-    @package        FastyBird:ChannelsModule!
+    @package        FastyBird:DevicesModule!
     @module         managers/channel
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
@@ -179,12 +173,11 @@ class ChannelConfigurationManager(BaseManager[ChannelConfigurationEntity]):
         return super().delete_entity(entity_id=channel_configuration.id, entity_type=ChannelConfigurationEntity)
 
 
-@inject
 class ChannelControlsManager(BaseManager[ChannelControlEntity]):
     """
     Device channel controls manager
 
-    @package        FastyBird:ChannelsModule!
+    @package        FastyBird:DevicesModule!
     @module         managers/channel
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>

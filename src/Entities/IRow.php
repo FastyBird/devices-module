@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineTimestampable;
 
 /**
@@ -62,9 +62,9 @@ interface IRow extends IEntity,
 	public function setComment(?string $comment): void;
 
 	/**
-	 * @return ModulesMetadataTypes\DataTypeType
+	 * @return MetadataTypes\DataTypeType
 	 */
-	public function getDataType(): ModulesMetadataTypes\DataTypeType;
+	public function getDataType(): MetadataTypes\DataTypeType;
 
 	/**
 	 * @param string $dataType

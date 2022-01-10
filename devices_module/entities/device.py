@@ -26,14 +26,14 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from modules_metadata.devices_module import (
+from metadata.devices_module import (
     DeviceModel,
     DeviceType,
     FirmwareManufacturer,
     HardwareManufacturer,
     PropertyType,
 )
-from modules_metadata.types import ButtonPayload, SwitchPayload
+from metadata.types import ButtonPayload, SwitchPayload
 from sqlalchemy import (
     BINARY,
     BOOLEAN,

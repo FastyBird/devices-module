@@ -16,7 +16,7 @@
 namespace FastyBird\DevicesModule\States;
 
 use DateTime;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use Ramsey\Uuid;
 
 /**
@@ -43,7 +43,7 @@ interface IProperty
 	public function setActualValue(?string $actual): void;
 
 	/**
-	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null
+	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	 */
 	public function getActualValue();
 

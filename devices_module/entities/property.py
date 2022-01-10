@@ -26,9 +26,9 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
 from fastnumbers import fast_float, fast_int
-from modules_metadata.devices_module import PropertyType
-from modules_metadata.helpers import normalize_value
-from modules_metadata.types import ButtonPayload, DataType, SwitchPayload
+from metadata.devices_module import PropertyType
+from metadata.helpers import normalize_value
+from metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import BINARY, BOOLEAN, VARCHAR, Column, Integer
 
 # Library libs
@@ -76,6 +76,9 @@ class PropertyMixin:
     )
     __value: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="property_value", nullable=True, default=None
+    )
+    __default: Optional[str] = Column(  # type: ignore[assignment]
+        VARCHAR(255), name="property_default", nullable=True, default=None
     )
 
     # -----------------------------------------------------------------------------
@@ -289,7 +292,36 @@ class PropertyMixin:
     @value.setter
     def value(self, value: Optional[str]) -> None:
         """Property value number of decimals setter"""
+        if not self.type == PropertyType.STATIC:
+            raise InvalidStateException(f"Value is not allowed for property type: {self.type.value}")
+
         self.__value = value
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def default(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
+        """Property default"""
+        if not self.type == PropertyType.STATIC:
+            raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
+
+        if self.__default is None:
+            return None
+
+        if self.data_type is None:
+            return None
+
+        return normalize_value(data_type=self.data_type, value=self.__default, value_format=self.format)
+
+    # -----------------------------------------------------------------------------
+
+    @default.setter
+    def default(self, default: Optional[str]) -> None:
+        """Property default number of decimals setter"""
+        if not self.type == PropertyType.STATIC:
+            raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
+
+        self.__default = default
 
     # -----------------------------------------------------------------------------
 
@@ -346,6 +378,7 @@ class PropertyMixin:
             return {
                 **{
                     "value": self.value,
+                    "default": self.default,
                 },
                 **data,
             }

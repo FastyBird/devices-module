@@ -108,7 +108,7 @@ def create_container(database_session: OrmSession) -> None:
     di[ChannelControlsManager] = ChannelControlsManager(session=database_session)
     di["fb-devices-module_channels-controls-manager"] = di[ChannelControlsManager]
 
-    di[EntitiesSubscriber] = EntitiesSubscriber(key_hash_helpers=di[KeyHashHelpers])  # type: ignore[call-arg]
+    di[EntitiesSubscriber] = EntitiesSubscriber(key_hash_helpers=di[KeyHashHelpers])
     di["fb-devices-module_entities-subscriber"] = di[EntitiesSubscriber]
     di[EntityCreatedSubscriber] = EntityCreatedSubscriber()
     di["fb-devices-module_entity-created-subscriber"] = di[EntityCreatedSubscriber]

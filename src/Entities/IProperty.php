@@ -16,7 +16,7 @@
 namespace FastyBird\DevicesModule\Entities;
 
 use DateTime;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineTimestampable;
 
 /**
@@ -33,9 +33,9 @@ interface IProperty extends IEntity,
 {
 
 	/**
-	 * @return ModulesMetadataTypes\PropertyTypeType
+	 * @return MetadataTypes\PropertyTypeType
 	 */
-	public function getType(): ModulesMetadataTypes\PropertyTypeType;
+	public function getType(): MetadataTypes\PropertyTypeType;
 
 	/**
 	 * @return string
@@ -79,16 +79,16 @@ interface IProperty extends IEntity,
 	public function setQueryable(bool $queryable): void;
 
 	/**
-	 * @return ModulesMetadataTypes\DataTypeType|null
+	 * @return MetadataTypes\DataTypeType|null
 	 */
-	public function getDataType(): ?ModulesMetadataTypes\DataTypeType;
+	public function getDataType(): ?MetadataTypes\DataTypeType;
 
 	/**
-	 * @param ModulesMetadataTypes\DataTypeType|null $dataType
+	 * @param MetadataTypes\DataTypeType|null $dataType
 	 *
 	 * @return void
 	 */
-	public function setDataType(?ModulesMetadataTypes\DataTypeType $dataType): void;
+	public function setDataType(?MetadataTypes\DataTypeType $dataType): void;
 
 	/**
 	 * @return string|null
@@ -139,7 +139,7 @@ interface IProperty extends IEntity,
 	public function setNumberOfDecimals(?int $numberOfDecimals): void;
 
 	/**
-	 * @return bool|float|int|string|DateTime|ModulesMetadataTypes\ButtonPayloadType|ModulesMetadataTypes\SwitchPayloadType|null
+	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	 */
 	public function getValue();
 
@@ -149,5 +149,17 @@ interface IProperty extends IEntity,
 	 * @return void
 	 */
 	public function setValue(?string $value): void;
+
+	/**
+	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	 */
+	public function getDefault();
+
+	/**
+	 * @param string|null $default
+	 *
+	 * @return void
+	 */
+	public function setDefault(?string $default): void;
 
 }

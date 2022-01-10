@@ -23,13 +23,10 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Optional
 
-# Library dependencies
-from kink import inject
-
+# Library libs
 from devices_module.state.property import ChannelPropertyState, DevicePropertyState
 
 
-@inject
 class IDevicePropertyStateRepository(ABC):
     """
     State repository for device property
@@ -45,7 +42,6 @@ class IDevicePropertyStateRepository(ABC):
         """Find device property state record by provided database identifier"""
 
 
-@inject
 class IChannelPropertyStateRepository(ABC):
     """
     State repository for channel property

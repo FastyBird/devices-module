@@ -20,13 +20,12 @@ Devices module subscriber module
 
 # Python base dependencies
 import datetime
-from typing import Dict, Optional, Type
+from typing import Dict, Optional, Type, List
 
 # Library dependencies
-from exchange_plugin.publisher import Publisher
 from kink import inject
-from modules_metadata.routing import RoutingKey
-from modules_metadata.types import ModuleOrigin
+from metadata.routing import RoutingKey
+from metadata.types import ModuleOrigin
 from sqlalchemy import event
 
 # Library libs
@@ -46,6 +45,7 @@ from devices_module.entities.device import (
     DeviceEntity,
     DevicePropertyEntity,
 )
+from devices_module.exchange import IPublisher
 from devices_module.helpers import KeyHashHelpers
 from devices_module.repositories.state import (
     IChannelPropertyStateRepository,
@@ -153,7 +153,7 @@ class EntitiesSubscriber:
 
     __key_hash_helpers: KeyHashHelpers
 
-    __publisher: Publisher
+    __publisher: Optional[IPublisher] = None
 
     __device_property_state_repository: Optional[IDevicePropertyStateRepository]
     __channel_property_state_repository: Optional[IChannelPropertyStateRepository]
@@ -163,9 +163,9 @@ class EntitiesSubscriber:
     def __init__(
         self,
         key_hash_helpers: KeyHashHelpers,
-        publisher: Publisher,
-        device_property_state_repository: Optional[IDevicePropertyStateRepository] = None,
-        channel_property_state_repository: Optional[IChannelPropertyStateRepository] = None,
+        publisher: IPublisher = None,  # type: ignore[assignment]
+        device_property_state_repository: IDevicePropertyStateRepository = None,  # type: ignore[assignment]
+        channel_property_state_repository: IChannelPropertyStateRepository = None,  # type: ignore[assignment]
     ) -> None:
         self.__key_hash_helpers = key_hash_helpers
 
@@ -193,6 +193,9 @@ class EntitiesSubscriber:
 
     def after_insert(self, target: Base) -> None:
         """Event fired after new entity is created"""
+        if self.__publisher is None:
+            return
+
         routing_key = self.__get_entity_created_routing_key(entity=type(target))
 
         if routing_key is not None:
@@ -206,6 +209,9 @@ class EntitiesSubscriber:
 
     def after_update(self, target: Base) -> None:
         """Event fired after existing entity is updated"""
+        if self.__publisher is None:
+            return
+
         routing_key = self.__get_entity_updated_routing_key(entity=type(target))
 
         if routing_key is not None:
@@ -219,6 +225,9 @@ class EntitiesSubscriber:
 
     def after_delete(self, target: Base) -> None:
         """Event fired after existing entity is deleted"""
+        if self.__publisher is None:
+            return
+
         routing_key = self.__get_entity_deleted_routing_key(entity=type(target))
 
         if routing_key is not None:

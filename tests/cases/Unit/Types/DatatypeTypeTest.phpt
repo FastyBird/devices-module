@@ -2,7 +2,7 @@
 
 namespace Tests\Cases;
 
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Types as MetadataTypes;
 use Ninjify\Nunjuck\TestCase\BaseTestCase;
 use Tester\Assert;
 
@@ -16,29 +16,29 @@ final class DatatypeTypeTest extends BaseTestCase
 
 	public function testCreateDatatype(): void
 	{
-		$datatype = ModulesMetadataTypes\DataTypeType::get(ModulesMetadataTypes\DataTypeType::DATA_TYPE_INT);
+		$datatype = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_INT);
 
-		Assert::type(ModulesMetadataTypes\DataTypeType::class, $datatype);
+		Assert::type(MetadataTypes\DataTypeType::class, $datatype);
 
-		$datatype = ModulesMetadataTypes\DataTypeType::get(ModulesMetadataTypes\DataTypeType::DATA_TYPE_FLOAT);
+		$datatype = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT);
 
-		Assert::type(ModulesMetadataTypes\DataTypeType::class, $datatype);
+		Assert::type(MetadataTypes\DataTypeType::class, $datatype);
 
-		$datatype = ModulesMetadataTypes\DataTypeType::get(ModulesMetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN);
+		$datatype = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN);
 
-		Assert::type(ModulesMetadataTypes\DataTypeType::class, $datatype);
+		Assert::type(MetadataTypes\DataTypeType::class, $datatype);
 
-		$datatype = ModulesMetadataTypes\DataTypeType::get(ModulesMetadataTypes\DataTypeType::DATA_TYPE_STRING);
+		$datatype = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_STRING);
 
-		Assert::type(ModulesMetadataTypes\DataTypeType::class, $datatype);
+		Assert::type(MetadataTypes\DataTypeType::class, $datatype);
 
-		$datatype = ModulesMetadataTypes\DataTypeType::get(ModulesMetadataTypes\DataTypeType::DATA_TYPE_ENUM);
+		$datatype = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM);
 
-		Assert::type(ModulesMetadataTypes\DataTypeType::class, $datatype);
+		Assert::type(MetadataTypes\DataTypeType::class, $datatype);
 
-		$datatype = ModulesMetadataTypes\DataTypeType::get(ModulesMetadataTypes\DataTypeType::DATA_TYPE_COLOR);
+		$datatype = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_COLOR);
 
-		Assert::type(ModulesMetadataTypes\DataTypeType::class, $datatype);
+		Assert::type(MetadataTypes\DataTypeType::class, $datatype);
 	}
 
 	/**
@@ -46,7 +46,7 @@ final class DatatypeTypeTest extends BaseTestCase
 	 */
 	public function testInvalidDatatype(): void
 	{
-		ModulesMetadataTypes\DataTypeType::get('invalidtype');
+		MetadataTypes\DataTypeType::get('invalidtype');
 	}
 
 }

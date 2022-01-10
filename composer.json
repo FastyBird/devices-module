@@ -19,13 +19,19 @@
     {
       "name": "FastyBird s.r.o.",
       "email": "code@fastybird.com",
-      "homepage": "https://www.fastybird.com/"
+      "homepage": "https://www.fastybird.com"
     },
     {
       "name": "Adam Kadlec",
       "email": "adam.kadlec@fastybird.com"
     }
   ],
+
+  "support": {
+    "email": "code@fastybird.com",
+    "issues": "https://github.com/FastyBird/devices-module/issues",
+    "source" : "https://github.com/FastyBird/devices-module"
+  },
 
   "prefer-stable": true,
 
@@ -34,19 +40,17 @@
   "require": {
     "php": ">=7.4.0|>=8.0.0",
     "ext-bcmath" : "*",
-    "contributte/translation": "^0.8",
     "cweagans/composer-patches": "^1.7",
-    "fastybird/database-plugin": "^0.3",
-    "fastybird/exchange-plugin": "^0.5",
-    "fastybird/json-api": "^0.1",
-    "fastybird/modules-metadata": "^0.22",
+    "fastybird/json-api": "^0.2",
+    "fastybird/metadata": "^0.24",
     "fastybird/simple-auth": "^0.1",
-    "fastybird/web-server": "^0.4",
+    "fastybird/web-server": "^0.5",
     "ipub/doctrine-timestampable": "^1.5",
     "nettrine/orm": "^0.8"
   },
 
   "require-dev": {
+    "contributte/translation": "^0.9",
     "mockery/mockery": "^1.4",
     "ninjify/nunjuck": "^0.3",
     "ninjify/qa": "^0.12",

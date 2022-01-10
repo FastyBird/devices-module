@@ -20,8 +20,8 @@ use DateTime;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Schemas;
-use FastyBird\ModulesMetadata\Helpers as ModulesMetadataHelpers;
-use FastyBird\ModulesMetadata\Types as ModulesMetadataTypes;
+use FastyBird\Metadata\Helpers as MetadataHelpers;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -75,7 +75,7 @@ final class DynamicPropertySchema extends PropertySchema
 	 * @param Entities\Devices\Properties\IDynamicProperty $property
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|bool|int|float|ModulesMetadataTypes\SwitchPayloadType|ModulesMetadataTypes\ButtonPayloadType|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
+	 * @return iterable<string, string|bool|int|float|MetadataTypes\SwitchPayloadType|MetadataTypes\ButtonPayloadType|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -85,8 +85,8 @@ final class DynamicPropertySchema extends PropertySchema
 
 		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property);
 
-		$actualValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
-		$expectedValue = $state !== null ? ($dataType !== null ? ModulesMetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;
+		$actualValue = $state !== null ? ($dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
+		$expectedValue = $state !== null ? ($dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;
 
 		return array_merge((array) parent::getAttributes($property, $context), [
 			'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,

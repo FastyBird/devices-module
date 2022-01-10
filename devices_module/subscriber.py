@@ -20,7 +20,7 @@ Devices module subscriber module
 
 # Python base dependencies
 import datetime
-from typing import Dict, Optional, Type, List
+from typing import Dict, Optional, Type
 
 # Library dependencies
 from kink import inject

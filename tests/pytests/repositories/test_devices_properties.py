@@ -60,7 +60,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
                 "key": "bLykvV",
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
                 "queryable": False,
-                "settable": True,
+                "settable": False,
                 "data_type": "string",
                 "unit": None,
                 "format": None,

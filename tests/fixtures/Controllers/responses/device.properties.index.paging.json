@@ -22,7 +22,7 @@
         "key" : "bLykvV",
         "identifier" : "password",
         "name" : "password",
-        "settable" : true,
+        "settable" : false,
         "queryable" : false,
         "data_type" : "string",
         "unit" : null,

@@ -64,23 +64,6 @@ final class PropertyRepository implements IPropertyRepository
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function getResultSet(
-		Queries\FindChannelPropertiesQuery $queryObject
-	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
-		}
-
-		return $result;
-	}
-
-	/**
 	 * @param string $type
 	 *
 	 * @return ORM\EntityRepository
@@ -102,6 +85,23 @@ final class PropertyRepository implements IPropertyRepository
 		}
 
 		return $this->repository;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
+	public function getResultSet(
+		Queries\FindChannelPropertiesQuery $queryObject
+	): DoctrineOrmQuery\ResultSet {
+		$result = $queryObject->fetch($this->getRepository());
+
+		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
+			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+		}
+
+		return $result;
 	}
 
 }

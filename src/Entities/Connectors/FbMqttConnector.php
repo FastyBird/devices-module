@@ -61,6 +61,43 @@ class FbMqttConnector extends Entities\Connectors\Connector implements IFbMqttCo
 	/**
 	 * {@inheritDoc}
 	 */
+	public function setSecuredPort(?int $port): void
+	{
+		$this->setParam('secured_port', $port);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPassword(): ?string
+	{
+		return $this->getParam('password');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setPassword(?string $password): void
+	{
+		$this->setParam('password', $password);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'server'       => $this->getServer(),
+			'port'         => $this->getPort(),
+			'secured_port' => $this->getSecuredPort(),
+			'username'     => $this->getUsername(),
+		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getServer(): ?string
 	{
 		return $this->getParam('server');
@@ -101,14 +138,6 @@ class FbMqttConnector extends Entities\Connectors\Connector implements IFbMqttCo
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setSecuredPort(?int $port): void
-	{
-		$this->setParam('secured_port', $port);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getUsername(): ?string
 	{
 		return $this->getParam('username');
@@ -120,35 +149,6 @@ class FbMqttConnector extends Entities\Connectors\Connector implements IFbMqttCo
 	public function setUsername(?string $username): void
 	{
 		$this->setParam('username', $username);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPassword(): ?string
-	{
-		return $this->getParam('password');
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setPassword(?string $password): void
-	{
-		$this->setParam('password', $password);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return array_merge(parent::toArray(), [
-			'server'       => $this->getServer(),
-			'port'         => $this->getPort(),
-			'secured_port' => $this->getSecuredPort(),
-			'username'     => $this->getUsername(),
-		]);
 	}
 
 }

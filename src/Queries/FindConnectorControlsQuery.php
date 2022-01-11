@@ -86,7 +86,8 @@ class FindConnectorControlsQuery extends DoctrineOrmQuery\QueryObject
 	public function forConnector(Entities\Connectors\IConnector $connector): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($connector): void {
-			$qb->andWhere('connector.id = :connector')->setParameter('connector', $connector->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+			$qb->andWhere('connector.id = :connector')
+				->setParameter('connector', $connector->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 

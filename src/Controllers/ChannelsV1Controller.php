@@ -130,8 +130,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 	public function create(
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
-	): Message\ResponseInterface
-	{
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 

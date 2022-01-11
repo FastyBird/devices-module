@@ -18,27 +18,14 @@ import { ValuesItemInterface } from '@/lib/models/configuration/types'
 // ENTITY MODEL
 // ============
 export default class DeviceConfiguration extends Configuration implements DeviceConfigurationInterface {
+  type!: DeviceConfigurationEntityTypes
+  device!: DeviceInterface | null
+  deviceBackward!: DeviceInterface | null
+  deviceId!: string
+
   static get entity(): string {
     return 'devices_device_configuration'
   }
-
-  static fields(): Fields {
-    return Object.assign(Configuration.fields(), {
-      type: this.string(''),
-
-      device: this.belongsTo(Device, 'id'),
-      deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
-
-      deviceId: this.string(''),
-    })
-  }
-
-  type!: DeviceConfigurationEntityTypes
-
-  device!: DeviceInterface | null
-  deviceBackward!: DeviceInterface | null
-
-  deviceId!: string
 
   get title(): string {
     if (this.name !== null) {
@@ -137,6 +124,17 @@ export default class DeviceConfiguration extends Configuration implements Device
     }
 
     return this.value as string
+  }
+
+  static fields(): Fields {
+    return Object.assign(Configuration.fields(), {
+      type: this.string(''),
+
+      device: this.belongsTo(Device, 'id'),
+      deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
+
+      deviceId: this.string(''),
+    })
   }
 
   static async get(device: DeviceInterface, id: string): Promise<boolean> {

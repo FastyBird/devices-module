@@ -129,43 +129,6 @@ abstract class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function getType(): MetadataTypes\ConnectorTypeType;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isEnabled(): bool
-	{
-		return $this->enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setEnabled(bool $enabled): void
-	{
-		$this->enabled = $enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDevices(): array
 	{
 		return $this->devices->toArray();
@@ -267,6 +230,43 @@ abstract class Connector implements IConnector
 
 			'owner' => $this->getOwnerId(),
 		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	abstract public function getType(): MetadataTypes\ConnectorTypeType;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setName(string $name): void
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isEnabled(): bool
+	{
+		return $this->enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setEnabled(bool $enabled): void
+	{
+		$this->enabled = $enabled;
 	}
 
 }

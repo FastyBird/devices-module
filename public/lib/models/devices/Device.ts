@@ -31,82 +31,33 @@ import { ConnectorInterface } from '@/lib/models/connectors/types'
 // ENTITY MODEL
 // ============
 export default class Device extends Model implements DeviceInterface {
-  static get entity(): string {
-    return 'devices_device'
-  }
-
-  static fields(): Fields {
-    return {
-      id: this.string(''),
-      type: this.string(''),
-
-      draft: this.boolean(false),
-
-      parentId: this.string(null).nullable(),
-
-      key: this.string(''),
-      identifier: this.string(''),
-      name: this.string(null).nullable(),
-      comment: this.string(null).nullable(),
-      enabled: this.boolean(false),
-
-      hardwareModel: this.string(DeviceModel.CUSTOM),
-      hardwareManufacturer: this.string(HardwareManufacturer.GENERIC),
-      hardwareVersion: this.string(null).nullable(),
-      hardwareMacAddress: this.string(null).nullable(),
-
-      firmwareManufacturer: this.string(FirmwareManufacturer.GENERIC),
-      firmwareVersion: this.string(null).nullable(),
-
-      owner: this.string(null).nullable(),
-
-      // Relations
-      relationshipNames: this.attr([]),
-
-      children: this.hasMany(Device, 'parentId'),
-      channels: this.hasMany(Channel, 'deviceId'),
-      properties: this.hasMany(DeviceProperty, 'deviceId'),
-      configuration: this.hasMany(DeviceConfiguration, 'deviceId'),
-
-      connector: this.belongsTo(Connector, 'id'),
-      connectorBackward: this.hasOne(Connector, 'id', 'connectorId'),
-
-      connectorId: this.string(''),
-    }
-  }
-
   id!: string
   type!: DeviceEntityTypes
-
   draft!: boolean
-
   parentId!: string | null
-
   key!: string
   identifier!: string
   name!: string | null
   comment!: string | null
   enabled!: boolean
-
   hardwareModel!: string
   hardwareManufacturer!: string
   hardwareVersion!: string | null
   macAddress!: string | null
-
   firmwareManufacturer!: string
   firmwareVersion!: string | null
-
   owner!: string | null
-
   relationshipNames!: string[]
-
   children!: DeviceInterface[]
   channels!: ChannelInterface[]
   properties!: DevicePropertyInterface[]
   configuration!: DeviceConfigurationInterface[]
   connector!: ConnectorInterface
-
   connectorId!: string
+
+  static get entity(): string {
+    return 'devices_device'
+  }
 
   get isEnabled(): boolean {
     return this.enabled
@@ -171,6 +122,46 @@ export default class Device extends Model implements DeviceInterface {
 
   get isCustomModel(): boolean {
     return this.hardwareModel === DeviceModel.CUSTOM
+  }
+
+  static fields(): Fields {
+    return {
+      id: this.string(''),
+      type: this.string(''),
+
+      draft: this.boolean(false),
+
+      parentId: this.string(null).nullable(),
+
+      key: this.string(''),
+      identifier: this.string(''),
+      name: this.string(null).nullable(),
+      comment: this.string(null).nullable(),
+      enabled: this.boolean(false),
+
+      hardwareModel: this.string(DeviceModel.CUSTOM),
+      hardwareManufacturer: this.string(HardwareManufacturer.GENERIC),
+      hardwareVersion: this.string(null).nullable(),
+      hardwareMacAddress: this.string(null).nullable(),
+
+      firmwareManufacturer: this.string(FirmwareManufacturer.GENERIC),
+      firmwareVersion: this.string(null).nullable(),
+
+      owner: this.string(null).nullable(),
+
+      // Relations
+      relationshipNames: this.attr([]),
+
+      children: this.hasMany(Device, 'parentId'),
+      channels: this.hasMany(Channel, 'deviceId'),
+      properties: this.hasMany(DeviceProperty, 'deviceId'),
+      configuration: this.hasMany(DeviceConfiguration, 'deviceId'),
+
+      connector: this.belongsTo(Connector, 'id'),
+      connectorBackward: this.hasOne(Connector, 'id', 'connectorId'),
+
+      connectorId: this.string(''),
+    }
   }
 
   static async get(id: string, includeChannels: boolean): Promise<boolean> {

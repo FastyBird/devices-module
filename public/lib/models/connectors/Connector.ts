@@ -20,8 +20,31 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 // ENTITY MODEL
 // ============
 export default class Connector extends Model implements ConnectorInterface {
+  id!: string
+  type!: ConnectorEntityTypes
+  name!: string
+  enabled!: boolean
+  relationshipNames!: string[]
+  devices!: DeviceInterface[]
+  address!: number
+  serialInterface!: string
+  baudRate!: number
+  server!: string
+  port!: number
+  securedPort!: number
+  username!: string
+  password!: string
+
   static get entity(): string {
     return 'devices_connector'
+  }
+
+  get isEnabled(): boolean {
+    return this.enabled
+  }
+
+  get icon(): string {
+    return 'magic'
   }
 
   static fields(): Fields {
@@ -49,34 +72,6 @@ export default class Connector extends Model implements ConnectorInterface {
       username: this.string(null).nullable(),
       password: this.string(null).nullable(),
     }
-  }
-
-  id!: string
-  type!: ConnectorEntityTypes
-
-  name!: string
-  enabled!: boolean
-
-  relationshipNames!: string[]
-
-  devices!: DeviceInterface[]
-
-  address!: number
-  serialInterface!: string
-  baudRate!: number
-
-  server!: string
-  port!: number
-  securedPort!: number
-  username!: string
-  password!: string
-
-  get isEnabled(): boolean {
-    return this.enabled
-  }
-
-  get icon(): string {
-    return 'magic'
   }
 
   static async get(id: string): Promise<boolean> {

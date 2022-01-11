@@ -86,7 +86,8 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	public function forParent(Entities\Devices\IDevice $device): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device): void {
-			$qb->andWhere('d.parent = :parent')->setParameter('parent', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+			$qb->andWhere('d.parent = :parent')
+				->setParameter('parent', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 

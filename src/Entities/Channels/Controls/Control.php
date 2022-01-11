@@ -91,9 +91,16 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
+	public function toArray(): array
 	{
-		return $this->channel;
+		return [
+			'id'   => $this->getPlainId(),
+			'name' => $this->getName(),
+
+			'channel' => $this->getChannel()->getPlainId(),
+
+			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
+		];
 	}
 
 	/**
@@ -107,16 +114,9 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
+	public function getChannel(): Entities\Channels\IChannel
 	{
-		return [
-			'id'      => $this->getPlainId(),
-			'name'    => $this->getName(),
-
-			'channel' => $this->getChannel()->getPlainId(),
-
-			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
-		];
+		return $this->channel;
 	}
 
 }

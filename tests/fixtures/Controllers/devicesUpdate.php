@@ -10,7 +10,7 @@ const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZ
 return [
 	// Valid responses
 	//////////////////
-	'update'          => [
+	'update'       => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.update.json'),
@@ -20,49 +20,49 @@ return [
 
 	// Invalid responses
 	////////////////////
-	'invalidType'     => [
+	'invalidType'  => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.update.invalid.type.json'),
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/generic/invalid.type.json',
 	],
-	'idMismatch'      => [
+	'idMismatch'   => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.update.invalid.id.json'),
 		StatusCodeInterface::STATUS_BAD_REQUEST,
 		__DIR__ . '/responses/generic/invalid.identifier.json',
 	],
-	'missingToken'    => [
+	'missingToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		null,
 		file_get_contents(__DIR__ . '/requests/devices.update.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'invalidToken'    => [
+	'invalidToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'Bearer ' . INVALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.update.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'emptyToken'      => [
+	'emptyToken'   => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'',
 		file_get_contents(__DIR__ . '/requests/devices.update.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'expiredToken'    => [
+	'expiredToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'Bearer ' . EXPIRED_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.create.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'notAllowed'      => [
+	'notAllowed'   => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
 		'Bearer ' . VALID_TOKEN_USER,
 		file_get_contents(__DIR__ . '/requests/devices.update.json'),

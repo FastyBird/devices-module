@@ -95,12 +95,15 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 			'enabled' => $device->isEnabled(),
 
-			'hardware_manufacturer' => $device->getHardwareManufacturer() instanceof Enum ? $device->getHardwareManufacturer()->getValue() : $device->getHardwareManufacturer(),
-			'hardware_model'        => $device->getHardwareModel() instanceof Enum ? $device->getHardwareModel()->getValue() : $device->getHardwareModel(),
+			'hardware_manufacturer' => $device->getHardwareManufacturer() instanceof Enum ? $device->getHardwareManufacturer()
+				->getValue() : $device->getHardwareManufacturer(),
+			'hardware_model'        => $device->getHardwareModel() instanceof Enum ? $device->getHardwareModel()
+				->getValue() : $device->getHardwareModel(),
 			'hardware_version'      => $device->getHardwareVersion(),
 			'hardware_mac_address'  => $device->getHardwareMacAddress(),
 
-			'firmware_manufacturer' => $device->getFirmwareManufacturer() instanceof Enum ? $device->getFirmwareManufacturer()->getValue() : $device->getFirmwareManufacturer(),
+			'firmware_manufacturer' => $device->getFirmwareManufacturer() instanceof Enum ? $device->getFirmwareManufacturer()
+				->getValue() : $device->getFirmwareManufacturer(),
 			'firmware_version'      => $device->getFirmwareVersion(),
 
 			'owner' => $device->getOwnerId(),
@@ -153,7 +156,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONTROLS => [
+			self::RELATIONSHIPS_CONTROLS      => [
 				self::RELATIONSHIP_DATA          => $device->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
@@ -173,12 +176,38 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => $device->getConnector() !== null,
 			],
-			self::RELATIONSHIPS_PARENT     => [
+			self::RELATIONSHIPS_PARENT        => [
 				self::RELATIONSHIP_DATA          => $device->getParent(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => $device->getParent() !== null,
 			],
 		];
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Channels\IChannel[]
+	 */
+	private function getChannels(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindChannelsQuery();
+		$findQuery->forDevice($device);
+
+		return $this->channelRepository->findAllBy($findQuery);
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Devices\IDevice[]
+	 */
+	private function getChildren(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery->forParent($device);
+
+		return $this->deviceRepository->findAllBy($findQuery);
 	}
 
 	/**
@@ -332,32 +361,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		}
 
 		return parent::getRelationshipSelfLink($device, $name);
-	}
-
-	/**
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Devices\IDevice[]
-	 */
-	private function getChildren(Entities\Devices\IDevice $device): array
-	{
-		$findQuery = new Queries\FindDevicesQuery();
-		$findQuery->forParent($device);
-
-		return $this->deviceRepository->findAllBy($findQuery);
-	}
-
-	/**
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Channels\IChannel[]
-	 */
-	private function getChannels(Entities\Devices\IDevice $device): array
-	{
-		$findQuery = new Queries\FindChannelsQuery();
-		$findQuery->forDevice($device);
-
-		return $this->channelRepository->findAllBy($findQuery);
 	}
 
 }

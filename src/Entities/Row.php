@@ -141,6 +141,65 @@ abstract class Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getDataType(): MetadataTypes\DataTypeType
+	{
+		return $this->dataType;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDataType(string $dataType): void
+	{
+		if (!MetadataTypes\DataTypeType::isValidValue($dataType)) {
+			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
+		}
+
+		$this->dataType = MetadataTypes\DataTypeType::get($dataType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		$data = [
+			'id'         => $this->getPlainId(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+			'default'    => $this->getDefault(),
+			'value'      => $this->getValue(),
+		];
+
+		if (
+			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
+		) {
+			return array_merge($data, [
+				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN  => $this->getMin(),
+				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX  => $this->getMax(),
+				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP => $this->getStep(),
+			]);
+
+		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+			return array_merge($data, [
+				MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES => $this->getValues(),
+			]);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
@@ -176,26 +235,6 @@ abstract class Row implements IRow
 	public function setComment(?string $comment): void
 	{
 		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getDataType(): MetadataTypes\DataTypeType
-	{
-		return $this->dataType;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setDataType(string $dataType): void
-	{
-		if (!MetadataTypes\DataTypeType::isValidValue($dataType)) {
-			throw new Exceptions\InvalidArgumentException(sprintf('Provided data type "%s" is not valid', $dataType));
-		}
-
-		$this->dataType = MetadataTypes\DataTypeType::get($dataType);
 	}
 
 	/**
@@ -498,45 +537,6 @@ abstract class Row implements IRow
 		}
 
 		$this->setParam(MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES, $values);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		$data = [
-			'id'         => $this->getPlainId(),
-			'key'        => $this->getKey(),
-			'identifier' => $this->getIdentifier(),
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
-			'default'    => $this->getDefault(),
-			'value'      => $this->getValue(),
-		];
-
-		if (
-			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
-		) {
-			return array_merge($data, [
-				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MIN  => $this->getMin(),
-				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_MAX  => $this->getMax(),
-				MetadataTypes\ConfigurationNumberFieldAttributeType::ATTRIBUTE_STEP => $this->getStep(),
-			]);
-
-		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
-			return array_merge($data, [
-				MetadataTypes\ConfigurationSelectFieldAttributeType::ATTRIBUTE_VALUES => $this->getValues(),
-			]);
-		}
-
-		return $data;
 	}
 
 }

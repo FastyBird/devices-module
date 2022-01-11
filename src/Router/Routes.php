@@ -131,7 +131,9 @@ class Routes implements WebServerRouter\IRoutes
 	public function registerRoutes(Routing\IRouter $router): void
 	{
 		if ($this->usePrefix) {
-			$routes = $router->group('/' . Metadata\Constants::MODULE_DEVICES_PREFIX, function (Routing\RouteCollector $group): void {
+			$routes = $router->group('/' . Metadata\Constants::MODULE_DEVICES_PREFIX, function (
+				Routing\RouteCollector $group
+			): void {
 				$this->buildRoutes($group);
 			});
 
@@ -269,7 +271,8 @@ class Routes implements WebServerRouter\IRoutes
 						]);
 						$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_RELATIONSHIP);
 
-						$group->group('/{' . self::URL_CHANNEL_ID . '}', function (Routing\RouteCollector $group): void {
+						$group->group('/{' . self::URL_CHANNEL_ID . '}', function (Routing\RouteCollector $group
+						): void {
 							/**
 							 * CHANNEL PROPERTIES
 							 */
@@ -285,9 +288,15 @@ class Routes implements WebServerRouter\IRoutes
 
 								$group->post('', [$this->channelPropertiesV1Controller, 'create']);
 
-								$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->channelPropertiesV1Controller, 'update']);
+								$group->patch('/{' . self::URL_ITEM_ID . '}', [
+									$this->channelPropertiesV1Controller,
+									'update',
+								]);
 
-								$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->channelPropertiesV1Controller, 'delete']);
+								$group->delete('/{' . self::URL_ITEM_ID . '}', [
+									$this->channelPropertiesV1Controller,
+									'delete',
+								]);
 
 								$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
 									$this->channelPropertiesV1Controller,

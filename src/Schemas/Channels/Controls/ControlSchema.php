@@ -51,8 +51,7 @@ final class ControlSchema extends JsonApiSchemas\JsonApiSchema
 
 	public function __construct(
 		Routing\IRouter $router
-	)
-	{
+	) {
 		$this->router = $router;
 	}
 

@@ -91,9 +91,16 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConnector(): Entities\Connectors\IConnector
+	public function toArray(): array
 	{
-		return $this->connector;
+		return [
+			'id'   => $this->getPlainId(),
+			'name' => $this->getName(),
+
+			'connector' => $this->getConnector()->getPlainId(),
+
+			'owner' => $this->getConnector()->getOwnerId(),
+		];
 	}
 
 	/**
@@ -107,16 +114,9 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
+	public function getConnector(): Entities\Connectors\IConnector
 	{
-		return [
-			'id'        => $this->getPlainId(),
-			'name'      => $this->getName(),
-
-			'connector' => $this->getConnector()->getPlainId(),
-
-			'owner' => $this->getConnector()->getOwnerId(),
-		];
+		return $this->connector;
 	}
 
 }

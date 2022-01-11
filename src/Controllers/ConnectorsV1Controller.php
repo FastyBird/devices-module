@@ -125,6 +125,39 @@ class ConnectorsV1Controller extends BaseV1Controller
 	}
 
 	/**
+	 * @param string $id
+	 *
+	 * @return Entities\Connectors\IConnector
+	 *
+	 * @throws JsonApiExceptions\IJsonApiException
+	 */
+	protected function findConnector(string $id): Entities\Connectors\IConnector
+	{
+		try {
+			$findQuery = new Queries\FindConnectorsQuery();
+			$findQuery->byId(Uuid\Uuid::fromString($id));
+
+			$connector = $this->connectorRepository->findOneBy($findQuery);
+
+			if ($connector === null) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_NOT_FOUND,
+					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+					$this->translator->translate('//devices-module.base.messages.notFound.message')
+				);
+			}
+		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
+			throw new JsonApiExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_NOT_FOUND,
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message')
+			);
+		}
+
+		return $connector;
+	}
+
+	/**
 	 * @param Message\ServerRequestInterface $request
 	 * @param Message\ResponseInterface $response
 	 *
@@ -251,39 +284,6 @@ class ConnectorsV1Controller extends BaseV1Controller
 		}
 
 		return parent::readRelationship($request, $response);
-	}
-
-	/**
-	 * @param string $id
-	 *
-	 * @return Entities\Connectors\IConnector
-	 *
-	 * @throws JsonApiExceptions\IJsonApiException
-	 */
-	protected function findConnector(string $id): Entities\Connectors\IConnector
-	{
-		try {
-			$findQuery = new Queries\FindConnectorsQuery();
-			$findQuery->byId(Uuid\Uuid::fromString($id));
-
-			$connector = $this->connectorRepository->findOneBy($findQuery);
-
-			if ($connector === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
-					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
-				);
-			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
-		}
-
-		return $connector;
 	}
 
 }

@@ -22,9 +22,13 @@
 
 ## What is FastyBird IoT devices module?
 
-Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin and also [Python](https://python.org) module for managing connected devices and their basic logic.
+Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin
+and also [Python](https://python.org) module for managing connected devices and their basic logic.
 
-[FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed in [PHP](https://www.php.net) with [Nette framework](https://nette.org), in [Typescript](https://www.typescriptlang.org) and also in [Python](https://python.org).
+[FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is
+an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed
+in [PHP](https://www.php.net) with [Nette framework](https://nette.org), in [Typescript](https://www.typescriptlang.org)
+and also in [Python](https://python.org).
 
 ### Features:
 
@@ -38,9 +42,12 @@ Devices module is a combined [Nette framework](https://nette.org) extension and 
 
 ## Requirements
 
-PHP part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4 and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
+PHP part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4
+and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server
+and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
 
-JavaScript part of [FastyBird](https://www.fastybird.com) devices module is tested against [ECMAScript 6](https://www.w3schools.com/JS/js_es6.asp)
+JavaScript part of [FastyBird](https://www.fastybird.com) devices module is tested
+against [ECMAScript 6](https://www.w3schools.com/JS/js_es6.asp)
 
 Python part of [FastyBird](https://www.fastybird.com) devices module is tested against [Python 3.7](http://python.org)
 
@@ -78,11 +85,14 @@ pip install fastybird-devices-module
 
 ## Documentation
 
-Learn how to use devices module and manage your devices in [documentation](https://github.com/FastyBird/devices-module/blob/master/.docs/en/index.md).
+Learn how to use devices module and manage your devices
+in [documentation](https://github.com/FastyBird/devices-module/blob/master/.docs/en/index.md).
 
 ## Feedback
 
-Use the [issue tracker](https://github.com/FastyBird/devices-module/issues) for bugs or [mail](mailto:code@fastybird.com) or [Tweet](https://twitter.com/fastybird) us for any idea that can improve the project.
+Use the [issue tracker](https://github.com/FastyBird/devices-module/issues) for bugs
+or [mail](mailto:code@fastybird.com) or [Tweet](https://twitter.com/fastybird) us for any idea that can improve the
+project.
 
 Thank you for testing, reporting and contributing.
 
@@ -107,4 +117,5 @@ For release info check [release page](https://github.com/FastyBird/devices-modul
 </table>
 
 ***
-Homepage [https://www.fastybird.com](https://www.fastybird.com) and repository [https://github.com/fastybird/devices-module](https://github.com/fastybird/devices-module).
+Homepage [https://www.fastybird.com](https://www.fastybird.com) and
+repository [https://github.com/fastybird/devices-module](https://github.com/fastybird/devices-module).

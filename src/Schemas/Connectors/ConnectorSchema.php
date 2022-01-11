@@ -105,7 +105,7 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	public function getRelationships($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			self::RELATIONSHIPS_DEVICES => [
+			self::RELATIONSHIPS_DEVICES  => [
 				self::RELATIONSHIP_DATA          => $connector->getDevices(),
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => false,

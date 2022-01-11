@@ -167,6 +167,37 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
+	public function toArray(): array
+	{
+		$data = [
+			'id'                 => $this->getPlainId(),
+			'type'               => $this->getType()->getValue(),
+			'key'                => $this->getKey(),
+			'identifier'         => $this->getIdentifier(),
+			'name'               => $this->getName(),
+			'settable'           => $this->isSettable(),
+			'queryable'          => $this->isQueryable(),
+			'data_type'          => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
+			'unit'               => $this->getUnit(),
+			'format'             => $this->getFormat(),
+			'invalid'            => $this->getInvalid(),
+			'number_of_decimals' => $this->getNumberOfDecimals(),
+
+		];
+
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			return $data;
+		}
+
+		return array_merge($data, [
+			'value'   => $this->getValue(),
+			'default' => $this->getDefault(),
+		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
@@ -281,156 +312,6 @@ abstract class Property implements IProperty
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public function getInvalid()
-	{
-		if ($this->invalid === null) {
-			return null;
-		}
-
-		if ($this->dataType !== null) {
-			if (
-				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
-			) {
-				if (is_numeric($this->invalid)) {
-					return intval($this->invalid);
-				}
-			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-				if (is_numeric($this->invalid)) {
-					return floatval($this->invalid);
-				}
-			}
-		}
-
-		return $this->invalid;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setInvalid(?string $invalid): void
-	{
-		$this->invalid = $invalid;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getNumberOfDecimals(): ?int
-	{
-		return $this->numberOfDecimals;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setNumberOfDecimals(?int $numberOfDecimals): void
-	{
-		$this->numberOfDecimals = $numberOfDecimals;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getValue()
-	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
-		}
-
-		if ($this->value === null) {
-			return null;
-		}
-
-		if ($this->getDataType() === null) {
-			return null;
-		}
-
-		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setValue(?string $value): void
-	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
-		}
-
-		$this->value = $value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getDefault()
-	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()->getValue()));
-		}
-
-		if ($this->default === null) {
-			return null;
-		}
-
-		if ($this->getDataType() === null) {
-			return null;
-		}
-
-		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->default, $this->getFormat());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setDefault(?string $default): void
-	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Default value is not allowed for property type: %s', $this->getType()->getValue()));
-		}
-
-		$this->default = $default;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		$data = [
-			'id'                 => $this->getPlainId(),
-			'type'               => $this->getType()->getValue(),
-			'key'                => $this->getKey(),
-			'identifier'         => $this->getIdentifier(),
-			'name'               => $this->getName(),
-			'settable'           => $this->isSettable(),
-			'queryable'          => $this->isQueryable(),
-			'data_type'          => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
-			'unit'               => $this->getUnit(),
-			'format'             => $this->getFormat(),
-			'invalid'            => $this->getInvalid(),
-			'number_of_decimals' => $this->getNumberOfDecimals(),
-
-		];
-
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			return $data;
-		}
-
-		return array_merge($data, [
-			'value'   => $this->getValue(),
-			'default' => $this->getDefault(),
-		]);
-	}
-
-	/**
 	 * @param string|null $format
 	 *
 	 * @return Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null
@@ -495,6 +376,129 @@ abstract class Property implements IProperty
 		}
 
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getInvalid()
+	{
+		if ($this->invalid === null) {
+			return null;
+		}
+
+		if ($this->dataType !== null) {
+			if (
+				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			) {
+				if (is_numeric($this->invalid)) {
+					return intval($this->invalid);
+				}
+			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+				if (is_numeric($this->invalid)) {
+					return floatval($this->invalid);
+				}
+			}
+		}
+
+		return $this->invalid;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setInvalid(?string $invalid): void
+	{
+		$this->invalid = $invalid;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getNumberOfDecimals(): ?int
+	{
+		return $this->numberOfDecimals;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setNumberOfDecimals(?int $numberOfDecimals): void
+	{
+		$this->numberOfDecimals = $numberOfDecimals;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getValue()
+	{
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()
+				->getValue()));
+		}
+
+		if ($this->value === null) {
+			return null;
+		}
+
+		if ($this->getDataType() === null) {
+			return null;
+		}
+
+		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setValue(?string $value): void
+	{
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()
+				->getValue()));
+		}
+
+		$this->value = $value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDefault()
+	{
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()
+				->getValue()));
+		}
+
+		if ($this->default === null) {
+			return null;
+		}
+
+		if ($this->getDataType() === null) {
+			return null;
+		}
+
+		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->default, $this->getFormat());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDefault(?string $default): void
+	{
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			throw new Exceptions\InvalidStateException(sprintf('Default value is not allowed for property type: %s', $this->getType()
+				->getValue()));
+		}
+
+		$this->default = $default;
 	}
 
 }

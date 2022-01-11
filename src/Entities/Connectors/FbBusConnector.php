@@ -55,6 +55,18 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	/**
 	 * {@inheritDoc}
 	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'address'          => $this->getAddress(),
+			'serial_interface' => $this->getSerialInterface(),
+			'baud_rate'        => $this->getBaudRate(),
+		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getAddress(): ?int
 	{
 		return $this->getParam('address');
@@ -98,18 +110,6 @@ class FbBusConnector extends Entities\Connectors\Connector implements IFbBusConn
 	public function setBaudRate(?int $baudRate): void
 	{
 		$this->setParam('baud_rate', $baudRate);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return array_merge(parent::toArray(), [
-			'address'          => $this->getAddress(),
-			'serial_interface' => $this->getSerialInterface(),
-			'baud_rate'        => $this->getBaudRate(),
-		]);
 	}
 
 }

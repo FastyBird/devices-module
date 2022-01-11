@@ -10,9 +10,21 @@
       "data_type" : "enum",
       "unit" : null,
       "format" : [
-        ["on", "1", "256"],
-        ["off", "0", "512"],
-        ["toggle", null, "768"]
+        [
+          "on",
+          "1",
+          "256"
+        ],
+        [
+          "off",
+          "0",
+          "512"
+        ],
+        [
+          "toggle",
+          null,
+          "768"
+        ]
       ],
       "invalid" : null
     },

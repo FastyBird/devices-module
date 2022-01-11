@@ -23,54 +23,23 @@ import { ChannelConfigurationInterface } from '@/lib/models/channel-configuratio
 // ============
 
 export default class Channel extends Model implements ChannelInterface {
-  static get entity(): string {
-    return 'devices_channel'
-  }
-
-  static fields(): Fields {
-    return {
-      id: this.string(''),
-      type: this.string(''),
-
-      draft: this.boolean(false),
-
-      key: this.string(''),
-      identifier: this.string(''),
-      name: this.string(null).nullable(),
-      comment: this.string(null).nullable(),
-
-      // Relations
-      relationshipNames: this.attr([]),
-
-      properties: this.hasMany(ChannelProperty, 'channelId'),
-      configuration: this.hasMany(ChannelConfiguration, 'channelId'),
-
-      device: this.belongsTo(Device, 'id'),
-      deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
-
-      deviceId: this.string(''),
-    }
-  }
-
   id!: string
   type!: ChannelEntityTypes
-
   draft!: boolean
-
   key!: string
   identifier!: string
   name!: string | null
   comment!: string | null
-
   relationshipNames!: string[]
-
   properties!: ChannelPropertyInterface[]
   configuration!: ChannelConfigurationInterface[]
-
   device!: DeviceInterface | null
   deviceBackward!: DeviceInterface | null
-
   deviceId!: string
+
+  static get entity(): string {
+    return 'devices_channel'
+  }
 
   get title(): string {
     if (this.name !== null) {
@@ -120,6 +89,31 @@ export default class Channel extends Model implements ChannelInterface {
     }
 
     return capitalize(this.identifier)
+  }
+
+  static fields(): Fields {
+    return {
+      id: this.string(''),
+      type: this.string(''),
+
+      draft: this.boolean(false),
+
+      key: this.string(''),
+      identifier: this.string(''),
+      name: this.string(null).nullable(),
+      comment: this.string(null).nullable(),
+
+      // Relations
+      relationshipNames: this.attr([]),
+
+      properties: this.hasMany(ChannelProperty, 'channelId'),
+      configuration: this.hasMany(ChannelConfiguration, 'channelId'),
+
+      device: this.belongsTo(Device, 'id'),
+      deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
+
+      deviceId: this.string(''),
+    }
   }
 
   static async get(device: DeviceInterface, id: string): Promise<boolean> {

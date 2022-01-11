@@ -152,62 +152,6 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
-	{
-		return $this->device;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getIdentifier(): string
-	{
-		return $this->identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setIdentifier(string $identifier): void
-	{
-		$this->identifier = $identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment = null): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getProperties(): array
 	{
 		return $this->properties->toArray();
@@ -433,6 +377,14 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
+	public function hasControl(string $name): bool
+	{
+		return $this->findControl($name) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function findControl(string $name): ?Entities\Channels\Controls\IControl
 	{
 		$found = $this->controls
@@ -441,14 +393,6 @@ class Channel implements IChannel
 			});
 
 		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasControl(string $name): bool
-	{
-		return $this->findControl($name) !== null;
 	}
 
 	/**
@@ -467,6 +411,62 @@ class Channel implements IChannel
 
 			'owner' => $this->getDevice()->getOwnerId(),
 		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setIdentifier(string $identifier): void
+	{
+		$this->identifier = $identifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): ?string
+	{
+		return $this->name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setName(?string $name): void
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setComment(?string $comment = null): void
+	{
+		$this->comment = $comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDevice(): Entities\Devices\IDevice
+	{
+		return $this->device;
 	}
 
 }

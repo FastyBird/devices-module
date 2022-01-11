@@ -20,27 +20,14 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 // ENTITY MODEL
 // ============
 export default class ChannelProperty extends Property implements ChannelPropertyInterface {
+  type!: ChannelPropertyEntityTypes
+  channel!: ChannelInterface | null
+  channelBackward!: ChannelInterface | null
+  channelId!: string
+
   static get entity(): string {
     return 'devices_channel_property'
   }
-
-  static fields(): Fields {
-    return Object.assign(Property.fields(), {
-      type: this.string(''),
-
-      channel: this.belongsTo(Channel, 'id'),
-      channelBackward: this.hasOne(Channel, 'id', 'channelId'),
-
-      channelId: this.string(''),
-    })
-  }
-
-  type!: ChannelPropertyEntityTypes
-
-  channel!: ChannelInterface | null
-  channelBackward!: ChannelInterface | null
-
-  channelId!: string
 
   get deviceInstance(): DeviceInterface | null {
     if (this.channel === null) {
@@ -108,6 +95,17 @@ export default class ChannelProperty extends Property implements ChannelProperty
     }
 
     return capitalize(this.identifier)
+  }
+
+  static fields(): Fields {
+    return Object.assign(Property.fields(), {
+      type: this.string(''),
+
+      channel: this.belongsTo(Channel, 'id'),
+      channelBackward: this.hasOne(Channel, 'id', 'channelId'),
+
+      channelId: this.string(''),
+    })
   }
 
   static async get(channel: ChannelInterface, id: string): Promise<boolean> {

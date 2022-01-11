@@ -66,6 +66,30 @@ final class ConnectorRepository implements IConnectorRepository
 	}
 
 	/**
+	 * @param string $type
+	 *
+	 * @return ORM\EntityRepository
+	 *
+	 * @phpstan-param class-string $type
+	 *
+	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\IConnector>
+	 */
+	private function getRepository(string $type): ORM\EntityRepository
+	{
+		if (!isset($this->repository[$type])) {
+			$repository = $this->managerRegistry->getRepository($type);
+
+			if (!$repository instanceof ORM\EntityRepository) {
+				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+			}
+
+			$this->repository[$type] = $repository;
+		}
+
+		return $this->repository[$type];
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @throws Throwable
@@ -95,30 +119,6 @@ final class ConnectorRepository implements IConnectorRepository
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @param string $type
-	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\IConnector>
-	 */
-	private function getRepository(string $type): ORM\EntityRepository
-	{
-		if (!isset($this->repository[$type])) {
-			$repository = $this->managerRegistry->getRepository($type);
-
-			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
-			}
-
-			$this->repository[$type] = $repository;
-		}
-
-		return $this->repository[$type];
 	}
 
 }

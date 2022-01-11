@@ -73,14 +73,6 @@ class Row extends Entities\Row implements IRow
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
-	{
-		return $this->channel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
@@ -88,6 +80,14 @@ class Row extends Entities\Row implements IRow
 
 			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
 		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChannel(): Entities\Channels\IChannel
+	{
+		return $this->channel;
 	}
 
 }

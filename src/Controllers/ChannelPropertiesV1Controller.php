@@ -134,6 +134,43 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	}
 
 	/**
+	 * @param string $id
+	 * @param Entities\Channels\IChannel $channel
+	 *
+	 * @return Entities\Channels\Properties\IProperty
+	 *
+	 * @throws JsonApiExceptions\IJsonApiException
+	 */
+	private function findProperty(
+		string $id,
+		Entities\Channels\IChannel $channel
+	): Entities\Channels\Properties\IProperty {
+		try {
+			$findQuery = new Queries\FindChannelPropertiesQuery();
+			$findQuery->forChannel($channel);
+			$findQuery->byId(Uuid\Uuid::fromString($id));
+
+			$property = $this->propertyRepository->findOneBy($findQuery);
+
+			if ($property === null) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_NOT_FOUND,
+					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+					$this->translator->translate('//devices-module.base.messages.notFound.message')
+				);
+			}
+		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
+			throw new JsonApiExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_NOT_FOUND,
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message')
+			);
+		}
+
+		return $property;
+	}
+
+	/**
 	 * @param Message\ServerRequestInterface $request
 	 * @param Message\ResponseInterface $response
 	 *
@@ -148,8 +185,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	public function create(
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
-	): Message\ResponseInterface
-	{
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
@@ -165,10 +201,12 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				if ($document->getResource()->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+				if ($document->getResource()
+						->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->dynamicPropertyHydrator->hydrate($document));
 
-				} elseif ($document->getResource()->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+				} elseif ($document->getResource()
+						->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
 
 				} else {
@@ -463,43 +501,6 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		}
 
 		return parent::readRelationship($request, $response);
-	}
-
-	/**
-	 * @param string $id
-	 * @param Entities\Channels\IChannel $channel
-	 *
-	 * @return Entities\Channels\Properties\IProperty
-	 *
-	 * @throws JsonApiExceptions\IJsonApiException
-	 */
-	private function findProperty(
-		string $id,
-		Entities\Channels\IChannel $channel
-	): Entities\Channels\Properties\IProperty {
-		try {
-			$findQuery = new Queries\FindChannelPropertiesQuery();
-			$findQuery->forChannel($channel);
-			$findQuery->byId(Uuid\Uuid::fromString($id));
-
-			$property = $this->propertyRepository->findOneBy($findQuery);
-
-			if ($property === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
-					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
-				);
-			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
-		}
-
-		return $property;
 	}
 
 }

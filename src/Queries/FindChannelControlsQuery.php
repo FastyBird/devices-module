@@ -86,7 +86,8 @@ class FindChannelControlsQuery extends DoctrineOrmQuery\QueryObject
 	public function forChannel(Entities\Channels\IChannel $channel): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($channel): void {
-			$qb->andWhere('channel.id = :channel')->setParameter('channel', $channel->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+			$qb->andWhere('channel.id = :channel')
+				->setParameter('channel', $channel->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 

@@ -1,8 +1,8 @@
 {
-  "name": "fastybird/devices-module",
-  "type": "library",
-  "description": "FastyBird IoT devices module for devices management & basic control logic",
-  "keywords": [
+  "name" : "fastybird/devices-module",
+  "type" : "library",
+  "description" : "FastyBird IoT devices module for devices management & basic control logic",
+  "keywords" : [
     "fastybird",
     "fb",
     "iot",
@@ -11,89 +11,89 @@
     "service"
   ],
 
-  "homepage": "https://www.fastybird.com",
+  "homepage" : "https://www.fastybird.com",
 
-  "license": "Apache-2.0",
+  "license" : "Apache-2.0",
 
-  "authors": [
+  "authors" : [
     {
-      "name": "FastyBird s.r.o.",
-      "email": "code@fastybird.com",
-      "homepage": "https://www.fastybird.com"
+      "name" : "FastyBird s.r.o.",
+      "email" : "code@fastybird.com",
+      "homepage" : "https://www.fastybird.com"
     },
     {
-      "name": "Adam Kadlec",
-      "email": "adam.kadlec@fastybird.com"
+      "name" : "Adam Kadlec",
+      "email" : "adam.kadlec@fastybird.com"
     }
   ],
 
-  "support": {
-    "email": "code@fastybird.com",
-    "issues": "https://github.com/FastyBird/devices-module/issues",
+  "support" : {
+    "email" : "code@fastybird.com",
+    "issues" : "https://github.com/FastyBird/devices-module/issues",
     "source" : "https://github.com/FastyBird/devices-module"
   },
 
-  "prefer-stable": true,
+  "prefer-stable" : true,
 
-  "minimum-stability": "stable",
+  "minimum-stability" : "stable",
 
-  "require": {
-    "php": ">=7.4.0|>=8.0.0",
+  "require" : {
+    "php" : ">=7.4.0|>=8.0.0",
     "ext-bcmath" : "*",
-    "cweagans/composer-patches": "^1.7",
-    "fastybird/json-api": "^0.6",
-    "fastybird/metadata": "^0.25",
-    "fastybird/simple-auth": "^0.2",
-    "fastybird/web-server": "^0.6",
-    "ipub/doctrine-timestampable": "^1.5",
-    "nettrine/orm": "^0.8"
+    "cweagans/composer-patches" : "^1.7",
+    "fastybird/json-api" : "^0.6",
+    "fastybird/metadata" : "^0.25",
+    "fastybird/simple-auth" : "^0.2",
+    "fastybird/web-server" : "^0.6",
+    "ipub/doctrine-timestampable" : "^1.5",
+    "nettrine/orm" : "^0.8"
   },
 
-  "require-dev": {
-    "contributte/translation": "^0.9",
-    "mockery/mockery": "^1.4",
-    "ninjify/nunjuck": "^0.3",
-    "ninjify/qa": "^0.12",
-    "pds/skeleton": "~1.0",
-    "phpstan/extension-installer": "^1.1",
-    "phpstan/phpstan": "^0.12",
-    "phpstan/phpstan-deprecation-rules": "^0.12",
-    "phpstan/phpstan-doctrine": "^0.12",
-    "phpstan/phpstan-nette": "^0.12",
-    "tracy/tracy": "^2.8"
+  "require-dev" : {
+    "contributte/translation" : "^0.9",
+    "mockery/mockery" : "^1.4",
+    "ninjify/nunjuck" : "^0.3",
+    "ninjify/qa" : "^0.12",
+    "pds/skeleton" : "~1.0",
+    "phpstan/extension-installer" : "^1.1",
+    "phpstan/phpstan" : "^0.12",
+    "phpstan/phpstan-deprecation-rules" : "^0.12",
+    "phpstan/phpstan-doctrine" : "^0.12",
+    "phpstan/phpstan-nette" : "^0.12",
+    "tracy/tracy" : "^2.8"
   },
 
-  "autoload": {
-    "psr-4": {
-      "FastyBird\\DevicesModule\\": "src/"
+  "autoload" : {
+    "psr-4" : {
+      "FastyBird\\DevicesModule\\" : "src/"
     }
   },
 
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\Cases\\": "tests/cases",
-      "Tests\\Fixtures\\": "tests/fixtures",
-      "Tests\\Tools\\": "tests/tools"
+  "autoload-dev" : {
+    "psr-4" : {
+      "Tests\\Cases\\" : "tests/cases",
+      "Tests\\Fixtures\\" : "tests/fixtures",
+      "Tests\\Tools\\" : "tests/tools"
     }
   },
 
-  "config": {
-    "sort-packages": true
+  "config" : {
+    "sort-packages" : true
   },
 
-  "extra": {
-    "patches": {
-      "doctrine/orm": {
-        "Bug: Ramsey uuid not working": "patches/doctrine.orm.uuid.diff"
+  "extra" : {
+    "patches" : {
+      "doctrine/orm" : {
+        "Bug: Ramsey uuid not working" : "patches/doctrine.orm.uuid.diff"
       },
-      "ramsey/uuid-doctrine": {
-        "Bug: Ramsey uuid conversion fallback": "patches/ramsey.uuid.doctrine.diff"
+      "ramsey/uuid-doctrine" : {
+        "Bug: Ramsey uuid conversion fallback" : "patches/ramsey.uuid.doctrine.diff"
       },
-      "nettrine/orm": {
-        "Enable connection overides": "patches/nettrine.orm.mangerRegistry.diff"
+      "nettrine/orm" : {
+        "Enable connection overides" : "patches/nettrine.orm.mangerRegistry.diff"
       },
-      "nette/utils": {
-        "Bug: Offset check with null support": "patches/nette.array.offsetCheck.diff"
+      "nette/utils" : {
+        "Bug: Offset check with null support" : "patches/nette.array.offsetCheck.diff"
       }
     }
   }

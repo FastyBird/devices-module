@@ -3,7 +3,7 @@
     "type" : "devices-module/other-channel-property",
     "id" : "06644f70-7707-41c3-9a97-a5d66219659c",
     "attributes" : {
-      "type": "dynamic",
+      "type" : "dynamic",
       "identifier" : "button",
       "name" : "button",
       "settable" : false,
@@ -11,7 +11,7 @@
       "data_type" : null,
       "unit" : null,
       "format" : "",
-      "invalid": null
+      "invalid" : null
     },
     "relationships" : {
       "channel" : {

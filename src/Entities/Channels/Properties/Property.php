@@ -82,14 +82,6 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
-	{
-		return $this->channel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
@@ -97,6 +89,14 @@ abstract class Property extends Entities\Property implements IProperty
 
 			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
 		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChannel(): Entities\Channels\IChannel
+	{
+		return $this->channel;
 	}
 
 }

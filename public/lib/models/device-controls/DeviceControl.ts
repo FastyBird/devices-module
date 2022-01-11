@@ -13,8 +13,19 @@ import {
 // ENTITY MODEL
 // ============
 export default class DeviceControl extends Model implements DeviceControlInterface {
+  id!: string
+  type!: DeviceControlEntityTypes
+  name!: string
+  device!: DeviceInterface | null
+  deviceBackward!: DeviceInterface | null
+  deviceId!: string
+
   static get entity(): string {
     return 'devices_device_control'
+  }
+
+  get deviceInstance(): DeviceInterface | null {
+    return this.device
   }
 
   static fields(): Fields {
@@ -29,20 +40,6 @@ export default class DeviceControl extends Model implements DeviceControlInterfa
 
       deviceId: this.string(''),
     }
-  }
-
-  id!: string
-  type!: DeviceControlEntityTypes
-
-  name!: string
-
-  device!: DeviceInterface | null
-  deviceBackward!: DeviceInterface | null
-
-  deviceId!: string
-
-  get deviceInstance(): DeviceInterface | null {
-    return this.device
   }
 
   static async get(device: DeviceInterface, id: string): Promise<boolean> {

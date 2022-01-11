@@ -15,91 +15,8 @@ import { cleanInvalid } from '@/lib/helpers'
 // ENTITY MODEL
 // ============
 export default class Property extends Model implements PropertyInterface {
-  static fields(): Fields {
-    return {
-      id: this.string(''),
-
-      draft: this.boolean(false),
-
-      key: this.string(''),
-      identifier: this.string(''),
-      name: this.string(null).nullable(),
-      settable: this.boolean(false),
-      queryable: this.boolean(false),
-      dataType: this.string(null).nullable(),
-      unit: this.string(null).nullable(),
-      format: this.attr(null).nullable(),
-      invalid: this.string(null).nullable(),
-
-      actualValue: this.attr(null).nullable(),
-      expectedValue: this.attr(null).nullable(),
-      pending: this.boolean(false),
-
-      // Relations
-      relationshipNames: this.attr([]),
-    }
-  }
-
-  static beforeCreate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
-    if (Array.isArray(properties)) {
-      return properties.map((property: PropertyInterface) => {
-        if (property.dataType) {
-          property.invalid = cleanInvalid(property.dataType, property.invalid)
-
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
-        } else {
-          property.format = null
-        }
-
-        return property
-      })
-    } else {
-      if (properties.dataType) {
-        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
-
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
-      } else {
-        properties.format = null
-      }
-
-      return properties
-    }
-  }
-
-  static beforeUpdate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
-    if (Array.isArray(properties)) {
-      return properties.map((property: PropertyInterface) => {
-        if (property.dataType) {
-          property.invalid = cleanInvalid(property.dataType, property.invalid)
-
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
-        } else {
-          property.format = null
-        }
-
-        return property
-      })
-    } else {
-      if (properties.dataType) {
-        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
-
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
-      } else {
-        properties.format = null
-      }
-
-      return properties
-    }
-  }
-
   id!: string
-
   draft!: boolean
-
   key!: string
   identifier!: string
   name!: string | null
@@ -110,17 +27,13 @@ export default class Property extends Model implements PropertyInterface {
   format!: string[] | ((string | null)[])[] | (number | null)[] | null
   invalid!: string | number | null
   numberOfDecimals!: number | null
-
   value!: string | number | boolean | Date | null
-
   actualValue!: string | number | boolean | Date | null
   expectedValue!: string | number | boolean | Date | null
   pending!: boolean
-
   command!: PropertyCommandState | null
   lastResult!: PropertyCommandResult | null
   backup!: string | null
-
   relationshipNames!: string[]
 
   get deviceInstance(): DeviceInterface | null {
@@ -322,5 +235,86 @@ export default class Property extends Model implements PropertyInterface {
     }
 
     return 'chart-bar'
+  }
+
+  static fields(): Fields {
+    return {
+      id: this.string(''),
+
+      draft: this.boolean(false),
+
+      key: this.string(''),
+      identifier: this.string(''),
+      name: this.string(null).nullable(),
+      settable: this.boolean(false),
+      queryable: this.boolean(false),
+      dataType: this.string(null).nullable(),
+      unit: this.string(null).nullable(),
+      format: this.attr(null).nullable(),
+      invalid: this.string(null).nullable(),
+
+      actualValue: this.attr(null).nullable(),
+      expectedValue: this.attr(null).nullable(),
+      pending: this.boolean(false),
+
+      // Relations
+      relationshipNames: this.attr([]),
+    }
+  }
+
+  static beforeCreate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
+    if (Array.isArray(properties)) {
+      return properties.map((property: PropertyInterface) => {
+        if (property.dataType) {
+          property.invalid = cleanInvalid(property.dataType, property.invalid)
+
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        } else {
+          property.format = null
+        }
+
+        return property
+      })
+    } else {
+      if (properties.dataType) {
+        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
+
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      } else {
+        properties.format = null
+      }
+
+      return properties
+    }
+  }
+
+  static beforeUpdate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
+    if (Array.isArray(properties)) {
+      return properties.map((property: PropertyInterface) => {
+        if (property.dataType) {
+          property.invalid = cleanInvalid(property.dataType, property.invalid)
+
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        } else {
+          property.format = null
+        }
+
+        return property
+      })
+    } else {
+      if (properties.dataType) {
+        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
+
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      } else {
+        properties.format = null
+      }
+
+      return properties
+    }
   }
 }

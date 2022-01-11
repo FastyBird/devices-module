@@ -94,8 +94,8 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 	 *
 	 * @return MetadataTypes\DataTypeType|null
 	 */
-	protected function hydrateDataTypeAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?MetadataTypes\DataTypeType
-	{
+	protected function hydrateDataTypeAttribute(JsonAPIDocument\Objects\IStandardObject $attributes
+	): ?MetadataTypes\DataTypeType {
 		if (
 			!is_scalar($attributes->get('data_type'))
 			|| (string) $attributes->get('data_type') === ''

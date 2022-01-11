@@ -20,27 +20,14 @@ import { ValuesItemInterface } from '@/lib/models/configuration/types'
 // ENTITY MODEL
 // ============
 export default class ChannelConfiguration extends Configuration implements ChannelConfigurationInterface {
+  type!: ChannelConfigurationEntityTypes
+  channel!: ChannelInterface | null
+  channelBackward!: ChannelInterface | null
+  channelId!: string
+
   static get entity(): string {
     return 'devices_channel_configuration'
   }
-
-  static fields(): Fields {
-    return Object.assign(Configuration.fields(), {
-      type: this.string(''),
-
-      channel: this.belongsTo(Channel, 'id'),
-      channelBackward: this.hasOne(Channel, 'id', 'channelId'),
-
-      channelId: this.string(''),
-    })
-  }
-
-  type!: ChannelConfigurationEntityTypes
-
-  channel!: ChannelInterface | null
-  channelBackward!: ChannelInterface | null
-
-  channelId!: string
 
   get title(): string {
     if (this.name !== null) {
@@ -208,6 +195,17 @@ export default class ChannelConfiguration extends Configuration implements Chann
       .query()
       .where('id', this.channel.deviceId)
       .first()
+  }
+
+  static fields(): Fields {
+    return Object.assign(Configuration.fields(), {
+      type: this.string(''),
+
+      channel: this.belongsTo(Channel, 'id'),
+      channelBackward: this.hasOne(Channel, 'id', 'channelId'),
+
+      channelId: this.string(''),
+    })
   }
 
   static async get(channel: ChannelInterface, id: string): Promise<boolean> {

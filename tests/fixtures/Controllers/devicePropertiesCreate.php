@@ -27,7 +27,7 @@ return [
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/device.properties.create.missing.required.json',
 	],
-	'notUnique' => [
+	'notUnique'       => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/device.properties.create.notUnique.json'),

@@ -74,7 +74,8 @@ class FindDeviceConfigurationQuery extends DoctrineOrmQuery\QueryObject
 	public function forDevice(Entities\Devices\IDevice $device): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device): void {
-			$qb->andWhere('device.id = :device')->setParameter('device', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+			$qb->andWhere('device.id = :device')
+				->setParameter('device', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 

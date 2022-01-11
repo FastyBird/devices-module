@@ -1,22 +1,26 @@
 {
-  "data": {
-    "type": "devices-module/device-property-static",
-    "id": "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
-    "attributes": {
-      "identifier": "battery",
-      "name": "battery",
-      "settable": false,
-      "queryable": false,
-      "data_type": "enum",
-      "unit": null,
-      "format": ["low","medium","full"],
-      "invalid": null
+  "data" : {
+    "type" : "devices-module/device-property-static",
+    "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
+    "attributes" : {
+      "identifier" : "battery",
+      "name" : "battery",
+      "settable" : false,
+      "queryable" : false,
+      "data_type" : "enum",
+      "unit" : null,
+      "format" : [
+        "low",
+        "medium",
+        "full"
+      ],
+      "invalid" : null
     },
-    "relationships": {
-      "device": {
-        "data": {
-          "type": "devices-module/device",
-          "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+    "relationships" : {
+      "device" : {
+        "data" : {
+          "type" : "devices-module/device",
+          "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
         }
       }
     }

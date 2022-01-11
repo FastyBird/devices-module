@@ -14,6 +14,44 @@ import {
 // ENTITY MODEL
 // ============
 export default class Configuration extends Model implements ConfigurationInterface {
+  id!: string
+  key!: string
+  identifier!: string
+  name!: string | null
+  comment!: string | null
+  value!: string | number | boolean | Date | null
+  default!: string | number | boolean | null
+  dataType!: DataType
+  min!: number | null
+  max!: number | null
+  step!: number | null
+  values!: ValuesItemInterface[]
+  relationshipNames!: string[]
+
+  get isInteger(): boolean {
+    return Object.values(ConfigurationIntegerDatatypeTypes).includes(this.dataType)
+  }
+
+  get isFloat(): boolean {
+    return this.dataType === DataType.FLOAT
+  }
+
+  get isNumber(): boolean {
+    return Object.values(ConfigurationNumberDatatypeTypes).includes(this.dataType)
+  }
+
+  get isBoolean(): boolean {
+    return this.dataType === DataType.BOOLEAN
+  }
+
+  get isString(): boolean {
+    return this.dataType === DataType.STRING
+  }
+
+  get isSelect(): boolean {
+    return this.dataType === DataType.ENUM
+  }
+
   static fields(): Fields {
     return {
       id: this.string(''),
@@ -64,47 +102,5 @@ export default class Configuration extends Model implements ConfigurationInterfa
 
       return configurations
     }
-  }
-
-  id!: string
-
-  key!: string
-  identifier!: string
-  name!: string | null
-  comment!: string | null
-
-  value!: string | number | boolean | Date | null
-  default!: string | number | boolean | null
-  dataType!: DataType
-
-  min!: number | null
-  max!: number | null
-  step!: number | null
-  values!: ValuesItemInterface[]
-
-  relationshipNames!: string[]
-
-  get isInteger(): boolean {
-    return Object.values(ConfigurationIntegerDatatypeTypes).includes(this.dataType)
-  }
-
-  get isFloat(): boolean {
-    return this.dataType === DataType.FLOAT
-  }
-
-  get isNumber(): boolean {
-    return Object.values(ConfigurationNumberDatatypeTypes).includes(this.dataType)
-  }
-
-  get isBoolean(): boolean {
-    return this.dataType === DataType.BOOLEAN
-  }
-
-  get isString(): boolean {
-    return this.dataType === DataType.STRING
-  }
-
-  get isSelect(): boolean {
-    return this.dataType === DataType.ENUM
   }
 }

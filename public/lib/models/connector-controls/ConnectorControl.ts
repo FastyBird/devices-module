@@ -13,8 +13,19 @@ import {
 // ENTITY MODEL
 // ============
 export default class ConnectorControl extends Model implements ConnectorControlInterface {
+  id!: string
+  type!: ConnectorControlEntityTypes
+  name!: string
+  connector!: ConnectorInterface | null
+  connectorBackward!: ConnectorInterface | null
+  connectorId!: string
+
   static get entity(): string {
     return 'connectors_connector_control'
+  }
+
+  get connectorInstance(): ConnectorInterface | null {
+    return this.connector
   }
 
   static fields(): Fields {
@@ -29,20 +40,6 @@ export default class ConnectorControl extends Model implements ConnectorControlI
 
       connectorId: this.string(''),
     }
-  }
-
-  id!: string
-  type!: ConnectorControlEntityTypes
-
-  name!: string
-
-  connector!: ConnectorInterface | null
-  connectorBackward!: ConnectorInterface | null
-
-  connectorId!: string
-
-  get connectorInstance(): ConnectorInterface | null {
-    return this.connector
   }
 
   static async get(connector: ConnectorInterface, id: string): Promise<boolean> {

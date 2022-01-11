@@ -68,8 +68,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		?Exchange\IPublisher $publisher = null,
 		?Models\States\IDevicePropertyRepository $devicePropertyStateRepository = null,
 		?Models\States\IChannelPropertyRepository $channelPropertyStateRepository = null
-	)
-	{
+	) {
 		$this->entityKeyGenerator = $entityKeyGenerator;
 		$this->devicePropertyStateRepository = $devicePropertyStateRepository;
 		$this->channelPropertyStateRepository = $channelPropertyStateRepository;
@@ -129,6 +128,23 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
+	 * @param object $entity
+	 *
+	 * @return bool
+	 */
+	private function validateNamespace(object $entity): bool
+	{
+		try {
+			$rc = new ReflectionClass($entity);
+
+		} catch (ReflectionException $ex) {
+			return false;
+		}
+
+		return str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule');
+	}
+
+	/**
 	 * @return void
 	 */
 	public function onFlush(): void
@@ -165,6 +181,150 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 			$this->publishEntity($entity, self::ACTION_DELETED);
 		}
+	}
+
+	/**
+	 * @param Entities\IEntity $entity
+	 * @param mixed[] $identifier
+	 *
+	 * @return string
+	 */
+	private function getHash(Entities\IEntity $entity, array $identifier): string
+	{
+		return implode(
+			' ',
+			array_merge(
+				[$this->getRealClass(get_class($entity))],
+				$identifier
+			)
+		);
+	}
+
+	/**
+	 * @param string $class
+	 *
+	 * @return string
+	 */
+	private function getRealClass(string $class): string
+	{
+		$pos = strrpos($class, '\\' . Persistence\Proxy::MARKER . '\\');
+
+		if ($pos === false) {
+			return $class;
+		}
+
+		return substr($class, $pos + Persistence\Proxy::MARKER_LENGTH + 2);
+	}
+
+	/**
+	 * @param Entities\IEntity $entity
+	 * @param string $action
+	 *
+	 * @return void
+	 */
+	private function publishEntity(Entities\IEntity $entity, string $action): void
+	{
+		if ($this->publisher === null) {
+			return;
+		}
+
+		$publishRoutingKey = null;
+
+		switch ($action) {
+			case self::ACTION_CREATED:
+				foreach (DevicesModule\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
+					}
+				}
+
+				break;
+
+			case self::ACTION_UPDATED:
+				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
+					}
+				}
+
+				break;
+
+			case self::ACTION_DELETED:
+				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
+					}
+				}
+
+				break;
+		}
+
+		if ($publishRoutingKey !== null) {
+			if (
+				$entity instanceof Entities\Devices\Properties\IProperty
+				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
+				&& $this->devicePropertyStateRepository !== null
+			) {
+				$state = $this->devicePropertyStateRepository->findOne($entity);
+
+				$dataType = $entity->getDataType();
+
+				$this->publisher->publish(
+					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
+					$publishRoutingKey,
+					Utils\ArrayHash::from(array_merge($state !== null ? [
+						'actual_value'   => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
+						'expected_value' => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
+						'pending'        => $state->isPending(),
+					] : [], $entity->toArray()))
+				);
+			} elseif (
+				$entity instanceof Entities\Channels\Properties\IProperty
+				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
+				&& $this->channelPropertyStateRepository !== null
+			) {
+				$state = $this->channelPropertyStateRepository->findOne($entity);
+
+				$dataType = $entity->getDataType();
+
+				$this->publisher->publish(
+					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
+					$publishRoutingKey,
+					Utils\ArrayHash::from(array_merge($state !== null ? [
+						'actual_value'   => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
+						'expected_value' => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
+						'pending'        => $state->isPending(),
+					] : [], $entity->toArray()))
+				);
+			} else {
+				$this->publisher->publish(
+					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
+					$publishRoutingKey,
+					Utils\ArrayHash::from($entity->toArray())
+				);
+			}
+		}
+	}
+
+	/**
+	 * @param Entities\IEntity $entity
+	 * @param string $class
+	 *
+	 * @return bool
+	 */
+	private function validateEntity(Entities\IEntity $entity, string $class): bool
+	{
+		$result = false;
+
+		if (get_class($entity) === $class) {
+			$result = true;
+		}
+
+		if (is_subclass_of($entity, $class)) {
+			$result = true;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -236,167 +396,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		$this->publishEntity($entity, self::ACTION_UPDATED);
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param string $action
-	 *
-	 * @return void
-	 */
-	private function publishEntity(Entities\IEntity $entity, string $action): void
-	{
-		if ($this->publisher === null) {
-			return;
-		}
-
-		$publishRoutingKey = null;
-
-		switch ($action) {
-			case self::ACTION_CREATED:
-				foreach (DevicesModule\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
-					}
-				}
-
-				break;
-
-			case self::ACTION_UPDATED:
-				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
-					}
-				}
-
-				break;
-
-			case self::ACTION_DELETED:
-				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
-						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
-					}
-				}
-
-				break;
-		}
-
-		if ($publishRoutingKey !== null) {
-			if (
-				$entity instanceof Entities\Devices\Properties\IProperty
-				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->devicePropertyStateRepository !== null
-			) {
-				$state = $this->devicePropertyStateRepository->findOne($entity);
-
-				$dataType = $entity->getDataType();
-
-				$this->publisher->publish(
-					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
-					$publishRoutingKey,
-					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value' => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
-						'expected_value' => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
-						'pending' => $state->isPending(),
-					] : [], $entity->toArray()))
-				);
-			} elseif (
-				$entity instanceof Entities\Channels\Properties\IProperty
-				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->channelPropertyStateRepository !== null
-			) {
-				$state = $this->channelPropertyStateRepository->findOne($entity);
-
-				$dataType = $entity->getDataType();
-
-				$this->publisher->publish(
-					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
-					$publishRoutingKey,
-					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
-						'expected_value' => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
-						'pending'        => $state->isPending(),
-					] : [], $entity->toArray()))
-				);
-			} else {
-				$this->publisher->publish(
-					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
-					$publishRoutingKey,
-					Utils\ArrayHash::from($entity->toArray())
-				);
-			}
-		}
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param string $class
-	 *
-	 * @return bool
-	 */
-	private function validateEntity(Entities\IEntity $entity, string $class): bool
-	{
-		$result = false;
-
-		if (get_class($entity) === $class) {
-			$result = true;
-		}
-
-		if (is_subclass_of($entity, $class)) {
-			$result = true;
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param mixed[] $identifier
-	 *
-	 * @return string
-	 */
-	private function getHash(Entities\IEntity $entity, array $identifier): string
-	{
-		return implode(
-			' ',
-			array_merge(
-				[$this->getRealClass(get_class($entity))],
-				$identifier
-			)
-		);
-	}
-
-	/**
-	 * @param string $class
-	 *
-	 * @return string
-	 */
-	private function getRealClass(string $class): string
-	{
-		$pos = strrpos($class, '\\' . Persistence\Proxy::MARKER . '\\');
-
-		if ($pos === false) {
-			return $class;
-		}
-
-		return substr($class, $pos + Persistence\Proxy::MARKER_LENGTH + 2);
-	}
-
-	/**
-	 * @param object $entity
-	 *
-	 * @return bool
-	 */
-	private function validateNamespace(object $entity): bool
-	{
-		try {
-			$rc = new ReflectionClass($entity);
-
-		} catch (ReflectionException $ex) {
-			return false;
-		}
-
-		return str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule');
 	}
 
 }

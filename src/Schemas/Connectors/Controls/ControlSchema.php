@@ -51,8 +51,7 @@ final class ControlSchema extends JsonApiSchemas\JsonApiSchema
 
 	public function __construct(
 		Routing\IRouter $router
-	)
-	{
+	) {
 		$this->router = $router;
 	}
 
@@ -144,7 +143,7 @@ final class ControlSchema extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 					[
-						Router\Routes::URL_ITEM_ID   => $control->getConnector()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $control->getConnector()->getPlainId(),
 					]
 				),
 				false

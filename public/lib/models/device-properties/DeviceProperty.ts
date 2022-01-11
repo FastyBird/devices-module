@@ -18,27 +18,14 @@ import {
 // ENTITY MODEL
 // ============
 export default class DeviceProperty extends Property implements DevicePropertyInterface {
+  type!: DevicePropertyEntityTypes
+  device!: DeviceInterface | null
+  deviceBackward!: DeviceInterface | null
+  deviceId!: string
+
   static get entity(): string {
     return 'devices_device_property'
   }
-
-  static fields(): Fields {
-    return Object.assign(Property.fields(), {
-      type: this.string(''),
-
-      device: this.belongsTo(Device, 'id'),
-      deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
-
-      deviceId: this.string(''),
-    })
-  }
-
-  type!: DevicePropertyEntityTypes
-
-  device!: DeviceInterface | null
-  deviceBackward!: DeviceInterface | null
-
-  deviceId!: string
 
   get deviceInstance(): DeviceInterface | null {
     return this.device
@@ -63,6 +50,17 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
     }
 
     return capitalize(this.identifier)
+  }
+
+  static fields(): Fields {
+    return Object.assign(Property.fields(), {
+      type: this.string(''),
+
+      device: this.belongsTo(Device, 'id'),
+      deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
+
+      deviceId: this.string(''),
+    })
   }
 
   static async get(device: DeviceInterface, id: string): Promise<boolean> {

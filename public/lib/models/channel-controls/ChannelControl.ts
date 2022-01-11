@@ -15,33 +15,16 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 // ENTITY MODEL
 // ============
 export default class ChannelControl extends Model implements ChannelControlInterface {
+  id!: string
+  type!: ChannelControlEntityTypes
+  name!: string
+  channel!: ChannelInterface | null
+  channelBackward!: ChannelInterface | null
+  channelId!: string
+
   static get entity(): string {
     return 'devices_channel_control'
   }
-
-  static fields(): Fields {
-    return {
-      id: this.string(''),
-      type: this.string(''),
-
-      name: this.string(''),
-
-      channel: this.belongsTo(Channel, 'id'),
-      channelBackward: this.hasOne(Channel, 'id', 'channelId'),
-
-      channelId: this.string(''),
-    }
-  }
-
-  id!: string
-  type!: ChannelControlEntityTypes
-
-  name!: string
-
-  channel!: ChannelInterface | null
-  channelBackward!: ChannelInterface | null
-
-  channelId!: string
 
   get deviceInstance(): DeviceInterface | null {
     if (this.channel === null) {
@@ -64,6 +47,20 @@ export default class ChannelControl extends Model implements ChannelControlInter
       .query()
       .where('id', this.channel.deviceId)
       .first()
+  }
+
+  static fields(): Fields {
+    return {
+      id: this.string(''),
+      type: this.string(''),
+
+      name: this.string(''),
+
+      channel: this.belongsTo(Channel, 'id'),
+      channelBackward: this.hasOne(Channel, 'id', 'channelId'),
+
+      channelId: this.string(''),
+    }
   }
 
   static async get(channel: ChannelInterface, id: string): Promise<boolean> {

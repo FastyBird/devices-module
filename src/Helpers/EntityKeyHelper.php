@@ -42,21 +42,17 @@ use FastyBird\DevicesModule\Entities\IEntity;
 final class EntityKeyHelper
 {
 
+	private const INDEX = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	/** @var int */
 	private int $maxLen = 6;
-
 	/** @var Closure|null */
 	private ?Closure $customCallback = null;
-
 	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 
-	private const INDEX = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 	public function __construct(
 		DateTimeFactory\DateTimeFactory $dateTimeFactory
-	)
-	{
+	) {
 		$this->dateTimeFactory = $dateTimeFactory;
 	}
 
@@ -120,6 +116,38 @@ final class EntityKeyHelper
 	}
 
 	/**
+	 * @param string $passKey
+	 *
+	 * @return string
+	 */
+	private function hashIndex(string $passKey): string
+	{
+		// Although this function's purpose is to just make the
+		// ID short - and not so much secure,
+		// with this patch by Simon Franz (https://blog.snaky.org/)
+		// you can optionally supply a password to make it harder
+		// to calculate the corresponding numeric ID
+
+		$i = [];
+		$p = [];
+
+		for ($n = 0; $n < strlen(self::INDEX); $n++) {
+			$i[] = substr(self::INDEX, $n, 1);
+		}
+
+		$pass_hash = hash('sha256', $passKey);
+		$pass_hash = (strlen($pass_hash) < strlen(self::INDEX) ? hash('sha512', $passKey) : $pass_hash);
+
+		for ($n = 0; $n < strlen(self::INDEX); $n++) {
+			$p[] = substr($pass_hash, $n, 1);
+		}
+
+		array_multisort($p, SORT_DESC, $i);
+
+		return implode($i);
+	}
+
+	/**
 	 * @param string $hash
 	 * @param int|null $padUp
 	 * @param string|null $passKey
@@ -155,38 +183,6 @@ final class EntityKeyHelper
 		}
 
 		return (int) $result;
-	}
-
-	/**
-	 * @param string $passKey
-	 *
-	 * @return string
-	 */
-	private function hashIndex(string $passKey): string
-	{
-		// Although this function's purpose is to just make the
-		// ID short - and not so much secure,
-		// with this patch by Simon Franz (https://blog.snaky.org/)
-		// you can optionally supply a password to make it harder
-		// to calculate the corresponding numeric ID
-
-		$i = [];
-		$p = [];
-
-		for ($n = 0; $n < strlen(self::INDEX); $n++) {
-			$i[] = substr(self::INDEX, $n, 1);
-		}
-
-		$pass_hash = hash('sha256', $passKey);
-		$pass_hash = (strlen($pass_hash) < strlen(self::INDEX) ? hash('sha512', $passKey) : $pass_hash);
-
-		for ($n = 0; $n < strlen(self::INDEX); $n++) {
-			$p[] = substr($pass_hash, $n, 1);
-		}
-
-		array_multisort($p, SORT_DESC, $i);
-
-		return implode($i);
 	}
 
 }

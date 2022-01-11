@@ -141,7 +141,7 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONTROLS => [
+			self::RELATIONSHIPS_CONTROLS      => [
 				self::RELATIONSHIP_DATA          => $channel->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,

@@ -91,9 +91,16 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
+	public function toArray(): array
 	{
-		return $this->device;
+		return [
+			'id'   => $this->getPlainId(),
+			'name' => $this->getName(),
+
+			'device' => $this->getDevice()->getPlainId(),
+
+			'owner' => $this->getDevice()->getOwnerId(),
+		];
 	}
 
 	/**
@@ -107,16 +114,9 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
+	public function getDevice(): Entities\Devices\IDevice
 	{
-		return [
-			'id'     => $this->getPlainId(),
-			'name'   => $this->getName(),
-
-			'device' => $this->getDevice()->getPlainId(),
-
-			'owner' => $this->getDevice()->getOwnerId(),
-		];
+		return $this->device;
 	}
 
 }

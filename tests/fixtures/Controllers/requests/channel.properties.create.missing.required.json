@@ -9,7 +9,7 @@
       "data_type" : null,
       "unit" : null,
       "format" : "",
-      "invalid": null
+      "invalid" : null
     },
     "relationships" : {
       "channel" : {

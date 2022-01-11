@@ -251,22 +251,6 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getParent(): ?IDevice
-	{
-		return $this->parent;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setParent(IDevice $device): void
-	{
-		$this->parent = $device;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeParent(): void
 	{
 		$this->parent = null;
@@ -319,193 +303,6 @@ abstract class Device implements IDevice
 			// ...and remove it from collection
 			$this->children->removeElement($child);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getIdentifier(): string
-	{
-		return $this->identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment = null): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isEnabled(): bool
-	{
-		return $this->enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setEnabled(bool $enabled): void
-	{
-		$this->enabled = $enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareManufacturer()
-	{
-		if (MetadataTypes\HardwareManufacturerType::isValidValue($this->hardwareManufacturer)) {
-			return MetadataTypes\HardwareManufacturerType::get($this->hardwareManufacturer);
-		}
-
-		return $this->hardwareManufacturer;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareManufacturer($manufacturer): void
-	{
-		if ($manufacturer instanceof MetadataTypes\HardwareManufacturerType) {
-			$this->hardwareManufacturer = $manufacturer->getValue();
-
-		} else {
-			$this->hardwareManufacturer = strtolower($manufacturer);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareModel()
-	{
-		if (MetadataTypes\DeviceModelType::isValidValue($this->hardwareModel)) {
-			return MetadataTypes\DeviceModelType::get($this->hardwareModel);
-		}
-
-		return $this->hardwareModel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareModel($model): void
-	{
-		if ($model instanceof MetadataTypes\DeviceModelType) {
-			$this->hardwareModel = $model->getValue();
-
-		} else {
-			$this->hardwareModel = strtolower($model);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareVersion(): ?string
-	{
-		return $this->hardwareVersion;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareVersion(?string $version): void
-	{
-		$this->hardwareVersion = $version;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareMacAddress(string $separator = ':'): ?string
-	{
-		return $this->hardwareMacAddress !== null ? implode($separator, str_split($this->hardwareMacAddress, 2)) : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareMacAddress(?string $hardwareMacAddress): void
-	{
-		if (
-			$hardwareMacAddress !== null
-			&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $hardwareMacAddress) === 0
-			&& preg_match('/^([0-9A-Fa-f]{12})$/', $hardwareMacAddress) === 0
-		) {
-			throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
-		}
-
-		$this->hardwareMacAddress = $hardwareMacAddress !== null ? strtolower(str_replace([':', '-'], '', $hardwareMacAddress)) : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFirmwareManufacturer()
-	{
-		if (MetadataTypes\FirmwareManufacturerType::isValidValue($this->firmwareManufacturer)) {
-			return MetadataTypes\FirmwareManufacturerType::get($this->firmwareManufacturer);
-		}
-
-		return $this->firmwareManufacturer;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setFirmwareManufacturer($manufacturer): void
-	{
-		if ($manufacturer instanceof MetadataTypes\FirmwareManufacturerType) {
-			$this->firmwareManufacturer = $manufacturer->getValue();
-
-		} else {
-			$this->firmwareManufacturer = strtolower($manufacturer);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFirmwareVersion(): ?string
-	{
-		return $this->firmwareVersion;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setFirmwareVersion(?string $version): void
-	{
-		$this->firmwareVersion = $version;
 	}
 
 	/**
@@ -819,6 +616,244 @@ abstract class Device implements IDevice
 	/**
 	 * {@inheritDoc}
 	 */
+	public function toArray(): array
+	{
+		return [
+			'id'         => $this->getPlainId(),
+			'type'       => $this->getType()->getValue(),
+			'key'        => $this->getKey(),
+			'identifier' => $this->getIdentifier(),
+			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+			'enabled'    => $this->isEnabled(),
+
+			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof MetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()
+				->getValue() : $this->getHardwareManufacturer(),
+			'hardware_model'        => $this->getHardwareModel() instanceof MetadataTypes\DeviceModelType ? $this->getHardwareModel()
+				->getValue() : $this->getHardwareModel(),
+			'hardware_version'      => $this->getHardwareVersion(),
+			'hardware_mac_address'  => $this->getHardwareMacAddress(),
+
+			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof MetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()
+				->getValue() : $this->getFirmwareManufacturer(),
+			'firmware_version'      => $this->getFirmwareVersion(),
+
+			'connector' => $this->getConnector() !== null ? $this->getConnector()->getPlainId() : null,
+
+			'owner' => $this->getOwnerId(),
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getParent(): ?IDevice
+	{
+		return $this->parent;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setParent(IDevice $device): void
+	{
+		$this->parent = $device;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): ?string
+	{
+		return $this->name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setName(?string $name): void
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setComment(?string $comment = null): void
+	{
+		$this->comment = $comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isEnabled(): bool
+	{
+		return $this->enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setEnabled(bool $enabled): void
+	{
+		$this->enabled = $enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareManufacturer()
+	{
+		if (MetadataTypes\HardwareManufacturerType::isValidValue($this->hardwareManufacturer)) {
+			return MetadataTypes\HardwareManufacturerType::get($this->hardwareManufacturer);
+		}
+
+		return $this->hardwareManufacturer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareManufacturer($manufacturer): void
+	{
+		if ($manufacturer instanceof MetadataTypes\HardwareManufacturerType) {
+			$this->hardwareManufacturer = $manufacturer->getValue();
+
+		} else {
+			$this->hardwareManufacturer = strtolower($manufacturer);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareModel()
+	{
+		if (MetadataTypes\DeviceModelType::isValidValue($this->hardwareModel)) {
+			return MetadataTypes\DeviceModelType::get($this->hardwareModel);
+		}
+
+		return $this->hardwareModel;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareModel($model): void
+	{
+		if ($model instanceof MetadataTypes\DeviceModelType) {
+			$this->hardwareModel = $model->getValue();
+
+		} else {
+			$this->hardwareModel = strtolower($model);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareVersion(): ?string
+	{
+		return $this->hardwareVersion;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareVersion(?string $version): void
+	{
+		$this->hardwareVersion = $version;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getHardwareMacAddress(string $separator = ':'): ?string
+	{
+		return $this->hardwareMacAddress !== null ? implode($separator, str_split($this->hardwareMacAddress, 2)) : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setHardwareMacAddress(?string $hardwareMacAddress): void
+	{
+		if (
+			$hardwareMacAddress !== null
+			&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $hardwareMacAddress) === 0
+			&& preg_match('/^([0-9A-Fa-f]{12})$/', $hardwareMacAddress) === 0
+		) {
+			throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
+		}
+
+		$this->hardwareMacAddress = $hardwareMacAddress !== null ? strtolower(str_replace([
+			':',
+			'-',
+		], '', $hardwareMacAddress)) : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getFirmwareManufacturer()
+	{
+		if (MetadataTypes\FirmwareManufacturerType::isValidValue($this->firmwareManufacturer)) {
+			return MetadataTypes\FirmwareManufacturerType::get($this->firmwareManufacturer);
+		}
+
+		return $this->firmwareManufacturer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setFirmwareManufacturer($manufacturer): void
+	{
+		if ($manufacturer instanceof MetadataTypes\FirmwareManufacturerType) {
+			$this->firmwareManufacturer = $manufacturer->getValue();
+
+		} else {
+			$this->firmwareManufacturer = strtolower($manufacturer);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getFirmwareVersion(): ?string
+	{
+		return $this->firmwareVersion;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setFirmwareVersion(?string $version): void
+	{
+		$this->firmwareVersion = $version;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getConnector(): ?Entities\Connectors\IConnector
 	{
 		return $this->connector;
@@ -842,35 +877,6 @@ abstract class Device implements IDevice
 		}
 
 		return $this->owner;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return [
-			'id'         => $this->getPlainId(),
-			'type'       => $this->getType()->getValue(),
-			'key'        => $this->getKey(),
-			'identifier' => $this->getIdentifier(),
-			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
-			'enabled'    => $this->isEnabled(),
-
-			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof MetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()->getValue() : $this->getHardwareManufacturer(),
-			'hardware_model'        => $this->getHardwareModel() instanceof MetadataTypes\DeviceModelType ? $this->getHardwareModel()->getValue() : $this->getHardwareModel(),
-			'hardware_version'      => $this->getHardwareVersion(),
-			'hardware_mac_address'  => $this->getHardwareMacAddress(),
-
-			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof MetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()->getValue() : $this->getFirmwareManufacturer(),
-			'firmware_version'      => $this->getFirmwareVersion(),
-
-			'connector'  => $this->getConnector() !== null ? $this->getConnector()->getPlainId() : null,
-
-			'owner'  => $this->getOwnerId(),
-		];
 	}
 
 }

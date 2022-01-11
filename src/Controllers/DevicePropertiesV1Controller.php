@@ -52,18 +52,14 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
-
-	/** @var Models\Devices\Properties\IPropertyRepository */
-	private Models\Devices\Properties\IPropertyRepository $propertyRepository;
-
 	/** @var Models\Devices\Properties\IPropertiesManager */
 	protected Models\Devices\Properties\IPropertiesManager $propertiesManager;
-
 	/** @var Hydrators\Properties\DeviceDynamicPropertyHydrator */
 	protected Hydrators\Properties\DeviceDynamicPropertyHydrator $dynamicPropertyHydrator;
-
 	/** @var Hydrators\Properties\DeviceStaticPropertyHydrator */
 	protected Hydrators\Properties\DeviceStaticPropertyHydrator $staticPropertyHydrator;
+	/** @var Models\Devices\Properties\IPropertyRepository */
+	private Models\Devices\Properties\IPropertyRepository $propertyRepository;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
@@ -124,6 +120,43 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	}
 
 	/**
+	 * @param string $id
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Devices\Properties\IProperty
+	 *
+	 * @throws JsonApiExceptions\IJsonApiException
+	 */
+	private function findProperty(
+		string $id,
+		Entities\Devices\IDevice $device
+	): Entities\Devices\Properties\IProperty {
+		try {
+			$findQuery = new Queries\FindDevicePropertiesQuery();
+			$findQuery->forDevice($device);
+			$findQuery->byId(Uuid\Uuid::fromString($id));
+
+			$property = $this->propertyRepository->findOneBy($findQuery);
+
+			if ($property === null) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_NOT_FOUND,
+					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+					$this->translator->translate('//devices-module.base.messages.notFound.message')
+				);
+			}
+		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
+			throw new JsonApiExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_NOT_FOUND,
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message')
+			);
+		}
+
+		return $property;
+	}
+
+	/**
 	 * @param Message\ServerRequestInterface $request
 	 * @param Message\ResponseInterface $response
 	 *
@@ -138,8 +171,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	public function create(
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
-	): Message\ResponseInterface
-	{
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
@@ -153,10 +185,12 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				if ($document->getResource()->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+				if ($document->getResource()
+						->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->dynamicPropertyHydrator->hydrate($document));
 
-				} elseif ($document->getResource()->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+				} elseif ($document->getResource()
+						->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
 
 				} else {
@@ -440,43 +474,6 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 		}
 
 		return parent::readRelationship($request, $response);
-	}
-
-	/**
-	 * @param string $id
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Devices\Properties\IProperty
-	 *
-	 * @throws JsonApiExceptions\IJsonApiException
-	 */
-	private function findProperty(
-		string $id,
-		Entities\Devices\IDevice $device
-	): Entities\Devices\Properties\IProperty {
-		try {
-			$findQuery = new Queries\FindDevicePropertiesQuery();
-			$findQuery->forDevice($device);
-			$findQuery->byId(Uuid\Uuid::fromString($id));
-
-			$property = $this->propertyRepository->findOneBy($findQuery);
-
-			if ($property === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
-					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
-				);
-			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
-		}
-
-		return $property;
 	}
 
 }

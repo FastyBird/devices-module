@@ -65,23 +65,6 @@ final class RowRepository implements IRowRepository
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function getResultSet(
-		Queries\FindChannelConfigurationQuery $queryObject
-	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
-		}
-
-		return $result;
-	}
-
-	/**
 	 * @param string $type
 	 *
 	 * @return ORM\EntityRepository
@@ -103,6 +86,23 @@ final class RowRepository implements IRowRepository
 		}
 
 		return $this->repository;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
+	public function getResultSet(
+		Queries\FindChannelConfigurationQuery $queryObject
+	): DoctrineOrmQuery\ResultSet {
+		$result = $queryObject->fetch($this->getRepository());
+
+		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
+			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+		}
+
+		return $result;
 	}
 
 }

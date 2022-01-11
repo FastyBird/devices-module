@@ -36,7 +36,13 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		Assert::same(['preFlush', 'onFlush', 'prePersist', 'postPersist', 'postUpdate'], $subscriber->getSubscribedEvents());
+		Assert::same([
+			'preFlush',
+			'onFlush',
+			'prePersist',
+			'postPersist',
+			'postUpdate',
+		], $subscriber->getSubscribedEvents());
 	}
 
 	public function testPublishCreatedEntity(): void
@@ -93,6 +99,50 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->times(1);
 
 		$subscriber->postPersist($eventArgs);
+	}
+
+	/**
+	 * @param bool $withUow
+	 *
+	 * @return ORM\EntityManagerInterface|Mockery\MockInterface
+	 */
+	private function getEntityManager(bool $withUow = false): Mockery\MockInterface
+	{
+		$metadata = new stdClass();
+		$metadata->fieldMappings = [
+			[
+				'fieldName' => 'identifier',
+			],
+			[
+				'fieldName' => 'name',
+			],
+		];
+
+		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
+		$entityManager
+			->shouldReceive('getClassMetadata')
+			->withArgs([Entities\Devices\Device::class])
+			->andReturn($metadata);
+
+		if ($withUow) {
+			$uow = Mockery::mock(ORM\UnitOfWork::class);
+			$uow
+				->shouldReceive('getEntityChangeSet')
+				->andReturn(['name'])
+				->times(1)
+				->getMock()
+				->shouldReceive('isScheduledForDelete')
+				->andReturn(false)
+				->getMock();
+
+			$entityManager
+				->shouldReceive('getUnitOfWork')
+				->withNoArgs()
+				->andReturn($uow)
+				->times(1);
+		}
+
+		return $entityManager;
 	}
 
 	public function testPublishUpdatedEntity(): void
@@ -215,50 +265,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		);
 
 		$subscriber->onFlush();
-	}
-
-	/**
-	 * @param bool $withUow
-	 *
-	 * @return ORM\EntityManagerInterface|Mockery\MockInterface
-	 */
-	private function getEntityManager(bool $withUow = false): Mockery\MockInterface
-	{
-		$metadata = new stdClass();
-		$metadata->fieldMappings = [
-			[
-				'fieldName' => 'identifier',
-			],
-			[
-				'fieldName' => 'name',
-			],
-		];
-
-		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
-		$entityManager
-			->shouldReceive('getClassMetadata')
-			->withArgs([Entities\Devices\Device::class])
-			->andReturn($metadata);
-
-		if ($withUow) {
-			$uow = Mockery::mock(ORM\UnitOfWork::class);
-			$uow
-				->shouldReceive('getEntityChangeSet')
-				->andReturn(['name'])
-				->times(1)
-				->getMock()
-				->shouldReceive('isScheduledForDelete')
-				->andReturn(false)
-				->getMock();
-
-			$entityManager
-				->shouldReceive('getUnitOfWork')
-				->withNoArgs()
-				->andReturn($uow)
-				->times(1);
-		}
-
-		return $entityManager;
 	}
 
 }

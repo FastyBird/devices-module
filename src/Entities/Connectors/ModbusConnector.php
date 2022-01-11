@@ -49,6 +49,17 @@ class ModbusConnector extends Entities\Connectors\Connector implements IModbusCo
 	/**
 	 * {@inheritDoc}
 	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'serial_interface' => $this->getSerialInterface(),
+			'baud_rate'        => $this->getBaudRate(),
+		]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getSerialInterface(): ?string
 	{
 		return $this->getParam('serial_interface');
@@ -76,17 +87,6 @@ class ModbusConnector extends Entities\Connectors\Connector implements IModbusCo
 	public function setBaudRate(?int $baudRate): void
 	{
 		$this->setParam('baud_rate', $baudRate);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return array_merge(parent::toArray(), [
-			'serial_interface' => $this->getSerialInterface(),
-			'baud_rate'        => $this->getBaudRate(),
-		]);
 	}
 
 }

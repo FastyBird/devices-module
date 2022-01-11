@@ -57,16 +57,6 @@ abstract class DbTestCase extends BaseMockeryTestCase
 	}
 
 	/**
-	 * @param string $file
-	 */
-	protected function registerNeonConfigurationFile(string $file): void
-	{
-		if (!in_array($file, $this->neonFiles, true)) {
-			$this->neonFiles[] = $file;
-		}
-	}
-
-	/**
 	 * @param string $serviceType
 	 * @param object $serviceMock
 	 *
@@ -245,6 +235,16 @@ abstract class DbTestCase extends BaseMockeryTestCase
 
 		$container->removeService($serviceName);
 		$container->addService($serviceName, $service);
+	}
+
+	/**
+	 * @param string $file
+	 */
+	protected function registerNeonConfigurationFile(string $file): void
+	{
+		if (!in_array($file, $this->neonFiles, true)) {
+			$this->neonFiles[] = $file;
+		}
 	}
 
 	/**

@@ -18,12 +18,12 @@ namespace FastyBird\DevicesModule\Controllers;
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
+use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette\Utils;
@@ -63,26 +63,21 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\Properties\IPropertiesManager */
 	protected Models\Channels\Properties\IPropertiesManager $propertiesManager;
 
-	/** @var Hydrators\Properties\ChannelDynamicPropertyHydrator */
-	protected Hydrators\Properties\ChannelDynamicPropertyHydrator $dynamicPropertyHydrator;
-
-	/** @var Hydrators\Properties\ChannelStaticPropertyHydrator */
-	protected Hydrators\Properties\ChannelStaticPropertyHydrator $staticPropertyHydrator;
+	/** @var JsonApiHydrators\HydratorsContainer */
+	protected JsonApiHydrators\HydratorsContainer $hydratorsContainer;
 
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Channels\IChannelRepository $channelRepository,
 		Models\Channels\Properties\IPropertyRepository $propertyRepository,
 		Models\Channels\Properties\IPropertiesManager $propertiesManager,
-		Hydrators\Properties\ChannelDynamicPropertyHydrator $dynamicPropertyHydrator,
-		Hydrators\Properties\ChannelStaticPropertyHydrator $staticPropertyHydrator
+		JsonApiHydrators\HydratorsContainer $hydratorsContainer
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->channelRepository = $channelRepository;
 		$this->propertyRepository = $propertyRepository;
 		$this->propertiesManager = $propertiesManager;
-		$this->dynamicPropertyHydrator = $dynamicPropertyHydrator;
-		$this->staticPropertyHydrator = $staticPropertyHydrator;
+		$this->hydratorsContainer = $hydratorsContainer;
 	}
 
 	/**
@@ -193,32 +188,14 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 
 		$document = $this->createDocument($request);
 
-		if (
-			$document->getResource()->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE
-			|| $document->getResource()->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE
-		) {
+		$hydrator = $this->hydratorsContainer->findHydrator($document);
+
+		if ($hydrator !== null) {
 			try {
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				if ($document->getResource()
-					->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
-					$property = $this->propertiesManager->create($this->dynamicPropertyHydrator->hydrate($document));
-
-				} elseif ($document->getResource()
-					->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE) {
-					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
-
-				} else {
-					throw new JsonApiExceptions\JsonApiErrorException(
-						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-						$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
-						$this->translator->translate('//devices-module.base.messages.invalidType.message'),
-						[
-							'pointer' => '/data/type',
-						]
-					);
-				}
+				$property = $this->propertiesManager->create($hydrator->hydrate($document));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -347,67 +324,56 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 
 		$this->validateIdentifier($request, $document);
 
-		try {
-			// Start transaction connection to the database
-			$this->getOrmConnection()->beginTransaction();
+		$hydrator = $this->hydratorsContainer->findHydrator($document);
 
-			if (
-				$document->getResource()->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE
-				&& $property instanceof Entities\Channels\Properties\IDynamicProperty
-			) {
-				$updatePropertyData = $this->dynamicPropertyHydrator->hydrate($document, $property);
+		if ($hydrator !== null) {
+			try {
+				// Start transaction connection to the database
+				$this->getOrmConnection()->beginTransaction();
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE
-				&& $property instanceof Entities\Channels\Properties\IStaticProperty
-			) {
-				$updatePropertyData = $this->staticPropertyHydrator->hydrate($document, $property);
+				$updatePropertyData = $hydrator->hydrate($document, $property);
 
-			} else {
+				$property = $this->propertiesManager->update($property, $updatePropertyData);
+
+				// Commit all changes into database
+				$this->getOrmConnection()->commit();
+
+			} catch (JsonApiExceptions\IJsonApiException $ex) {
+				throw $ex;
+
+			} catch (Throwable $ex) {
+				// Log caught exception
+				$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
+					'exception' => [
+						'message' => $ex->getMessage(),
+						'code'    => $ex->getCode(),
+					],
+				]);
+
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
-					$this->translator->translate('//devices-module.base.messages.invalidType.message'),
-					[
-						'pointer' => '/data/type',
-					]
+					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
+					$this->translator->translate('//devices-module.base.messages.notUpdated.message')
 				);
+
+			} finally {
+				// Revert all changes when error occur
+				if ($this->getOrmConnection()->isTransactionActive()) {
+					$this->getOrmConnection()->rollBack();
+				}
 			}
 
-			$property = $this->propertiesManager->update($property, $updatePropertyData);
-
-			// Commit all changes into database
-			$this->getOrmConnection()->commit();
-
-		} catch (JsonApiExceptions\IJsonApiException $ex) {
-			throw $ex;
-
-		} catch (Throwable $ex) {
-			// Log caught exception
-			$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
-				'exception' => [
-					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
-				],
-			]);
-			var_dump($ex->getMessage());
-			var_dump($ex->getFile());
-			var_dump($ex->getLine());
-
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
-				$this->translator->translate('//devices-module.base.messages.notUpdated.message')
-			);
-
-		} finally {
-			// Revert all changes when error occur
-			if ($this->getOrmConnection()->isTransactionActive()) {
-				$this->getOrmConnection()->rollBack();
-			}
+			return $this->buildResponse($request, $response, $property);
 		}
 
-		return $this->buildResponse($request, $response, $property);
+		throw new JsonApiExceptions\JsonApiErrorException(
+			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
+			[
+				'pointer' => '/data/type',
+			]
+		);
 	}
 
 	/**

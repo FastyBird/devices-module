@@ -271,80 +271,82 @@ class Routes implements WebServerRouter\IRoutes
 						]);
 						$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_RELATIONSHIP);
 
-						$group->group('/{' . self::URL_CHANNEL_ID . '}', function (Routing\RouteCollector $group
-						): void {
-							/**
-							 * CHANNEL PROPERTIES
-							 */
-							$group->group('/properties', function (Routing\RouteCollector $group): void {
-								$route = $group->get('', [$this->channelPropertiesV1Controller, 'index']);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTIES);
+						$group->group(
+							'/{' . self::URL_CHANNEL_ID . '}',
+							function (Routing\RouteCollector $group): void {
+								/**
+								 * CHANNEL PROPERTIES
+								 */
+								$group->group('/properties', function (Routing\RouteCollector $group): void {
+									$route = $group->get('', [$this->channelPropertiesV1Controller, 'index']);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTIES);
 
-								$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
-									$this->channelPropertiesV1Controller,
-									'read',
-								]);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY);
+									$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
+										$this->channelPropertiesV1Controller,
+										'read',
+									]);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY);
 
-								$group->post('', [$this->channelPropertiesV1Controller, 'create']);
+									$group->post('', [$this->channelPropertiesV1Controller, 'create']);
 
-								$group->patch('/{' . self::URL_ITEM_ID . '}', [
-									$this->channelPropertiesV1Controller,
-									'update',
-								]);
+									$group->patch('/{' . self::URL_ITEM_ID . '}', [
+										$this->channelPropertiesV1Controller,
+										'update',
+									]);
 
-								$group->delete('/{' . self::URL_ITEM_ID . '}', [
-									$this->channelPropertiesV1Controller,
-									'delete',
-								]);
+									$group->delete('/{' . self::URL_ITEM_ID . '}', [
+										$this->channelPropertiesV1Controller,
+										'delete',
+									]);
 
-								$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
-									$this->channelPropertiesV1Controller,
-									'readRelationship',
-								]);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_RELATIONSHIP);
-							});
+									$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+										$this->channelPropertiesV1Controller,
+										'readRelationship',
+									]);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_RELATIONSHIP);
+								});
 
-							/**
-							 * CHANNEL CONFIGURATION
-							 */
-							$group->group('/configuration', function (Routing\RouteCollector $group): void {
-								$route = $group->get('', [$this->channelConfigurationV1Controller, 'index']);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROWS);
+								/**
+								 * CHANNEL CONFIGURATION
+								 */
+								$group->group('/configuration', function (Routing\RouteCollector $group): void {
+									$route = $group->get('', [$this->channelConfigurationV1Controller, 'index']);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROWS);
 
-								$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
-									$this->channelConfigurationV1Controller,
-									'read',
-								]);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROW);
+									$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
+										$this->channelConfigurationV1Controller,
+										'read',
+									]);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROW);
 
-								$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
-									$this->channelConfigurationV1Controller,
-									'readRelationship',
-								]);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROW_RELATIONSHIP);
-							});
+									$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+										$this->channelConfigurationV1Controller,
+										'readRelationship',
+									]);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROW_RELATIONSHIP);
+								});
 
-							/**
-							 * CHANNEL CONTROLS
-							 */
-							$group->group('/controls', function (Routing\RouteCollector $group): void {
-								$route = $group->get('', [$this->channelControlsV1Controller, 'index']);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROLS);
+								/**
+								 * CHANNEL CONTROLS
+								 */
+								$group->group('/controls', function (Routing\RouteCollector $group): void {
+									$route = $group->get('', [$this->channelControlsV1Controller, 'index']);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROLS);
 
-								$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
-									$this->channelControlsV1Controller,
-									'read',
-								]);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROL);
+									$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
+										$this->channelControlsV1Controller,
+										'read',
+									]);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROL);
 
-								$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
-									$this->channelControlsV1Controller,
-									'readRelationship',
-								]);
-								$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROL_RELATIONSHIP);
-							});
-						});
+									$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+										$this->channelControlsV1Controller,
+										'readRelationship',
+									]);
+									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROL_RELATIONSHIP);
+								});
+							}
+						);
 					});
 				});
 			});

@@ -43,10 +43,13 @@ final class EntityKeyHelper
 {
 
 	private const INDEX = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 	/** @var int */
 	private int $maxLen = 6;
+
 	/** @var Closure|null */
 	private ?Closure $customCallback = null;
+
 	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 

@@ -202,11 +202,11 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 				$this->getOrmConnection()->beginTransaction();
 
 				if ($document->getResource()
-						->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+					->getType() === Schemas\Channels\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->dynamicPropertyHydrator->hydrate($document));
 
 				} elseif ($document->getResource()
-						->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+					->getType() === Schemas\Channels\Properties\StaticPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
 
 				} else {

@@ -52,12 +52,16 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
+
 	/** @var Models\Devices\Properties\IPropertiesManager */
 	protected Models\Devices\Properties\IPropertiesManager $propertiesManager;
+
 	/** @var Hydrators\Properties\DeviceDynamicPropertyHydrator */
 	protected Hydrators\Properties\DeviceDynamicPropertyHydrator $dynamicPropertyHydrator;
+
 	/** @var Hydrators\Properties\DeviceStaticPropertyHydrator */
 	protected Hydrators\Properties\DeviceStaticPropertyHydrator $staticPropertyHydrator;
+
 	/** @var Models\Devices\Properties\IPropertyRepository */
 	private Models\Devices\Properties\IPropertyRepository $propertyRepository;
 
@@ -186,11 +190,11 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 				$this->getOrmConnection()->beginTransaction();
 
 				if ($document->getResource()
-						->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
+					->getType() === Schemas\Devices\Properties\DynamicPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->dynamicPropertyHydrator->hydrate($document));
 
 				} elseif ($document->getResource()
-						->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
+					->getType() === Schemas\Devices\Properties\StaticPropertySchema::SCHEMA_TYPE) {
 					$property = $this->propertiesManager->create($this->staticPropertyHydrator->hydrate($document));
 
 				} else {

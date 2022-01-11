@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
@@ -51,42 +50,12 @@ class ConnectorsV1Controller extends BaseV1Controller
 	/** @var Models\Connectors\IConnectorRepository */
 	private Models\Connectors\IConnectorRepository $connectorRepository;
 
-	/** @var Hydrators\Connectors\FbBusConnectorHydrator */
-	private Hydrators\Connectors\FbBusConnectorHydrator $fbBusConnectorHydrator;
-
-	/** @var Hydrators\Connectors\FbMqttConnectorHydrator */
-	private Hydrators\Connectors\FbMqttConnectorHydrator $fbMqttConnectorHydrator;
-
-	/** @var Hydrators\Connectors\ShellyConnectorHydrator */
-	private Hydrators\Connectors\ShellyConnectorHydrator $shellyConnectorHydrator;
-
-	/** @var Hydrators\Connectors\TuyaConnectorHydrator */
-	private Hydrators\Connectors\TuyaConnectorHydrator $tuyaConnectorHydrator;
-
-	/** @var Hydrators\Connectors\SonoffConnectorHydrator */
-	private Hydrators\Connectors\SonoffConnectorHydrator $sonoffConnectorHydrator;
-
-	/** @var Hydrators\Connectors\ModbusConnectorHydrator */
-	private Hydrators\Connectors\ModbusConnectorHydrator $modbusConnectorHydrator;
-
 	public function __construct(
 		Models\Connectors\IConnectorRepository $connectorRepository,
-		Models\Connectors\IConnectorsManager $connectorsManager,
-		Hydrators\Connectors\FbBusConnectorHydrator $fbBusConnectorHydrator,
-		Hydrators\Connectors\FbMqttConnectorHydrator $fbMqttConnectorHydrator,
-		Hydrators\Connectors\ShellyConnectorHydrator $shellyConnectorHydrator,
-		Hydrators\Connectors\TuyaConnectorHydrator $tuyaConnectorHydrator,
-		Hydrators\Connectors\SonoffConnectorHydrator $sonoffConnectorHydrator,
-		Hydrators\Connectors\ModbusConnectorHydrator $modbusConnectorHydrator
+		Models\Connectors\IConnectorsManager $connectorsManager
 	) {
 		$this->connectorRepository = $connectorRepository;
 		$this->connectorsManager = $connectorsManager;
-		$this->fbBusConnectorHydrator = $fbBusConnectorHydrator;
-		$this->fbMqttConnectorHydrator = $fbMqttConnectorHydrator;
-		$this->shellyConnectorHydrator = $shellyConnectorHydrator;
-		$this->tuyaConnectorHydrator = $tuyaConnectorHydrator;
-		$this->sonoffConnectorHydrator = $sonoffConnectorHydrator;
-		$this->modbusConnectorHydrator = $modbusConnectorHydrator;
 	}
 
 	/**
@@ -179,88 +148,54 @@ class ConnectorsV1Controller extends BaseV1Controller
 
 		$this->validateIdentifier($request, $document);
 
-		try {
-			// Start transaction connection to the database
-			$this->getOrmConnection()->beginTransaction();
+		$hydrator = $this->hydratorsContainer->findHydrator($document);
 
-			if (
-				$document->getResource()->getType() === Schemas\Connectors\FbBusConnectorSchema::SCHEMA_TYPE
-				&& $connector instanceof Entities\Connectors\IFbBusConnector
-			) {
-				$updateConnectorData = $this->fbBusConnectorHydrator->hydrate($document, $connector);
+		if ($hydrator !== null) {
+			try {
+				// Start transaction connection to the database
+				$this->getOrmConnection()->beginTransaction();
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Connectors\FbMqttConnectorSchema::SCHEMA_TYPE
-				&& $connector instanceof Entities\Connectors\IFbMqttConnector
-			) {
-				$updateConnectorData = $this->fbMqttConnectorHydrator->hydrate($document, $connector);
+				$connector = $this->connectorsManager->update($connector, $hydrator->hydrate($document, $connector));
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Connectors\ShellyConnectorSchema::SCHEMA_TYPE
-				&& $connector instanceof Entities\Connectors\IShellyConnector
-			) {
-				$updateConnectorData = $this->shellyConnectorHydrator->hydrate($document, $connector);
+				// Commit all changes into database
+				$this->getOrmConnection()->commit();
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Connectors\TuyaConnectorSchema::SCHEMA_TYPE
-				&& $connector instanceof Entities\Connectors\ITuyaConnector
-			) {
-				$updateConnectorData = $this->tuyaConnectorHydrator->hydrate($document, $connector);
+			} catch (JsonApiExceptions\IJsonApiException $ex) {
+				throw $ex;
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Connectors\SonoffConnectorSchema::SCHEMA_TYPE
-				&& $connector instanceof Entities\Connectors\ISonoffConnector
-			) {
-				$updateConnectorData = $this->sonoffConnectorHydrator->hydrate($document, $connector);
+			} catch (Throwable $ex) {
+				// Log caught exception
+				$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
+					'exception' => [
+						'message' => $ex->getMessage(),
+						'code'    => $ex->getCode(),
+					],
+				]);
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Connectors\ModbusConnectorSchema::SCHEMA_TYPE
-				&& $connector instanceof Entities\Connectors\IModbusConnector
-			) {
-				$updateConnectorData = $this->modbusConnectorHydrator->hydrate($document, $connector);
-
-			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
-					$this->translator->translate('//devices-module.base.messages.invalidType.message'),
-					[
-						'pointer' => '/data/type',
-					]
+					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
+					$this->translator->translate('//devices-module.base.messages.notUpdated.message')
 				);
+
+			} finally {
+				// Revert all changes when error occur
+				if ($this->getOrmConnection()->isTransactionActive()) {
+					$this->getOrmConnection()->rollBack();
+				}
 			}
 
-			$connector = $this->connectorsManager->update($connector, $updateConnectorData);
-
-			// Commit all changes into database
-			$this->getOrmConnection()->commit();
-
-		} catch (JsonApiExceptions\IJsonApiException $ex) {
-			throw $ex;
-
-		} catch (Throwable $ex) {
-			// Log caught exception
-			$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
-				'exception' => [
-					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
-				],
-			]);
-
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
-				$this->translator->translate('//devices-module.base.messages.notUpdated.message')
-			);
-
-		} finally {
-			// Revert all changes when error occur
-			if ($this->getOrmConnection()->isTransactionActive()) {
-				$this->getOrmConnection()->rollBack();
-			}
+			return $this->buildResponse($request, $response, $connector);
 		}
 
-		return $this->buildResponse($request, $response, $connector);
+		throw new JsonApiExceptions\JsonApiErrorException(
+			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
+			[
+				'pointer' => '/data/type',
+			]
+		);
 	}
 
 	/**

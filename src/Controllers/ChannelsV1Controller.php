@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
-use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
@@ -56,19 +55,14 @@ final class ChannelsV1Controller extends BaseV1Controller
 	/** @var Models\Channels\IChannelRepository */
 	protected Models\Channels\IChannelRepository $channelRepository;
 
-	/** @var Hydrators\Channels\ChannelHydrator */
-	private Hydrators\Channels\ChannelHydrator $channelHydrator;
-
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Channels\IChannelRepository $channelRepository,
-		Models\Channels\IChannelsManager $channelsManager,
-		Hydrators\Channels\ChannelHydrator $channelHydrator
+		Models\Channels\IChannelsManager $channelsManager
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->channelRepository = $channelRepository;
 		$this->channelsManager = $channelsManager;
-		$this->channelHydrator = $channelHydrator;
 	}
 
 	/**
@@ -136,12 +130,14 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 		$document = $this->createDocument($request);
 
-		if ($document->getResource()->getType() === Schemas\Channels\ChannelSchema::SCHEMA_TYPE) {
+		$hydrator = $this->hydratorsContainer->findHydrator($document);
+
+		if ($hydrator !== null) {
 			try {
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$channel = $this->channelsManager->create($this->channelHydrator->hydrate($document));
+				$channel = $this->channelsManager->create($hydrator->hydrate($document));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -266,55 +262,54 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 		$this->validateIdentifier($request, $document);
 
-		try {
-			// Start transaction connection to the database
-			$this->getOrmConnection()->beginTransaction();
+		$hydrator = $this->hydratorsContainer->findHydrator($document);
 
-			if ($document->getResource()->getType() === Schemas\Channels\ChannelSchema::SCHEMA_TYPE) {
-				$updateChannelData = $this->channelHydrator->hydrate($document, $channel);
+		if ($hydrator !== null) {
+			try {
+				// Start transaction connection to the database
+				$this->getOrmConnection()->beginTransaction();
 
-			} else {
+				$channel = $this->channelsManager->update($channel, $hydrator->hydrate($document, $channel));
+
+				// Commit all changes into database
+				$this->getOrmConnection()->commit();
+
+			} catch (JsonApiExceptions\IJsonApiException $ex) {
+				throw $ex;
+
+			} catch (Throwable $ex) {
+				// Log caught exception
+				$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
+					'exception' => [
+						'message' => $ex->getMessage(),
+						'code'    => $ex->getCode(),
+					],
+				]);
+
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
-					$this->translator->translate('//devices-module.base.messages.invalidType.message'),
-					[
-						'pointer' => '/data/type',
-					]
+					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
+					$this->translator->translate('//devices-module.base.messages.notUpdated.message')
 				);
+
+			} finally {
+				// Revert all changes when error occur
+				if ($this->getOrmConnection()->isTransactionActive()) {
+					$this->getOrmConnection()->rollBack();
+				}
 			}
 
-			$channel = $this->channelsManager->update($channel, $updateChannelData);
-
-			// Commit all changes into database
-			$this->getOrmConnection()->commit();
-
-		} catch (JsonApiExceptions\IJsonApiException $ex) {
-			throw $ex;
-
-		} catch (Throwable $ex) {
-			// Log caught exception
-			$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
-				'exception' => [
-					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
-				],
-			]);
-
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
-				$this->translator->translate('//devices-module.base.messages.notUpdated.message')
-			);
-
-		} finally {
-			// Revert all changes when error occur
-			if ($this->getOrmConnection()->isTransactionActive()) {
-				$this->getOrmConnection()->rollBack();
-			}
+			return $this->buildResponse($request, $response, $channel);
 		}
 
-		return $this->buildResponse($request, $response, $channel);
+		throw new JsonApiExceptions\JsonApiErrorException(
+			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
+			[
+				'pointer' => '/data/type',
+			]
+		);
 	}
 
 	/**

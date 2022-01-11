@@ -23,7 +23,6 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
-use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette\Utils;
@@ -63,21 +62,16 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\Properties\IPropertiesManager */
 	protected Models\Channels\Properties\IPropertiesManager $propertiesManager;
 
-	/** @var JsonApiHydrators\HydratorsContainer */
-	protected JsonApiHydrators\HydratorsContainer $hydratorsContainer;
-
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Channels\IChannelRepository $channelRepository,
 		Models\Channels\Properties\IPropertyRepository $propertyRepository,
-		Models\Channels\Properties\IPropertiesManager $propertiesManager,
-		JsonApiHydrators\HydratorsContainer $hydratorsContainer
+		Models\Channels\Properties\IPropertiesManager $propertiesManager
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->channelRepository = $channelRepository;
 		$this->propertyRepository = $propertyRepository;
 		$this->propertiesManager = $propertiesManager;
-		$this->hydratorsContainer = $hydratorsContainer;
 	}
 
 	/**
@@ -331,9 +325,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$updatePropertyData = $hydrator->hydrate($document, $property);
-
-				$property = $this->propertiesManager->update($property, $updatePropertyData);
+				$property = $this->propertiesManager->update($property, $hydrator->hydrate($document, $property));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();

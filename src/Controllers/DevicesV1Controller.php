@@ -18,7 +18,6 @@ namespace FastyBird\DevicesModule\Controllers;
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
@@ -61,36 +60,16 @@ class DevicesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\IChannelsManager */
 	protected Models\Channels\IChannelsManager $channelsManager;
 
-	/** @var Hydrators\Devices\NetworkDeviceHydrator */
-	private Hydrators\Devices\NetworkDeviceHydrator $networkDeviceHydrator;
-
-	/** @var Hydrators\Devices\LocalDeviceHydrator */
-	private Hydrators\Devices\LocalDeviceHydrator $localDeviceHydrator;
-
-	/** @var Hydrators\Devices\VirtualDeviceHydrator */
-	private Hydrators\Devices\VirtualDeviceHydrator $virtualDeviceHydrator;
-
-	/** @var Hydrators\Devices\HomekitDeviceHydrator */
-	private Hydrators\Devices\HomekitDeviceHydrator $homekitDeviceHydrator;
-
 	public function __construct(
 		Models\Devices\IDeviceRepository $deviceRepository,
 		Models\Devices\IDevicesManager $devicesManager,
 		Models\Channels\IChannelRepository $channelRepository,
-		Models\Channels\IChannelsManager $channelsManager,
-		Hydrators\Devices\NetworkDeviceHydrator $networkDeviceHydrator,
-		Hydrators\Devices\LocalDeviceHydrator $localDeviceHydrator,
-		Hydrators\Devices\VirtualDeviceHydrator $virtualDeviceHydrator,
-		Hydrators\Devices\HomekitDeviceHydrator $homekitDeviceHydrator
+		Models\Channels\IChannelsManager $channelsManager
 	) {
 		$this->deviceRepository = $deviceRepository;
 		$this->devicesManager = $devicesManager;
 		$this->channelRepository = $channelRepository;
 		$this->channelsManager = $channelsManager;
-		$this->networkDeviceHydrator = $networkDeviceHydrator;
-		$this->localDeviceHydrator = $localDeviceHydrator;
-		$this->virtualDeviceHydrator = $virtualDeviceHydrator;
-		$this->homekitDeviceHydrator = $homekitDeviceHydrator;
 	}
 
 	/**
@@ -146,38 +125,14 @@ class DevicesV1Controller extends BaseV1Controller
 	): Message\ResponseInterface {
 		$document = $this->createDocument($request);
 
-		if (
-			$document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE
-			|| $document->getResource()->getType() === Schemas\Devices\LocalDeviceSchema::SCHEMA_TYPE
-			|| $document->getResource()->getType() === Schemas\Devices\VirtualDeviceSchema::SCHEMA_TYPE
-			|| $document->getResource()->getType() === Schemas\Devices\HomekitDeviceSchema::SCHEMA_TYPE
-		) {
+		$hydrator = $this->hydratorsContainer->findHydrator($document);
+
+		if ($hydrator !== null) {
 			try {
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				if ($document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE) {
-					$device = $this->devicesManager->create($this->networkDeviceHydrator->hydrate($document));
-
-				} elseif ($document->getResource()->getType() === Schemas\Devices\LocalDeviceSchema::SCHEMA_TYPE) {
-					$device = $this->devicesManager->create($this->localDeviceHydrator->hydrate($document));
-
-				} elseif ($document->getResource()->getType() === Schemas\Devices\VirtualDeviceSchema::SCHEMA_TYPE) {
-					$device = $this->devicesManager->create($this->virtualDeviceHydrator->hydrate($document));
-
-				} elseif ($document->getResource()->getType() === Schemas\Devices\HomekitDeviceSchema::SCHEMA_TYPE) {
-					$device = $this->devicesManager->create($this->homekitDeviceHydrator->hydrate($document));
-
-				} else {
-					throw new JsonApiExceptions\JsonApiErrorException(
-						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-						$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
-						$this->translator->translate('//devices-module.base.messages.invalidType.message'),
-						[
-							'pointer' => '/data/type',
-						]
-					);
-				}
+				$device = $this->devicesManager->create($hydrator->hydrate($document));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -300,99 +255,77 @@ class DevicesV1Controller extends BaseV1Controller
 
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
-		try {
-			// Start transaction connection to the database
-			$this->getOrmConnection()->beginTransaction();
+		$hydrator = $this->hydratorsContainer->findHydrator($document);
 
-			if (
-				$document->getResource()->getType() === Schemas\Devices\NetworkDeviceSchema::SCHEMA_TYPE
-				&& $device instanceof Entities\Devices\INetworkDevice
-			) {
-				$updateDeviceData = $this->networkDeviceHydrator->hydrate($document, $device);
+		if ($hydrator !== null) {
+			try {
+				// Start transaction connection to the database
+				$this->getOrmConnection()->beginTransaction();
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Devices\LocalDeviceSchema::SCHEMA_TYPE
-				&& $device instanceof Entities\Devices\ILocalDevice
-			) {
-				$updateDeviceData = $this->localDeviceHydrator->hydrate($document, $device);
+				$device = $this->devicesManager->update($device, $hydrator->hydrate($document, $device));
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Devices\VirtualDeviceSchema::SCHEMA_TYPE
-				&& $device instanceof Entities\Devices\IVirtualDevice
-			) {
-				$updateDeviceData = $this->virtualDeviceHydrator->hydrate($document, $device);
+				// Commit all changes into database
+				$this->getOrmConnection()->commit();
 
-			} elseif (
-				$document->getResource()->getType() === Schemas\Devices\HomekitDeviceSchema::SCHEMA_TYPE
-				&& $device instanceof Entities\Devices\IHomekitDevice
-			) {
-				$updateDeviceData = $this->homekitDeviceHydrator->hydrate($document, $device);
+			} catch (JsonApiExceptions\IJsonApiException $ex) {
+				throw $ex;
 
-			} else {
+			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+				if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) !== false) {
+					$columnParts = explode('.', $match['key']);
+					$columnKey = end($columnParts);
+
+					if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'device_')) {
+						throw new JsonApiExceptions\JsonApiErrorException(
+							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
+							[
+								'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
+							]
+						);
+					}
+				}
+
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
-					$this->translator->translate('//devices-module.base.messages.invalidType.message'),
-					[
-						'pointer' => '/data/type',
-					]
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message')
 				);
-			}
 
-			$device = $this->devicesManager->update($device, $updateDeviceData);
+			} catch (Throwable $ex) {
+				// Log caught exception
+				$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
+					'exception' => [
+						'message' => $ex->getMessage(),
+						'code'    => $ex->getCode(),
+					],
+				]);
 
-			// Commit all changes into database
-			$this->getOrmConnection()->commit();
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
+					$this->translator->translate('//devices-module.base.messages.notUpdated.message')
+				);
 
-		} catch (JsonApiExceptions\IJsonApiException $ex) {
-			throw $ex;
-
-		} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
-			if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) !== false) {
-				$columnParts = explode('.', $match['key']);
-				$columnKey = end($columnParts);
-
-				if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'device_')) {
-					throw new JsonApiExceptions\JsonApiErrorException(
-						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-						$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
-						$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
-						[
-							'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
-						]
-					);
+			} finally {
+				// Revert all changes when error occur
+				if ($this->getOrmConnection()->isTransactionActive()) {
+					$this->getOrmConnection()->rollBack();
 				}
 			}
 
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
-				$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message')
-			);
-
-		} catch (Throwable $ex) {
-			// Log caught exception
-			$this->logger->error('[FB:DEVICES_MODULE:CONTROLLER] ' . $ex->getMessage(), [
-				'exception' => [
-					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
-				],
-			]);
-
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
-				$this->translator->translate('//devices-module.base.messages.notUpdated.message')
-			);
-
-		} finally {
-			// Revert all changes when error occur
-			if ($this->getOrmConnection()->isTransactionActive()) {
-				$this->getOrmConnection()->rollBack();
-			}
+			return $this->buildResponse($request, $response, $device);
 		}
 
-		return $this->buildResponse($request, $response, $device);
+		throw new JsonApiExceptions\JsonApiErrorException(
+			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
+			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
+			[
+				'pointer' => '/data/type',
+			]
+		);
 	}
 
 	/**

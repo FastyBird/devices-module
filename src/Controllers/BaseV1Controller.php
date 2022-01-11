@@ -21,6 +21,7 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Router;
 use FastyBird\JsonApi\Builder as JsonApiBuilder;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
+use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud;
@@ -60,6 +61,9 @@ abstract class BaseV1Controller
 
 	/** @var Router\Validator */
 	protected Router\Validator $routesValidator;
+
+	/** @var JsonApiHydrators\HydratorsContainer */
+	protected JsonApiHydrators\HydratorsContainer $hydratorsContainer;
 
 	/** @var Log\LoggerInterface */
 	protected Log\LoggerInterface $logger;
@@ -112,6 +116,16 @@ abstract class BaseV1Controller
 	public function injectRoutesValidator(Router\Validator $validator): void
 	{
 		$this->routesValidator = $validator;
+	}
+
+	/**
+	 * @param Router\Validator $validator
+	 *
+	 * @return void
+	 */
+	public function injectHydratorsContainer(JsonApiHydrators\HydratorsContainer $hydratorsContainer): void
+	{
+		$this->hydratorsContainer = $hydratorsContainer;
 	}
 
 	/**

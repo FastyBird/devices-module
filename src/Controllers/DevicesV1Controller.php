@@ -24,7 +24,6 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
-use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette\Utils;
@@ -96,45 +95,44 @@ class DevicesV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		$findQuery = new Queries\FindDevicesQuery();
 
 		$devices = $this->deviceRepository->getResultSet($findQuery);
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($devices));
+		// @phpstan-ignore-next-line
+		return $this->buildResponse($request, $response, $devices);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($device));
+		return $this->buildResponse($request, $response, $device);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -144,8 +142,8 @@ class DevicesV1Controller extends BaseV1Controller
 	 */
 	public function create(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		$document = $this->createDocument($request);
 
 		if (
@@ -263,10 +261,9 @@ class DevicesV1Controller extends BaseV1Controller
 				}
 			}
 
-			/** @var WebServerHttp\Response $response */
-			$response = $response
-				->withEntity(WebServerHttp\ScalarEntity::from($device))
-				->withStatus(StatusCodeInterface::STATUS_CREATED);
+			$response = $this->buildResponse($request, $response, $device);
+			/** @var Message\ResponseInterface $response */
+			$response = $response->withStatus(StatusCodeInterface::STATUS_CREATED);
 
 			return $response;
 		}
@@ -283,9 +280,9 @@ class DevicesV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -295,8 +292,8 @@ class DevicesV1Controller extends BaseV1Controller
 	 */
 	public function update(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		$document = $this->createDocument($request);
 
 		$this->validateIdentifier($request, $document);
@@ -395,15 +392,14 @@ class DevicesV1Controller extends BaseV1Controller
 			}
 		}
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($device));
+		return $this->buildResponse($request, $response, $device);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -413,8 +409,8 @@ class DevicesV1Controller extends BaseV1Controller
 	 */
 	public function delete(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
 		try {
@@ -454,7 +450,7 @@ class DevicesV1Controller extends BaseV1Controller
 			}
 		}
 
-		/** @var WebServerHttp\Response $response */
+		/** @var Message\ResponseInterface $response */
 		$response = $response->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
 
 		return $response;
@@ -462,38 +458,34 @@ class DevicesV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
 
 		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
 		if ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PROPERTIES) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($device->getProperties()));
+			return $this->buildResponse($request, $response, $device->getProperties());
 
 		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONFIGURATION) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($device->getConfiguration()));
+			return $this->buildResponse($request, $response, $device->getConfiguration());
 
 		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CHILDREN) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($device->getChildren()));
+			return $this->buildResponse($request, $response, $device->getChildren());
 
 		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CHANNELS) {
 			$findQuery = new Queries\FindChannelsQuery();
 			$findQuery->forDevice($device);
 
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($this->channelRepository->findAllBy($findQuery)));
+			return $this->buildResponse($request, $response, $this->channelRepository->findAllBy($findQuery));
 		}
 
 		return parent::readRelationship($request, $response);

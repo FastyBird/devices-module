@@ -19,15 +19,18 @@ use Doctrine\DBAL\Connection;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Router;
+use FastyBird\JsonApi\Builder as JsonApiBuilder;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
-use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
+use IPub\DoctrineCrud;
+use IPub\DoctrineOrmQuery\ResultSet;
 use IPub\JsonAPIDocument;
 use Nette;
 use Nette\Localization;
 use Nette\Utils;
 use Psr\Http\Message;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log;
 
 /**
@@ -51,6 +54,12 @@ abstract class BaseV1Controller
 
 	/** @var Persistence\ManagerRegistry */
 	protected Persistence\ManagerRegistry $managerRegistry;
+
+	/** @var JsonApiBuilder\Builder */
+	protected JsonApiBuilder\Builder $builder;
+
+	/** @var Router\Validator */
+	protected Router\Validator $routesValidator;
 
 	/** @var Log\LoggerInterface */
 	protected Log\LoggerInterface $logger;
@@ -86,15 +95,35 @@ abstract class BaseV1Controller
 	}
 
 	/**
+	 * @param JsonApiBuilder\Builder $builder
+	 *
+	 * @return void
+	 */
+	public function injectJsonApiBuilder(JsonApiBuilder\Builder $builder): void
+	{
+		$this->builder = $builder;
+	}
+
+	/**
+	 * @param Router\Validator $validator
+	 *
+	 * @return void
+	 */
+	public function injectRoutesValidator(Router\Validator $validator): void
+	{
+		$this->routesValidator = $validator;
+	}
+
+	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): ResponseInterface {
 		// & relation entity name
 		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
@@ -185,6 +214,46 @@ abstract class BaseV1Controller
 		}
 
 		throw new Exceptions\RuntimeException('Entity manager could not be loaded');
+	}
+
+	/**
+	 * @param Message\ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param DoctrineCrud\Entities\IEntity|ResultSet<DoctrineCrud\Entities\IEntity>|Array<DoctrineCrud\Entities\IEntity> $data
+	 *
+	 * @return ResponseInterface
+	 */
+	protected function buildResponse(
+		Message\ServerRequestInterface $request,
+		ResponseInterface $response,
+		$data
+	): ResponseInterface {
+		$totalCount = null;
+
+		if ($data instanceof ResultSet) {
+			if (array_key_exists('page', $request->getQueryParams())) {
+				$queryParams = $request->getQueryParams();
+
+				$pageOffset = isset($queryParams['page']['offset']) ? (int) $queryParams['page']['offset'] : null;
+				$pageLimit = isset($queryParams['page']['limit']) ? (int) $queryParams['page']['limit'] : null;
+
+				$totalCount = $data->getTotalCount();
+
+				if ($data->getTotalCount() > $pageLimit) {
+					$data->applyPaging($pageOffset, $pageLimit);
+				}
+			}
+		}
+
+		return $this->builder->build(
+			$request,
+			$response,
+			$data instanceof ResultSet ? $data->toArray() : $data,
+			$totalCount,
+			function (string $link): bool {
+				return $this->routesValidator->validate($link);
+			}
+		);
 	}
 
 }

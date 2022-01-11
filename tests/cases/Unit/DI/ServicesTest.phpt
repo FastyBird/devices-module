@@ -9,6 +9,7 @@ use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Middleware;
 use FastyBird\DevicesModule\Models;
+use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\DevicesModule\Subscribers;
 use Nette;
@@ -91,6 +92,9 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Hydrators\Properties\DeviceStaticPropertyHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Properties\ChannelDynamicPropertyHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Properties\ChannelStaticPropertyHydrator::class));
+
+		Assert::notNull($container->getByType(Router\Validator::class));
+		Assert::notNull($container->getByType(Router\Routes::class));
 
 		Assert::notNull($container->getByType(Subscribers\EntitiesSubscriber::class));
 

@@ -22,7 +22,6 @@ use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
-use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message;
 use Ramsey\Uuid;
@@ -62,22 +61,21 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
 		if (!$device->hasControl(MetadataTypes\ControlNameType::NAME_CONFIGURE)) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from([]));
+			return $this->buildResponse($request, $response, []);
 		}
 
 		$findQuery = new Queries\FindDeviceConfigurationQuery();
@@ -85,22 +83,22 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 
 		$rows = $this->rowRepository->getResultSet($findQuery);
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($rows));
+		// @phpstan-ignore-next-line
+		return $this->buildResponse($request, $response, $rows);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
@@ -121,8 +119,7 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 			$row = $this->rowRepository->findOneBy($findQuery);
 
 			if ($row !== null) {
-				return $response
-					->withEntity(WebServerHttp\ScalarEntity::from($row));
+				return $this->buildResponse($request, $response, $row);
 			}
 		}
 
@@ -135,16 +132,16 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
@@ -169,8 +166,7 @@ final class DeviceConfigurationV1Controller extends BaseV1Controller
 
 			if ($row !== null) {
 				if ($relationEntity === Schemas\Devices\Configuration\RowSchema::RELATIONSHIPS_DEVICE) {
-					return $response
-						->withEntity(WebServerHttp\ScalarEntity::from($device));
+					return $this->buildResponse($request, $response, $row->getDevice());
 				}
 			} else {
 				throw new JsonApiExceptions\JsonApiErrorException(

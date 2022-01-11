@@ -24,7 +24,6 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
-use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette\Utils;
@@ -82,16 +81,16 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
@@ -100,36 +99,35 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 		$properties = $this->propertyRepository->getResultSet($findQuery);
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($properties));
+		// @phpstan-ignore-next-line
+		return $this->buildResponse($request, $response, $properties);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & property
 		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($property));
+		return $this->buildResponse($request, $response, $property);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -139,8 +137,8 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 */
 	public function create(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response
+		Message\ResponseInterface $response
+	): Message\ResponseInterface
 	{
 		// At first, try to load device
 		$this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
@@ -253,10 +251,9 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 				}
 			}
 
-			/** @var WebServerHttp\Response $response */
-			$response = $response
-				->withEntity(WebServerHttp\ScalarEntity::from($property))
-				->withStatus(StatusCodeInterface::STATUS_CREATED);
+			$response = $this->buildResponse($request, $response, $property);
+			/** @var Message\ResponseInterface $response */
+			$response = $response->withStatus(StatusCodeInterface::STATUS_CREATED);
 
 			return $response;
 		}
@@ -273,9 +270,9 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -285,8 +282,8 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 */
 	public function update(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & property
@@ -353,15 +350,14 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 			}
 		}
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($property));
+		return $this->buildResponse($request, $response, $property);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -371,8 +367,8 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 */
 	public function delete(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & property
@@ -410,7 +406,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 			}
 		}
 
-		/** @var WebServerHttp\Response $response */
+		/** @var Message\ResponseInterface $response */
 		$response = $response->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
 
 		return $response;
@@ -418,16 +414,16 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
@@ -439,8 +435,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 			$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
 
 			if ($relationEntity === Schemas\Devices\Properties\PropertySchema::RELATIONSHIPS_DEVICE) {
-				return $response
-					->withEntity(WebServerHttp\ScalarEntity::from($property->getDevice()));
+				return $this->buildResponse($request, $response, $property->getDevice());
 			}
 		}
 

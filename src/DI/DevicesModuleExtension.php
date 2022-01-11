@@ -85,12 +85,12 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('middleware.access'), new DI\Definitions\ServiceDefinition())
 			->setType(Middleware\AccessMiddleware::class);
 
-		$builder->addDefinition($this->prefix('middleware.pagging'), new DI\Definitions\ServiceDefinition())
-			->setType(Middleware\PagingMiddleware::class);
-
 		$builder->addDefinition($this->prefix('router.routes'), new DI\Definitions\ServiceDefinition())
 			->setType(Router\Routes::class)
 			->setArguments(['usePrefix' => $configuration->apiPrefix]);
+
+		$builder->addDefinition($this->prefix('router.validator'), new DI\Definitions\ServiceDefinition())
+			->setType(Router\Validator::class);
 
 		// Console commands
 		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())

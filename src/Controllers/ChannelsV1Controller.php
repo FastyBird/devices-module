@@ -23,7 +23,6 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
-use FastyBird\WebServer\Http as WebServerHttp;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette\Utils;
@@ -74,16 +73,16 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 
@@ -92,36 +91,35 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 		$channels = $this->channelRepository->getResultSet($findQuery);
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($channels));
+		// @phpstan-ignore-next-line
+		return $this->buildResponse($request, $response, $channels);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
 		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($channel));
+		return $this->buildResponse($request, $response, $channel);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -131,8 +129,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 	 */
 	public function create(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response
+		Message\ResponseInterface $response
+	): Message\ResponseInterface
 	{
 		// At first, try to load device
 		$this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
@@ -227,10 +225,9 @@ final class ChannelsV1Controller extends BaseV1Controller
 				}
 			}
 
-			/** @var WebServerHttp\Response $response */
-			$response = $response
-				->withEntity(WebServerHttp\ScalarEntity::from($channel))
-				->withStatus(StatusCodeInterface::STATUS_CREATED);
+			$response = $this->buildResponse($request, $response, $channel);
+			/** @var Message\ResponseInterface $response */
+			$response = $response->withStatus(StatusCodeInterface::STATUS_CREATED);
 
 			return $response;
 		}
@@ -247,9 +244,9 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -259,8 +256,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 	 */
 	public function update(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
@@ -318,15 +315,14 @@ final class ChannelsV1Controller extends BaseV1Controller
 			}
 		}
 
-		return $response
-			->withEntity(WebServerHttp\ScalarEntity::from($channel));
+		return $this->buildResponse($request, $response, $channel);
 	}
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws Doctrine\DBAL\ConnectionException
@@ -336,8 +332,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 	 */
 	public function delete(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
@@ -375,7 +371,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 			}
 		}
 
-		/** @var WebServerHttp\Response $response */
+		/** @var Message\ResponseInterface $response */
 		$response = $response->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
 
 		return $response;
@@ -383,16 +379,16 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 	/**
 	 * @param Message\ServerRequestInterface $request
-	 * @param WebServerHttp\Response $response
+	 * @param Message\ResponseInterface $response
 	 *
-	 * @return WebServerHttp\Response
+	 * @return Message\ResponseInterface
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		WebServerHttp\Response $response
-	): WebServerHttp\Response {
+		Message\ResponseInterface $response
+	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
 		// & channel
@@ -401,12 +397,10 @@ final class ChannelsV1Controller extends BaseV1Controller
 		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
 		if ($relationEntity === Schemas\Channels\ChannelSchema::RELATIONSHIPS_PROPERTIES) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($channel->getProperties()));
+			return $this->buildResponse($request, $response, $channel->getProperties());
 
 		} elseif ($relationEntity === Schemas\Channels\ChannelSchema::RELATIONSHIPS_CONFIGURATION) {
-			return $response
-				->withEntity(WebServerHttp\ScalarEntity::from($channel->getConfiguration()));
+			return $this->buildResponse($request, $response, $channel->getConfiguration());
 		}
 
 		return parent::readRelationship($request, $response);

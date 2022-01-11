@@ -81,9 +81,6 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Middleware\AccessMiddleware */
 	private Middleware\AccessMiddleware $devicesAccessControlMiddleware;
 
-	/** @var Middleware\PagingMiddleware */
-	private Middleware\PagingMiddleware $pagingMiddleware;
-
 	/** @var SimpleAuthMiddleware\AccessMiddleware */
 	private SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware;
 
@@ -104,7 +101,6 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\ConnectorsV1Controller $connectorsV1Controller,
 		Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller,
 		Middleware\AccessMiddleware $devicesAccessControlMiddleware,
-		Middleware\PagingMiddleware $pagingMiddleware,
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
 		SimpleAuthMiddleware\UserMiddleware $userMiddleware
 	) {
@@ -123,7 +119,6 @@ class Routes implements WebServerRouter\IRoutes
 		$this->connectorControlsV1Controller = $connectorControlsV1Controller;
 
 		$this->devicesAccessControlMiddleware = $devicesAccessControlMiddleware;
-		$this->pagingMiddleware = $pagingMiddleware;
 		$this->accessControlMiddleware = $accessControlMiddleware;
 		$this->userMiddleware = $userMiddleware;
 	}
@@ -147,7 +142,6 @@ class Routes implements WebServerRouter\IRoutes
 		$routes->addMiddleware($this->accessControlMiddleware);
 		$routes->addMiddleware($this->userMiddleware);
 		$routes->addMiddleware($this->devicesAccessControlMiddleware);
-		$routes->addMiddleware($this->pagingMiddleware);
 	}
 
 	/**

@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
-use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;

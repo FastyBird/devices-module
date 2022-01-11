@@ -41,9 +41,6 @@ final class DeviceControlsV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.deviceControls';
-
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
 

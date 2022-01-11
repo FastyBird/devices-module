@@ -46,9 +46,6 @@ final class ChannelHydrator extends JsonApiHydrators\Hydrator
 		Schemas\Channels\ChannelSchema::RELATIONSHIPS_DEVICE,
 	];
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.channels';
-
 	/**
 	 * {@inheritDoc}
 	 */

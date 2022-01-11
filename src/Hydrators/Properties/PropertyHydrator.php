@@ -49,9 +49,6 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 		'number_of_decimals' => 'numberOfDecimals',
 	];
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.properties';
-
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *

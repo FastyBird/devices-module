@@ -41,9 +41,6 @@ use Throwable;
 class ConnectorsV1Controller extends BaseV1Controller
 {
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.connectors';
-
 	/** @var Models\Connectors\IConnectorsManager */
 	private Models\Connectors\IConnectorsManager $connectorsManager;
 

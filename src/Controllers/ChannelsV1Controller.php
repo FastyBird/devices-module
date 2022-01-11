@@ -43,9 +43,6 @@ final class ChannelsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 	use Controllers\Finders\TChannelFinder;
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.channels';
-
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
 
@@ -221,10 +218,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 			}
 
 			$response = $this->buildResponse($request, $response, $channel);
-			/** @var Message\ResponseInterface $response */
-			$response = $response->withStatus(StatusCodeInterface::STATUS_CREATED);
-
-			return $response;
+			return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
 		}
 
 		throw new JsonApiExceptions\JsonApiErrorException(
@@ -365,10 +359,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 			}
 		}
 
-		/** @var Message\ResponseInterface $response */
-		$response = $response->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
-
-		return $response;
+		return $response->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
 	}
 
 	/**

@@ -43,9 +43,6 @@ final class ChannelConfigurationV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 	use Controllers\Finders\TChannelFinder;
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.channelConfiguration';
-
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $deviceRepository;
 

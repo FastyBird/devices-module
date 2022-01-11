@@ -47,9 +47,6 @@ abstract class BaseV1Controller
 
 	use Nette\SmartObject;
 
-	/** @var string */
-	protected string $translationDomain = '';
-
 	/** @var Localization\Translator */
 	protected Localization\Translator $translator;
 

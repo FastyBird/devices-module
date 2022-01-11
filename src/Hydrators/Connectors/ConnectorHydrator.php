@@ -39,9 +39,6 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 		'enabled',
 	];
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.connectors';
-
 	/**
 	 * {@inheritDoc}
 	 */

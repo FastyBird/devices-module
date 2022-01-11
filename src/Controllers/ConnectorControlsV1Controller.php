@@ -41,9 +41,6 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TConnectorFinder;
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.connectorControls';
-
 	/** @var Models\Connectors\IConnectorRepository */
 	protected Models\Connectors\IConnectorRepository $connectorRepository;
 

@@ -48,9 +48,6 @@ abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 		Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONNECTOR,
 	];
 
-	/** @var string */
-	protected string $translationDomain = 'devices-module.devices';
-
 	/**
 	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
 	 *

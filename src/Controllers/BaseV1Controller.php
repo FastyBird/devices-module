@@ -119,7 +119,7 @@ abstract class BaseV1Controller
 	}
 
 	/**
-	 * @param Router\Validator $validator
+	 * @param JsonApiHydrators\HydratorsContainer $hydratorsContainer
 	 *
 	 * @return void
 	 */

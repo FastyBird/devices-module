@@ -33,7 +33,7 @@ final class DeviceDynamicPropertyHydrator extends DevicePropertyHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Devices\Properties\DynamicProperty::class;
 	}

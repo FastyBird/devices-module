@@ -39,7 +39,7 @@ final class ShellyConnectorHydrator extends ConnectorHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Connectors\ShellyConnector::class;
 	}

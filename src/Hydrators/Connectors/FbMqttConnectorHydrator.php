@@ -46,7 +46,7 @@ final class FbMqttConnectorHydrator extends ConnectorHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Connectors\FbMqttConnector::class;
 	}

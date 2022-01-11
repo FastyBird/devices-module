@@ -45,7 +45,7 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Connectors\Connector::class;
 	}

@@ -33,7 +33,7 @@ final class VirtualDeviceHydrator extends DeviceHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Devices\VirtualDevice::class;
 	}

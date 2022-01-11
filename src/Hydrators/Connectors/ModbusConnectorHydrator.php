@@ -43,7 +43,7 @@ final class ModbusConnectorHydrator extends ConnectorHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Connectors\ModbusConnector::class;
 	}

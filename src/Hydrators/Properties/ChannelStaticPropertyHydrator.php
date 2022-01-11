@@ -33,7 +33,7 @@ final class ChannelStaticPropertyHydrator extends ChannelPropertyHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Channels\Properties\StaticProperty::class;
 	}

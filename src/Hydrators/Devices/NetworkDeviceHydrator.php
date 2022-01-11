@@ -33,7 +33,7 @@ final class NetworkDeviceHydrator extends DeviceHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Devices\NetworkDevice::class;
 	}

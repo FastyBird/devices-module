@@ -33,7 +33,7 @@ final class ChannelDynamicPropertyHydrator extends ChannelPropertyHydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Channels\Properties\DynamicProperty::class;
 	}

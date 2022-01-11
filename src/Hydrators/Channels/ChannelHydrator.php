@@ -52,7 +52,7 @@ final class ChannelHydrator extends JsonApiHydrators\Hydrator
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getEntityName(): string
+	public function getEntityName(): string
 	{
 		return Entities\Channels\Channel::class;
 	}

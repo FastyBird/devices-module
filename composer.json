@@ -60,7 +60,7 @@
     "phpstan/phpstan-deprecation-rules" : "^0.12",
     "phpstan/phpstan-doctrine" : "^0.12",
     "phpstan/phpstan-nette" : "^0.12",
-    "tracy/tracy" : "^2.8"
+    "tracy/tracy": "^2.9"
   },
 
   "autoload" : {

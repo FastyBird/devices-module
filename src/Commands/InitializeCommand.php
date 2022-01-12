@@ -122,7 +122,9 @@ class InitializeCommand extends Console\Command\Command
 
 		} catch (Throwable $ex) {
 			// Log caught exception
-			$this->logger->error('[FB:DEVICES_MODULE:CMD] ' . $ex->getMessage(), [
+			$this->logger->error('An unhandled error occurred', [
+				'source'    => 'devices-module-initialize',
+				'type'      => 'run',
 				'exception' => [
 					'message' => $ex->getMessage(),
 					'code'    => $ex->getCode(),

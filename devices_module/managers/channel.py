@@ -19,6 +19,7 @@ Devices module channel managers module
 """
 
 # Python base dependencies
+import uuid
 from typing import Dict, List, Type, Union
 
 # Library libs
@@ -30,6 +31,7 @@ from devices_module.entities.channel import (
     ChannelPropertyEntity,
     ChannelStaticPropertyEntity,
 )
+from devices_module.entities.device import DeviceEntity
 from devices_module.managers.base import BaseManager
 
 
@@ -50,6 +52,9 @@ class ChannelsManager(BaseManager[ChannelEntity]):
 
     def create(self, data: Dict) -> ChannelEntity:
         """Create new channel entity"""
+        if "device_id" in data and "device" not in data and isinstance(data.get("device_id"), uuid.UUID):
+            data["device"] = self._session.query(DeviceEntity).get(data.get("device_id").bytes)
+
         return super().create_entity(
             data={**data, **{"channel_id": data.get("id", None)}},
             entity_type=ChannelEntity,
@@ -106,6 +111,9 @@ class ChannelPropertiesManager(BaseManager[ChannelPropertyEntity]):
         property_type: Type[Union[ChannelDynamicPropertyEntity, ChannelStaticPropertyEntity]],
     ) -> ChannelPropertyEntity:
         """Create new channel property entity"""
+        if "channel_id" in data and "channel" not in data and isinstance(data.get("channel_id"), uuid.UUID):
+            data["channel"] = self._session.query(ChannelEntity).get(data.get("channel_id").bytes)
+
         return super().create_entity(
             data={**data, **{"property_id": data.get("id", None)}},
             entity_type=property_type,
@@ -148,6 +156,9 @@ class ChannelConfigurationManager(BaseManager[ChannelConfigurationEntity]):
 
     def create(self, data: Dict) -> ChannelConfigurationEntity:
         """Create new channel configuration entity"""
+        if "channel_id" in data and "channel" not in data and isinstance(data.get("channel_id"), uuid.UUID):
+            data["channel"] = self._session.query(ChannelEntity).get(data.get("channel_id").bytes)
+
         return super().create_entity(
             data={**data, **{"configuration_id": data.get("id", None)}},
             entity_type=ChannelConfigurationEntity,
@@ -189,6 +200,9 @@ class ChannelControlsManager(BaseManager[ChannelControlEntity]):
 
     def create(self, data: Dict) -> ChannelControlEntity:
         """Create new channel entity"""
+        if "channel_id" in data and "channel" not in data and isinstance(data.get("channel_id"), uuid.UUID):
+            data["channel"] = self._session.query(ChannelEntity).get(data.get("channel_id").bytes)
+
         return super().create_entity(
             data={**data, **{"control_id": data.get("id", None)}},
             entity_type=ChannelControlEntity,

@@ -44,7 +44,7 @@ class BaseManager(Generic[T], ABC):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __session: OrmSession
+    _session: OrmSession
 
     # -----------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ class BaseManager(Generic[T], ABC):
         self,
         session: OrmSession,
     ) -> None:
-        self.__session = session
+        self._session = session
 
     # -----------------------------------------------------------------------------
 
@@ -83,8 +83,8 @@ class BaseManager(Generic[T], ABC):
                 except AttributeError:
                     pass
 
-        self.__session.add(entity)
-        self.__session.commit()
+        self._session.add(entity)
+        self._session.commit()
 
         return entity
 
@@ -98,7 +98,7 @@ class BaseManager(Generic[T], ABC):
         writable_fields: List[str],
     ) -> T:
         """Update entity"""
-        stored_entity: Optional[T] = self.__session.query(entity_type).get(entity_id.bytes)
+        stored_entity: Optional[T] = self._session.query(entity_type).get(entity_id.bytes)
 
         if stored_entity is None:
             raise InvalidStateException("Entity was not found in database")
@@ -111,7 +111,7 @@ class BaseManager(Generic[T], ABC):
                 except AttributeError:
                     pass
 
-        self.__session.commit()
+        self._session.commit()
 
         return stored_entity
 
@@ -119,12 +119,12 @@ class BaseManager(Generic[T], ABC):
 
     def delete_entity(self, entity_id: uuid.UUID, entity_type: Type[Base]) -> bool:
         """Delete entity"""
-        stored_entity = self.__session.query(entity_type).get(entity_id.bytes)
+        stored_entity = self._session.query(entity_type).get(entity_id.bytes)
 
         if stored_entity is None:
             raise InvalidStateException("Entity was not found in database")
 
-        self.__session.delete(stored_entity)
-        self.__session.commit()
+        self._session.delete(stored_entity)
+        self._session.commit()
 
         return True

@@ -28,7 +28,7 @@ from typing import Dict, Union
 from metadata.types import ButtonPayload, SwitchPayload
 
 
-class PropertyState(ABC):
+class IPropertyState(ABC):
     """
     Base property state
 
@@ -98,7 +98,7 @@ class PropertyState(ABC):
         """Transform state to dictionary"""
 
 
-class DevicePropertyState(PropertyState, ABC):
+class IDevicePropertyState(IPropertyState, ABC):
     """
     Device property state
 
@@ -109,7 +109,7 @@ class DevicePropertyState(PropertyState, ABC):
     """
 
 
-class ChannelPropertyState(PropertyState, ABC):
+class IChannelPropertyState(IPropertyState, ABC):
     """
     Channel property state
 

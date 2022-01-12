@@ -24,7 +24,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 # Library libs
-from devices_module.state.property import ChannelPropertyState, DevicePropertyState
+from devices_module.state.property import IChannelPropertyState, IDevicePropertyState
 
 
 class IDevicePropertyStateRepository(ABC):
@@ -38,7 +38,7 @@ class IDevicePropertyStateRepository(ABC):
     """
 
     @abstractmethod
-    def get_by_id(self, property_id: uuid.UUID) -> Optional[DevicePropertyState]:
+    def get_by_id(self, property_id: uuid.UUID) -> Optional[IDevicePropertyState]:
         """Find device property state record by provided database identifier"""
 
 
@@ -53,5 +53,5 @@ class IChannelPropertyStateRepository(ABC):
     """
 
     @abstractmethod
-    def get_by_id(self, property_id: uuid.UUID) -> Optional[ChannelPropertyState]:
+    def get_by_id(self, property_id: uuid.UUID) -> Optional[IChannelPropertyState]:
         """Find channel property state record by provided database identifier"""

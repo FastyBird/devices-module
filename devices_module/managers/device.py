@@ -19,9 +19,11 @@ Devices module device managers module
 """
 
 # Python base dependencies
+import uuid
 from typing import Dict, List, Type, Union
 
 # Library libs
+from devices_module.entities.connector import ConnectorEntity
 from devices_module.entities.device import (
     DeviceConfigurationEntity,
     DeviceControlEntity,
@@ -62,6 +64,9 @@ class DevicesManager(BaseManager[DeviceEntity]):
 
     def create(self, data: Dict, device_type: Type[DeviceEntity]) -> DeviceEntity:
         """Create new device entity"""
+        if "connector_id" in data and "connector" not in data and isinstance(data.get("connector_id"), uuid.UUID):
+            data["connector"] = self._session.query(ConnectorEntity).get(data.get("connector_id").bytes)
+
         return super().create_entity(
             data={**data, **{"device_id": data.get("id", None)}},
             entity_type=device_type,
@@ -118,6 +123,9 @@ class DevicePropertiesManager(BaseManager[DevicePropertyEntity]):
         property_type: Type[Union[DeviceDynamicPropertyEntity, DeviceStaticPropertyEntity]],
     ) -> DevicePropertyEntity:
         """Create new device property entity"""
+        if "device_id" in data and "device" not in data and isinstance(data.get("device_id"), uuid.UUID):
+            data["device"] = self._session.query(DeviceEntity).get(data.get("device_id").bytes)
+
         return super().create_entity(
             data={**data, **{"property_id": data.get("id", None)}},
             entity_type=property_type,
@@ -160,6 +168,9 @@ class DeviceConfigurationManager(BaseManager[DeviceConfigurationEntity]):
 
     def create(self, data: Dict) -> DeviceConfigurationEntity:
         """Create new device configuration entity"""
+        if "device_id" in data and "device" not in data and isinstance(data.get("device_id"), uuid.UUID):
+            data["device"] = self._session.query(DeviceEntity).get(data.get("device_id").bytes)
+
         return super().create_entity(
             data={**data, **{"configuration_id": data.get("id", None)}},
             entity_type=DeviceConfigurationEntity,
@@ -201,6 +212,9 @@ class DeviceControlsManager(BaseManager[DeviceControlEntity]):
 
     def create(self, data: Dict) -> DeviceControlEntity:
         """Create new device entity"""
+        if "device_id" in data and "device" not in data and isinstance(data.get("device_id"), uuid.UUID):
+            data["device"] = self._session.query(DeviceEntity).get(data.get("device_id").bytes)
+
         return super().create_entity(
             data={**data, **{"control_id": data.get("id", None)}},
             entity_type=DeviceControlEntity,

@@ -23,8 +23,8 @@ from abc import abstractmethod
 from typing import Dict, Union
 
 # Library libs
-from devices_module.entities.channel import ChannelEntity
-from devices_module.entities.device import DeviceEntity
+from devices_module.entities.channel import ChannelPropertyEntity
+from devices_module.entities.device import DevicePropertyEntity
 from devices_module.state.property import IChannelPropertyState, IDevicePropertyState
 
 
@@ -41,7 +41,7 @@ class IDevicePropertiesStatesManager:
     @abstractmethod
     def create(
         self,
-        device: DeviceEntity,
+        device_property: DevicePropertyEntity,
         data: Dict[str, Union[str, int, float, bool, None]],
     ) -> IDevicePropertyState:
         """Create new device property state record"""
@@ -76,7 +76,7 @@ class IChannelPropertiesStatesManager:
     @abstractmethod
     def create(
         self,
-        channel: ChannelEntity,
+        channel_property: ChannelPropertyEntity,
         data: Dict[str, Union[str, int, float, bool, None]],
     ) -> IChannelPropertyState:
         """Create new channel property state record"""

@@ -28,9 +28,9 @@ from devices_module.entities.device import DeviceEntity
 from devices_module.state.property import IChannelPropertyState, IDevicePropertyState
 
 
-class IDeviceStatesManager:
+class IDevicePropertiesStatesManager:
     """
-    Devices states manager
+    Device properties states manager
 
     @package        FastyBird:DevicesModule!
     @module         managers/state
@@ -63,9 +63,9 @@ class IDeviceStatesManager:
         """Delete existing device property state"""
 
 
-class IChannelStatesManager:
+class IChannelPropertiesStatesManager:
     """
-    Devices states manager
+    Channel properties states manager
 
     @package        FastyBird:DevicesModule!
     @module         managers/state

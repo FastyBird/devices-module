@@ -96,8 +96,11 @@ class ConnectorControlsManager(BaseManager[ConnectorControlEntity]):
 
     def create(self, data: Dict) -> ConnectorControlEntity:
         """Create new connector control entity"""
-        if "connector_id" in data and "connector" not in data and isinstance(data.get("connector_id"), uuid.UUID):
-            data["connector"] = self._session.query(ConnectorEntity).get(data.get("connector_id").bytes)
+        if "connector_id" in data and "connector" not in data:
+            connector_id = data.get("connector_id")
+
+            if isinstance(connector_id, uuid.UUID):
+                data["connector"] = self._session.query(ConnectorEntity).get(connector_id.bytes)
 
         return super().create_entity(
             data={**data, **{"control_id": data.get("id", None)}},

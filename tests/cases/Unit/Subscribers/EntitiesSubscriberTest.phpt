@@ -4,9 +4,9 @@ namespace Tests\Cases;
 
 use Doctrine\ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exchange;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Subscribers;
+use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata;
 use Mockery;
 use Nette\Utils;
@@ -24,7 +24,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testSubscriberEvents(): void
 	{
-		$publisher = Mockery::mock(Exchange\IPublisher::class);
+		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 
@@ -47,7 +47,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishCreatedEntity(): void
 	{
-		$publisher = Mockery::mock(Exchange\IPublisher::class);
+		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
@@ -147,7 +147,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishUpdatedEntity(): void
 	{
-		$publisher = Mockery::mock(Exchange\IPublisher::class);
+		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
@@ -202,7 +202,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishDeletedEntity(): void
 	{
-		$publisher = Mockery::mock(Exchange\IPublisher::class);
+		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {

@@ -60,6 +60,7 @@ setup(
     package_data={"devices_module": ["py.typed"]},
     install_requires=[
         "fastnumbers",
+        "fastybird-exchange",
         "fastybird-metadata",
         "kink",
         "mysqlclient",

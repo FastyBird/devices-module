@@ -30,6 +30,7 @@ abstract class Property implements IProperty
 
 	use TKey;
 	use TEntity;
+	use TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
@@ -372,7 +373,11 @@ abstract class Property implements IProperty
 						return $item === '' ? null : $item;
 					}, array_map('trim', explode(':', $item) + [null, null, null]));
 
-					return [$parts[0], $parts[1], $parts[2]];
+					return [
+						$parts[0],
+						(is_string($parts[1]) && $parts[1] !== '' ? $parts[1] : null),
+						(is_string($parts[2]) && $parts[2] !== '' ? $parts[2] : null)
+					];
 				}, array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
 					return $item !== '';
 				}));

@@ -38,15 +38,17 @@
   "minimum-stability" : "stable",
 
   "require" : {
-    "php" : ">=7.4.0|>=8.0.0",
-    "ext-bcmath" : "*",
-    "cweagans/composer-patches" : "^1.7",
-    "fastybird/json-api" : "^0.",
-    "fastybird/metadata" : "^0.25",
-    "fastybird/simple-auth" : "^0.2",
-    "fastybird/web-server" : "^0.7",
-    "ipub/doctrine-timestampable" : "^1.5",
-    "nettrine/orm" : "^0.8"
+    "php": ">=7.4.0|>=8.0.0",
+    "ext-bcmath": "*",
+    "cweagans/composer-patches": "^1.7",
+    "fastybird/exchange": "^0.7",
+    "fastybird/json-api": "^0.",
+    "fastybird/metadata": "^0.25",
+    "fastybird/simple-auth": "^0.2",
+    "fastybird/web-server": "^0.7",
+    "ipub/doctrine-dynamic-discriminator-map": "^1.4",
+    "ipub/doctrine-timestampable": "^1.5",
+    "nettrine/orm": "^0.8"
   },
 
   "require-dev" : {

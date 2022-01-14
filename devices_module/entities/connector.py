@@ -423,66 +423,6 @@ class FbMqttConnectorEntity(ConnectorEntity):
         }
 
 
-class ShellyConnectorEntity(ConnectorEntity):
-    """
-    Shelly connector entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/connector
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "shelly"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> ConnectorType:
-        """Connector type"""
-        return ConnectorType.SHELLY
-
-
-class TuyaConnectorEntity(ConnectorEntity):
-    """
-    Tuya connector entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/connector
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "tuya"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> ConnectorType:
-        """Connector type"""
-        return ConnectorType.TUYA
-
-
-class SonoffConnectorEntity(ConnectorEntity):
-    """
-    Sonoff connector entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/connector
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "sonoff"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> ConnectorType:
-        """Connector type"""
-        return ConnectorType.SONOFF
-
-
 class ModbusConnectorEntity(ConnectorEntity):
     """
     Modbus connector entity

@@ -20,9 +20,9 @@ use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exchange;
 use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
+use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata\Helpers as MetadataHelpers;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
@@ -56,8 +56,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/** @var Models\States\IChannelPropertyRepository|null */
 	private ?Models\States\IChannelPropertyRepository $channelPropertyStateRepository;
 
-	/** @var Exchange\IPublisher|null */
-	private ?Exchange\IPublisher $publisher;
+	/** @var ExchangePublisher\Publisher|null */
+	private ?ExchangePublisher\Publisher $publisher;
 
 	/** @var ORM\EntityManagerInterface */
 	private ORM\EntityManagerInterface $entityManager;
@@ -65,7 +65,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	public function __construct(
 		Helpers\EntityKeyHelper $entityKeyGenerator,
 		ORM\EntityManagerInterface $entityManager,
-		?Exchange\IPublisher $publisher = null,
+		?ExchangePublisher\Publisher $publisher = null,
 		?Models\States\IDevicePropertyRepository $devicePropertyStateRepository = null,
 		?Models\States\IChannelPropertyRepository $channelPropertyStateRepository = null
 	) {

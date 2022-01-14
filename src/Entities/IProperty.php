@@ -28,7 +28,7 @@ use IPub\DoctrineTimestampable;
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
 interface IProperty extends IEntity,
-	IKey,
+	IKey, IEntityParams,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 

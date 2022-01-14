@@ -24,6 +24,7 @@ from typing import Dict, Optional, Type
 
 # Library dependencies
 from kink import inject
+from exchange.publisher import Publisher
 from metadata.routing import RoutingKey
 from metadata.types import ModuleOrigin
 from sqlalchemy import event
@@ -45,7 +46,6 @@ from devices_module.entities.device import (
     DeviceEntity,
     DevicePropertyEntity,
 )
-from devices_module.exchange import IPublisher
 from devices_module.helpers import KeyHashHelpers
 from devices_module.repositories.state import (
     IChannelPropertyStateRepository,
@@ -153,7 +153,7 @@ class EntitiesSubscriber:
 
     __key_hash_helpers: KeyHashHelpers
 
-    __publisher: Optional[IPublisher] = None
+    __publisher: Optional[Publisher] = None
 
     __device_property_state_repository: Optional[IDevicePropertyStateRepository]
     __channel_property_state_repository: Optional[IChannelPropertyStateRepository]
@@ -163,7 +163,7 @@ class EntitiesSubscriber:
     def __init__(
         self,
         key_hash_helpers: KeyHashHelpers,
-        publisher: IPublisher = None,  # type: ignore[assignment]
+        publisher: Publisher = None,  # type: ignore[assignment]
         device_property_state_repository: IDevicePropertyStateRepository = None,  # type: ignore[assignment]
         channel_property_state_repository: IChannelPropertyStateRepository = None,  # type: ignore[assignment]
     ) -> None:

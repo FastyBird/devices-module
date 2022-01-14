@@ -22,13 +22,12 @@ from typing import Dict, Optional
 
 # Library dependencies
 import MySQLdb
+from exchange.bootstrap import create_container as create_exchange_container
 from metadata.loader import load_schema_by_routing_key
 from metadata.routing import RoutingKey
-from metadata.types import ModuleOrigin
 from metadata.validator import validate
 from MySQLdb import OperationalError
 from MySQLdb.cursors import Cursor
-from kink import di, inject
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import Session
@@ -36,18 +35,6 @@ from sqlalchemy.orm import Session
 # Library libs
 from devices_module.bootstrap import create_container
 from devices_module.entities.base import Base
-from devices_module.exchange import IPublisher
-
-
-@inject(alias=IPublisher)
-class Publisher(IPublisher):
-    def publish(
-        self,
-        origin: ModuleOrigin,
-        routing_key: RoutingKey,
-        data: Optional[Dict],
-    ) -> None:
-        """Publish data to exchange bus"""
 
 
 class DbTestCase(unittest.TestCase):
@@ -76,9 +63,7 @@ class DbTestCase(unittest.TestCase):
 
         cls.__setup_database()
 
-        # Mock publisher service
-        di[Publisher] = Publisher()
-
+        create_exchange_container()
         create_container(database_session=cls.__db_session)
 
         # Initialize all database models

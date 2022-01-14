@@ -81,6 +81,8 @@ class PropertyMixin:
         VARCHAR(255), name="property_default", nullable=True, default=None
     )
 
+    __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
+
     # -----------------------------------------------------------------------------
 
     def __init__(self, identifier: str, property_id: Optional[uuid.UUID] = None) -> None:
@@ -322,6 +324,20 @@ class PropertyMixin:
             raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
 
         self.__default = default
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def params(self) -> Dict:
+        """Property params"""
+        return self.__params if self.__params is not None else {}
+
+    # -----------------------------------------------------------------------------
+
+    @params.setter
+    def params(self, params: Optional[Dict]) -> None:
+        """Property params"""
+        self.__params = params
 
     # -----------------------------------------------------------------------------
 

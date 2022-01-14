@@ -19,6 +19,7 @@ import uuid
 from unittest.mock import patch
 
 # Library dependencies
+from exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
@@ -33,7 +34,7 @@ from devices_module.repositories.device import (
 )
 
 # Tests libs
-from tests.pytests.tests import DbTestCase, Publisher
+from tests.pytests.tests import DbTestCase
 
 
 class TestDevicePropertyEntity(DbTestCase):

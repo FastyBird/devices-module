@@ -479,7 +479,7 @@ class PropertyMixin:
 
                     for i in range(0, 3):
                         try:
-                            enum_item.append(parts[i])
+                            enum_item.append(str(parts[i]) if parts[i] is not None and parts[i] != "" else None)
                         except ValueError:
                             enum_item.append(None)
 

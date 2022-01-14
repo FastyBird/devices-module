@@ -322,7 +322,7 @@ abstract class Property implements IProperty
 			) {
 				$plainFormat = implode(',', array_map(function ($item): string {
 					if (is_array($item)) {
-						return $item[0] . ':' . ($item[1]?? '') . ':' . ($item[2]?? '');
+						return $item[0] . ':' . ($item[1] ?? '') . ':' . ($item[2] ?? '');
 					}
 
 					return $item;

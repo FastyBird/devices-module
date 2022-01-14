@@ -108,7 +108,7 @@ interface IProperty extends IEntity,
 	public function getFormat(): ?array;
 
 	/**
-	 * @param string|null $format
+	 * @param string|Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null $format
 	 *
 	 * @return void
 	 */

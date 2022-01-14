@@ -461,7 +461,7 @@ class PropertyMixin:
                 if float_min_value is None and float_max_value is not None:
                     return None, float_max_value
 
-            elif self.data_type == DataType.ENUM:
+            elif self.data_type in (DataType.ENUM, DataType.BUTTON, DataType.SWITCH):
                 enums = list({x.strip() for x in value_format.split(",")})
                 enums.sort()
 

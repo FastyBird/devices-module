@@ -358,7 +358,11 @@ abstract class Property implements IProperty
 				if ($min === null && $max !== null) {
 					return [null, floatval($max)];
 				}
-			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+			} elseif (
+				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
+			) {
 				return array_map(function (string $item) {
 					if (strpos($item, ':') === false) {
 						return $item;

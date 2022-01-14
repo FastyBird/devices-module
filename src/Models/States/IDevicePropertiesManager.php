@@ -48,6 +48,7 @@ interface IDevicePropertiesManager extends IPropertiesManager
 	 * @return States\IDeviceProperty
 	 */
 	public function update(
+		Entities\Devices\Properties\IProperty $property,
 		States\IDeviceProperty $state,
 		Utils\ArrayHash $values
 	): States\IDeviceProperty;
@@ -58,6 +59,7 @@ interface IDevicePropertiesManager extends IPropertiesManager
 	 * @return bool
 	 */
 	public function delete(
+		Entities\Devices\Properties\IProperty $property,
 		States\IDeviceProperty $state
 	): bool;
 

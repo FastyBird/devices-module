@@ -48,6 +48,7 @@ interface IChannelPropertiesManager extends IPropertiesManager
 	 * @return States\IChannelProperty
 	 */
 	public function update(
+		Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state,
 		Utils\ArrayHash $values
 	): States\IChannelProperty;
@@ -58,6 +59,7 @@ interface IChannelPropertiesManager extends IPropertiesManager
 	 * @return bool
 	 */
 	public function delete(
+		Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state
 	): bool;
 

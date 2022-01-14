@@ -51,6 +51,7 @@ class IDevicePropertiesStatesManager:
     @abstractmethod
     def update(
         self,
+        device_property: DevicePropertyEntity,
         state: IDevicePropertyState,
         data: Dict[str, Union[str, int, float, bool, None]],
     ) -> IDevicePropertyState:
@@ -59,7 +60,11 @@ class IDevicePropertiesStatesManager:
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def delete(self, state: IDevicePropertyState) -> bool:
+    def delete(
+        self,
+        device_property: DevicePropertyEntity,
+        state: IDevicePropertyState,
+    ) -> bool:
         """Delete existing device property state"""
 
 
@@ -86,6 +91,7 @@ class IChannelPropertiesStatesManager:
     @abstractmethod
     def update(
         self,
+        channel_property: ChannelPropertyEntity,
         state: IChannelPropertyState,
         data: Dict[str, Union[str, int, float, bool, None]],
     ) -> IChannelPropertyState:
@@ -94,5 +100,9 @@ class IChannelPropertiesStatesManager:
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def delete(self, state: IChannelPropertyState) -> bool:
+    def delete(
+        self,
+        channel_property: ChannelPropertyEntity,
+        state: IChannelPropertyState,
+    ) -> bool:
         """Delete existing channel property state"""

@@ -29,7 +29,7 @@ from fastnumbers import fast_float, fast_int
 from metadata.devices_module import PropertyType
 from metadata.helpers import normalize_value
 from metadata.types import ButtonPayload, DataType, SwitchPayload
-from sqlalchemy import BINARY, BOOLEAN, VARCHAR, Column, Integer
+from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, Integer
 
 # Library libs
 from devices_module.exceptions import InvalidArgumentException, InvalidStateException
@@ -221,12 +221,56 @@ class PropertyMixin:
     # -----------------------------------------------------------------------------
 
     @format.setter
-    def format(self, value_format: Optional[str]) -> None:
+    def format(
+        self,
+        value_format: Union[
+            str,
+            Tuple[Optional[int], Optional[int]],
+            Tuple[Optional[float], Optional[float]],
+            List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+            None,
+        ],
+    ) -> None:
         """Property format setter"""
-        if value_format is not None and self.__build_format(value_format=value_format) is None:
-            raise InvalidArgumentException("Provided property format is not valid")
+        if isinstance(value_format, str):
+            if self.__build_format(value_format=value_format) is None:
+                raise InvalidArgumentException("Provided property format is not valid")
 
-        self.__format = value_format
+            self.__format = value_format
+
+        elif isinstance(value_format, (list, tuple)):
+            plain_value_format: Optional[str] = None
+
+            if isinstance(value_format, list):
+                enum_items: List[str] = []
+
+                for item in value_format:
+                    if isinstance(item, tuple):
+                        enum_items.append(
+                            ":".join(
+                                [
+                                    item[0],
+                                    item[1] if item[1] is not None else "",
+                                    item[2] if item[2] is not None else "",
+                                ]
+                            )
+                        )
+
+                    else:
+                        enum_items.append(item)
+
+                plain_value_format = ",".join(enum_items)
+
+            if isinstance(value_format, tuple):
+                plain_value_format = f"{value_format[0]}:{value_format[1]}"
+
+            if self.__build_format(value_format=plain_value_format) is None:
+                raise InvalidArgumentException("Provided property format is not valid")
+
+            self.__format = plain_value_format
+
+        else:
+            self.__format = None
 
     # -----------------------------------------------------------------------------
 

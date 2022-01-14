@@ -303,13 +303,53 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setFormat(?string $format): void
+	public function setFormat($format): void
 	{
-		if ($format !== null && $this->buildFormat($format) === null) {
-			throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
+		if (is_string($format)) {
+			if ($this->buildFormat($format) === null) {
+				throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
+			}
+
+			$this->format = $format;
+
+			return;
+
+		} elseif (is_array($format)) {
+			if (
+				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
+				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
+			) {
+				$plainFormat = implode(',', array_map(function ($item): string {
+					if (is_array($item)) {
+						return $item[0] . ':' . ($item[1]?? '') . ':' . ($item[2]?? '');
+					}
+
+					return $item;
+				}, $format));
+
+				if ($this->buildFormat($plainFormat) === null) {
+					throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
+				}
+
+				$this->format = $plainFormat;
+
+				return;
+
+			} else {
+				$plainFormat = $format[0] . ':' . $format[1];
+
+				if ($this->buildFormat($plainFormat) === null) {
+					throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
+				}
+
+				$this->format = $plainFormat;
+
+				return;
+			}
 		}
 
-		$this->format = $format;
+		$this->format = null;
 	}
 
 	/**
@@ -376,7 +416,7 @@ abstract class Property implements IProperty
 					return [
 						$parts[0],
 						(is_string($parts[1]) && $parts[1] !== '' ? $parts[1] : null),
-						(is_string($parts[2]) && $parts[2] !== '' ? $parts[2] : null)
+						(is_string($parts[2]) && $parts[2] !== '' ? $parts[2] : null),
 					];
 				}, array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
 					return $item !== '';

@@ -22,9 +22,10 @@ Devices module subscriber module
 import datetime
 from typing import Dict, Optional, Type
 
+from exchange.publisher import Publisher
+
 # Library dependencies
 from kink import inject
-from exchange.publisher import Publisher
 from metadata.routing import RoutingKey
 from metadata.types import ModuleOrigin
 from sqlalchemy import event

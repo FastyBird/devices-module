@@ -329,7 +329,7 @@ abstract class Property implements IProperty
 						return $item[0] . ':' . ($item[1] ?? '') . ':' . ($item[2] ?? '');
 					}
 
-					return $item;
+					return strval($item);
 				}, $format));
 
 				if ($this->buildFormat($plainFormat) === null) {
@@ -341,7 +341,7 @@ abstract class Property implements IProperty
 				return;
 
 			} else {
-				$plainFormat = $format[0] . ':' . $format[1];
+				$plainFormat = strval($format[0]) . ':' . strval($format[1]);
 
 				if ($this->buildFormat($plainFormat) === null) {
 					throw new Exceptions\InvalidArgumentException('Provided property format is not valid');

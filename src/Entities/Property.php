@@ -315,6 +315,10 @@ abstract class Property implements IProperty
 			return;
 
 		} elseif (is_array($format)) {
+			if ($this->dataType === null) {
+				throw new Exceptions\InvalidStateException('Data type for property is not set, unpacked property format could not be serialized');
+			}
+
 			if (
 				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
 				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)

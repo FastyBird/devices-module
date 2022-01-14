@@ -112,7 +112,7 @@ interface IProperty extends IEntity,
 	 *
 	 * @return void
 	 */
-	public function setFormat(?string $format): void;
+	public function setFormat($format): void;
 
 	/**
 	 * @return string|int|float|null

@@ -252,10 +252,17 @@ export default class Property extends Model implements PropertyInterface {
       unit: this.string(null).nullable(),
       format: this.attr(null).nullable(),
       invalid: this.string(null).nullable(),
+      numberOfDecimals: this.number(null).nullable(),
+
+      value: this.attr(null).nullable(),
 
       actualValue: this.attr(null).nullable(),
       expectedValue: this.attr(null).nullable(),
       pending: this.boolean(false),
+
+      command: this.string(null).nullable(),
+      lastResult: this.string(null).nullable(),
+      backup: this.string(null).nullable(),
 
       // Relations
       relationshipNames: this.attr([]),

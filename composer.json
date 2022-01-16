@@ -86,7 +86,8 @@
   "extra" : {
     "patches" : {
       "doctrine/orm" : {
-        "Bug: Ramsey uuid not working" : "patches/doctrine.orm.uuid.diff"
+        "Bug: Ramsey uuid not working - Part 1" : "patches/doctrine.orm.uuid.1.diff",
+        "Bug: Ramsey uuid not working - Part 2" : "patches/doctrine.orm.uuid.2.diff"
       },
       "ramsey/uuid-doctrine" : {
         "Bug: Ramsey uuid conversion fallback" : "patches/ramsey.uuid.doctrine.diff"

@@ -18,7 +18,7 @@
 import json
 import os
 import unittest
-from typing import Dict, Optional
+from typing import Dict
 
 # Library dependencies
 import MySQLdb

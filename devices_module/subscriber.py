@@ -22,9 +22,8 @@ Devices module subscriber module
 import datetime
 from typing import Dict, Optional, Type
 
-from exchange.publisher import Publisher
-
 # Library dependencies
+from exchange.publisher import Publisher
 from kink import inject
 from metadata.routing import RoutingKey
 from metadata.types import ModuleOrigin

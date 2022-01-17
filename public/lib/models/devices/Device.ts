@@ -71,9 +71,9 @@ export default class Device extends Model implements DeviceInterface {
       .first()
 
     return property !== null && (
-      property.actualValue === DeviceConnectionState.READY
-      || property.actualValue === DeviceConnectionState.RUNNING
-      || property.actualValue === DeviceConnectionState.CONNECTED
+      property.value === DeviceConnectionState.READY
+      || property.value === DeviceConnectionState.RUNNING
+      || property.value === DeviceConnectionState.CONNECTED
     )
   }
 

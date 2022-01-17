@@ -1,6 +1,6 @@
 {
   "name": "@fastybird/devices-module",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "Devices module data model plugin",
   "keywords": [
     "devices",
@@ -38,7 +38,7 @@
     "lint:ts": "tslint -c tslint.json 'public/**/*.ts'"
   },
   "dependencies": {
-    "@fastybird/metadata": "^0.24",
+    "@fastybird/metadata": "^0.27",
     "@fastybird/vue-wamp-v1": "^0.1",
     "@fastybird/vuex-orm-wamp": "^0.1",
     "@vuex-orm/core": "^0.36",

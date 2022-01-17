@@ -43,7 +43,7 @@
     "cweagans/composer-patches": "^1.7",
     "fastybird/exchange": "^0.7",
     "fastybird/json-api": "^0.",
-    "fastybird/metadata": "^0.25",
+    "fastybird/metadata": "^0.27",
     "fastybird/simple-auth": "^0.2",
     "fastybird/web-server": "^0.7",
     "ipub/doctrine-dynamic-discriminator-map": "^1.4",

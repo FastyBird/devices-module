@@ -5,7 +5,7 @@
     "strict" : true,
     "declaration" : true,
     "declarationDir" : "dist/dts",
-    "emitDeclarationOnly" : true,
+    "jsx": "preserve",
     "noUnusedLocals" : true,
     "noUnusedParameters" : true,
     "importHelpers" : true,
@@ -40,6 +40,7 @@
   },
   "exclude" : [
     "node_modules",
-    "dist"
+    "dist",
+    "vendor"
   ]
 }

@@ -22,7 +22,8 @@ from typing import Dict
 
 # Library dependencies
 import MySQLdb
-from exchange.bootstrap import create_container as create_exchange_container
+from exchange.bootstrap import register_services as register_services_exchange
+from kink import di
 from metadata.loader import load_schema_by_routing_key
 from metadata.routing import RoutingKey
 from metadata.validator import validate
@@ -33,7 +34,7 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import Session
 
 # Library libs
-from devices_module.bootstrap import create_container
+from devices_module.bootstrap import register_services
 from devices_module.entities.base import Base
 
 
@@ -63,8 +64,11 @@ class DbTestCase(unittest.TestCase):
 
         cls.__setup_database()
 
-        create_exchange_container()
-        create_container(database_session=cls.__db_session)
+        # Inject database into DI
+        di[Session] = cls.__db_session
+
+        register_services_exchange()
+        register_services()
 
         # Initialize all database models
         Base.metadata.create_all(cls.__db_engine)

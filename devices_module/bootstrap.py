@@ -20,9 +20,10 @@ Devices module DI container
 
 # pylint: disable=no-value-for-parameter
 
-# Library dependencies
+# Python base dependencies
 import logging
 
+# Library dependencies
 from kink import di
 from sqlalchemy.orm import Session as OrmSession
 

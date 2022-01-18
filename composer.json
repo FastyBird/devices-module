@@ -1,6 +1,6 @@
 {
   "name" : "fastybird/devices-module",
-  "type" : "library",
+  "type" : "module",
   "description" : "FastyBird IoT devices module for devices management & basic control logic",
   "keywords" : [
     "fastybird",

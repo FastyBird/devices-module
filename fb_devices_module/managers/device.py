@@ -23,8 +23,8 @@ import uuid
 from typing import Dict, List, Type, Union
 
 # Library libs
-from devices_module.entities.connector import ConnectorEntity
-from devices_module.entities.device import (
+from fb_devices_module.entities.connector import ConnectorEntity
+from fb_devices_module.entities.device import (
     DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
@@ -32,7 +32,7 @@ from devices_module.entities.device import (
     DevicePropertyEntity,
     DeviceStaticPropertyEntity,
 )
-from devices_module.managers.base import BaseManager
+from fb_devices_module.managers.base import BaseManager
 
 
 class DevicesManager(BaseManager[DeviceEntity]):

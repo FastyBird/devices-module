@@ -23,9 +23,9 @@ from abc import abstractmethod
 from typing import Dict, Union
 
 # Library libs
-from devices_module.entities.channel import ChannelPropertyEntity
-from devices_module.entities.device import DevicePropertyEntity
-from devices_module.state.property import IChannelPropertyState, IDevicePropertyState
+from fb_devices_module.entities.channel import ChannelPropertyEntity
+from fb_devices_module.entities.device import DevicePropertyEntity
+from fb_devices_module.state.property import IChannelPropertyState, IDevicePropertyState
 
 
 class IDevicePropertiesStatesManager:

@@ -18,13 +18,13 @@
 import uuid
 
 # Library dependencies
+from fb_metadata.devices_module import PropertyType
+from fb_metadata.routing import RoutingKey
 from kink import inject
-from metadata.devices_module import PropertyType
-from metadata.routing import RoutingKey
 
 # Library libs
-from devices_module.entities.channel import ChannelPropertyEntity
-from devices_module.repositories.channel import ChannelsPropertiesRepository
+from fb_devices_module.entities.channel import ChannelPropertyEntity
+from fb_devices_module.repositories.channel import ChannelsPropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase

@@ -19,16 +19,16 @@ import uuid
 from unittest.mock import patch
 
 # Library dependencies
-from exchange.publisher import Publisher
+from fb_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from devices_module.entities.device import (
+from fb_devices_module.entities.device import (
     DeviceDynamicPropertyEntity,
     DevicePropertyEntity,
 )
-from devices_module.managers.device import DevicePropertiesManager
-from devices_module.repositories.device import (
+from fb_devices_module.managers.device import DevicePropertiesManager
+from fb_devices_module.repositories.device import (
     DevicesPropertiesRepository,
     DevicesRepository,
 )

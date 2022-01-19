@@ -25,8 +25,8 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from metadata.devices_module import PropertyType
-from metadata.types import ButtonPayload, SwitchPayload
+from fb_metadata.devices_module import PropertyType
+from fb_metadata.types import ButtonPayload, SwitchPayload
 from sqlalchemy import (
     BINARY,
     JSON,
@@ -40,10 +40,10 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 # Library libs
-import devices_module.entities  # pylint: disable=unused-import
-from devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
-from devices_module.entities.configuration import ConfigurationMixin
-from devices_module.entities.property import PropertyMixin
+import fb_devices_module.entities  # pylint: disable=unused-import
+from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fb_devices_module.entities.configuration import ConfigurationMixin
+from fb_devices_module.entities.property import PropertyMixin
 
 
 class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

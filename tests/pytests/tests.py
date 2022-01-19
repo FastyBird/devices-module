@@ -22,11 +22,11 @@ from typing import Dict
 
 # Library dependencies
 import MySQLdb
-from exchange.bootstrap import register_services as register_services_exchange
+from fb_exchange.bootstrap import register_services as register_services_exchange
+from fb_metadata.loader import load_schema_by_routing_key
+from fb_metadata.routing import RoutingKey
+from fb_metadata.validator import validate
 from kink import di
-from metadata.loader import load_schema_by_routing_key
-from metadata.routing import RoutingKey
-from metadata.validator import validate
 from MySQLdb import OperationalError
 from MySQLdb.cursors import Cursor
 from sqlalchemy import create_engine
@@ -34,8 +34,8 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import Session
 
 # Library libs
-from devices_module.bootstrap import register_services
-from devices_module.entities.base import Base
+from fb_devices_module.bootstrap import register_services
+from fb_devices_module.entities.base import Base
 
 
 class DbTestCase(unittest.TestCase):

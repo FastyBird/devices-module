@@ -24,13 +24,13 @@ from abc import abstractmethod
 from typing import Dict, List, Optional, Union
 
 # Library dependencies
-from metadata.devices_module import ConnectorType
+from fb_metadata.devices_module import ConnectorType
 from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, ForeignKey
 from sqlalchemy.orm import relationship
 
 # Library libs
-import devices_module.entities  # pylint: disable=unused-import
-from devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+import fb_devices_module.entities  # pylint: disable=unused-import
+from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
 
 
 class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

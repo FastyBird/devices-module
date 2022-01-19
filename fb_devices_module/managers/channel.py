@@ -23,7 +23,7 @@ import uuid
 from typing import Dict, List, Type, Union
 
 # Library libs
-from devices_module.entities.channel import (
+from fb_devices_module.entities.channel import (
     ChannelConfigurationEntity,
     ChannelControlEntity,
     ChannelDynamicPropertyEntity,
@@ -31,8 +31,8 @@ from devices_module.entities.channel import (
     ChannelPropertyEntity,
     ChannelStaticPropertyEntity,
 )
-from devices_module.entities.device import DeviceEntity
-from devices_module.managers.base import BaseManager
+from fb_devices_module.entities.device import DeviceEntity
+from fb_devices_module.managers.base import BaseManager
 
 
 class ChannelsManager(BaseManager[ChannelEntity]):

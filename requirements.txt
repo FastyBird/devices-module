@@ -1,6 +1,6 @@
 fastnumbers>=3.2
-fastybird-exchange>=0.8
-fastybird-metadata>=0.27
+fastybird-exchange>=0.12
+fastybird-metadata>=0.31
 kink>=0.6
 setuptools>=57.4
 sqlalchemy[mypy]>=1.4

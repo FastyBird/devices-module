@@ -23,8 +23,8 @@ import uuid
 from typing import Dict, List, Type
 
 # Library libs
-from devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
-from devices_module.managers.base import BaseManager
+from fb_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
+from fb_devices_module.managers.base import BaseManager
 
 
 class ConnectorsManager(BaseManager[ConnectorEntity]):

@@ -19,17 +19,17 @@ import uuid
 from unittest.mock import patch
 
 # Library dependencies
-from exchange.publisher import Publisher
+from fb_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from devices_module.entities.connector import (
+from fb_devices_module.entities.connector import (
     ConnectorEntity,
     FbBusConnectorEntity,
     FbMqttConnectorEntity,
 )
-from devices_module.managers.connector import ConnectorsManager
-from devices_module.repositories.connector import ConnectorsRepository
+from fb_devices_module.managers.connector import ConnectorsManager
+from fb_devices_module.repositories.connector import ConnectorsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase

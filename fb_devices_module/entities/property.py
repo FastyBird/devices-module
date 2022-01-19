@@ -26,13 +26,13 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
 from fastnumbers import fast_float, fast_int
-from metadata.devices_module import PropertyType
-from metadata.helpers import normalize_value
-from metadata.types import ButtonPayload, DataType, SwitchPayload
+from fb_metadata.devices_module import PropertyType
+from fb_metadata.helpers import normalize_value
+from fb_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, Integer
 
 # Library libs
-from devices_module.exceptions import InvalidArgumentException, InvalidStateException
+from fb_devices_module.exceptions import InvalidArgumentException, InvalidStateException
 
 
 class PropertyMixin:

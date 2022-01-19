@@ -28,8 +28,8 @@ from typing import Dict, Generic, List, Optional, Type, TypeVar
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
-from devices_module.entities.base import Base
-from devices_module.exceptions import InvalidStateException
+from fb_devices_module.entities.base import Base
+from fb_devices_module.exceptions import InvalidStateException
 
 T = TypeVar("T")  # pylint: disable=invalid-name
 

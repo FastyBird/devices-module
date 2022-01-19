@@ -23,31 +23,31 @@ import datetime
 from typing import Dict, Optional, Type
 
 # Library dependencies
-from exchange.publisher import Publisher
+from fb_exchange.publisher import Publisher
+from fb_metadata.routing import RoutingKey
+from fb_metadata.types import ModuleOrigin
 from kink import inject
-from metadata.routing import RoutingKey
-from metadata.types import ModuleOrigin
 from sqlalchemy import event
 
 # Library libs
-from devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
-from devices_module.entities.channel import (
+from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fb_devices_module.entities.channel import (
     ChannelConfigurationEntity,
     ChannelControlEntity,
     ChannelDynamicPropertyEntity,
     ChannelEntity,
     ChannelPropertyEntity,
 )
-from devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
-from devices_module.entities.device import (
+from fb_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
+from fb_devices_module.entities.device import (
     DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
     DevicePropertyEntity,
 )
-from devices_module.helpers import KeyHashHelpers
-from devices_module.repositories.state import (
+from fb_devices_module.helpers import KeyHashHelpers
+from fb_devices_module.repositories.state import (
     IChannelPropertyStateRepository,
     IDevicePropertyStateRepository,
 )

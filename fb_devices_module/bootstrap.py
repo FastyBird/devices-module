@@ -28,40 +28,40 @@ from kink import di
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
-from devices_module.helpers import KeyHashHelpers
-from devices_module.managers.channel import (
+from fb_devices_module.helpers import KeyHashHelpers
+from fb_devices_module.managers.channel import (
     ChannelConfigurationManager,
     ChannelControlsManager,
     ChannelPropertiesManager,
     ChannelsManager,
 )
-from devices_module.managers.connector import (
+from fb_devices_module.managers.connector import (
     ConnectorControlsManager,
     ConnectorsManager,
 )
-from devices_module.managers.device import (
+from fb_devices_module.managers.device import (
     DeviceConfigurationManager,
     DeviceControlsManager,
     DevicePropertiesManager,
     DevicesManager,
 )
-from devices_module.repositories.channel import (
+from fb_devices_module.repositories.channel import (
     ChannelsConfigurationRepository,
     ChannelsControlsRepository,
     ChannelsPropertiesRepository,
     ChannelsRepository,
 )
-from devices_module.repositories.connector import (
+from fb_devices_module.repositories.connector import (
     ConnectorsControlsRepository,
     ConnectorsRepository,
 )
-from devices_module.repositories.device import (
+from fb_devices_module.repositories.device import (
     DevicesConfigurationRepository,
     DevicesControlsRepository,
     DevicesPropertiesRepository,
     DevicesRepository,
 )
-from devices_module.subscriber import EntitiesSubscriber, EntityCreatedSubscriber
+from fb_devices_module.subscriber import EntitiesSubscriber, EntityCreatedSubscriber
 
 
 def register_services(

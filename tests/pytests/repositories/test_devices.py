@@ -18,13 +18,13 @@
 import uuid
 
 # Library dependencies
+from fb_metadata.devices_module import DeviceType
+from fb_metadata.routing import RoutingKey
 from kink import inject
-from metadata.devices_module import DeviceType
-from metadata.routing import RoutingKey
 
 # Library libs
-from devices_module.entities.device import DeviceEntity
-from devices_module.repositories.device import DevicesRepository
+from fb_devices_module.entities.device import DeviceEntity
+from fb_devices_module.repositories.device import DevicesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase

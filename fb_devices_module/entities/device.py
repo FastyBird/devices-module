@@ -26,14 +26,14 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from metadata.devices_module import (
+from fb_metadata.devices_module import (
     DeviceModel,
     DeviceType,
     FirmwareManufacturer,
     HardwareManufacturer,
     PropertyType,
 )
-from metadata.types import ButtonPayload, SwitchPayload
+from fb_metadata.types import ButtonPayload, SwitchPayload
 from sqlalchemy import (
     BINARY,
     BOOLEAN,
@@ -48,11 +48,11 @@ from sqlalchemy import (
 from sqlalchemy.orm import backref, relationship
 
 # Library libs
-import devices_module.entities  # pylint: disable=unused-import
-from devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
-from devices_module.entities.configuration import ConfigurationMixin
-from devices_module.entities.property import PropertyMixin
-from devices_module.exceptions import InvalidArgumentException
+import fb_devices_module.entities  # pylint: disable=unused-import
+from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fb_devices_module.entities.configuration import ConfigurationMixin
+from fb_devices_module.entities.property import PropertyMixin
+from fb_devices_module.exceptions import InvalidArgumentException
 
 
 class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

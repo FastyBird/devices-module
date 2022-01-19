@@ -28,6 +28,7 @@ from fb_metadata.routing import RoutingKey
 from fb_metadata.types import ModuleOrigin
 from kink import inject
 from sqlalchemy import event
+from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
 from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
@@ -162,6 +163,7 @@ class EntitiesSubscriber:
 
     def __init__(
         self,
+        session: OrmSession,
         key_hash_helpers: KeyHashHelpers,
         publisher: Publisher = None,  # type: ignore[assignment]
         device_property_state_repository: IDevicePropertyStateRepository = None,  # type: ignore[assignment]
@@ -177,9 +179,8 @@ class EntitiesSubscriber:
         event.listen(
             Base, "before_insert", lambda mapper, connection, target: self.before_insert(target), propagate=True
         )
-        event.listen(Base, "after_insert", lambda mapper, connection, target: self.after_insert(target), propagate=True)
-        event.listen(Base, "after_update", lambda mapper, connection, target: self.after_update(target), propagate=True)
-        event.listen(Base, "after_delete", lambda mapper, connection, target: self.after_delete(target), propagate=True)
+
+        event.listen(session, "after_flush", lambda active_session, transaction: self.after_flush(active_session))
 
     # -----------------------------------------------------------------------------
 
@@ -191,51 +192,47 @@ class EntitiesSubscriber:
 
     # -----------------------------------------------------------------------------
 
-    def after_insert(self, target: Base) -> None:
-        """Event fired after new entity is created"""
+    def after_flush(self, session: OrmSession) -> None:
+        """Event"""
         if self.__publisher is None:
             return
 
-        routing_key = self.__get_entity_created_routing_key(entity=type(target))
+        for entity in session.new:
+            routing_key = self.__get_entity_created_routing_key(entity=type(entity))
 
-        if routing_key is not None:
-            self.__publisher.publish(
-                origin=ModuleOrigin.DEVICES_MODULE,
-                routing_key=routing_key,
-                data={**target.to_dict(), **self.__get_entity_extended_data(entity=target)},
-            )
+            if routing_key is not None:
+                exchange_data = {**entity.to_dict(), **self.__get_entity_extended_data(entity=entity)}
 
-    # -----------------------------------------------------------------------------
+                self.__publisher.publish(
+                    origin=ModuleOrigin.DEVICES_MODULE,
+                    routing_key=routing_key,
+                    data=exchange_data,
+                )
 
-    def after_update(self, target: Base) -> None:
-        """Event fired after existing entity is updated"""
-        if self.__publisher is None:
-            return
+        for entity in session.dirty:
+            if not session.is_modified(entity, include_collections=False):
+                continue
 
-        routing_key = self.__get_entity_updated_routing_key(entity=type(target))
+            routing_key = self.__get_entity_updated_routing_key(entity=type(entity))
 
-        if routing_key is not None:
-            self.__publisher.publish(
-                origin=ModuleOrigin.DEVICES_MODULE,
-                routing_key=routing_key,
-                data={**target.to_dict(), **self.__get_entity_extended_data(entity=target)},
-            )
+            if routing_key is not None:
+                exchange_data = {**entity.to_dict(), **self.__get_entity_extended_data(entity=entity)}
 
-    # -----------------------------------------------------------------------------
+                self.__publisher.publish(
+                    origin=ModuleOrigin.DEVICES_MODULE,
+                    routing_key=routing_key,
+                    data=exchange_data,
+                )
 
-    def after_delete(self, target: Base) -> None:
-        """Event fired after existing entity is deleted"""
-        if self.__publisher is None:
-            return
+        for entity in session.deleted:
+            routing_key = self.__get_entity_deleted_routing_key(entity=type(entity))
 
-        routing_key = self.__get_entity_deleted_routing_key(entity=type(target))
-
-        if routing_key is not None:
-            self.__publisher.publish(
-                origin=ModuleOrigin.DEVICES_MODULE,
-                routing_key=routing_key,
-                data={**target.to_dict(), **self.__get_entity_extended_data(entity=target)},
-            )
+            if routing_key is not None:
+                self.__publisher.publish(
+                    origin=ModuleOrigin.DEVICES_MODULE,
+                    routing_key=routing_key,
+                    data={**entity.to_dict(), **self.__get_entity_extended_data(entity=entity)},
+                )
 
     # -----------------------------------------------------------------------------
 

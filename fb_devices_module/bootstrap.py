@@ -118,7 +118,7 @@ def register_services(
     di[ChannelControlsManager] = ChannelControlsManager(session=di[OrmSession])
     di["fb-devices-module_channels-controls-manager"] = di[ChannelControlsManager]
 
-    di[EntitiesSubscriber] = EntitiesSubscriber(key_hash_helpers=di[KeyHashHelpers])
+    di[EntitiesSubscriber] = EntitiesSubscriber(session=di[OrmSession], key_hash_helpers=di[KeyHashHelpers])
     di["fb-devices-module_entities-subscriber"] = di[EntitiesSubscriber]
     di[EntityCreatedSubscriber] = EntityCreatedSubscriber()
     di["fb-devices-module_entity-created-subscriber"] = di[EntityCreatedSubscriber]

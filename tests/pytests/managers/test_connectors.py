@@ -88,7 +88,7 @@ class TestDevicesManager(DbTestCase):
                 },
             )
 
-        MockPublisher.assert_called()
+        MockPublisher.assert_called_once()
 
         self.assertIsInstance(connector_entity, FbMqttConnectorEntity)
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_entity.id.__str__())

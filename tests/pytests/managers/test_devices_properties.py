@@ -62,7 +62,7 @@ class TestDevicePropertyEntity(DbTestCase):
                 property_type=DeviceDynamicPropertyEntity,
             )
 
-        MockPublisher.assert_called()
+        MockPublisher.assert_called_once()
 
         self.assertIsInstance(property_entity, DeviceDynamicPropertyEntity)
         self.assertEqual("26d7a945-ba29-471e-9e3c-304ef0acb199", property_entity.id.__str__())

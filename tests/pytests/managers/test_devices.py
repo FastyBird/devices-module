@@ -57,7 +57,7 @@ class TestDeviceEntity(DbTestCase):
                 device_type=NetworkDeviceEntity,
             )
 
-        MockPublisher.assert_called()
+        MockPublisher.assert_called_once()
 
         self.assertIsInstance(device_entity, NetworkDeviceEntity)
         self.assertEqual("26d7a945-ba29-471e-9e3c-304ef0acb199", device_entity.id.__str__())
@@ -97,7 +97,7 @@ class TestDeviceEntity(DbTestCase):
                 },
             )
 
-        MockPublisher.assert_called()
+        MockPublisher.assert_called_once()
 
         self.assertIsInstance(device_entity, DeviceEntity)
         self.assertEqual("69786d15-fd0c-4d9f-9378-33287c2009fa", device_entity.id.__str__())
@@ -123,7 +123,7 @@ class TestDeviceEntity(DbTestCase):
         devices_manager: DevicesManager,
     ) -> None:
         device = device_repository.get_by_id(
-            device_id=uuid.UUID("a1036ff8-6ee8-4405-aaed-58bae0814596", version=4),
+            device_id=uuid.UUID("bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a", version=4),
         )
 
         with patch.object(Publisher, "publish") as MockPublisher:
@@ -132,11 +132,12 @@ class TestDeviceEntity(DbTestCase):
             )
 
         MockPublisher.assert_called()
+        self.assertEqual(2, MockPublisher.call_count)
 
         self.assertTrue(result)
 
         entity = device_repository.get_by_id(
-            device_id=uuid.UUID("a1036ff8-6ee8-4405-aaed-58bae0814596", version=4),
+            device_id=uuid.UUID("bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a", version=4),
         )
 
         self.assertIsNone(entity)

@@ -150,6 +150,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     channels: List["entities.channel.ChannelEntity"] = relationship(  # type: ignore[assignment,name-defined]
         "entities.channel.ChannelEntity",
         back_populates="device",
+        cascade="all, delete-orphan"
     )
 
     connector: Optional["entities.connector.ConnectorEntity"] = relationship(  # type: ignore[name-defined]
@@ -415,7 +416,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             "type": self.type.value,
             "key": self.key,
             "identifier": self.identifier,
-            "parent": self.parent.id.__str__() if self.parent is not None else None,
+            "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
             "name": self.name,
             "comment": self.comment,
             "enabled": self.enabled,
@@ -431,7 +432,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             if isinstance(self.firmware_manufacturer, FirmwareManufacturer)
             else self.firmware_manufacturer,
             "firmware_version": self.firmware_version,
-            "connector": self.connector.id.__str__() if self.connector is not None else None,
+            "connector": uuid.UUID(bytes=self.connector_id).__str__() if self.connector_id is not None else None,
             "owner": self.owner,
         }
 
@@ -545,7 +546,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
     _type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id"), name="device_id"
+        BINARY(16), ForeignKey("fb_devices.device_id"), name="device_id", nullable=False
     )
 
     device: DeviceEntity = relationship(DeviceEntity, back_populates="properties")  # type: ignore[assignment]
@@ -592,7 +593,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
         """Transform entity to dictionary"""
         return {
             **{
-                "device": self.device.id.__str__(),
+                "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },
             **super().to_dict(),
@@ -664,7 +665,7 @@ class DeviceConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, Configur
     )
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id"
+        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
     )
 
     device: DeviceEntity = relationship(DeviceEntity, back_populates="configuration")  # type: ignore[assignment]
@@ -682,7 +683,7 @@ class DeviceConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, Configur
         """Transform entity to dictionary"""
         return {
             **{
-                "device": self.device.id.__str__(),
+                "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },
             **super().to_dict(),
@@ -718,7 +719,7 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     __name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id"
+        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
     )
 
     device: DeviceEntity = relationship(DeviceEntity, back_populates="controls")  # type: ignore[assignment]
@@ -757,7 +758,7 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             **{
                 "id": self.id.__str__(),
                 "name": self.name,
-                "device": self.device.id.__str__(),
+                "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },
         }

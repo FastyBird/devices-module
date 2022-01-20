@@ -23,11 +23,7 @@ from fb_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from fb_devices_module.entities.connector import (
-    ConnectorEntity,
-    FbBusConnectorEntity,
-    FbMqttConnectorEntity,
-)
+from fb_devices_module.entities.connector import ConnectorEntity, VirtualConnectorEntity
 from fb_devices_module.managers.connector import ConnectorsManager
 from fb_devices_module.repositories.connector import ConnectorsRepository
 
@@ -45,18 +41,18 @@ class TestDevicesManager(DbTestCase):
         with patch.object(Publisher, "publish") as MockPublisher:
             connector_entity = connectors_manager.create(
                 data={
-                    "name": "FB Bus connector",
+                    "name": "Other virtual connector",
                     "enabled": False,
                     "id": uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),
                 },
-                connector_type=FbBusConnectorEntity,
+                connector_type=VirtualConnectorEntity,
             )
 
         MockPublisher.assert_called_once()
 
-        self.assertIsInstance(connector_entity, FbBusConnectorEntity)
+        self.assertIsInstance(connector_entity, VirtualConnectorEntity)
         self.assertEqual("26d7a945-ba29-471e-9e3c-304ef0acb199", connector_entity.id.__str__())
-        self.assertEqual("FB Bus connector", connector_entity.name)
+        self.assertEqual("Other virtual connector", connector_entity.name)
         self.assertFalse(connector_entity.enabled)
         self.assertIsNotNone(connector_entity.key)
         self.assertIsNotNone(connector_entity.created_at)
@@ -90,14 +86,13 @@ class TestDevicesManager(DbTestCase):
 
         MockPublisher.assert_called_once()
 
-        self.assertIsInstance(connector_entity, FbMqttConnectorEntity)
+        self.assertIsInstance(connector_entity, VirtualConnectorEntity)
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_entity.id.__str__())
-        self.assertEqual("FB MQTT", connector_entity.name)
-        self.assertEqual("mqtt.server.com", connector_entity.server)
+        self.assertEqual("Virtual", connector_entity.name)
         self.assertFalse(connector_entity.enabled)
 
         entity = connector_repository.get_by_id(
             connector_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4),
         )
 
-        self.assertIsInstance(entity, FbMqttConnectorEntity)
+        self.assertIsInstance(entity, VirtualConnectorEntity)

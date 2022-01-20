@@ -18,7 +18,6 @@
 import uuid
 
 # Library dependencies
-from fb_metadata.devices_module import DeviceType
 from fb_metadata.routing import RoutingKey
 from kink import inject
 
@@ -54,7 +53,7 @@ class TestDevicesRepository(DbTestCase):
         self.assertEqual(
             {
                 "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-                "type": DeviceType.NETWORK.value,
+                "type": "virtual",
                 "identifier": "first-device",
                 "key": "bLikkz",
                 "name": "First device",

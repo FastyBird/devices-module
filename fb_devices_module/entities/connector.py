@@ -24,7 +24,6 @@ from abc import abstractmethod
 from typing import Dict, List, Optional, Union
 
 # Library dependencies
-from fb_metadata.devices_module import ConnectorType
 from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -86,7 +85,7 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     @property
     @abstractmethod
-    def type(self) -> ConnectorType:
+    def type(self) -> str:
         """Connector type"""
 
     # -----------------------------------------------------------------------------
@@ -172,7 +171,7 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         """Transform entity to dictionary"""
         return {
             "id": self.id.__str__(),
-            "type": self.type.value,
+            "type": self.type,
             "key": self.key,
             "name": self.name,
             "enabled": self.enabled,
@@ -180,9 +179,9 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         }
 
 
-class FbBusConnectorEntity(ConnectorEntity):
+class VirtualConnectorEntity(ConnectorEntity):
     """
-    FastyBird BUS connector entity
+    Virtual connector entity
 
     @package        FastyBird:DevicesModule!
     @module         entities/connector
@@ -190,313 +189,14 @@ class FbBusConnectorEntity(ConnectorEntity):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __mapper_args__ = {"polymorphic_identity": "fb-bus"}
+    __mapper_args__ = {"polymorphic_identity": "virtual"}
 
     # -----------------------------------------------------------------------------
 
     @property
-    def type(self) -> ConnectorType:
+    def type(self) -> str:
         """Connector type"""
-        return ConnectorType.FB_BUS
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def address(self) -> Optional[int]:
-        """Connector address"""
-        return (
-            int(str(self.params.get("address", 254)))
-            if self.params is not None and self.params.get("address", 254) is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @address.setter
-    def address(self, address: Optional[int]) -> None:
-        """Connector address setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["address"] = address
-
-        else:
-            self.params = {"address": address}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def serial_interface(self) -> Optional[str]:
-        """Connector serial interface"""
-        return (
-            str(self.params.get("serial_interface", None))
-            if self.params is not None and self.params.get("serial_interface") is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @serial_interface.setter
-    def serial_interface(self, serial_interface: Optional[str]) -> None:
-        """Connector serial interface setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["serial_interface"] = serial_interface
-
-        else:
-            self.params = {"serial_interface": serial_interface}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def baud_rate(self) -> Optional[int]:
-        """Connector communication baud rate"""
-        return (
-            int(str(self.params.get("baud_rate", 115200)))
-            if self.params is not None and self.params.get("baud_rate", 115200) is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @baud_rate.setter
-    def baud_rate(self, baud_rate: Optional[int]) -> None:
-        """Connector communication baud rate setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["baud_rate"] = baud_rate
-
-        else:
-            self.params = {"baud_rate": baud_rate}
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(self) -> Dict[str, Union[str, int, bool, List[str], None]]:
-        """Transform entity to dictionary"""
-        return {
-            **{
-                "address": self.address,
-                "serial_interface": self.serial_interface,
-                "baud_rate": self.baud_rate,
-            },
-            **super().to_dict(),
-        }
-
-
-class FbMqttConnectorEntity(ConnectorEntity):
-    """
-    FastyBird MQTT connector entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/connector
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "fb-mqtt"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> ConnectorType:
-        """Connector type"""
-        return ConnectorType.FB_MQTT
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def server(self) -> Optional[str]:
-        """Connector server address"""
-        return (
-            str(self.params.get("server", "127.0.0.1"))
-            if self.params is not None and self.params.get("server", "127.0.0.1") is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @server.setter
-    def server(self, server: Optional[str]) -> None:
-        """Connector server address setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["server"] = server
-
-        else:
-            self.params = {"server": server}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def port(self) -> Optional[int]:
-        """Connector server port"""
-        return (
-            int(str(self.params.get("port", 1883)))
-            if self.params is not None and self.params.get("port", 1883) is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @port.setter
-    def port(self, port: Optional[int]) -> None:
-        """Connector server port setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["port"] = port
-
-        else:
-            self.params = {"port": port}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def secured_port(self) -> Optional[int]:
-        """Connector server secured port"""
-        return (
-            int(str(self.params.get("secured_port", 8883)))
-            if self.params is not None and self.params.get("secured_port", 8883) is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @secured_port.setter
-    def secured_port(self, port: Optional[int]) -> None:
-        """Connector server secured port setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["secured_port"] = port
-
-        else:
-            self.params = {"secured_port": port}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def username(self) -> Optional[str]:
-        """Connector server username"""
-        return (
-            str(self.params.get("username", None))
-            if self.params is not None and self.params.get("username") is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @username.setter
-    def username(self, username: Optional[str]) -> None:
-        """Connector server username setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["username"] = username
-
-        else:
-            self.params = {"username": username}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def password(self) -> Optional[str]:
-        """Connector server password"""
-        return (
-            str(self.params.get("password", None))
-            if self.params is not None and self.params.get("password") is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @password.setter
-    def password(self, password: Optional[str]) -> None:
-        """Connector server password setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["password"] = password
-
-        else:
-            self.params = {"password": password}
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(self) -> Dict[str, Union[str, int, bool, List[str], None]]:
-        """Transform entity to dictionary"""
-        return {
-            **{
-                "server": self.server,
-                "port": self.port,
-                "secured_port": self.secured_port,
-                "username": self.username,
-            },
-            **super().to_dict(),
-        }
-
-
-class ModbusConnectorEntity(ConnectorEntity):
-    """
-    Modbus connector entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/connector
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "modbus"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> ConnectorType:
-        """Connector type"""
-        return ConnectorType.MODBUS
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def serial_interface(self) -> Optional[str]:
-        """Connector serial interface"""
-        return (
-            str(self.params.get("serial_interface", None))
-            if self.params is not None and self.params.get("serial_interface") is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @serial_interface.setter
-    def serial_interface(self, serial_interface: Optional[str]) -> None:
-        """Connector serial interface setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["serial_interface"] = serial_interface
-
-        else:
-            self.params = {"serial_interface": serial_interface}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def baud_rate(self) -> Optional[int]:
-        """Connector communication baud rate"""
-        return (
-            int(str(self.params.get("baud_rate", 9600)))
-            if self.params is not None and self.params.get("baud_rate", 9600) is not None
-            else None
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @baud_rate.setter
-    def baud_rate(self, baud_rate: Optional[int]) -> None:
-        """Connector communication baud rate setter"""
-        if self.params is not None and bool(self.params) is True:
-            self.params["baud_rate"] = baud_rate
-
-        else:
-            self.params = {"baud_rate": baud_rate}
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(self) -> Dict[str, Union[str, int, bool, List[str], None]]:
-        """Transform entity to dictionary"""
-        return {
-            **{
-                "serial_interface": self.serial_interface,
-                "baud_rate": self.baud_rate,
-            },
-            **super().to_dict(),
-        }
+        return "virtual"
 
 
 class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

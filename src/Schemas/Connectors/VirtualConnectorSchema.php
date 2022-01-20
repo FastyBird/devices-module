@@ -1,47 +1,47 @@
 <?php declare(strict_types = 1);
 
 /**
- * NetworkDeviceSchema.php
+ * VirtualConnectorSchema.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Schemas
- * @since          0.9.0
+ * @since          0.6.0
  *
- * @date           07.01.22
+ * @date           07.12.21
  */
 
-namespace FastyBird\DevicesModule\Schemas\Devices;
+namespace FastyBird\DevicesModule\Schemas\Connectors;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Schemas;
 
 /**
- * Network device entity schema
+ * Modbus connector entity schema
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends DeviceSchema<Entities\Devices\INetworkDevice>
+ * @phpstan-extends ConnectorSchema<Entities\Connectors\IVirtualConnector>
  */
-final class NetworkDeviceSchema extends DeviceSchema
+final class VirtualConnectorSchema extends ConnectorSchema
 {
 
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/device-network';
+	public const SCHEMA_TYPE = 'devices-module/connector-virtual';
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function getEntityClass(): string
 	{
-		return Entities\Devices\NetworkDevice::class;
+		return Entities\Connectors\VirtualConnector::class;
 	}
 
 	/**

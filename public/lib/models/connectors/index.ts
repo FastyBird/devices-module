@@ -5,7 +5,6 @@ import {
   ModuleOrigin,
   ConnectorEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
-  ConnectorType,
 } from '@fastybird/metadata'
 
 import {
@@ -303,7 +302,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
           id: body.id,
         })
 
-        const entityData: { [index: string]: string | number | string[] | ConnectorType | boolean | null | undefined } = {}
+        const entityData: { [index: string]: string | number | string[] | boolean | null | undefined } = {}
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')
 
@@ -312,34 +311,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              switch (body[attrName]) {
-                case ConnectorType.FB_BUS:
-                  entityData[camelName] = ConnectorEntityTypes.FB_BUS
-                  break
-
-                case ConnectorType.FB_MQTT:
-                  entityData[camelName] = ConnectorEntityTypes.FB_MQTT
-                  break
-
-                case ConnectorType.SHELLY:
-                  entityData[camelName] = ConnectorEntityTypes.SHELLY
-                  break
-
-                case ConnectorType.TUYA:
-                  entityData[camelName] = ConnectorEntityTypes.TUYA
-                  break
-
-                case ConnectorType.SONOFF:
-                  entityData[camelName] = ConnectorEntityTypes.SONOFF
-                  break
-
-                case ConnectorType.MODBUS:
-                  entityData[camelName] = ConnectorEntityTypes.MODBUS
-                  break
-
-                default:
-                  entityData[camelName] = body[attrName]
-              }
+              entityData[camelName] = ConnectorEntityTypes.VIRTUAL
             } else {
               entityData[camelName] = body[attrName]
             }

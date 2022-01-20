@@ -57,7 +57,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_CREATED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
-					'type'                  => 'local',
+					'type'                  => 'virtual',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
@@ -87,7 +87,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
+		$entity = new Entities\Devices\VirtualDevice('device-name', 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
@@ -157,7 +157,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_UPDATED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
-					'type'                  => 'local',
+					'type'                  => 'virtual',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
@@ -187,7 +187,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
+		$entity = new Entities\Devices\VirtualDevice('device-name', 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
@@ -212,7 +212,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_DELETED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
-					'type'                  => 'local',
+					'type'                  => 'virtual',
 					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
@@ -232,7 +232,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			})
 			->times(1);
 
-		$entity = new Entities\Devices\LocalDevice('device-name', 'device-name');
+		$entity = new Entities\Devices\VirtualDevice('device-name', 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 

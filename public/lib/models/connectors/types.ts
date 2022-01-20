@@ -16,12 +16,7 @@ import {
 // ============
 
 export enum ConnectorEntityTypes {
-  FB_BUS = 'devices-module/connector-fb-bus',
-  FB_MQTT = 'devices-module/connector-fb-mqtt',
-  SHELLY = 'devices-module/connector-shelly',
-  TUYA = 'devices-module/connector-tuya',
-  SONOFF = 'devices-module/connector-sonoff',
-  MODBUS = 'devices-module/connector-modbus',
+  VIRTUAL = 'devices-module/connector-virtual',
 }
 
 // ENTITY INTERFACE

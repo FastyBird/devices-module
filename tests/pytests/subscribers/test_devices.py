@@ -23,7 +23,7 @@ from fb_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from fb_devices_module.entities.device import DeviceEntity, NetworkDeviceEntity
+from fb_devices_module.entities.device import DeviceEntity, VirtualDeviceEntity
 from fb_devices_module.managers.device import DevicesManager
 from fb_devices_module.repositories.connector import ConnectorsRepository
 from fb_devices_module.repositories.device import DevicesRepository

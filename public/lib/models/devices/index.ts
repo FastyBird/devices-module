@@ -8,7 +8,6 @@ import {
   HardwareManufacturer,
   DeviceModel,
   FirmwareManufacturer,
-  DeviceType,
 } from '@fastybird/metadata'
 
 import {
@@ -544,23 +543,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              switch (body[attrName]) {
-                case DeviceType.NETWORK:
-                  entityData[camelName] = DeviceEntityTypes.NETWORK
-                  break
-
-                case DeviceType.LOCAL:
-                  entityData[camelName] = DeviceEntityTypes.LOCAL
-                  break
-
-                case DeviceType.VIRTUAL:
-                  entityData[camelName] = DeviceEntityTypes.VIRUTAL
-                  break
-
-                case DeviceType.HOMEKIT:
-                  entityData[camelName] = DeviceEntityTypes.HOMEKIT
-                  break
-              }
+              entityData[camelName] = DeviceEntityTypes.VIRTUAL
             } else {
               entityData[camelName] = body[attrName]
             }

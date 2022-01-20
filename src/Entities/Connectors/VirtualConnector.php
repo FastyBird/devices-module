@@ -1,19 +1,19 @@
 <?php declare(strict_types = 1);
 
 /**
- * VirtualDevice.php
+ * VirtualConnector.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Entities
- * @since          0.9.0
+ * @since          0.6.0
  *
- * @date           07.01.22
+ * @date           07.12.21
  */
 
-namespace FastyBird\DevicesModule\Entities\Devices;
+namespace FastyBird\DevicesModule\Entities\Connectors;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
@@ -21,17 +21,17 @@ use FastyBird\DevicesModule\Entities;
 /**
  * @ORM\Entity
  */
-class VirtualDevice extends Entities\Devices\Device implements IVirtualDevice
+class VirtualConnector extends Entities\Connectors\Connector implements IVirtualConnector
 {
 
-	public const DEVICE_TYPE = 'virtual';
+	public const CONNECTOR_TYPE = 'virtual';
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function getType(): string
 	{
-		return self::DEVICE_TYPE;
+		return self::CONNECTOR_TYPE;
 	}
 
 	/**
@@ -39,7 +39,7 @@ class VirtualDevice extends Entities\Devices\Device implements IVirtualDevice
 	 */
 	public function getDiscriminatorName(): string
 	{
-		return self::DEVICE_TYPE;
+		return self::CONNECTOR_TYPE;
 	}
 
 }

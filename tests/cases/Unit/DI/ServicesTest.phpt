@@ -66,10 +66,7 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Controllers\ConnectorsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ConnectorControlsV1Controller::class));
 
-		Assert::notNull($container->getByType(Schemas\Devices\NetworkDeviceSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\LocalDeviceSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\VirtualDeviceSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\HomekitDeviceSchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Properties\DynamicPropertySchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Properties\StaticPropertySchema::class));
 		Assert::notNull($container->getByType(Schemas\Devices\Configuration\RowSchema::class));
@@ -79,19 +76,16 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Schemas\Channels\Properties\StaticPropertySchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Configuration\RowSchema::class));
 		Assert::notNull($container->getByType(Schemas\Channels\Controls\ControlSchema::class));
-		Assert::notNull($container->getByType(Schemas\Connectors\FbBusConnectorSchema::class));
-		Assert::notNull($container->getByType(Schemas\Connectors\FbMqttConnectorSchema::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\VirtualConnectorSchema::class));
 		Assert::notNull($container->getByType(Schemas\Connectors\Controls\ControlSchema::class));
 
-		Assert::notNull($container->getByType(Hydrators\Devices\NetworkDeviceHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Devices\LocalDeviceHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Devices\VirtualDeviceHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Devices\HomekitDeviceHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Channels\ChannelHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Properties\DeviceDynamicPropertyHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Properties\DeviceStaticPropertyHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Properties\ChannelDynamicPropertyHydrator::class));
 		Assert::notNull($container->getByType(Hydrators\Properties\ChannelStaticPropertyHydrator::class));
+		Assert::notNull($container->getByType(Hydrators\Connectors\VirtualConnectorHydrator::class));
 
 		Assert::notNull($container->getByType(Router\Validator::class));
 		Assert::notNull($container->getByType(Router\Routes::class));

@@ -22,6 +22,7 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
+use IPub\DoctrineDynamicDiscriminatorMap\Entities as DoctrineDynamicDiscriminatorMapEntities;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
 use Throwable;
@@ -49,14 +50,11 @@ use Throwable;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="device_type", type="string", length=40)
  * @ORM\DiscriminatorMap({
- *    "network" = "FastyBird\DevicesModule\Entities\Devices\NetworkDevice",
- *    "local"   = "FastyBird\DevicesModule\Entities\Devices\LocalDevice",
- *    "virtual" = "FastyBird\DevicesModule\Entities\Devices\VirtualDevice",
- *    "homekit" = "FastyBird\DevicesModule\Entities\Devices\HomekitDevice"
+ *    "virtual" = "FastyBird\DevicesModule\Entities\Devices\VirtualDevice"
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Device implements IDevice
+abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
 {
 
 	use Entities\TKey;
@@ -620,7 +618,7 @@ abstract class Device implements IDevice
 	{
 		return [
 			'id'         => $this->getPlainId(),
-			'type'       => $this->getType()->getValue(),
+			'type'       => $this->getType(),
 			'key'        => $this->getKey(),
 			'identifier' => $this->getIdentifier(),
 			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,

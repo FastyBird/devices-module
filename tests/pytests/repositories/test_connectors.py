@@ -57,14 +57,10 @@ class TestConnectorsRepository(DbTestCase):
         self.assertEqual(
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "type": "fb-mqtt",
+                "type": "virtual",
                 "key": "bLikvZ",
-                "name": "FB MQTT",
+                "name": "Virtual",
                 "enabled": True,
-                "server": "127.0.0.1",
-                "port": 1883,
-                "secured_port": 8883,
-                "username": None,
                 "owner": None,
             },
             entity.to_dict(),

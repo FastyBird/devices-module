@@ -36,9 +36,9 @@ interface IDevice extends Entities\IEntity,
 {
 
 	/**
-	 * @return MetadataTypes\DeviceTypeType
+	 * @return string
 	 */
-	public function getType(): MetadataTypes\DeviceTypeType;
+	public function getType(): string;
 
 	/**
 	 * @return IDevice|null

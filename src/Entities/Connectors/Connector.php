@@ -18,9 +18,9 @@ namespace FastyBird\DevicesModule\Entities\Connectors;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
+use IPub\DoctrineDynamicDiscriminatorMap\Entities as DoctrineDynamicDiscriminatorMapEntities;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
 use Throwable;
@@ -41,14 +41,11 @@ use Throwable;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="connector_type", type="string", length=40)
  * @ORM\DiscriminatorMap({
- *    "connector" = "FastyBird\DevicesModule\Entities\Connectors\Connector",
- *    "fb-bus"    = "FastyBird\DevicesModule\Entities\Connectors\FbBusConnector",
- *    "fb-mqtt"   = "FastyBird\DevicesModule\Entities\Connectors\FbMqttConnector",
- *    "modbus"    = "FastyBird\DevicesModule\Entities\Connectors\ModbusConnector"
+ *    "connector" = "FastyBird\DevicesModule\Entities\Connectors\Connector"
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Connector implements IConnector
+abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
 {
 
 	use Entities\TKey;
@@ -221,7 +218,7 @@ abstract class Connector implements IConnector
 	{
 		return [
 			'id'      => $this->getPlainId(),
-			'type'    => $this->getType()->getValue(),
+			'type'    => $this->getType(),
 			'name'    => $this->getName(),
 			'key'     => $this->getKey(),
 			'enabled' => $this->isEnabled(),
@@ -233,7 +230,7 @@ abstract class Connector implements IConnector
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function getType(): MetadataTypes\ConnectorTypeType;
+	abstract public function getType(): string;
 
 	/**
 	 * {@inheritDoc}

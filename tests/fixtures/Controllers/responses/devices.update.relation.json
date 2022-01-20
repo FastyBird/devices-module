@@ -141,7 +141,7 @@
         }
       }
     },
-    "type" : "devices-module/device-network"
+    "type" : "devices-module/device-virtual"
   },
   "jsonapi" : {
     "version" : "1.1"

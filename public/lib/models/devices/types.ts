@@ -31,10 +31,7 @@ import { ConnectorInterface } from '@/lib/models/connectors/types'
 // ============
 
 export enum DeviceEntityTypes {
-  NETWORK = 'devices-module/device-network',
-  LOCAL = 'devices-module/device-local',
-  VIRUTAL = 'devices-module/device-virtual',
-  HOMEKIT = 'devices-module/device-homekit',
+  VIRTUAL = 'devices-module/device-virtual',
 }
 
 // ENTITY INTERFACE

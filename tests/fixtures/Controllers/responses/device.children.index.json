@@ -90,9 +90,13 @@
         },
         "connector" : {
           "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/connector"
+            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/connector",
+            "related" : "/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
           },
-          "data" : null
+          "data" : {
+            "type" : "devices-module/connector-virtual",
+            "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
+          }
         },
         "parent" : {
           "links" : {
@@ -100,7 +104,7 @@
             "related" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596"
           },
           "data" : {
-            "type" : "devices-module/device-network",
+            "type" : "devices-module/device-virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }

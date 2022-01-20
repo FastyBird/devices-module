@@ -28,7 +28,6 @@ from typing import Dict, List, Optional, Tuple, Union
 # Library dependencies
 from fb_metadata.devices_module import (
     DeviceModel,
-    DeviceType,
     FirmwareManufacturer,
     HardwareManufacturer,
     PropertyType,
@@ -124,7 +123,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         BINARY(16), ForeignKey("fb_devices.device_id", ondelete="SET NULL"), name="parent_id", nullable=True
     )
     connector_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=True
+        BINARY(16), ForeignKey("fb_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=False
     )
 
     children: List["DeviceEntity"] = relationship(  # type: ignore[assignment]
@@ -153,7 +152,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         cascade="all, delete-orphan"
     )
 
-    connector: Optional["entities.connector.ConnectorEntity"] = relationship(  # type: ignore[name-defined]
+    connector: "entities.connector.ConnectorEntity" = relationship(  # type: ignore[name-defined]
         "entities.connector.ConnectorEntity",
         back_populates="devices",
     )
@@ -182,7 +181,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     @property
     @abstractmethod
-    def type(self) -> DeviceType:
+    def type(self) -> str:
         """Device type"""
 
     # -----------------------------------------------------------------------------
@@ -413,7 +412,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         """Transform entity to dictionary"""
         return {
             "id": self.id.__str__(),
-            "type": self.type.value,
+            "type": self.type,
             "key": self.key,
             "identifier": self.identifier,
             "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
@@ -432,49 +431,9 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             if isinstance(self.firmware_manufacturer, FirmwareManufacturer)
             else self.firmware_manufacturer,
             "firmware_version": self.firmware_version,
-            "connector": uuid.UUID(bytes=self.connector_id).__str__() if self.connector_id is not None else None,
+            "connector": uuid.UUID(bytes=self.connector_id).__str__(),
             "owner": self.owner,
         }
-
-
-class LocalDeviceEntity(DeviceEntity):
-    """
-    Local device entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/device
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "local"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> DeviceType:
-        """Device type"""
-        return DeviceType.LOCAL
-
-
-class NetworkDeviceEntity(DeviceEntity):
-    """
-    Network device entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/device
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "network"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> DeviceType:
-        """Device type"""
-        return DeviceType.NETWORK
 
 
 class VirtualDeviceEntity(DeviceEntity):
@@ -492,29 +451,9 @@ class VirtualDeviceEntity(DeviceEntity):
     # -----------------------------------------------------------------------------
 
     @property
-    def type(self) -> DeviceType:
+    def type(self) -> str:
         """Device type"""
-        return DeviceType.VIRTUAL
-
-
-class HomekitDeviceEntity(DeviceEntity):
-    """
-    HomeKit device entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/device
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "homekit"}
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def type(self) -> DeviceType:
-        """Device type"""
-        return DeviceType.HOMEKIT
+        return "virtual"
 
 
 class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin, Base):

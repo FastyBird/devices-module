@@ -218,17 +218,8 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->addTag('nette.inject');
 
 		// API schemas
-		$builder->addDefinition($this->prefix('schemas.device.network'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\NetworkDeviceSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.local'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\LocalDeviceSchema::class);
-
 		$builder->addDefinition($this->prefix('schemas.device.virtual'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\VirtualDeviceSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.device.homekit'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\HomekitDeviceSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Properties\DynamicPropertySchema::class);
@@ -257,30 +248,15 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('schemas.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Controls\ControlSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.connector.fbBus'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\FbBusConnectorSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.connector.fbMqtt'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\FbMqttConnectorSchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.connector.modbus'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\ModbusConnectorSchema::class);
+		$builder->addDefinition($this->prefix('schemas.connector.virtual'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\VirtualConnectorSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\Controls\ControlSchema::class);
 
 		// API hydrators
-		$builder->addDefinition($this->prefix('hydrators.device.network'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Devices\NetworkDeviceHydrator::class);
-
-		$builder->addDefinition($this->prefix('hydrators.device.local'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Devices\LocalDeviceHydrator::class);
-
 		$builder->addDefinition($this->prefix('hydrators.device.virtual'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Devices\VirtualDeviceHydrator::class);
-
-		$builder->addDefinition($this->prefix('hydrators.device.homekit'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Devices\HomekitDeviceHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\DeviceDynamicPropertyHydrator::class);
@@ -297,14 +273,8 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('hydrators.channel.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\ChannelStaticPropertyHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.connectors.fbBus'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Connectors\FbBusConnectorHydrator::class);
-
-		$builder->addDefinition($this->prefix('hydrators.connectors.fbMqtt'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Connectors\FbMqttConnectorHydrator::class);
-
-		$builder->addDefinition($this->prefix('hydrators.connectors.modbus'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Connectors\ModbusConnectorHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.connectors.virtual'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Connectors\VirtualConnectorHydrator::class);
 
 		// Helpers
 		$builder->addDefinition($this->prefix('helpers.entityKey'), new DI\Definitions\ServiceDefinition())

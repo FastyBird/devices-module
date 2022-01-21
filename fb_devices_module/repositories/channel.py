@@ -66,7 +66,7 @@ class ChannelsRepository:
 
     def get_by_key(self, channel_key: str) -> Optional[ChannelEntity]:
         """Find channel by provided key"""
-        return self.__session.query(ChannelEntity).filter(ChannelEntity.key == channel_key).first()
+        return self.__session.query(ChannelEntity).filter(ChannelEntity.col_key == channel_key).first()
 
     # -----------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ class ChannelsRepository:
         """Find channel by provided identifier"""
         return (
             self.__session.query(ChannelEntity)
-            .filter(ChannelEntity.device_id == device_id.bytes and ChannelEntity.identifier == channel_identifier)
+            .filter(ChannelEntity.device_id == device_id.bytes and ChannelEntity.col_identifier == channel_identifier)
             .first()
         )
 
@@ -121,7 +121,7 @@ class ChannelsPropertiesRepository:
 
     def get_by_key(self, property_key: str) -> Optional[ChannelPropertyEntity]:
         """Find property by provided key"""
-        return self.__session.query(ChannelPropertyEntity).filter(ChannelPropertyEntity.key == property_key).first()
+        return self.__session.query(ChannelPropertyEntity).filter(ChannelPropertyEntity.col_key == property_key).first()
 
     # -----------------------------------------------------------------------------
 
@@ -131,7 +131,7 @@ class ChannelsPropertiesRepository:
             self.__session.query(ChannelPropertyEntity)
             .filter(
                 ChannelPropertyEntity.channel_id == channel_id.bytes
-                and ChannelPropertyEntity.key == property_identifier
+                and ChannelPropertyEntity.col_identifier == property_identifier
             )
             .first()
         )
@@ -185,7 +185,7 @@ class ChannelsConfigurationRepository:
         """Find configuration by provided key"""
         return (
             self.__session.query(ChannelConfigurationEntity)
-            .filter(ChannelConfigurationEntity.key == configuration_key)
+            .filter(ChannelConfigurationEntity.col_key == configuration_key)
             .first()
         )
 
@@ -199,7 +199,7 @@ class ChannelsConfigurationRepository:
             self.__session.query(ChannelConfigurationEntity)
             .filter(
                 ChannelConfigurationEntity.channel_id == channel_id.bytes
-                and ChannelConfigurationEntity.identifier == configuration_identifier
+                and ChannelConfigurationEntity.col_identifier == configuration_identifier
             )
             .first()
         )
@@ -253,7 +253,10 @@ class ChannelsControlsRepository:
         """Find control by provided name"""
         return (
             self.__session.query(ChannelControlEntity)
-            .filter(ChannelControlEntity.channel_id == channel_id.bytes and ChannelControlEntity.name == control_name)
+            .filter(
+                ChannelControlEntity.channel_id == channel_id.bytes
+                and ChannelControlEntity.col_name == control_name
+            )
             .first()
         )
 

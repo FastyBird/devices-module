@@ -80,44 +80,44 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         },
     )
 
-    _type: str = Column(VARCHAR(40), name="device_type", nullable=False)  # type: ignore[assignment]
+    col_type: str = Column(VARCHAR(40), name="device_type", nullable=False)  # type: ignore[assignment]
 
-    __device_id: bytes = Column(  # type: ignore[assignment]
+    col_device_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="device_id", default=uuid.uuid4
     )
-    __identifier: str = Column(VARCHAR(50), name="device_identifier", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(VARCHAR(50), name="device_key", nullable=False, unique=True)  # type: ignore[assignment]
-    __name: Optional[str] = Column(  # type: ignore[assignment]
+    col_identifier: str = Column(VARCHAR(50), name="device_identifier", nullable=False)  # type: ignore[assignment]
+    col_key: str = Column(VARCHAR(50), name="device_key", nullable=False, unique=True)  # type: ignore[assignment]
+    col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="device_name", nullable=True, default=None
     )
-    __comment: Optional[str] = Column(  # type: ignore[assignment]
+    col_comment: Optional[str] = Column(  # type: ignore[assignment]
         TEXT, name="device_comment", nullable=True, default=None
     )
-    __enabled: bool = Column(BOOLEAN, name="device_enabled", nullable=False, default=True)  # type: ignore[assignment]
+    col_enabled: bool = Column(BOOLEAN, name="device_enabled", nullable=False, default=True)  # type: ignore[assignment]
 
-    __hardware_manufacturer: str = Column(  # type: ignore[assignment]
+    col_hardware_manufacturer: str = Column(  # type: ignore[assignment]
         VARCHAR(150), name="device_hardware_manufacturer", nullable=False, default="generic"
     )
-    __hardware_model: str = Column(  # type: ignore[assignment]
+    col_hardware_model: str = Column(  # type: ignore[assignment]
         VARCHAR(150), name="device_hardware_model", nullable=False, default="custom"
     )
-    __hardware_version: Optional[str] = Column(  # type: ignore[assignment]
+    col_hardware_version: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(150), name="device_hardware_version", nullable=True, default=None
     )
-    __hardware_mac_address: Optional[str] = Column(  # type: ignore[assignment]
+    col_hardware_mac_address: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(50), name="device_hardware_mac_address", nullable=True, default=None
     )
 
-    __firmware_manufacturer: str = Column(  # type: ignore[assignment]
+    col_firmware_manufacturer: str = Column(  # type: ignore[assignment]
         VARCHAR(150), name="device_firmware_manufacturer", nullable=False, default="generic"
     )
-    __firmware_version: Optional[str] = Column(  # type: ignore[assignment]
+    col_firmware_version: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(150), name="device_firmware_version", nullable=True, default=None
     )
 
-    __owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
+    col_owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
 
-    __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
+    col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id", ondelete="SET NULL"), name="parent_id", nullable=True
@@ -127,7 +127,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     )
 
     children: List["DeviceEntity"] = relationship(  # type: ignore[assignment]
-        "DeviceEntity", backref=backref("parent", remote_side=[__device_id])
+        "DeviceEntity", backref=backref("parent", remote_side=[col_device_id])
     )
 
     properties: List["DevicePropertyEntity"] = relationship(  # type: ignore[assignment]
@@ -157,7 +157,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __mapper_args__ = {
         "polymorphic_identity": "device",
-        "polymorphic_on": _type,
+        "polymorphic_on": col_type,
     }
 
     # -----------------------------------------------------------------------------
@@ -165,15 +165,15 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def __init__(self, identifier: str, name: Optional[str] = None, device_id: Optional[uuid.UUID] = None) -> None:
         super().__init__()
 
-        self.__device_id = device_id.bytes if device_id is not None else uuid.uuid4().bytes
+        self.col_device_id = device_id.bytes if device_id is not None else uuid.uuid4().bytes
 
-        self.__identifier = identifier
-        self.__name = name
+        self.col_identifier = identifier
+        self.col_name = name
 
-        self.__hardware_manufacturer = HardwareManufacturer.GENERIC.value
-        self.__hardware_model = DeviceModel.CUSTOM.value
+        self.col_hardware_manufacturer = HardwareManufacturer.GENERIC.value
+        self.col_hardware_model = DeviceModel.CUSTOM.value
 
-        self.__firmware_manufacturer = FirmwareManufacturer.GENERIC.value
+        self.col_firmware_manufacturer = FirmwareManufacturer.GENERIC.value
 
     # -----------------------------------------------------------------------------
 
@@ -187,80 +187,80 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Device unique identifier"""
-        return uuid.UUID(bytes=self.__device_id)
+        return uuid.UUID(bytes=self.col_device_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def identifier(self) -> str:
         """Device unique key"""
-        return self.__identifier
+        return self.col_identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
         """Device unique key"""
-        return self.__key
+        return self.col_key
 
     # -----------------------------------------------------------------------------
 
     @key.setter
     def key(self, key: str) -> None:
         """Device unique key setter"""
-        self.__key = key
+        self.col_key = key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> Optional[str]:
         """Device name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 
     @name.setter
     def name(self, name: Optional[str]) -> None:
         """Device name setter"""
-        self.__name = name
+        self.col_name = name
 
     # -----------------------------------------------------------------------------
 
     @property
     def comment(self) -> Optional[str]:
         """Device comment"""
-        return self.__comment
+        return self.col_comment
 
     # -----------------------------------------------------------------------------
 
     @comment.setter
     def comment(self, comment: Optional[str]) -> None:
         """Device comment setter"""
-        self.__comment = comment
+        self.col_comment = comment
 
     # -----------------------------------------------------------------------------
 
     @property
     def enabled(self) -> bool:
         """Device enabled status"""
-        return self.__enabled
+        return self.col_enabled
 
     # -----------------------------------------------------------------------------
 
     @enabled.setter
     def enabled(self, enabled: bool) -> None:
         """Device enabled setter"""
-        self.__enabled = enabled
+        self.col_enabled = enabled
 
     # -----------------------------------------------------------------------------
 
     @property
     def hardware_manufacturer(self) -> Union[str, HardwareManufacturer]:
         """Device hardware manufacturer"""
-        if HardwareManufacturer.has_value(self.__hardware_manufacturer):
-            return HardwareManufacturer(self.__hardware_manufacturer)
+        if HardwareManufacturer.has_value(self.col_hardware_manufacturer):
+            return HardwareManufacturer(self.col_hardware_manufacturer)
 
-        return self.__hardware_manufacturer
+        return self.col_hardware_manufacturer
 
     # -----------------------------------------------------------------------------
 
@@ -268,20 +268,20 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def hardware_manufacturer(self, hardware_manufacturer: Union[str, HardwareManufacturer]) -> None:
         """Device hardware manufacturer setter"""
         if isinstance(hardware_manufacturer, HardwareManufacturer):
-            self.__hardware_manufacturer = hardware_manufacturer.value
+            self.col_hardware_manufacturer = hardware_manufacturer.value
 
         else:
-            self.__hardware_manufacturer = hardware_manufacturer.lower()
+            self.col_hardware_manufacturer = hardware_manufacturer.lower()
 
     # -----------------------------------------------------------------------------
 
     @property
     def hardware_model(self) -> Union[str, DeviceModel]:
         """Device hardware model"""
-        if HardwareManufacturer.has_value(self.__hardware_model):
-            return DeviceModel(self.__hardware_model)
+        if HardwareManufacturer.has_value(self.col_hardware_model):
+            return DeviceModel(self.col_hardware_model)
 
-        return self.__hardware_model
+        return self.col_hardware_model
 
     # -----------------------------------------------------------------------------
 
@@ -289,37 +289,37 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def hardware_model(self, hardware_model: Union[str, DeviceModel]) -> None:
         """Device hardware model setter"""
         if isinstance(hardware_model, DeviceModel):
-            self.__hardware_model = hardware_model.value
+            self.col_hardware_model = hardware_model.value
 
         else:
-            self.__hardware_model = hardware_model.lower()
+            self.col_hardware_model = hardware_model.lower()
 
     # -----------------------------------------------------------------------------
 
     @property
     def hardware_version(self) -> Optional[str]:
         """Device hardware version"""
-        return self.__hardware_version
+        return self.col_hardware_version
 
     # -----------------------------------------------------------------------------
 
     @hardware_version.setter
     def hardware_version(self, hardware_version: Optional[str]) -> None:
         """Device hardware version setter"""
-        self.__hardware_version = hardware_version.lower() if hardware_version is not None else None
+        self.col_hardware_version = hardware_version.lower() if hardware_version is not None else None
 
     # -----------------------------------------------------------------------------
 
     @property
     def hardware_mac_address(self) -> Optional[str]:
         """Device hardware MAC address"""
-        if self.__hardware_mac_address is None:
+        if self.col_hardware_mac_address is None:
             return None
 
         return ":".join(
             [
-                self.__hardware_mac_address[index : (index + 2)]
-                for index in range(0, len(self.__hardware_mac_address), 2)
+                self.col_hardware_mac_address[index : (index + 2)]
+                for index in range(0, len(self.col_hardware_mac_address), 2)
             ]
         )
 
@@ -336,20 +336,20 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             raise InvalidArgumentException("Provided mac address is not in valid format")
 
         if hardware_mac_address is not None:
-            self.__hardware_mac_address = hardware_mac_address.replace(":", "").replace("-", "").lower()
+            self.col_hardware_mac_address = hardware_mac_address.replace(":", "").replace("-", "").lower()
 
         else:
-            self.__hardware_mac_address = None
+            self.col_hardware_mac_address = None
 
     # -----------------------------------------------------------------------------
 
     @property
     def firmware_manufacturer(self) -> Union[str, FirmwareManufacturer]:
         """Device firmware manufacturer"""
-        if FirmwareManufacturer.has_value(self.__firmware_manufacturer):
-            return FirmwareManufacturer(self.__firmware_manufacturer)
+        if FirmwareManufacturer.has_value(self.col_firmware_manufacturer):
+            return FirmwareManufacturer(self.col_firmware_manufacturer)
 
-        return self.__firmware_manufacturer
+        return self.col_firmware_manufacturer
 
     # -----------------------------------------------------------------------------
 
@@ -357,52 +357,52 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def firmware_manufacturer(self, firmware_manufacturer: Union[str, FirmwareManufacturer]) -> None:
         """Device firmware manufacturer setter"""
         if isinstance(firmware_manufacturer, FirmwareManufacturer):
-            self.__firmware_manufacturer = firmware_manufacturer.value
+            self.col_firmware_manufacturer = firmware_manufacturer.value
 
         else:
-            self.__firmware_manufacturer = firmware_manufacturer.lower()
+            self.col_firmware_manufacturer = firmware_manufacturer.lower()
 
     # -----------------------------------------------------------------------------
 
     @property
     def firmware_version(self) -> Optional[str]:
         """Device firmware version"""
-        return self.__firmware_version
+        return self.col_firmware_version
 
     # -----------------------------------------------------------------------------
 
     @firmware_version.setter
     def firmware_version(self, firmware_version: Optional[str]) -> None:
         """Device firmware version setter"""
-        self.__firmware_version = firmware_version.lower() if firmware_version is not None else None
+        self.col_firmware_version = firmware_version.lower() if firmware_version is not None else None
 
     # -----------------------------------------------------------------------------
 
     @property
     def owner(self) -> Optional[str]:
         """Device owner identifier"""
-        return self.__owner
+        return self.col_owner
 
     # -----------------------------------------------------------------------------
 
     @owner.setter
     def owner(self, owner: Optional[str]) -> None:
         """Device owner identifier setter"""
-        self.__owner = owner
+        self.col_owner = owner
 
     # -----------------------------------------------------------------------------
 
     @property
     def params(self) -> Dict:
         """Device params"""
-        return self.__params if self.__params is not None else {}
+        return self.col_params if self.col_params is not None else {}
 
     # -----------------------------------------------------------------------------
 
     @params.setter
     def params(self, params: Optional[Dict]) -> None:
         """Device params"""
-        self.__params = params
+        self.col_params = params
 
     # -----------------------------------------------------------------------------
 
@@ -480,7 +480,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
         },
     )
 
-    _type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
+    col_type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id"), name="device_id", nullable=False
@@ -490,7 +490,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
 
     __mapper_args__ = {
         "polymorphic_identity": "device_property",
-        "polymorphic_on": _type,
+        "polymorphic_on": col_type,
     }
 
     # -----------------------------------------------------------------------------
@@ -650,10 +650,10 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         },
     )
 
-    __control_id: bytes = Column(  # type: ignore[assignment]
+    col_control_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="control_id", default=uuid.uuid4
     )
-    __name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
+    col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
@@ -666,9 +666,9 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def __init__(self, name: str, device: DeviceEntity, control_id: Optional[uuid.UUID] = None) -> None:
         super().__init__()
 
-        self.__control_id = control_id.bytes if control_id is not None else uuid.uuid4().bytes
+        self.col_control_id = control_id.bytes if control_id is not None else uuid.uuid4().bytes
 
-        self.__name = name
+        self.col_name = name
 
         self.device = device
 
@@ -677,14 +677,14 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Control unique identifier"""
-        return uuid.UUID(bytes=self.__control_id)
+        return uuid.UUID(bytes=self.col_control_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> str:
         """Control name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 

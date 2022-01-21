@@ -37,13 +37,22 @@ class TestConnectorsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, connector_repository: ConnectorsRepository) -> None:
+    def test_get_item_by_id(self, connector_repository: ConnectorsRepository) -> None:
         entity = connector_repository.get_by_id(
             connector_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4)
         )
 
         self.assertIsInstance(entity, ConnectorEntity)
         self.assertEqual("bLikvZ", entity.key)
+
+    # -----------------------------------------------------------------------------
+
+    @inject
+    def test_get_item_by_key(self, connector_repository: ConnectorsRepository) -> None:
+        entity = connector_repository.get_by_key(connector_key="bLikvZ")
+
+        self.assertIsInstance(entity, ConnectorEntity)
+        self.assertEqual(uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4), entity.id)
 
     # -----------------------------------------------------------------------------
 

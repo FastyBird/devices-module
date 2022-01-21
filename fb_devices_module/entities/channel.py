@@ -70,19 +70,19 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         },
     )
 
-    __channel_id: bytes = Column(  # type: ignore[assignment]
+    col_channel_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="channel_id", default=uuid.uuid4
     )
-    __identifier: str = Column(VARCHAR(50), name="channel_identifier", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(VARCHAR(50), name="channel_key", nullable=False, unique=True)  # type: ignore[assignment]
-    __name: Optional[str] = Column(  # type: ignore[assignment]
+    col_identifier: str = Column(VARCHAR(50), name="channel_identifier", nullable=False)  # type: ignore[assignment]
+    col_key: str = Column(VARCHAR(50), name="channel_key", nullable=False, unique=True)  # type: ignore[assignment]
+    col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="channel_name", nullable=True, default=None
     )
-    __comment: Optional[str] = Column(  # type: ignore[assignment]
+    col_comment: Optional[str] = Column(  # type: ignore[assignment]
         TEXT, name="channel_comment", nullable=True, default=None
     )
 
-    __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
+    col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     device_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
@@ -120,10 +120,10 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     ) -> None:
         super().__init__()
 
-        self.__channel_id = channel_id.bytes if channel_id is not None else uuid.uuid4().bytes
+        self.col_channel_id = channel_id.bytes if channel_id is not None else uuid.uuid4().bytes
 
-        self.__identifier = identifier
-        self.__name = name
+        self.col_identifier = identifier
+        self.col_name = name
 
         self.device = device
 
@@ -132,70 +132,70 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Channel unique identifier"""
-        return uuid.UUID(bytes=self.__channel_id)
+        return uuid.UUID(bytes=self.col_channel_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def identifier(self) -> str:
         """Channel unique key"""
-        return self.__identifier
+        return self.col_identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
         """Channel unique key"""
-        return self.__key
+        return self.col_key
 
     # -----------------------------------------------------------------------------
 
     @key.setter
     def key(self, key: str) -> None:
         """Channel unique key setter"""
-        self.__key = key
+        self.col_key = key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> Optional[str]:
         """Channel name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 
     @name.setter
     def name(self, name: Optional[str]) -> None:
         """Channel name setter"""
-        self.__name = name
+        self.col_name = name
 
     # -----------------------------------------------------------------------------
 
     @property
     def comment(self) -> Optional[str]:
         """Channel comment"""
-        return self.__comment
+        return self.col_comment
 
     # -----------------------------------------------------------------------------
 
     @comment.setter
     def comment(self, comment: Optional[str]) -> None:
         """Channel comment setter"""
-        self.__comment = comment
+        self.col_comment = comment
 
     # -----------------------------------------------------------------------------
 
     @property
     def params(self) -> Dict:
         """Channel params"""
-        return self.__params if self.__params is not None else {}
+        return self.col_params if self.col_params is not None else {}
 
     # -----------------------------------------------------------------------------
 
     @params.setter
     def params(self, params: Optional[Dict]) -> None:
         """Channel params"""
-        self.__params = params
+        self.col_params = params
 
     # -----------------------------------------------------------------------------
 
@@ -241,7 +241,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
         },
     )
 
-    _type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
+    col_type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
     channel_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_channels.channel_id"), name="channel_id", nullable=False
@@ -251,7 +251,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
 
     __mapper_args__ = {
         "polymorphic_identity": "channel_property",
-        "polymorphic_on": _type,
+        "polymorphic_on": col_type,
     }
 
     # -----------------------------------------------------------------------------
@@ -411,10 +411,10 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         },
     )
 
-    __control_id: bytes = Column(  # type: ignore[assignment]
+    col_control_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="control_id", default=uuid.uuid4
     )
-    __name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
+    col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     channel_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_channels.channel_id", ondelete="CASCADE"), name="channel_id", nullable=False
@@ -427,9 +427,9 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def __init__(self, name: str, channel: ChannelEntity, control_id: Optional[uuid.UUID] = None) -> None:
         super().__init__()
 
-        self.__control_id = control_id.bytes if control_id is not None else uuid.uuid4().bytes
+        self.col_control_id = control_id.bytes if control_id is not None else uuid.uuid4().bytes
 
-        self.__name = name
+        self.col_name = name
 
         self.channel = channel
 
@@ -438,14 +438,14 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Control unique identifier"""
-        return uuid.UUID(bytes=self.__control_id)
+        return uuid.UUID(bytes=self.col_control_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> str:
         """Control name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 

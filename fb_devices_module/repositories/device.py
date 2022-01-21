@@ -66,7 +66,7 @@ class DevicesRepository:
 
     def get_by_key(self, device_key: str) -> Optional[DeviceEntity]:
         """Find device by provided key"""
-        return self.__session.query(DeviceEntity).filter(DeviceEntity.key == device_key).first()
+        return self.__session.query(DeviceEntity).filter(DeviceEntity.col_key == device_key).first()
 
     # -----------------------------------------------------------------------------
 
@@ -75,9 +75,8 @@ class DevicesRepository:
         return (
             self.__session.query(DeviceEntity)
             .filter(
-                DeviceEntity.connector is not None
-                and DeviceEntity.connector_id == connector_id.bytes
-                and DeviceEntity.identifier == device_identifier
+                DeviceEntity.connector_id == connector_id.bytes
+                and DeviceEntity.col_identifier == device_identifier
             )
             .first()
         )
@@ -104,7 +103,7 @@ class DevicesRepository:
         """Find all devices for connector"""
         return (
             self.__session.query(DeviceEntity)
-            .filter(DeviceEntity.connector is not None and DeviceEntity.connector_id == connector_id.bytes)
+            .filter(DeviceEntity.connector_id == connector_id.bytes)
             .all()
         )
 
@@ -139,7 +138,7 @@ class DevicesPropertiesRepository:
 
     def get_by_key(self, property_key: str) -> Optional[DevicePropertyEntity]:
         """Find property by provided key"""
-        return self.__session.query(DevicePropertyEntity).filter(DevicePropertyEntity.key == property_key).first()
+        return self.__session.query(DevicePropertyEntity).filter(DevicePropertyEntity.col_key == property_key).first()
 
     # -----------------------------------------------------------------------------
 
@@ -148,7 +147,8 @@ class DevicesPropertiesRepository:
         return (
             self.__session.query(DevicePropertyEntity)
             .filter(
-                DevicePropertyEntity.device_id == device_id.bytes and DevicePropertyEntity.key == property_identifier
+                DevicePropertyEntity.device_id == device_id.bytes
+                and DevicePropertyEntity.identifier == property_identifier
             )
             .first()
         )
@@ -200,7 +200,7 @@ class DevicesConfigurationRepository:
         """Find configuration by provided key"""
         return (
             self.__session.query(DeviceConfigurationEntity)
-            .filter(DeviceConfigurationEntity.key == configuration_key)
+            .filter(DeviceConfigurationEntity.col_key == configuration_key)
             .first()
         )
 
@@ -214,7 +214,7 @@ class DevicesConfigurationRepository:
             self.__session.query(DeviceConfigurationEntity)
             .filter(
                 DeviceConfigurationEntity.device_id == device_id.bytes
-                and DeviceConfigurationEntity.identifier == configuration_identifier
+                and DeviceConfigurationEntity.col_identifier == configuration_identifier
             )
             .first()
         )
@@ -268,7 +268,7 @@ class DevicesControlsRepository:
         """Find control by provided name"""
         return (
             self.__session.query(DeviceControlEntity)
-            .filter(DeviceControlEntity.device_id == device_id.bytes and DeviceControlEntity.name == control_name)
+            .filter(DeviceControlEntity.device_id == device_id.bytes and DeviceControlEntity.col_name == control_name)
             .first()
         )
 

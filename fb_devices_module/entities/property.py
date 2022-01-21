@@ -45,54 +45,54 @@ class PropertyMixin:
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __property_id: bytes = Column(  # type: ignore[assignment]
+    col_property_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="property_id", default=uuid.uuid4
     )
-    __identifier: str = Column(VARCHAR(50), name="property_identifier", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(VARCHAR(50), name="property_key", unique=True, nullable=False)  # type: ignore[assignment]
-    __name: Optional[str] = Column(  # type: ignore[assignment]
+    col_identifier: str = Column(VARCHAR(50), name="property_identifier", nullable=False)  # type: ignore[assignment]
+    col_key: str = Column(VARCHAR(50), name="property_key", unique=True, nullable=False)  # type: ignore[assignment]
+    col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="property_name", nullable=True, default=None
     )
-    __settable: bool = Column(  # type: ignore[assignment]
+    col_settable: bool = Column(  # type: ignore[assignment]
         BOOLEAN, name="property_settable", nullable=False, default=False
     )
-    __queryable: bool = Column(  # type: ignore[assignment]
+    col_queryable: bool = Column(  # type: ignore[assignment]
         BOOLEAN, name="property_queryable", nullable=False, default=False
     )
-    __data_type: Optional[str] = Column(  # type: ignore[assignment]
+    col_data_type: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(100), name="property_data_type", nullable=True, default=None
     )
-    __unit: Optional[str] = Column(  # type: ignore[assignment]
+    col_unit: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(20), name="property_unit", nullable=True, default=None
     )
-    __format: Optional[str] = Column(  # type: ignore[assignment]
+    col_format: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="property_format", nullable=True, default=None
     )
-    __invalid: Optional[str] = Column(  # type: ignore[assignment]
+    col_invalid: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="property_invalid", nullable=True, default=None
     )
-    __number_of_decimals: Optional[int] = Column(  # type: ignore[assignment]
+    col_number_of_decimals: Optional[int] = Column(  # type: ignore[assignment]
         Integer, name="property_number_of_decimals", nullable=True, default=None
     )
-    __value: Optional[str] = Column(  # type: ignore[assignment]
+    col_value: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="property_value", nullable=True, default=None
     )
-    __default: Optional[str] = Column(  # type: ignore[assignment]
+    col_default: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="property_default", nullable=True, default=None
     )
 
-    __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
+    col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     # -----------------------------------------------------------------------------
 
     def __init__(self, identifier: str, property_id: Optional[uuid.UUID] = None) -> None:
-        self.__property_id = property_id.bytes if property_id is not None else uuid.uuid4().bytes
+        self.col_property_id = property_id.bytes if property_id is not None else uuid.uuid4().bytes
 
-        self.__identifier = identifier
+        self.col_identifier = identifier
 
         if self.type == PropertyType.STATIC:
-            self.__settable = False
-            self.__queryable = False
+            self.col_settable = False
+            self.col_queryable = False
 
     # -----------------------------------------------------------------------------
 
@@ -106,49 +106,49 @@ class PropertyMixin:
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Property unique identifier"""
-        return uuid.UUID(bytes=self.__property_id)
+        return uuid.UUID(bytes=self.col_property_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def identifier(self) -> str:
         """Property unique identifier"""
-        return self.__identifier
+        return self.col_identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
         """Property unique key"""
-        return self.__key
+        return self.col_key
 
     # -----------------------------------------------------------------------------
 
     @key.setter
     def key(self, key: str) -> None:
         """Property unique key setter"""
-        self.__key = key
+        self.col_key = key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> Optional[str]:
         """Property name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 
     @name.setter
     def name(self, name: Optional[str]) -> None:
         """Property name setter"""
-        self.__name = name
+        self.col_name = name
 
     # -----------------------------------------------------------------------------
 
     @property
     def settable(self) -> bool:
         """Property settable status"""
-        return self.__settable
+        return self.col_settable
 
     # -----------------------------------------------------------------------------
 
@@ -158,14 +158,14 @@ class PropertyMixin:
         if settable and self.type == PropertyType.STATIC:
             raise InvalidArgumentException("Static type property can not be settable")
 
-        self.__settable = settable
+        self.col_settable = settable
 
     # -----------------------------------------------------------------------------
 
     @property
     def queryable(self) -> bool:
         """Property queryable status"""
-        return self.__queryable
+        return self.col_queryable
 
     # -----------------------------------------------------------------------------
 
@@ -175,34 +175,34 @@ class PropertyMixin:
         if queryable and self.type == PropertyType.STATIC:
             raise InvalidArgumentException("Static type property can not be queryable")
 
-        self.__queryable = queryable
+        self.col_queryable = queryable
 
     # -----------------------------------------------------------------------------
 
     @property
     def data_type(self) -> Optional[DataType]:
         """Transform data type to enum value"""
-        return DataType(self.__data_type) if self.__data_type is not None else None
+        return DataType(self.col_data_type) if self.col_data_type is not None else None
 
     # -----------------------------------------------------------------------------
 
     @data_type.setter
     def data_type(self, data_type: Optional[DataType]) -> None:
-        self.__data_type = data_type.value if isinstance(data_type, DataType) else None
+        self.col_data_type = data_type.value if isinstance(data_type, DataType) else None
 
     # -----------------------------------------------------------------------------
 
     @property
     def unit(self) -> Optional[str]:
         """Property unit"""
-        return self.__unit
+        return self.col_unit
 
     # -----------------------------------------------------------------------------
 
     @unit.setter
     def unit(self, unit: Optional[str]) -> None:
         """Property unit setter"""
-        self.__unit = unit
+        self.col_unit = unit
 
     # -----------------------------------------------------------------------------
 
@@ -216,7 +216,7 @@ class PropertyMixin:
         None,
     ]:
         """Property format"""
-        return self.__build_format(self.__format)
+        return self.__build_format(self.col_format)
 
     # -----------------------------------------------------------------------------
 
@@ -236,7 +236,7 @@ class PropertyMixin:
             if self.__build_format(value_format=value_format) is None:
                 raise InvalidArgumentException("Provided property format is not valid")
 
-            self.__format = value_format
+            self.col_format = value_format
 
         elif isinstance(value_format, (list, tuple)):
             plain_value_format: Optional[str] = None
@@ -267,17 +267,17 @@ class PropertyMixin:
             if self.__build_format(value_format=plain_value_format) is None:
                 raise InvalidArgumentException("Provided property format is not valid")
 
-            self.__format = plain_value_format
+            self.col_format = plain_value_format
 
         else:
-            self.__format = None
+            self.col_format = None
 
     # -----------------------------------------------------------------------------
 
     @property
     def invalid(self) -> Union[str, int, float, None]:
         """Property invalid value"""
-        if self.__invalid is None:
+        if self.col_invalid is None:
             return None
 
         if self.data_type is not None:
@@ -289,33 +289,33 @@ class PropertyMixin:
                 DataType.INT,
                 DataType.UINT,
             ):
-                return fast_int(self.__invalid)
+                return fast_int(self.col_invalid)
 
             if self.data_type == DataType.FLOAT:
-                return fast_float(self.__invalid)
+                return fast_float(self.col_invalid)
 
-        return self.__invalid
+        return self.col_invalid
 
     # -----------------------------------------------------------------------------
 
     @invalid.setter
     def invalid(self, invalid: str) -> None:
         """Property invalid value setter"""
-        self.__invalid = invalid
+        self.col_invalid = invalid
 
     # -----------------------------------------------------------------------------
 
     @property
     def number_of_decimals(self) -> Optional[int]:
         """Property value number of decimals"""
-        return self.__number_of_decimals
+        return self.col_number_of_decimals
 
     # -----------------------------------------------------------------------------
 
     @number_of_decimals.setter
     def number_of_decimals(self, number_of_decimals: Optional[int]) -> None:
         """Property value number of decimals setter"""
-        self.__number_of_decimals = number_of_decimals
+        self.col_number_of_decimals = number_of_decimals
 
     # -----------------------------------------------------------------------------
 
@@ -325,13 +325,13 @@ class PropertyMixin:
         if not self.type == PropertyType.STATIC:
             raise InvalidStateException(f"Value is not allowed for property type: {self.type.value}")
 
-        if self.__value is None:
+        if self.col_value is None:
             return None
 
         if self.data_type is None:
             return None
 
-        return normalize_value(data_type=self.data_type, value=self.__value, value_format=self.format)
+        return normalize_value(data_type=self.data_type, value=self.col_value, value_format=self.format)
 
     # -----------------------------------------------------------------------------
 
@@ -341,7 +341,7 @@ class PropertyMixin:
         if not self.type == PropertyType.STATIC:
             raise InvalidStateException(f"Value is not allowed for property type: {self.type.value}")
 
-        self.__value = value
+        self.col_value = value
 
     # -----------------------------------------------------------------------------
 
@@ -351,13 +351,13 @@ class PropertyMixin:
         if not self.type == PropertyType.STATIC:
             raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
 
-        if self.__default is None:
+        if self.col_default is None:
             return None
 
         if self.data_type is None:
             return None
 
-        return normalize_value(data_type=self.data_type, value=self.__default, value_format=self.format)
+        return normalize_value(data_type=self.data_type, value=self.col_default, value_format=self.format)
 
     # -----------------------------------------------------------------------------
 
@@ -367,21 +367,21 @@ class PropertyMixin:
         if not self.type == PropertyType.STATIC:
             raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
 
-        self.__default = default
+        self.col_default = default
 
     # -----------------------------------------------------------------------------
 
     @property
     def params(self) -> Dict:
         """Property params"""
-        return self.__params if self.__params is not None else {}
+        return self.col_params if self.col_params is not None else {}
 
     # -----------------------------------------------------------------------------
 
     @params.setter
     def params(self, params: Optional[Dict]) -> None:
         """Property params"""
-        self.__params = params
+        self.col_params = params
 
     # -----------------------------------------------------------------------------
 

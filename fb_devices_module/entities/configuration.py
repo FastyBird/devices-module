@@ -41,110 +41,110 @@ class ConfigurationMixin:
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __configuration_id: bytes = Column(  # type: ignore[assignment]
+    col_configuration_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="configuration_id", default=uuid.uuid4
     )
-    __identifier: str = Column(VARCHAR(50), name="configuration_identifier", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(VARCHAR(50), name="configuration_key", unique=True, nullable=False)  # type: ignore[assignment]
-    __name: Optional[str] = Column(  # type: ignore[assignment]
+    col_identifier: str = Column(VARCHAR(50), name="configuration_identifier", nullable=False)  # type: ignore[assignment]
+    col_key: str = Column(VARCHAR(50), name="configuration_key", unique=True, nullable=False)  # type: ignore[assignment]
+    col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="configuration_name", nullable=True, default=None
     )
-    __comment: Optional[str] = Column(  # type: ignore[assignment]
+    col_comment: Optional[str] = Column(  # type: ignore[assignment]
         TEXT, name="configuration_comment", nullable=True, default=None
     )
-    __data_type: str = Column(VARCHAR(100), name="configuration_data_type", nullable=False)  # type: ignore[assignment]
-    __default: Optional[str] = Column(  # type: ignore[assignment]
+    col_data_type: str = Column(VARCHAR(100), name="configuration_data_type", nullable=False)  # type: ignore[assignment]
+    col_default: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(50), name="configuration_default", nullable=True, default=None
     )
-    __value: Optional[str] = Column(  # type: ignore[assignment]
+    col_value: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(50), name="configuration_value", nullable=True, default=None
     )
 
-    __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
+    col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     # -----------------------------------------------------------------------------
 
     def __init__(self, identifier: str, configuration_id: Optional[uuid.UUID] = None) -> None:
-        self.__configuration_id = configuration_id.bytes if configuration_id is not None else uuid.uuid4().bytes
+        self.col_configuration_id = configuration_id.bytes if configuration_id is not None else uuid.uuid4().bytes
 
-        self.__identifier = identifier
+        self.col_identifier = identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Configuration unique identifier"""
-        return uuid.UUID(bytes=self.__configuration_id)
+        return uuid.UUID(bytes=self.col_configuration_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def identifier(self) -> str:
         """Configuration unique identifier"""
-        return self.__identifier
+        return self.col_identifier
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
         """Configuration unique key"""
-        return self.__key
+        return self.col_key
 
     # -----------------------------------------------------------------------------
 
     @key.setter
     def key(self, key: str) -> None:
         """Configuration unique key setter"""
-        self.__key = key
+        self.col_key = key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> Optional[str]:
         """Configuration name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 
     @name.setter
     def name(self, name: Optional[str]) -> None:
         """Configuration name setter"""
-        self.__name = name
+        self.col_name = name
 
     # -----------------------------------------------------------------------------
 
     @property
     def comment(self) -> Optional[str]:
         """Configuration comment"""
-        return self.__comment
+        return self.col_comment
 
     # -----------------------------------------------------------------------------
 
     @comment.setter
     def comment(self, comment: Optional[str]) -> None:
         """Configuration comment setter"""
-        self.__comment = comment
+        self.col_comment = comment
 
     # -----------------------------------------------------------------------------
 
     @property
     def data_type(self) -> DataType:
         """Configuration data type"""
-        return DataType(self.__data_type)
+        return DataType(self.col_data_type)
 
     # -----------------------------------------------------------------------------
 
     @data_type.setter
     def data_type(self, data_type: DataType) -> None:
         """Configuration data type setter"""
-        self.__data_type = data_type.value
+        self.col_data_type = data_type.value
 
     # -----------------------------------------------------------------------------
 
     @property
     def default(self) -> Union[str, float, int, bool, None]:
         """Configuration default value"""
-        if self.__default is None:
+        if self.col_default is None:
             return None
 
         if self.data_type in [
@@ -155,31 +155,31 @@ class ConfigurationMixin:
             DataType.INT,
             DataType.UINT,
         ]:
-            return int(self.__default)
+            return int(self.col_default)
 
         if self.data_type == DataType.FLOAT:
-            return float(self.__default)
+            return float(self.col_default)
 
         if self.data_type == DataType.BOOLEAN:
-            value = str(self.__default)
+            value = str(self.col_default)
 
             return value.lower() in ["true", "t", "yes", "y", "1", "on"]
 
-        return str(self.__default) if self.__default else None
+        return str(self.col_default) if self.col_default else None
 
     # -----------------------------------------------------------------------------
 
     @default.setter
     def default(self, default: Optional[str]) -> None:
         """Configuration default value setter"""
-        self.__default = default
+        self.col_default = default
 
     # -----------------------------------------------------------------------------
 
     @property
     def value(self) -> Union[str, float, int, bool, None]:
         """Configuration value"""
-        if self.__value is None:
+        if self.col_value is None:
             return None
 
         if self.data_type in [
@@ -190,24 +190,24 @@ class ConfigurationMixin:
             DataType.INT,
             DataType.UINT,
         ]:
-            return int(self.__value)
+            return int(self.col_value)
 
         if self.data_type == DataType.FLOAT:
-            return float(self.__value)
+            return float(self.col_value)
 
         if self.data_type == DataType.BOOLEAN:
-            value = str(self.__value)
+            value = str(self.col_value)
 
             return value.lower() in ["true", "t", "yes", "y", "1", "on"]
 
-        return str(self.__value) if self.__value else None
+        return str(self.col_value) if self.col_value else None
 
     # -----------------------------------------------------------------------------
 
     @value.setter
     def value(self, value: Optional[str]) -> None:
         """Configuration value setter"""
-        self.__value = value
+        self.col_value = value
 
     # -----------------------------------------------------------------------------
 
@@ -232,8 +232,8 @@ class ConfigurationMixin:
     @property
     def min(self) -> Optional[float]:
         """Get min value"""
-        if self.__params is not None and self.__params.get(ConfigurationNumberFieldAttribute.MIN.value) is not None:
-            return float(str(self.__params.get(ConfigurationNumberFieldAttribute.MIN.value)))
+        if self.col_params is not None and self.col_params.get(ConfigurationNumberFieldAttribute.MIN.value) is not None:
+            return float(str(self.col_params.get(ConfigurationNumberFieldAttribute.MIN.value)))
 
         return None
 
@@ -242,19 +242,19 @@ class ConfigurationMixin:
     @min.setter
     def min(self, min_value: Optional[float]) -> None:
         """Set min value"""
-        if self.__params is not None:
-            self.__params[ConfigurationNumberFieldAttribute.MIN.value] = min_value
+        if self.col_params is not None:
+            self.col_params[ConfigurationNumberFieldAttribute.MIN.value] = min_value
 
         else:
-            self.__params = {ConfigurationNumberFieldAttribute.MIN.value: min_value}
+            self.col_params = {ConfigurationNumberFieldAttribute.MIN.value: min_value}
 
     # -----------------------------------------------------------------------------
 
     @property
     def max(self) -> Optional[float]:
         """Get max value"""
-        if self.__params is not None and self.__params.get(ConfigurationNumberFieldAttribute.MAX.value) is not None:
-            return float(str(self.__params.get(ConfigurationNumberFieldAttribute.MAX.value)))
+        if self.col_params is not None and self.col_params.get(ConfigurationNumberFieldAttribute.MAX.value) is not None:
+            return float(str(self.col_params.get(ConfigurationNumberFieldAttribute.MAX.value)))
 
         return None
 
@@ -263,19 +263,19 @@ class ConfigurationMixin:
     @max.setter
     def max(self, max_value: Optional[float]) -> None:
         """Set max value"""
-        if self.__params is not None:
-            self.__params[ConfigurationNumberFieldAttribute.MAX.value] = max_value
+        if self.col_params is not None:
+            self.col_params[ConfigurationNumberFieldAttribute.MAX.value] = max_value
 
         else:
-            self.__params = {ConfigurationNumberFieldAttribute.MAX.value: max_value}
+            self.col_params = {ConfigurationNumberFieldAttribute.MAX.value: max_value}
 
     # -----------------------------------------------------------------------------
 
     @property
     def step(self) -> Optional[float]:
         """Get step value"""
-        if self.__params is not None and self.__params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None:
-            return float(str(self.__params.get(ConfigurationNumberFieldAttribute.STEP.value)))
+        if self.col_params is not None and self.col_params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None:
+            return float(str(self.col_params.get(ConfigurationNumberFieldAttribute.STEP.value)))
 
         return None
 
@@ -284,11 +284,11 @@ class ConfigurationMixin:
     @step.setter
     def step(self, step: Optional[float]) -> None:
         """Set step value"""
-        if self.__params is not None:
-            self.__params[ConfigurationNumberFieldAttribute.STEP.value] = step
+        if self.col_params is not None:
+            self.col_params[ConfigurationNumberFieldAttribute.STEP.value] = step
 
         else:
-            self.__params = {ConfigurationNumberFieldAttribute.STEP.value: step}
+            self.col_params = {ConfigurationNumberFieldAttribute.STEP.value: step}
 
     # -----------------------------------------------------------------------------
 
@@ -296,7 +296,7 @@ class ConfigurationMixin:
     def values(self) -> List[Dict[str, str]]:
         """Get values for options"""
         values = (
-            self.__params.get(ConfigurationSelectFieldAttribute.VALUES.value, []) if self.__params is not None else []
+            self.col_params.get(ConfigurationSelectFieldAttribute.VALUES.value, []) if self.col_params is not None else []
         )
 
         if isinstance(values, List):
@@ -315,25 +315,25 @@ class ConfigurationMixin:
     @values.setter
     def values(self, values: List[Dict[str, str]]) -> None:
         """Set values for options"""
-        if self.__params is not None:
-            self.__params[ConfigurationSelectFieldAttribute.VALUES.value] = values
+        if self.col_params is not None:
+            self.col_params[ConfigurationSelectFieldAttribute.VALUES.value] = values
 
         else:
-            self.__params = {ConfigurationSelectFieldAttribute.VALUES.value: values}
+            self.col_params = {ConfigurationSelectFieldAttribute.VALUES.value: values}
 
     # -----------------------------------------------------------------------------
 
     @property
     def params(self) -> Dict:
         """Configuration params"""
-        return self.__params if self.__params is not None else {}
+        return self.col_params if self.col_params is not None else {}
 
     # -----------------------------------------------------------------------------
 
     @params.setter
     def params(self, params: Optional[Dict]) -> None:
         """Configuration params"""
-        self.__params = params
+        self.col_params = params
 
     # -----------------------------------------------------------------------------
 

@@ -44,18 +44,18 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __tablename__: str = "fb_connectors"
 
-    _type: str = Column(VARCHAR(40), name="connector_type", nullable=False)  # type: ignore[assignment]
+    col_type: str = Column(VARCHAR(40), name="connector_type", nullable=False)  # type: ignore[assignment]
 
-    __connector_id: bytes = Column(BINARY(16), primary_key=True, name="connector_id")  # type: ignore[assignment]
-    __name: str = Column(VARCHAR(40), name="connector_name", nullable=False)  # type: ignore[assignment]
-    __key: str = Column(VARCHAR(50), name="connector_key", nullable=False, unique=True)  # type: ignore[assignment]
-    __enabled: bool = Column(  # type: ignore[assignment]
+    col_connector_id: bytes = Column(BINARY(16), primary_key=True, name="connector_id")  # type: ignore[assignment]
+    col_name: str = Column(VARCHAR(40), name="connector_name", nullable=False)  # type: ignore[assignment]
+    col_key: str = Column(VARCHAR(50), name="connector_key", nullable=False, unique=True)  # type: ignore[assignment]
+    col_enabled: bool = Column(  # type: ignore[assignment]
         BOOLEAN, name="connector_enabled", nullable=False, default=True
     )
 
-    __owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
+    col_owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
 
-    __params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
+    col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     controls: List["ConnectorControlEntity"] = relationship(  # type: ignore[assignment]
         "ConnectorControlEntity",
@@ -69,7 +69,7 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __mapper_args__ = {
         "polymorphic_identity": "connector",
-        "polymorphic_on": _type,
+        "polymorphic_on": col_type,
     }
 
     # -----------------------------------------------------------------------------
@@ -77,9 +77,9 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def __init__(self, name: str, connector_id: Optional[uuid.UUID] = None) -> None:
         super().__init__()
 
-        self.__connector_id = connector_id.bytes if connector_id is not None else uuid.uuid4().bytes
+        self.col_connector_id = connector_id.bytes if connector_id is not None else uuid.uuid4().bytes
 
-        self.__name = name
+        self.col_name = name
 
     # -----------------------------------------------------------------------------
 
@@ -93,77 +93,77 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Connector unique identifier"""
-        return uuid.UUID(bytes=self.__connector_id)
+        return uuid.UUID(bytes=self.col_connector_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def key(self) -> str:
         """Connector unique key"""
-        return self.__key
+        return self.col_key
 
     # -----------------------------------------------------------------------------
 
     @key.setter
     def key(self, key: str) -> None:
         """Connector unique key setter"""
-        self.__key = key
+        self.col_key = key
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> str:
         """Connector name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 
     @name.setter
     def name(self, name: str) -> None:
         """Connector name setter"""
-        self.__name = name
+        self.col_name = name
 
     # -----------------------------------------------------------------------------
 
     @property
     def enabled(self) -> bool:
         """Connector enabled status"""
-        return self.__enabled
+        return self.col_enabled
 
     # -----------------------------------------------------------------------------
 
     @enabled.setter
     def enabled(self, enabled: bool) -> None:
         """Connector enabled setter"""
-        self.__enabled = enabled
+        self.col_enabled = enabled
 
     # -----------------------------------------------------------------------------
 
     @property
     def owner(self) -> Optional[str]:
         """Connector owner identifier"""
-        return self.__owner
+        return self.col_owner
 
     # -----------------------------------------------------------------------------
 
     @owner.setter
     def owner(self, owner: Optional[str]) -> None:
         """Connector owner identifier setter"""
-        self.__owner = owner
+        self.col_owner = owner
 
     # -----------------------------------------------------------------------------
 
     @property
     def params(self) -> Dict:
         """Connector params"""
-        return self.__params if self.__params is not None else {}
+        return self.col_params if self.col_params is not None else {}
 
     # -----------------------------------------------------------------------------
 
     @params.setter
     def params(self, params: Optional[Dict]) -> None:
         """Connector params"""
-        self.__params = params
+        self.col_params = params
 
     # -----------------------------------------------------------------------------
 
@@ -211,8 +211,8 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __tablename__: str = "fb_connectors_controls"
 
-    __control_id: bytes = Column(BINARY(16), primary_key=True, name="control_id")  # type: ignore[assignment]
-    __name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
+    col_control_id: bytes = Column(BINARY(16), primary_key=True, name="control_id")  # type: ignore[assignment]
+    col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     connector_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=False
@@ -225,9 +225,9 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def __init__(self, name: str, connector: ConnectorEntity, control_id: Optional[uuid.UUID] = None) -> None:
         super().__init__()
 
-        self.__control_id = control_id.bytes if control_id is not None else uuid.uuid4().bytes
+        self.col_control_id = control_id.bytes if control_id is not None else uuid.uuid4().bytes
 
-        self.__name = name.lower()
+        self.col_name = name.lower()
         self.connector = connector
 
     # -----------------------------------------------------------------------------
@@ -235,14 +235,14 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @property
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Control unique identifier"""
-        return uuid.UUID(bytes=self.__control_id)
+        return uuid.UUID(bytes=self.col_control_id)
 
     # -----------------------------------------------------------------------------
 
     @property
     def name(self) -> str:
         """Control name"""
-        return self.__name
+        return self.col_name
 
     # -----------------------------------------------------------------------------
 

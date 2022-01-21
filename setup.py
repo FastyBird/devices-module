@@ -51,7 +51,7 @@ setup(
     author="FastyBird",
     author_email="code@fastybird.com",
     license="Apache Software License (Apache Software License 2.0)",
-    description="FastyBird metadata for modules.",
+    description="FastyBird IoT devices module for devices management & basic control logic",
     url="https://github.com/FastyBird/devices-module",
     long_description=long_description,
     long_description_content_type="text/markdown",

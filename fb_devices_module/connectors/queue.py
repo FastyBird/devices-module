@@ -27,7 +27,7 @@ from typing import Dict, Optional, Union
 
 # Library dependencies
 from fb_metadata.routing import RoutingKey
-from fb_metadata.types import ModuleOrigin, PluginOrigin, ConnectorOrigin
+from fb_metadata.types import ConnectorOrigin, ModuleOrigin, PluginOrigin
 
 
 class ConnectorQueue:

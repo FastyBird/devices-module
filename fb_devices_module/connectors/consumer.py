@@ -25,7 +25,7 @@ from typing import Dict, List, Optional, Union
 # Library dependencies
 from fb_exchange.consumer import IConsumer
 from fb_metadata.routing import RoutingKey
-from fb_metadata.types import ModuleOrigin, PluginOrigin, ConnectorOrigin
+from fb_metadata.types import ConnectorOrigin, ModuleOrigin, PluginOrigin
 
 # Library libs
 from fb_devices_module.connectors.queue import (

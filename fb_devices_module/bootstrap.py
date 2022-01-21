@@ -33,6 +33,7 @@ from fb_devices_module.connectors.connector import Connector
 from fb_devices_module.connectors.consumer import ConnecotrConsumer
 from fb_devices_module.connectors.queue import ConnectorQueue
 from fb_devices_module.helpers import KeyHashHelpers
+from fb_devices_module.logger import Logger
 from fb_devices_module.managers.channel import (
     ChannelConfigurationManager,
     ChannelControlsManager,
@@ -76,6 +77,9 @@ def register_services(
         logger.error("SQLAlchemy database session is not registered in container!")
 
         return
+
+    di[Logger] = Logger(logger=logger)
+    di["fb-devices-module_logger"] = di[Logger]
 
     di[KeyHashHelpers] = KeyHashHelpers()
     di["fb-devices-module_helpers-key-hash"] = di[KeyHashHelpers]
@@ -135,12 +139,12 @@ def register_services(
 
     # Module connector
 
-    di[ConnectorQueue] = ConnectorQueue(logger=di[logging.Logger])
+    di[ConnectorQueue] = ConnectorQueue(logger=di[Logger])
     di["fb-devices-module_connector-queue"] = di[ConnectorQueue]
-    di[ConnecotrConsumer] = ConnecotrConsumer(queue=di[ConnectorQueue], logger=logger)
+    di[ConnecotrConsumer] = ConnecotrConsumer(queue=di[ConnectorQueue], logger=di[Logger])
     di["fb-devices-module_connector-consumer"] = di[ConnecotrConsumer]
 
-    di[Connector] = Connector(queue=di[ConnectorQueue], logger=logger)
+    di[Connector] = Connector(queue=di[ConnectorQueue], logger=di[Logger])
     di["fb-devices-module_connector-handler"] = di[Connector]
 
     # Check for presence of exchange consumer proxy

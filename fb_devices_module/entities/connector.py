@@ -53,7 +53,9 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         BOOLEAN, name="connector_enabled", nullable=False, default=True
     )
 
-    col_owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
+    col_owner: Optional[str] = Column(  # type: ignore[assignment]
+        VARCHAR(50), name="owner", nullable=True, default=None
+    )
 
     col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 

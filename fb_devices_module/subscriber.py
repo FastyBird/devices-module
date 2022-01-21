@@ -54,7 +54,7 @@ from fb_devices_module.repositories.state import (
 )
 
 
-class EntityCreatedSubscriber:
+class EntityCreatedSubscriber:  # pylint: disable=too-few-public-methods
     """
     New entity creation subscriber
 
@@ -78,7 +78,7 @@ class EntityCreatedSubscriber:
             target.created_at = datetime.datetime.now()
 
 
-class EntityUpdatedSubscriber:
+class EntityUpdatedSubscriber:  # pylint: disable=too-few-public-methods
     """
     Existing entity update subscriber
 
@@ -161,7 +161,7 @@ class EntitiesSubscriber:
 
     # -----------------------------------------------------------------------------
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         session: OrmSession,
         key_hash_helpers: KeyHashHelpers,

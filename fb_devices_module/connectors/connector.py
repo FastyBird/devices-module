@@ -438,7 +438,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    def __handle_entity_event(  # pylint: disable=too-many-branches,too-many-return-statements
+    def __handle_entity_event(  # pylint: disable=too-many-branches,too-many-return-statements,too-many-statements
         self,
         item: ConsumeEntityMessageQueueItem,
     ) -> None:

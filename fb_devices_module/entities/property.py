@@ -35,7 +35,7 @@ from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, Integer
 from fb_devices_module.exceptions import InvalidArgumentException, InvalidStateException
 
 
-class PropertyMixin:
+class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     """
     Property entity
 

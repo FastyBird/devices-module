@@ -5,20 +5,3 @@ max-line-length=120
 
 [MESSAGES CONTROL]
 disable=duplicate-code
-
-[DESIGN]
-
-# Maximum number of locals for function / method body
-max-locals=20
-
-# Maximum number of arguments for function / method
-max-args=15
-
-# Maximum number of attributes for a class (see R0902).
-max-attributes=15
-
-# Maximum number of statements in function / method body
-max-statements=300
-
-# Minimum number of public methods for a class (see R0903).
-min-public-methods=0

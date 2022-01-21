@@ -69,7 +69,7 @@ from fb_devices_module.repositories.device import (
 from fb_devices_module.subscriber import EntitiesSubscriber, EntityCreatedSubscriber
 
 
-def register_services(
+def register_services(  # pylint: disable=too-many-statements
     logger: logging.Logger = logging.getLogger("dummy"),
 ) -> None:
     """Register devices module services"""

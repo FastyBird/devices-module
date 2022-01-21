@@ -254,8 +254,7 @@ class ChannelsControlsRepository:
         return (
             self.__session.query(ChannelControlEntity)
             .filter(
-                ChannelControlEntity.channel_id == channel_id.bytes
-                and ChannelControlEntity.col_name == control_name
+                ChannelControlEntity.channel_id == channel_id.bytes and ChannelControlEntity.col_name == control_name
             )
             .first()
         )

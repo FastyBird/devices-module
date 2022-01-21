@@ -54,7 +54,7 @@ from fb_devices_module.entities.property import PropertyMixin
 from fb_devices_module.exceptions import InvalidArgumentException
 
 
-class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
+class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: disable=too-many-instance-attributes
     """
     Device entity
 
@@ -115,7 +115,9 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         VARCHAR(150), name="device_firmware_version", nullable=True, default=None
     )
 
-    col_owner: Optional[str] = Column(VARCHAR(50), name="owner", nullable=True, default=None)  # type: ignore[assignment]
+    col_owner: Optional[str] = Column(  # type: ignore[assignment]
+        VARCHAR(50), name="owner", nullable=True, default=None
+    )
 
     col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 

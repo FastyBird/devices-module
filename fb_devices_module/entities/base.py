@@ -29,7 +29,7 @@ from sqlalchemy.ext.declarative import declarative_base
 OrmBase = declarative_base()
 
 
-class Base(OrmBase):  # type: ignore[misc,valid-type]
+class Base(OrmBase):  # type: ignore[misc,valid-type]  # pylint: disable=too-few-public-methods
     """
     Base entity
 
@@ -48,7 +48,7 @@ class Base(OrmBase):  # type: ignore[misc,valid-type]
         return {}
 
 
-class EntityCreatedMixin:
+class EntityCreatedMixin:  # pylint: disable=too-few-public-methods
     """
     Timestamp creating entity
 
@@ -77,7 +77,7 @@ class EntityCreatedMixin:
         self._created_at = created_at
 
 
-class EntityUpdatedMixin:
+class EntityUpdatedMixin:  # pylint: disable=too-few-public-methods
     """
     Timestamp updating entity
 

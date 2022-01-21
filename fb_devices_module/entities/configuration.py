@@ -31,7 +31,7 @@ from fb_metadata.types import DataType
 from sqlalchemy import BINARY, JSON, TEXT, VARCHAR, Column
 
 
-class ConfigurationMixin:
+class ConfigurationMixin:  # pylint: disable=too-many-instance-attributes
     """
     Device configuration entity
 
@@ -44,15 +44,21 @@ class ConfigurationMixin:
     col_configuration_id: bytes = Column(  # type: ignore[assignment]
         BINARY(16), primary_key=True, name="configuration_id", default=uuid.uuid4
     )
-    col_identifier: str = Column(VARCHAR(50), name="configuration_identifier", nullable=False)  # type: ignore[assignment]
-    col_key: str = Column(VARCHAR(50), name="configuration_key", unique=True, nullable=False)  # type: ignore[assignment]
+    col_identifier: str = Column(  # type: ignore[assignment]
+        VARCHAR(50), name="configuration_identifier", nullable=False
+    )
+    col_key: str = Column(  # type: ignore[assignment]
+        VARCHAR(50), name="configuration_key", unique=True, nullable=False
+    )
     col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="configuration_name", nullable=True, default=None
     )
     col_comment: Optional[str] = Column(  # type: ignore[assignment]
         TEXT, name="configuration_comment", nullable=True, default=None
     )
-    col_data_type: str = Column(VARCHAR(100), name="configuration_data_type", nullable=False)  # type: ignore[assignment]
+    col_data_type: str = Column(  # type: ignore[assignment]
+        VARCHAR(100), name="configuration_data_type", nullable=False
+    )
     col_default: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(50), name="configuration_default", nullable=True, default=None
     )
@@ -274,7 +280,10 @@ class ConfigurationMixin:
     @property
     def step(self) -> Optional[float]:
         """Get step value"""
-        if self.col_params is not None and self.col_params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None:
+        if (
+            self.col_params is not None
+            and self.col_params.get(ConfigurationNumberFieldAttribute.STEP.value) is not None
+        ):
             return float(str(self.col_params.get(ConfigurationNumberFieldAttribute.STEP.value)))
 
         return None
@@ -296,7 +305,9 @@ class ConfigurationMixin:
     def values(self) -> List[Dict[str, str]]:
         """Get values for options"""
         values = (
-            self.col_params.get(ConfigurationSelectFieldAttribute.VALUES.value, []) if self.col_params is not None else []
+            self.col_params.get(ConfigurationSelectFieldAttribute.VALUES.value, [])
+            if self.col_params is not None
+            else []
         )
 
         if isinstance(values, List):

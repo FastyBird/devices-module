@@ -27,7 +27,7 @@ from typing import Optional
 from fb_devices_module.state.property import IChannelPropertyState, IDevicePropertyState
 
 
-class IDevicePropertyStateRepository(ABC):
+class IDevicePropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods
     """
     State repository for device property
 
@@ -42,7 +42,7 @@ class IDevicePropertyStateRepository(ABC):
         """Find device property state record by provided database identifier"""
 
 
-class IChannelPropertyStateRepository(ABC):
+class IChannelPropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods
     """
     State repository for channel property
 

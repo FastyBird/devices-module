@@ -75,8 +75,7 @@ class DevicesRepository:
         return (
             self.__session.query(DeviceEntity)
             .filter(
-                DeviceEntity.connector_id == connector_id.bytes
-                and DeviceEntity.col_identifier == device_identifier
+                DeviceEntity.connector_id == connector_id.bytes and DeviceEntity.col_identifier == device_identifier
             )
             .first()
         )
@@ -101,11 +100,7 @@ class DevicesRepository:
 
     def get_all_by_connector(self, connector_id: uuid.UUID) -> List[DeviceEntity]:
         """Find all devices for connector"""
-        return (
-            self.__session.query(DeviceEntity)
-            .filter(DeviceEntity.connector_id == connector_id.bytes)
-            .all()
-        )
+        return self.__session.query(DeviceEntity).filter(DeviceEntity.connector_id == connector_id.bytes).all()
 
 
 class DevicesPropertiesRepository:

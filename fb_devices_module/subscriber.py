@@ -102,7 +102,11 @@ class EntityUpdatedSubscriber:  # pylint: disable=too-few-public-methods
             target.updated_at = datetime.datetime.now()
 
 
-@inject
+@inject(bind={
+    "publisher": Publisher,
+    "device_property_state_repository": IDevicePropertyStateRepository,
+    "channel_property_state_repository": IChannelPropertyStateRepository
+})
 class EntitiesSubscriber:
     """
     Data exchanges utils
@@ -165,9 +169,9 @@ class EntitiesSubscriber:
         self,
         session: OrmSession,
         key_hash_helpers: KeyHashHelpers,
-        publisher: Publisher = None,  # type: ignore[assignment]
-        device_property_state_repository: IDevicePropertyStateRepository = None,  # type: ignore[assignment]
-        channel_property_state_repository: IChannelPropertyStateRepository = None,  # type: ignore[assignment]
+        publisher: Optional[Publisher] = None,
+        device_property_state_repository: Optional[IDevicePropertyStateRepository] = None,
+        channel_property_state_repository: Optional[IChannelPropertyStateRepository] = None,
     ) -> None:
         self.__key_hash_helpers = key_hash_helpers
 

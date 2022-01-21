@@ -15,7 +15,5 @@
 #     limitations under the License.
 
 """
-Devices module
+Devices module connectors module
 """
-
-__version__ = "0.17.0"

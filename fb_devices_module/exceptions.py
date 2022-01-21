@@ -39,3 +39,25 @@ class InvalidArgumentException(Exception):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
+
+class TerminateConnectorException(Exception):
+    """
+    Exception thrown when service termination is required
+
+    @package        FastyBird:DevicesModule!
+    @module         exceptions
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+
+class RestartConnectorException(Exception):
+    """
+    Exception thrown when service restart is required
+
+    @package        FastyBird:DevicesModule!
+    @module         exceptions
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """

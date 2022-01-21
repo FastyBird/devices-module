@@ -147,9 +147,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     )
 
     channels: List["entities.channel.ChannelEntity"] = relationship(  # type: ignore[assignment,name-defined]
-        "entities.channel.ChannelEntity",
-        back_populates="device",
-        cascade="all, delete-orphan"
+        "entities.channel.ChannelEntity", back_populates="device", cascade="all, delete-orphan"
     )
 
     connector: "entities.connector.ConnectorEntity" = relationship(  # type: ignore[name-defined]

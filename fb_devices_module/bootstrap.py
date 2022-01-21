@@ -24,10 +24,14 @@ Devices module DI container
 import logging
 
 # Library dependencies
+from fb_exchange.consumer import Consumer
 from kink import di
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
+from fb_devices_module.connectors.connector import Connector
+from fb_devices_module.connectors.consumer import ConnecotrConsumer
+from fb_devices_module.connectors.queue import ConnectorQueue
 from fb_devices_module.helpers import KeyHashHelpers
 from fb_devices_module.managers.channel import (
     ChannelConfigurationManager,
@@ -76,6 +80,8 @@ def register_services(
     di[KeyHashHelpers] = KeyHashHelpers()
     di["fb-devices-module_helpers-key-hash"] = di[KeyHashHelpers]
 
+    # Entities repositories
+
     di[ConnectorsRepository] = ConnectorsRepository(session=di[OrmSession])
     di["fb-devices-module_connector-repository"] = di[ConnectorsRepository]
     di[ConnectorsControlsRepository] = ConnectorsControlsRepository(session=di[OrmSession])
@@ -96,6 +102,8 @@ def register_services(
     di["fb-devices-module_channel-control-repository"] = di[ChannelsControlsRepository]
     di[ChannelsConfigurationRepository] = ChannelsConfigurationRepository(session=di[OrmSession])
     di["fb-devices-module_channel-configuration-repository"] = di[ChannelsConfigurationRepository]
+
+    # Entities managers
 
     di[ConnectorsManager] = ConnectorsManager(session=di[OrmSession])
     di["fb-devices-module_connectors-manager"] = di[ConnectorsManager]
@@ -118,7 +126,24 @@ def register_services(
     di[ChannelControlsManager] = ChannelControlsManager(session=di[OrmSession])
     di["fb-devices-module_channels-controls-manager"] = di[ChannelControlsManager]
 
+    # Entities subscribers
+
     di[EntitiesSubscriber] = EntitiesSubscriber(session=di[OrmSession], key_hash_helpers=di[KeyHashHelpers])
     di["fb-devices-module_entities-subscriber"] = di[EntitiesSubscriber]
     di[EntityCreatedSubscriber] = EntityCreatedSubscriber()
     di["fb-devices-module_entity-created-subscriber"] = di[EntityCreatedSubscriber]
+
+    # Module connector
+
+    di[ConnectorQueue] = ConnectorQueue(logger=di[logging.Logger])
+    di["fb-devices-module_connector-queue"] = di[ConnectorQueue]
+    di[ConnecotrConsumer] = ConnecotrConsumer(queue=di[ConnectorQueue], logger=logger)
+    di["fb-devices-module_connector-consumer"] = di[ConnecotrConsumer]
+
+    di[Connector] = Connector(queue=di[ConnectorQueue], logger=logger)
+    di["fb-devices-module_connector-handler"] = di[Connector]
+
+    # Check for presence of exchange consumer proxy
+    if Consumer in di:
+        # Register connector exchange consumer into consumer proxy
+        di[Consumer].register_consumer(di[ConnecotrConsumer])

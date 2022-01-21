@@ -102,11 +102,13 @@ class EntityUpdatedSubscriber:  # pylint: disable=too-few-public-methods
             target.updated_at = datetime.datetime.now()
 
 
-@inject(bind={
-    "publisher": Publisher,
-    "device_property_state_repository": IDevicePropertyStateRepository,
-    "channel_property_state_repository": IChannelPropertyStateRepository
-})
+@inject(
+    bind={
+        "publisher": Publisher,
+        "device_property_state_repository": IDevicePropertyStateRepository,
+        "channel_property_state_repository": IChannelPropertyStateRepository,
+    }
+)
 class EntitiesSubscriber:
     """
     Data exchanges utils

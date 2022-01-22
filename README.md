@@ -23,7 +23,7 @@
 ## What is FastyBird IoT devices module?
 
 Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin
-and also [Python](https://python.org) module for managing connected devices and their basic logic.
+and also [Python](https://python.org) module for managing connectors and connected devices and their basic logic.
 
 [FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is
 an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed
@@ -32,13 +32,15 @@ and also in [Python](https://python.org).
 
 ### Features:
 
+- Devices connectors management
 - Devices and channels management
-- Support for data exchange
+- Support for data [exchange bus](https://github.com/FastyBird/exchange)
 - [{JSON:API}](https://jsonapi.org/) schemas for full api access
-- User access check & validation
+- User access [check & validation](https://github.com/FastyBird/simple-auth)
 - Multilingual
 - JS integration via [Vuex ORM](https://vuex-orm.org) plugin
-- Python integration via [PonyORM](https://ponyorm.org)
+- Python integration via [SQLAlchemy](https://www.sqlalchemy.org)
+- Integrated connector worker for Python based connectors & PHP based connectors
 
 ## Requirements
 
@@ -75,7 +77,7 @@ or if you prefer npm:
 npm install @fastybird/devices-module
 ```
 
-#### Application additional backend in Python
+#### Application workers in Python
 
 The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
 
@@ -85,7 +87,7 @@ pip install fastybird-devices-module
 
 ## Documentation
 
-Learn how to use devices module and manage your devices
+Learn how to use devices module and manage your connectors & devices
 in [documentation](https://github.com/FastyBird/devices-module/blob/master/.docs/en/index.md).
 
 ## Feedback

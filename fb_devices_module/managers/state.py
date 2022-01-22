@@ -20,7 +20,11 @@ Devices module device states managers module
 
 # Python base dependencies
 from abc import abstractmethod
+from datetime import datetime
 from typing import Dict, Union
+
+# Library dependencies
+from fb_metadata.types import ButtonPayload, SwitchPayload
 
 # Library libs
 from fb_devices_module.entities.channel import ChannelPropertyEntity
@@ -42,7 +46,7 @@ class IDevicePropertiesStatesManager:
     def create(
         self,
         device_property: DevicePropertyEntity,
-        data: Dict[str, Union[str, int, float, bool, None]],
+        data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
     ) -> IDevicePropertyState:
         """Create new device property state record"""
 
@@ -53,7 +57,7 @@ class IDevicePropertiesStatesManager:
         self,
         device_property: DevicePropertyEntity,
         state: IDevicePropertyState,
-        data: Dict[str, Union[str, int, float, bool, None]],
+        data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
     ) -> IDevicePropertyState:
         """Update existing device property state record"""
 
@@ -82,7 +86,7 @@ class IChannelPropertiesStatesManager:
     def create(
         self,
         channel_property: ChannelPropertyEntity,
-        data: Dict[str, Union[str, int, float, bool, None]],
+        data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
     ) -> IChannelPropertyState:
         """Create new channel property state record"""
 
@@ -93,7 +97,7 @@ class IChannelPropertiesStatesManager:
         self,
         channel_property: ChannelPropertyEntity,
         state: IChannelPropertyState,
-        data: Dict[str, Union[str, int, float, bool, None]],
+        data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
     ) -> IChannelPropertyState:
         """Update existing channel property state record"""
 

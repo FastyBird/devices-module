@@ -51,10 +51,10 @@ class Logger:
 
     def debug(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log debugging message"""
-        if "context" in kwargs:
-            kwargs["context"] = {**kwargs["context"], **self.__get_connector_context()}
+        if "extra" in kwargs:
+            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
         else:
-            kwargs["context"] = self.__get_connector_context()
+            kwargs["extra"] = self.__get_module_extra()
 
         self.__logger.debug(msg, *args, **kwargs)
 
@@ -62,10 +62,10 @@ class Logger:
 
     def info(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log information message"""
-        if "context" in kwargs:
-            kwargs["context"] = {**kwargs["context"], **self.__get_connector_context()}
+        if "extra" in kwargs:
+            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
         else:
-            kwargs["context"] = self.__get_connector_context()
+            kwargs["extra"] = self.__get_module_extra()
 
         self.__logger.info(msg, *args, **kwargs)
 
@@ -73,10 +73,10 @@ class Logger:
 
     def warning(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log warning message"""
-        if "context" in kwargs:
-            kwargs["context"] = {**kwargs["context"], **self.__get_connector_context()}
+        if "extra" in kwargs:
+            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
         else:
-            kwargs["context"] = self.__get_connector_context()
+            kwargs["extra"] = self.__get_module_extra()
 
         self.__logger.warning(msg, *args, **kwargs)
 
@@ -84,10 +84,10 @@ class Logger:
 
     def error(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log error message"""
-        if "context" in kwargs:
-            kwargs["context"] = {**kwargs["context"], **self.__get_connector_context()}
+        if "extra" in kwargs:
+            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
         else:
-            kwargs["context"] = self.__get_connector_context()
+            kwargs["extra"] = self.__get_module_extra()
 
         self.__logger.error(msg, *args, **kwargs)
 
@@ -100,7 +100,7 @@ class Logger:
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __get_connector_context() -> Dict:
+    def __get_module_extra() -> Dict:
         return {
             "module": {
                 "type": ModulePrefix.DEVICES_MODULE.value,

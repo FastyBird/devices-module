@@ -31,6 +31,7 @@ from fb_devices_module.entities.device import (
     DeviceEntity,
     DevicePropertyEntity,
     DeviceStaticPropertyEntity,
+    VirtualDeviceEntity,
 )
 from fb_devices_module.managers.base import BaseManager
 
@@ -62,7 +63,7 @@ class DevicesManager(BaseManager[DeviceEntity]):
 
     # -----------------------------------------------------------------------------
 
-    def create(self, data: Dict, device_type: Type[DeviceEntity]) -> DeviceEntity:
+    def create(self, data: Dict, device_type: Type[DeviceEntity] = VirtualDeviceEntity) -> DeviceEntity:
         """Create new device entity"""
         if "connector_id" in data and "connector" not in data:
             connector_id = data.get("connector_id")

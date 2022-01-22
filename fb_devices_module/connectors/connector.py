@@ -27,18 +27,18 @@ from importlib import util as import_util
 from types import ModuleType
 from typing import Dict, Optional, Union
 
+# Library libs
 from fb_metadata.routing import RoutingKey
+from inflection import underscore
 from kink import di, inject
 
-# Library libs
+# Library dependencies
 from fb_devices_module.connectors.queue import (
     ConnectorQueue,
     ConsumeControlActionMessageQueueItem,
     ConsumeEntityMessageQueueItem,
     ConsumePropertyActionMessageQueueItem,
 )
-
-# Library dependencies
 from fb_devices_module.entities.channel import (
     ChannelControlEntity,
     ChannelEntity,
@@ -319,7 +319,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     def load(self, connector_name: str, connector_id: uuid.UUID) -> None:
         """Try to load connector"""
         try:
-            module = self.__import_connector_module(module_name=connector_name)
+            module = self.__import_connector_module(module_name=f"fb_{underscore(connector_name)}_connector")
 
             if module is None:
                 raise AttributeError(f"Connector {connector_name} couldn't be loaded")

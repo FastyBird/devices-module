@@ -62,6 +62,7 @@ setup(
         "fastnumbers",
         "fastybird-exchange",
         "fastybird-metadata",
+        "inflection",
         "kink",
         "mysqlclient",
         "setuptools",

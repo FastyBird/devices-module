@@ -337,7 +337,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             self.__connector = getattr(module, "create_connector")(connector=connector, logger=self.__logger)
 
-            if not isinstance(self.__connector, ConnectorEntity):
+            if not isinstance(self.__connector, IConnector):
                 raise AttributeError(f"Instance of connector {connector_name} couldn't be created")
 
             self.__connector.initialize()

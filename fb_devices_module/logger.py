@@ -51,45 +51,49 @@ class Logger:
 
     def debug(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log debugging message"""
-        if "extra" in kwargs:
-            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
-        else:
-            kwargs["extra"] = self.__get_module_extra()
+        extra = self.__get_module_extra()
 
-        self.__logger.debug(msg, *args, **kwargs)
+        if "extra" in kwargs:
+            extra = {**extra, **kwargs.get("extra", {})}
+            del kwargs["extra"]
+
+        self.__logger.debug(msg, extra=extra, *args, **kwargs)
 
     # -----------------------------------------------------------------------------
 
     def info(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log information message"""
-        if "extra" in kwargs:
-            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
-        else:
-            kwargs["extra"] = self.__get_module_extra()
+        extra = self.__get_module_extra()
 
-        self.__logger.info(msg, *args, **kwargs)
+        if "extra" in kwargs:
+            extra = {**extra, **kwargs.get("extra", {})}
+            del kwargs["extra"]
+
+        self.__logger.info(msg, extra=extra, *args, **kwargs)
 
     # -----------------------------------------------------------------------------
 
     def warning(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log warning message"""
-        if "extra" in kwargs:
-            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
-        else:
-            kwargs["extra"] = self.__get_module_extra()
+        extra = self.__get_module_extra()
 
-        self.__logger.warning(msg, *args, **kwargs)
+        if "extra" in kwargs:
+            extra = {**extra, **kwargs.get("extra", {})}
+            del kwargs["extra"]
+
+        self.__logger.warning(msg, extra=extra, *args, **kwargs)
 
     # -----------------------------------------------------------------------------
 
     def error(self, msg: str, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Log error message"""
-        if "extra" in kwargs:
-            kwargs["extra"] = {**kwargs["extra"], **self.__get_module_extra()}
-        else:
-            kwargs["extra"] = self.__get_module_extra()
+        extra = self.__get_module_extra()
 
-        self.__logger.error(msg, *args, **kwargs)
+        if "extra" in kwargs:
+            extra = {**extra, **kwargs.get("extra", {})}
+            del kwargs["extra"]
+
+        self.__logger.error(msg, extra=extra, *args, **kwargs)
 
     # -----------------------------------------------------------------------------
 
@@ -102,7 +106,7 @@ class Logger:
     @staticmethod
     def __get_module_extra() -> Dict:
         return {
-            "module": {
+            "module_info": {
                 "type": ModulePrefix.DEVICES_MODULE.value,
             },
         }

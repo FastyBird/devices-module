@@ -25,7 +25,7 @@ from datetime import datetime
 from typing import Dict, Union
 
 # Library dependencies
-from fb_metadata.types import ButtonPayload, SwitchPayload
+from fastybird_metadata.types import ButtonPayload, SwitchPayload
 
 
 class IPropertyState(ABC):

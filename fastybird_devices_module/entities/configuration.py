@@ -23,11 +23,11 @@ import uuid
 from typing import Dict, List, Optional, Union
 
 # Library dependencies
-from fb_metadata.devices_module import (
+from fastybird_metadata.devices_module import (
     ConfigurationNumberFieldAttribute,
     ConfigurationSelectFieldAttribute,
 )
-from fb_metadata.types import DataType
+from fastybird_metadata.types import DataType
 from sqlalchemy import BINARY, JSON, TEXT, VARCHAR, Column
 
 

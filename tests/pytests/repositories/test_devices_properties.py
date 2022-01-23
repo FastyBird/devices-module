@@ -18,13 +18,13 @@
 import uuid
 
 # Library dependencies
-from fb_metadata.devices_module import PropertyType
-from fb_metadata.routing import RoutingKey
+from fastybird_metadata.devices_module import PropertyType
+from fastybird_metadata.routing import RoutingKey
 from kink import inject
 
 # Library libs
-from fb_devices_module.entities.device import DeviceStaticPropertyEntity
-from fb_devices_module.repositories.device import DevicesPropertiesRepository
+from fastybird_devices_module.entities.device import DeviceStaticPropertyEntity
+from fastybird_devices_module.repositories.device import DevicesPropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase

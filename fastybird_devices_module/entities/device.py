@@ -26,13 +26,13 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from fb_metadata.devices_module import (
+from fastybird_metadata.devices_module import (
     DeviceModel,
     FirmwareManufacturer,
     HardwareManufacturer,
     PropertyType,
 )
-from fb_metadata.types import ButtonPayload, SwitchPayload
+from fastybird_metadata.types import ButtonPayload, SwitchPayload
 from sqlalchemy import (
     BINARY,
     BOOLEAN,
@@ -47,11 +47,11 @@ from sqlalchemy import (
 from sqlalchemy.orm import backref, relationship
 
 # Library libs
-import fb_devices_module.entities  # pylint: disable=unused-import
-from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
-from fb_devices_module.entities.configuration import ConfigurationMixin
-from fb_devices_module.entities.property import PropertyMixin
-from fb_devices_module.exceptions import InvalidArgumentException
+import fastybird_devices_module.entities  # pylint: disable=unused-import
+from fastybird_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fastybird_devices_module.entities.configuration import ConfigurationMixin
+from fastybird_devices_module.entities.property import PropertyMixin
+from fastybird_devices_module.exceptions import InvalidArgumentException
 
 
 class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: disable=too-many-instance-attributes

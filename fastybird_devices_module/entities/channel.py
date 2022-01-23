@@ -25,8 +25,8 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from fb_metadata.devices_module import PropertyType
-from fb_metadata.types import ButtonPayload, SwitchPayload
+from fastybird_metadata.devices_module import PropertyType
+from fastybird_metadata.types import ButtonPayload, SwitchPayload
 from sqlalchemy import (
     BINARY,
     JSON,
@@ -40,10 +40,10 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 # Library libs
-import fb_devices_module.entities  # pylint: disable=unused-import
-from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
-from fb_devices_module.entities.configuration import ConfigurationMixin
-from fb_devices_module.entities.property import PropertyMixin
+import fastybird_devices_module.entities  # pylint: disable=unused-import
+from fastybird_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fastybird_devices_module.entities.configuration import ConfigurationMixin
+from fastybird_devices_module.entities.property import PropertyMixin
 
 
 class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

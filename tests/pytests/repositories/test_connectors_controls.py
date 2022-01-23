@@ -18,12 +18,12 @@
 import uuid
 
 # Library dependencies
-from fb_metadata.routing import RoutingKey
+from fastybird_metadata.routing import RoutingKey
 from kink import inject
 
 # Library libs
-from fb_devices_module.entities.connector import ConnectorControlEntity
-from fb_devices_module.repositories.connector import ConnectorsControlsRepository
+from fastybird_devices_module.entities.connector import ConnectorControlEntity
+from fastybird_devices_module.repositories.connector import ConnectorsControlsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase

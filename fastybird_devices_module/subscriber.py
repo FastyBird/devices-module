@@ -23,32 +23,32 @@ import datetime
 from typing import Dict, Optional, Type
 
 # Library dependencies
-from fb_exchange.publisher import Publisher
-from fb_metadata.routing import RoutingKey
-from fb_metadata.types import ModuleOrigin
+from fastybird_exchange.publisher import Publisher
+from fastybird_metadata.routing import RoutingKey
+from fastybird_metadata.types import ModuleOrigin
 from kink import inject
 from sqlalchemy import event
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
-from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
-from fb_devices_module.entities.channel import (
+from fastybird_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fastybird_devices_module.entities.channel import (
     ChannelConfigurationEntity,
     ChannelControlEntity,
     ChannelDynamicPropertyEntity,
     ChannelEntity,
     ChannelPropertyEntity,
 )
-from fb_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
-from fb_devices_module.entities.device import (
+from fastybird_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
+from fastybird_devices_module.entities.device import (
     DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
     DevicePropertyEntity,
 )
-from fb_devices_module.helpers import KeyHashHelpers
-from fb_devices_module.repositories.state import (
+from fastybird_devices_module.helpers import KeyHashHelpers
+from fastybird_devices_module.repositories.state import (
     IChannelPropertyStateRepository,
     IDevicePropertyStateRepository,
 )

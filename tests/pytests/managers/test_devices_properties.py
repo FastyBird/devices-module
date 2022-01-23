@@ -19,16 +19,16 @@ import uuid
 from unittest.mock import patch
 
 # Library dependencies
-from fb_exchange.publisher import Publisher
+from fastybird_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from fb_devices_module.entities.device import (
+from fastybird_devices_module.entities.device import (
     DeviceDynamicPropertyEntity,
     DevicePropertyEntity,
 )
-from fb_devices_module.managers.device import DevicePropertiesManager
-from fb_devices_module.repositories.device import (
+from fastybird_devices_module.managers.device import DevicePropertiesManager
+from fastybird_devices_module.repositories.device import (
     DevicesPropertiesRepository,
     DevicesRepository,
 )

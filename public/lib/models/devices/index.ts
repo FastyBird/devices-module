@@ -534,7 +534,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           id: body.id,
         })
 
-        const entityData: { [index: string]: string | DeviceConnectionState | HardwareManufacturer | DeviceModel | FirmwareManufacturer | boolean | string[] | null | undefined } = {}
+        const entityData: { [index: string]: string | ConnectionState | HardwareManufacturer | DeviceModel | FirmwareManufacturer | boolean | string[] | null | undefined } = {}
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')
 

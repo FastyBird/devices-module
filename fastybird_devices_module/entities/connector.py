@@ -28,8 +28,8 @@ from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, ForeignKey
 from sqlalchemy.orm import relationship
 
 # Library libs
-import fb_devices_module.entities  # pylint: disable=unused-import
-from fb_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+import fastybird_devices_module.entities  # pylint: disable=unused-import
+from fastybird_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
 
 
 class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

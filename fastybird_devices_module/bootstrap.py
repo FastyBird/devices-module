@@ -24,49 +24,49 @@ Devices module DI container
 import logging
 
 # Library dependencies
-from fb_exchange.consumer import Consumer
+from fastybird_exchange.consumer import Consumer
 from kink import di
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
-from fb_devices_module.connectors.connector import Connector
-from fb_devices_module.connectors.consumer import ConnecotrConsumer
-from fb_devices_module.connectors.queue import ConnectorQueue
-from fb_devices_module.helpers import KeyHashHelpers
-from fb_devices_module.logger import Logger
-from fb_devices_module.managers.channel import (
+from fastybird_devices_module.connectors.connector import Connector
+from fastybird_devices_module.connectors.consumer import ConnecotrConsumer
+from fastybird_devices_module.connectors.queue import ConnectorQueue
+from fastybird_devices_module.helpers import KeyHashHelpers
+from fastybird_devices_module.logger import Logger
+from fastybird_devices_module.managers.channel import (
     ChannelConfigurationManager,
     ChannelControlsManager,
     ChannelPropertiesManager,
     ChannelsManager,
 )
-from fb_devices_module.managers.connector import (
+from fastybird_devices_module.managers.connector import (
     ConnectorControlsManager,
     ConnectorsManager,
 )
-from fb_devices_module.managers.device import (
+from fastybird_devices_module.managers.device import (
     DeviceConfigurationManager,
     DeviceControlsManager,
     DevicePropertiesManager,
     DevicesManager,
 )
-from fb_devices_module.repositories.channel import (
+from fastybird_devices_module.repositories.channel import (
     ChannelsConfigurationRepository,
     ChannelsControlsRepository,
     ChannelsPropertiesRepository,
     ChannelsRepository,
 )
-from fb_devices_module.repositories.connector import (
+from fastybird_devices_module.repositories.connector import (
     ConnectorsControlsRepository,
     ConnectorsRepository,
 )
-from fb_devices_module.repositories.device import (
+from fastybird_devices_module.repositories.device import (
     DevicesConfigurationRepository,
     DevicesControlsRepository,
     DevicesPropertiesRepository,
     DevicesRepository,
 )
-from fb_devices_module.subscriber import EntitiesSubscriber, EntityCreatedSubscriber
+from fastybird_devices_module.subscriber import EntitiesSubscriber, EntityCreatedSubscriber
 
 
 def register_services(  # pylint: disable=too-many-statements

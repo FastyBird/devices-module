@@ -7,7 +7,7 @@ import {
   DeviceModel,
   FirmwareManufacturer,
   HardwareManufacturer,
-  DeviceConnectionState,
+  ConnectionState,
   DevicePropertyName,
 } from '@fastybird/metadata'
 
@@ -71,9 +71,9 @@ export default class Device extends Model implements DeviceInterface {
       .first()
 
     return property !== null && (
-      property.value === DeviceConnectionState.READY
-      || property.value === DeviceConnectionState.RUNNING
-      || property.value === DeviceConnectionState.CONNECTED
+      property.value === ConnectionState.READY
+      || property.value === ConnectionState.RUNNING
+      || property.value === ConnectionState.CONNECTED
     )
   }
 

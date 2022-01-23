@@ -19,13 +19,13 @@ import uuid
 from unittest.mock import patch
 
 # Library dependencies
-from fb_exchange.publisher import Publisher
+from fastybird_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from fb_devices_module.entities.connector import ConnectorEntity, VirtualConnectorEntity
-from fb_devices_module.managers.connector import ConnectorsManager
-from fb_devices_module.repositories.connector import ConnectorsRepository
+from fastybird_devices_module.entities.connector import ConnectorEntity, VirtualConnectorEntity
+from fastybird_devices_module.managers.connector import ConnectorsManager
+from fastybird_devices_module.repositories.connector import ConnectorsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase

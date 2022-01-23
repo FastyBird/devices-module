@@ -122,7 +122,7 @@ from kink import di
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from fb_devices_module.bootstrap import register_services
+from fastybird_devices_module.bootstrap import register_services
 
 db_engine = create_engine(f"mysql+pymysql://username:password@127.0.0.1/database_name")
 db_session = Session(db_engine)

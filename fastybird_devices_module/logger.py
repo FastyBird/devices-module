@@ -21,7 +21,7 @@ import logging
 from typing import Dict
 
 # Library libs
-from fb_metadata.types import ModulePrefix
+from fastybird_metadata.types import ModulePrefix
 
 
 class Logger:

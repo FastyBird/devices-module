@@ -24,12 +24,12 @@ from datetime import datetime
 from typing import Dict, Union
 
 # Library dependencies
-from fb_metadata.types import ButtonPayload, SwitchPayload
+from fastybird_metadata.types import ButtonPayload, SwitchPayload
 
 # Library libs
-from fb_devices_module.entities.channel import ChannelPropertyEntity
-from fb_devices_module.entities.device import DevicePropertyEntity
-from fb_devices_module.state.property import IChannelPropertyState, IDevicePropertyState
+from fastybird_devices_module.entities.channel import ChannelPropertyEntity
+from fastybird_devices_module.entities.device import DevicePropertyEntity
+from fastybird_devices_module.state.property import IChannelPropertyState, IDevicePropertyState
 
 
 class IDevicePropertiesStatesManager:

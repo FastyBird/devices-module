@@ -28,42 +28,42 @@ from types import ModuleType
 from typing import Dict, Optional, Union
 
 # Library libs
-from fb_metadata.routing import RoutingKey
+from fastybird_metadata.routing import RoutingKey
 from inflection import underscore
 from kink import di, inject
 
 # Library dependencies
-from fb_devices_module.connectors.queue import (
+from fastybird_devices_module.connectors.queue import (
     ConnectorQueue,
     ConsumeControlActionMessageQueueItem,
     ConsumeEntityMessageQueueItem,
     ConsumePropertyActionMessageQueueItem,
 )
-from fb_devices_module.entities.channel import (
+from fastybird_devices_module.entities.channel import (
     ChannelControlEntity,
     ChannelEntity,
     ChannelPropertyEntity,
 )
-from fb_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
-from fb_devices_module.entities.device import (
+from fastybird_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
+from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
     DeviceEntity,
     DevicePropertyEntity,
 )
-from fb_devices_module.exceptions import (
+from fastybird_devices_module.exceptions import (
     RestartConnectorException,
     TerminateConnectorException,
 )
-from fb_devices_module.repositories.channel import (
+from fastybird_devices_module.repositories.channel import (
     ChannelsControlsRepository,
     ChannelsPropertiesRepository,
     ChannelsRepository,
 )
-from fb_devices_module.repositories.connector import (
+from fastybird_devices_module.repositories.connector import (
     ConnectorsControlsRepository,
     ConnectorsRepository,
 )
-from fb_devices_module.repositories.device import (
+from fastybird_devices_module.repositories.device import (
     DevicesControlsRepository,
     DevicesPropertiesRepository,
     DevicesRepository,
@@ -319,7 +319,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     def load(self, connector_name: str, connector_id: uuid.UUID) -> None:
         """Try to load connector"""
         try:
-            module = self.__import_connector_module(module_name=f"fb_{underscore(connector_name)}_connector")
+            module = self.__import_connector_module(module_name=f"fastybird_{underscore(connector_name)}_connector")
 
             if module is None:
                 raise AttributeError(f"Connector {connector_name} couldn't be loaded")

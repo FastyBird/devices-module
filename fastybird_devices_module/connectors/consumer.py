@@ -23,12 +23,12 @@ import logging
 from typing import Dict, List, Optional, Union
 
 # Library dependencies
-from fb_exchange.consumer import IConsumer
-from fb_metadata.routing import RoutingKey
-from fb_metadata.types import ConnectorOrigin, ModuleOrigin, PluginOrigin
+from fastybird_exchange.consumer import IConsumer
+from fastybird_metadata.routing import RoutingKey
+from fastybird_metadata.types import ConnectorOrigin, ModuleOrigin, PluginOrigin
 
 # Library libs
-from fb_devices_module.connectors.queue import (
+from fastybird_devices_module.connectors.queue import (
     ConnectorQueue,
     ConsumeControlActionMessageQueueItem,
     ConsumeEntityMessageQueueItem,

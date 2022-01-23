@@ -369,9 +369,9 @@ interface IDevice extends Entities\IEntity,
 	public function findConfigurationRow(?string $configuration): ?Entities\Devices\Configuration\IRow;
 
 	/**
-	 * @return Entities\Connectors\IConnector|null
+	 * @return Entities\Connectors\IConnector
 	 */
-	public function getConnector(): ?Entities\Connectors\IConnector;
+	public function getConnector(): Entities\Connectors\IConnector;
 
 	/**
 	 * @param Entities\Connectors\IConnector|null $connector

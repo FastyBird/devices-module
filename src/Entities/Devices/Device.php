@@ -209,13 +209,13 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected Common\Collections\Collection $configuration;
 
 	/**
-	 * @var Entities\Connectors\IConnector|null
+	 * @var Entities\Connectors\IConnector
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="devices")
-	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=true)
+	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
 	 */
-	protected ?Entities\Connectors\IConnector $connector = null;
+	protected Entities\Connectors\IConnector $connector = null;
 
 	/**
 	 * @param string $identifier
@@ -637,7 +637,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 				->getValue() : $this->getFirmwareManufacturer(),
 			'firmware_version'      => $this->getFirmwareVersion(),
 
-			'connector' => $this->getConnector() !== null ? $this->getConnector()->getPlainId() : null,
+			'connector' => $this->getConnector()->getPlainId(),
 
 			'owner' => $this->getOwnerId(),
 		];
@@ -852,7 +852,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConnector(): ?Entities\Connectors\IConnector
+	public function getConnector(): Entities\Connectors\IConnector
 	{
 		return $this->connector;
 	}

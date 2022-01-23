@@ -28,7 +28,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
-from fb_devices_module.entities.device import (
+from fastybird_devices_module.entities.device import (
     DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceEntity,

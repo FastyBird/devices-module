@@ -19,12 +19,12 @@ import unittest
 from unittest.mock import Mock, patch
 
 # Library libs
-from fb_devices_module.entities.base import Base
-from fb_devices_module.helpers import KeyHashHelpers
+from fastybird_devices_module.entities.base import Base
+from fastybird_devices_module.helpers import KeyHashHelpers
 
 
 class TestKeyHashUtils(unittest.TestCase):
-    @patch("fb_devices_module.helpers.time")
+    @patch("fastybird_devices_module.helpers.time")
     def test_default_generator(self, mock_time) -> None:
         mock_time.time_ns = Mock(return_value=1630831410968578000)
 

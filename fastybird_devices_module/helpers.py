@@ -24,7 +24,7 @@ import time
 from typing import Callable, Optional
 
 # Library libs
-from fb_devices_module.entities.base import Base
+from fastybird_devices_module.entities.base import Base
 
 
 class KeyHashHelpers:

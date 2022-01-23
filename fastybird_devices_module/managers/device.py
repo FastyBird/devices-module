@@ -23,8 +23,8 @@ import uuid
 from typing import Dict, List, Type, Union
 
 # Library libs
-from fb_devices_module.entities.connector import ConnectorEntity
-from fb_devices_module.entities.device import (
+from fastybird_devices_module.entities.connector import ConnectorEntity
+from fastybird_devices_module.entities.device import (
     DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
@@ -33,7 +33,7 @@ from fb_devices_module.entities.device import (
     DeviceStaticPropertyEntity,
     VirtualDeviceEntity,
 )
-from fb_devices_module.managers.base import BaseManager
+from fastybird_devices_module.managers.base import BaseManager
 
 
 class DevicesManager(BaseManager[DeviceEntity]):

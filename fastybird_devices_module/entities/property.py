@@ -26,13 +26,13 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
 from fastnumbers import fast_float, fast_int
-from fb_metadata.devices_module import PropertyType
-from fb_metadata.helpers import normalize_value
-from fb_metadata.types import ButtonPayload, DataType, SwitchPayload
+from fastybird_metadata.devices_module import PropertyType
+from fastybird_metadata.helpers import normalize_value
+from fastybird_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, Integer
 
 # Library libs
-from fb_devices_module.exceptions import InvalidArgumentException, InvalidStateException
+from fastybird_devices_module.exceptions import InvalidArgumentException, InvalidStateException
 
 
 class PropertyMixin:  # pylint: disable=too-many-instance-attributes

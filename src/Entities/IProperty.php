@@ -84,7 +84,7 @@ interface IProperty extends IEntity,
 	public function getDataType(): MetadataTypes\DataTypeType;
 
 	/**
-	 * @param MetadataTypes\DataTypeType|null $dataType
+	 * @param MetadataTypes\DataTypeType $dataType
 	 *
 	 * @return void
 	 */

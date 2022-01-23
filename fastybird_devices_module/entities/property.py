@@ -62,7 +62,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     col_queryable: bool = Column(  # type: ignore[assignment]
         BOOLEAN, name="property_queryable", nullable=False, default=False
     )
-    col_data_type: Optional[str] = Column(  # type: ignore[assignment]
+    col_data_type: str = Column(  # type: ignore[assignment]
         VARCHAR(100), name="property_data_type", nullable=False, default=DataType.UNKNOWN.value
     )
     col_unit: Optional[str] = Column(  # type: ignore[assignment]

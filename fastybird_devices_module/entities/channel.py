@@ -41,7 +41,11 @@ from sqlalchemy.orm import relationship
 
 # Library libs
 import fastybird_devices_module.entities  # pylint: disable=unused-import
-from fastybird_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fastybird_devices_module.entities.base import (
+    Base,
+    EntityCreatedMixin,
+    EntityUpdatedMixin,
+)
 from fastybird_devices_module.entities.configuration import ConfigurationMixin
 from fastybird_devices_module.entities.property import PropertyMixin
 

@@ -32,7 +32,10 @@ from fastybird_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, Integer
 
 # Library libs
-from fastybird_devices_module.exceptions import InvalidArgumentException, InvalidStateException
+from fastybird_devices_module.exceptions import (
+    InvalidArgumentException,
+    InvalidStateException,
+)
 
 
 class PropertyMixin:  # pylint: disable=too-many-instance-attributes

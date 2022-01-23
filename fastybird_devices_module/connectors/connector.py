@@ -44,7 +44,10 @@ from fastybird_devices_module.entities.channel import (
     ChannelEntity,
     ChannelPropertyEntity,
 )
-from fastybird_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
+from fastybird_devices_module.entities.connector import (
+    ConnectorControlEntity,
+    ConnectorEntity,
+)
 from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
     DeviceEntity,

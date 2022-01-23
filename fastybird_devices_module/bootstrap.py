@@ -66,7 +66,10 @@ from fastybird_devices_module.repositories.device import (
     DevicesPropertiesRepository,
     DevicesRepository,
 )
-from fastybird_devices_module.subscriber import EntitiesSubscriber, EntityCreatedSubscriber
+from fastybird_devices_module.subscriber import (
+    EntitiesSubscriber,
+    EntityCreatedSubscriber,
+)
 
 
 def register_services(  # pylint: disable=too-many-statements

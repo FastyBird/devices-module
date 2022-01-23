@@ -24,7 +24,10 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 # Library libs
-from fastybird_devices_module.state.property import IChannelPropertyState, IDevicePropertyState
+from fastybird_devices_module.state.property import (
+    IChannelPropertyState,
+    IDevicePropertyState,
+)
 
 
 class IDevicePropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods

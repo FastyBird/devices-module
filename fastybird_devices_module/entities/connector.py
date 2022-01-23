@@ -29,7 +29,11 @@ from sqlalchemy.orm import relationship
 
 # Library libs
 import fastybird_devices_module.entities  # pylint: disable=unused-import
-from fastybird_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fastybird_devices_module.entities.base import (
+    Base,
+    EntityCreatedMixin,
+    EntityUpdatedMixin,
+)
 
 
 class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

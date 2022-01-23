@@ -31,7 +31,11 @@ from sqlalchemy import event
 from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
-from fastybird_devices_module.entities.base import Base, EntityCreatedMixin, EntityUpdatedMixin
+from fastybird_devices_module.entities.base import (
+    Base,
+    EntityCreatedMixin,
+    EntityUpdatedMixin,
+)
 from fastybird_devices_module.entities.channel import (
     ChannelConfigurationEntity,
     ChannelControlEntity,
@@ -39,7 +43,10 @@ from fastybird_devices_module.entities.channel import (
     ChannelEntity,
     ChannelPropertyEntity,
 )
-from fastybird_devices_module.entities.connector import ConnectorControlEntity, ConnectorEntity
+from fastybird_devices_module.entities.connector import (
+    ConnectorControlEntity,
+    ConnectorEntity,
+)
 from fastybird_devices_module.entities.device import (
     DeviceConfigurationEntity,
     DeviceControlEntity,

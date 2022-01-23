@@ -6,7 +6,6 @@
       "name" : "button",
       "settable" : false,
       "queryable" : true,
-      "data_type" : null,
       "unit" : null,
       "format" : "",
       "invalid" : null

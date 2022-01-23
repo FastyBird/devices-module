@@ -18,7 +18,7 @@
       "name" : "button",
       "settable" : false,
       "queryable" : true,
-      "data_type" : null,
+      "data_type" : "unknown",
       "unit" : null,
       "format" : null,
       "invalid" : null,

@@ -219,6 +219,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 
 	/**
 	 * @param string $identifier
+	 * @param Entities\Connectors\IConnector $connector
 	 * @param string|null $name
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -226,6 +227,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 */
 	public function __construct(
 		string $identifier,
+		Entities\Connectors\IConnector $connector,
 		?string $name,
 		?Uuid\UuidInterface $id = null
 	) {
@@ -238,6 +240,8 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		$this->hardwareModel = MetadataTypes\DeviceModelType::MODEL_CUSTOM;
 
 		$this->firmwareManufacturer = MetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC;
+
+		$this->connector = $connector;
 
 		$this->children = new Common\Collections\ArrayCollection();
 		$this->channels = new Common\Collections\ArrayCollection();

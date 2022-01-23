@@ -11,6 +11,7 @@ use FastyBird\Metadata;
 use Mockery;
 use Nette\Utils;
 use Ninjify\Nunjuck\TestCase\BaseMockeryTestCase;
+use Ramsey\Uuid;
 use stdClass;
 use Tester\Assert;
 
@@ -70,7 +71,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'hardware_mac_address'  => null,
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
-					'connector'             => null,
+					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
 				]), $data);
 
 				return true;
@@ -87,7 +88,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$entity = new Entities\Devices\VirtualDevice('device-name', 'device-name');
+		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+
+		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
@@ -170,7 +173,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'hardware_mac_address'  => null,
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
-					'connector'             => null,
+					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
 				]), $data);
 
 				return true;
@@ -187,7 +190,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$entity = new Entities\Devices\VirtualDevice('device-name', 'device-name');
+		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+
+		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
@@ -225,14 +230,16 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'hardware_mac_address'  => null,
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
-					'connector'             => null,
+					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
 				]), $data);
 
 				return true;
 			})
 			->times(1);
 
-		$entity = new Entities\Devices\VirtualDevice('device-name', 'device-name');
+		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+
+		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
 		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 

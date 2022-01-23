@@ -153,6 +153,8 @@ abstract class Property implements IProperty
 
 		$this->identifier = $identifier;
 
+		$this->dataType = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_UNKNOWN);
+
 		// Static property can not be set or read from device/channel property
 		if ($this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			$this->settable = false;

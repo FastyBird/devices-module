@@ -4,7 +4,7 @@ import {
   ModuleOrigin,
   DeviceEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
-  DeviceConnectionState,
+  ConnectionState,
   HardwareManufacturer,
   DeviceModel,
   FirmwareManufacturer,

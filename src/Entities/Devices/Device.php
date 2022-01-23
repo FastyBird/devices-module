@@ -215,7 +215,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="devices")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
 	 */
-	protected Entities\Connectors\IConnector $connector = null;
+	protected Entities\Connectors\IConnector $connector;
 
 	/**
 	 * @param string $identifier
@@ -860,7 +860,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setConnector(?Entities\Connectors\IConnector $connector): void
+	public function setConnector(Entities\Connectors\IConnector $connector): void
 	{
 		$this->connector = $connector;
 	}

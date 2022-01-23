@@ -374,10 +374,10 @@ interface IDevice extends Entities\IEntity,
 	public function getConnector(): Entities\Connectors\IConnector;
 
 	/**
-	 * @param Entities\Connectors\IConnector|null $connector
+	 * @param Entities\Connectors\IConnector $connector
 	 *
 	 * @return void
 	 */
-	public function setConnector(?Entities\Connectors\IConnector $connector): void;
+	public function setConnector(Entities\Connectors\IConnector $connector): void;
 
 }

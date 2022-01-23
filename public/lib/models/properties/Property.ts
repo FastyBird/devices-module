@@ -22,7 +22,7 @@ export default class Property extends Model implements PropertyInterface {
   name!: string | null
   settable!: boolean
   queryable!: boolean
-  dataType!: DataType | null
+  dataType!: DataType
   unit!: string | null
   format!: string[] | ((string | null)[])[] | (number | null)[] | null
   invalid!: string | number | null
@@ -41,55 +41,55 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get isAnalogSensor(): boolean {
-    return !this.isSettable && this.dataType !== null && this.dataType !== DataType.BOOLEAN
+    return !this.isSettable && this.dataType !== DataType.BOOLEAN
   }
 
   get isBinarySensor(): boolean {
-    return !this.isSettable && this.dataType !== null && this.dataType === DataType.BOOLEAN
+    return !this.isSettable && this.dataType === DataType.BOOLEAN
   }
 
   get isAnalogActor(): boolean {
-    return this.isSettable && this.dataType !== null && this.dataType !== DataType.BOOLEAN
+    return this.isSettable && this.dataType !== DataType.BOOLEAN
   }
 
   get isBinaryActor(): boolean {
-    return this.isSettable && this.dataType !== null && this.dataType === DataType.BOOLEAN
+    return this.isSettable && this.dataType === DataType.BOOLEAN
   }
 
   get isInteger(): boolean {
-    return this.dataType !== null && Object.values(PropertyIntegerDatatypeTypes).includes(this.dataType)
+    return Object.values(PropertyIntegerDatatypeTypes).includes(this.dataType)
   }
 
   get isFloat(): boolean {
-    return this.dataType !== null && this.dataType === DataType.FLOAT
+    return this.dataType === DataType.FLOAT
   }
 
   get isNumber(): boolean {
-    return this.dataType !== null && Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
+    return Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
   }
 
   get isBoolean(): boolean {
-    return this.dataType !== null && this.dataType === DataType.BOOLEAN
+    return this.dataType === DataType.BOOLEAN
   }
 
   get isString(): boolean {
-    return this.dataType !== null && this.dataType === DataType.STRING
+    return this.dataType === DataType.STRING
   }
 
   get isEnum(): boolean {
-    return this.dataType !== null && this.dataType === DataType.ENUM
+    return this.dataType === DataType.ENUM
   }
 
   get isColor(): boolean {
-    return this.dataType !== null && this.dataType === DataType.COLOR
+    return this.dataType === DataType.COLOR
   }
 
   get isButton(): boolean {
-    return this.dataType !== null && this.dataType === DataType.BUTTON
+    return this.dataType === DataType.BUTTON
   }
 
   get isSwitch(): boolean {
-    return this.dataType !== null && this.dataType === DataType.SWITCH
+    return this.dataType === DataType.SWITCH
   }
 
   get isSettable(): boolean {
@@ -102,7 +102,7 @@ export default class Property extends Model implements PropertyInterface {
 
   get formattedActualValue(): string {
     const storeInstance = Property.store()
-    const actualValue = this.dataType ? normalizeValue(this.dataType, this.actualValue !== null ? String(this.actualValue) : null, this.format) : this.actualValue
+    const actualValue = normalizeValue(this.dataType, this.actualValue !== null ? String(this.actualValue) : null, this.format)
 
     if (
       this.deviceInstance !== null &&
@@ -157,7 +157,7 @@ export default class Property extends Model implements PropertyInterface {
     }
 
     const storeInstance = Property.store()
-    const expectedValue = this.dataType ? normalizeValue(this.dataType, this.expectedValue !== null ? String(this.expectedValue) : null, this.format) : this.expectedValue
+    const expectedValue = normalizeValue(this.dataType, this.expectedValue !== null ? String(this.expectedValue) : null, this.format)
 
     if (
       this.deviceInstance !== null &&
@@ -272,26 +272,18 @@ export default class Property extends Model implements PropertyInterface {
   static beforeCreate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
-        if (property.dataType) {
-          property.invalid = cleanInvalid(property.dataType, property.invalid)
+        property.invalid = cleanInvalid(property.dataType, property.invalid)
 
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
-        } else {
-          property.format = null
-        }
+        property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+        property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
 
         return property
       })
     } else {
-      if (properties.dataType) {
-        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
+      properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
-      } else {
-        properties.format = null
-      }
+      properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+      properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
 
       return properties
     }
@@ -300,26 +292,18 @@ export default class Property extends Model implements PropertyInterface {
   static beforeUpdate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
     if (Array.isArray(properties)) {
       return properties.map((property: PropertyInterface) => {
-        if (property.dataType) {
-          property.invalid = cleanInvalid(property.dataType, property.invalid)
+        property.invalid = cleanInvalid(property.dataType, property.invalid)
 
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
-        } else {
-          property.format = null
-        }
+        property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+        property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
 
         return property
       })
     } else {
-      if (properties.dataType) {
-        properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
+      properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
-      } else {
-        properties.format = null
-      }
+      properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+      properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
 
       return properties
     }

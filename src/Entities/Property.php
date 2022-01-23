@@ -83,13 +83,13 @@ abstract class Property implements IProperty
 	protected bool $queryable = false;
 
 	/**
-	 * @var MetadataTypes\DataTypeType|null
+	 * @var MetadataTypes\DataTypeType
 	 *
 	 * @Enum(class=MetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string_enum", name="property_data_type", length=100, nullable=true, options={"default": null})
+	 * @ORM\Column(type="string_enum", name="property_data_type", length=100, nullable=true, options={"default": "unknown"})
 	 */
-	protected $dataType = null;
+	protected $dataType;
 
 	/**
 	 * @var string|null
@@ -178,7 +178,7 @@ abstract class Property implements IProperty
 			'name'               => $this->getName(),
 			'settable'           => $this->isSettable(),
 			'queryable'          => $this->isQueryable(),
-			'data_type'          => $this->getDataType() !== null ? $this->getDataType()->getValue() : null,
+			'data_type'          => $this->getDataType()->getValue(),
 			'unit'               => $this->getUnit(),
 			'format'             => $this->getFormat(),
 			'invalid'            => $this->getInvalid(),
@@ -263,7 +263,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDataType(): ?MetadataTypes\DataTypeType
+	public function getDataType(): MetadataTypes\DataTypeType
 	{
 		return $this->dataType;
 	}
@@ -271,7 +271,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setDataType(?MetadataTypes\DataTypeType $dataType): void
+	public function setDataType(MetadataTypes\DataTypeType $dataType): void
 	{
 		$this->dataType = $dataType;
 	}
@@ -315,10 +315,6 @@ abstract class Property implements IProperty
 			return;
 
 		} elseif (is_array($format)) {
-			if ($this->dataType === null) {
-				throw new Exceptions\InvalidStateException('Data type for property is not set, unpacked property format could not be serialized');
-			}
-
 			if (
 				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
 				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
@@ -367,65 +363,63 @@ abstract class Property implements IProperty
 			return null;
 		}
 
-		if ($this->dataType !== null) {
-			if (
-				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
-			) {
-				[$min, $max] = explode(':', $format) + [null, null];
+		if (
+			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
+		) {
+			[$min, $max] = explode(':', $format) + [null, null];
 
-				if ($min !== null && $max !== null && intval($min) <= intval($max)) {
-					return [intval($min), intval($max)];
-				}
-
-				if ($min !== null && $max === null) {
-					return [intval($min), null];
-				}
-
-				if ($min === null && $max !== null) {
-					return [null, intval($max)];
-				}
-			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-				[$min, $max] = explode(':', $format) + [null, null];
-
-				if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
-					return [floatval($min), floatval($max)];
-				}
-
-				if ($min !== null && $max === null) {
-					return [floatval($min), null];
-				}
-
-				if ($min === null && $max !== null) {
-					return [null, floatval($max)];
-				}
-			} elseif (
-				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
-			) {
-				return array_map(function (string $item) {
-					if (strpos($item, ':') === false) {
-						return $item;
-					}
-
-					$parts = array_map(function (?string $item): ?string {
-						return $item === '' ? null : $item;
-					}, array_map('trim', explode(':', $item) + [null, null, null]));
-
-					return [
-						$parts[0],
-						(is_string($parts[1]) && $parts[1] !== '' ? $parts[1] : null),
-						(is_string($parts[2]) && $parts[2] !== '' ? $parts[2] : null),
-					];
-				}, array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
-					return $item !== '';
-				}));
+			if ($min !== null && $max !== null && intval($min) <= intval($max)) {
+				return [intval($min), intval($max)];
 			}
+
+			if ($min !== null && $max === null) {
+				return [intval($min), null];
+			}
+
+			if ($min === null && $max !== null) {
+				return [null, intval($max)];
+			}
+		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+			[$min, $max] = explode(':', $format) + [null, null];
+
+			if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
+				return [floatval($min), floatval($max)];
+			}
+
+			if ($min !== null && $max === null) {
+				return [floatval($min), null];
+			}
+
+			if ($min === null && $max !== null) {
+				return [null, floatval($max)];
+			}
+		} elseif (
+			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
+		) {
+			return array_map(function (string $item) {
+				if (strpos($item, ':') === false) {
+					return $item;
+				}
+
+				$parts = array_map(function (?string $item): ?string {
+					return $item === '' ? null : $item;
+				}, array_map('trim', explode(':', $item) + [null, null, null]));
+
+				return [
+					$parts[0],
+					(is_string($parts[1]) && $parts[1] !== '' ? $parts[1] : null),
+					(is_string($parts[2]) && $parts[2] !== '' ? $parts[2] : null),
+				];
+			}, array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
+				return $item !== '';
+			}));
 		}
 
 		return null;
@@ -440,22 +434,20 @@ abstract class Property implements IProperty
 			return null;
 		}
 
-		if ($this->dataType !== null) {
-			if (
-				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
-			) {
-				if (is_numeric($this->invalid)) {
-					return intval($this->invalid);
-				}
-			} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-				if (is_numeric($this->invalid)) {
-					return floatval($this->invalid);
-				}
+		if (
+			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
+		) {
+			if (is_numeric($this->invalid)) {
+				return intval($this->invalid);
+			}
+		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+			if (is_numeric($this->invalid)) {
+				return floatval($this->invalid);
 			}
 		}
 
@@ -500,10 +492,6 @@ abstract class Property implements IProperty
 			return null;
 		}
 
-		if ($this->getDataType() === null) {
-			return null;
-		}
-
 		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
 	}
 
@@ -531,10 +519,6 @@ abstract class Property implements IProperty
 		}
 
 		if ($this->default === null) {
-			return null;
-		}
-
-		if ($this->getDataType() === null) {
 			return null;
 		}
 

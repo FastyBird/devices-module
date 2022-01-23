@@ -81,12 +81,10 @@ final class DynamicPropertySchema extends PropertySchema
 	 */
 	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		$dataType = $property->getDataType();
-
 		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property);
 
-		$actualValue = $state !== null ? ($dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $property->getFormat()) : $state->getActualValue()) : null;
-		$expectedValue = $state !== null ? ($dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $property->getFormat()) : $state->getExpectedValue()) : null;
+		$actualValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()) : null;
+		$expectedValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat()) : null;
 
 		return array_merge((array) parent::getAttributes($property, $context), [
 			'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,

@@ -63,7 +63,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         BOOLEAN, name="property_queryable", nullable=False, default=False
     )
     col_data_type: Optional[str] = Column(  # type: ignore[assignment]
-        VARCHAR(100), name="property_data_type", nullable=True, default=None
+        VARCHAR(100), name="property_data_type", nullable=False, default=DataType.UNKNOWN.value
     )
     col_unit: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(20), name="property_unit", nullable=True, default=None
@@ -183,15 +183,15 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     # -----------------------------------------------------------------------------
 
     @property
-    def data_type(self) -> Optional[DataType]:
+    def data_type(self) -> DataType:
         """Transform data type to enum value"""
-        return DataType(self.col_data_type) if self.col_data_type is not None else None
+        return DataType(self.col_data_type) if DataType.has_value(self.col_data_type) else DataType.UNKNOWN
 
     # -----------------------------------------------------------------------------
 
     @data_type.setter
-    def data_type(self, data_type: Optional[DataType]) -> None:
-        self.col_data_type = data_type.value if isinstance(data_type, DataType) else None
+    def data_type(self, data_type: DataType) -> None:
+        self.col_data_type = data_type.value
 
     # -----------------------------------------------------------------------------
 
@@ -283,19 +283,18 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         if self.col_invalid is None:
             return None
 
-        if self.data_type is not None:
-            if self.data_type in (
-                DataType.CHAR,
-                DataType.UCHAR,
-                DataType.SHORT,
-                DataType.USHORT,
-                DataType.INT,
-                DataType.UINT,
-            ):
-                return fast_int(self.col_invalid)
+        if self.data_type in (
+            DataType.CHAR,
+            DataType.UCHAR,
+            DataType.SHORT,
+            DataType.USHORT,
+            DataType.INT,
+            DataType.UINT,
+        ):
+            return fast_int(self.col_invalid)
 
-            if self.data_type == DataType.FLOAT:
-                return fast_float(self.col_invalid)
+        if self.data_type == DataType.FLOAT:
+            return fast_float(self.col_invalid)
 
         return self.col_invalid
 
@@ -331,9 +330,6 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         if self.col_value is None:
             return None
 
-        if self.data_type is None:
-            return None
-
         return normalize_value(data_type=self.data_type, value=self.col_value, value_format=self.format)
 
     # -----------------------------------------------------------------------------
@@ -355,9 +351,6 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
             raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
 
         if self.col_default is None:
-            return None
-
-        if self.data_type is None:
             return None
 
         return normalize_value(data_type=self.data_type, value=self.col_default, value_format=self.format)
@@ -430,7 +423,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
             "name": self.name,
             "settable": self.settable,
             "queryable": self.queryable,
-            "data_type": self.data_type.value if isinstance(self.data_type, DataType) else None,
+            "data_type": self.data_type.value,
             "unit": self.unit,
             "format": self.format,
             "invalid": self.invalid,
@@ -462,92 +455,91 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         if value_format is None:
             return None
 
-        if self.data_type is not None:
-            if self.data_type in (
-                DataType.CHAR,
-                DataType.UCHAR,
-                DataType.SHORT,
-                DataType.USHORT,
-                DataType.INT,
-                DataType.UINT,
-            ):
-                format_parts = value_format.split(":")  # pylint: disable=unused-variable
+        if self.data_type in (
+            DataType.CHAR,
+            DataType.UCHAR,
+            DataType.SHORT,
+            DataType.USHORT,
+            DataType.INT,
+            DataType.UINT,
+        ):
+            format_parts = value_format.split(":")  # pylint: disable=unused-variable
 
-                int_min_value: Optional[int] = None
-                int_max_value: Optional[int] = None
+            int_min_value: Optional[int] = None
+            int_max_value: Optional[int] = None
 
-                try:
-                    int_min_value = int(fast_int(format_parts[0], raise_on_invalid=True))
+            try:
+                int_min_value = int(fast_int(format_parts[0], raise_on_invalid=True))
 
-                except (IndexError, ValueError):
-                    int_min_value = None
+            except (IndexError, ValueError):
+                int_min_value = None
 
-                try:
-                    int_max_value = int(fast_int(format_parts[1], raise_on_invalid=True))
+            try:
+                int_max_value = int(fast_int(format_parts[1], raise_on_invalid=True))
 
-                except (IndexError, ValueError):
-                    int_max_value = None
+            except (IndexError, ValueError):
+                int_max_value = None
 
-                if int_min_value is not None and int_max_value is not None and int_min_value <= int_max_value:
-                    return int_min_value, int_max_value
+            if int_min_value is not None and int_max_value is not None and int_min_value <= int_max_value:
+                return int_min_value, int_max_value
 
-                if int_min_value is not None and int_max_value is None:
-                    return int_min_value, None
+            if int_min_value is not None and int_max_value is None:
+                return int_min_value, None
 
-                if int_min_value is None and int_max_value is not None:
-                    return None, int_max_value
+            if int_min_value is None and int_max_value is not None:
+                return None, int_max_value
 
-            elif self.data_type == DataType.FLOAT:
-                format_parts = value_format.split(":")  # pylint: disable=unused-variable
+        elif self.data_type == DataType.FLOAT:
+            format_parts = value_format.split(":")  # pylint: disable=unused-variable
 
-                float_min_value: Optional[float] = None
-                float_max_value: Optional[float] = None
+            float_min_value: Optional[float] = None
+            float_max_value: Optional[float] = None
 
-                try:
-                    float_min_value = float(fast_float(format_parts[0], raise_on_invalid=True))
+            try:
+                float_min_value = float(fast_float(format_parts[0], raise_on_invalid=True))
 
-                except (IndexError, ValueError):
-                    float_min_value = None
+            except (IndexError, ValueError):
+                float_min_value = None
 
-                try:
-                    float_max_value = float(fast_float(format_parts[1], raise_on_invalid=True))
+            try:
+                float_max_value = float(fast_float(format_parts[1], raise_on_invalid=True))
 
-                except (IndexError, ValueError):
-                    float_max_value = None
+            except (IndexError, ValueError):
+                float_max_value = None
 
-                if float_min_value is not None and float_max_value is not None and float_min_value <= float_max_value:
-                    return float_min_value, float_max_value
+            if float_min_value is not None and float_max_value is not None and float_min_value <= float_max_value:
+                return float_min_value, float_max_value
 
-                if float_min_value is not None and float_max_value is None:
-                    return float_min_value, None
+            if float_min_value is not None and float_max_value is None:
+                return float_min_value, None
 
-                if float_min_value is None and float_max_value is not None:
-                    return None, float_max_value
+            if float_min_value is None and float_max_value is not None:
+                return None, float_max_value
 
-            elif self.data_type in (DataType.ENUM, DataType.BUTTON, DataType.SWITCH):
-                enums = list({x.strip() for x in value_format.split(",")})
-                enums.sort()
+        elif self.data_type in (DataType.ENUM, DataType.BUTTON, DataType.SWITCH):
+            enums = list({x.strip() for x in value_format.split(",")})
+            enums.sort()
 
-                enum_values: List[Union[str, Tuple[str, Optional[str], Optional[str]]]] = []
+            enum_values: List[Union[str, Tuple[str, Optional[str], Optional[str]]]] = []
 
-                for enum_element in enums:
-                    if ":" not in enum_element:
-                        enum_values.append(enum_element)
+            for enum_element in enums:
+                if ":" not in enum_element:
+                    enum_values.append(enum_element)
 
-                        continue
+                    continue
 
-                    parts = enum_element.split(":")
+                parts = enum_element.split(":")
 
-                    enum_item: List[Union[str, None]] = []
+                enum_item: List[Union[str, None]] = []
 
-                    for i in range(0, 3):
-                        try:
-                            enum_item.append(str(parts[i]) if parts[i] is not None and parts[i] != "" else None)
-                        except ValueError:
-                            enum_item.append(None)
+                for i in range(0, 3):
+                    try:
+                        enum_item.append(str(parts[i]) if parts[i] is not None and parts[i] != "" else None)
+                    except ValueError:
+                        enum_item.append(None)
 
-                    enum_values.append((str(enum_item[0]), enum_item[1], enum_item[2]))
+                enum_values.append((str(enum_item[0]), enum_item[1], enum_item[2]))
 
-                return enum_values
+            return enum_values
 
         return None

@@ -62,7 +62,7 @@ export interface PropertyInterface {
   name: string | null
   settable: boolean
   queryable: boolean
-  dataType: DataType | null
+  dataType: DataType
   unit: string | null
   format: string[] | ((string | null)[])[] | (number | null)[] | null
   invalid: string | number | null

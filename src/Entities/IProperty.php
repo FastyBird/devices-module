@@ -79,16 +79,16 @@ interface IProperty extends IEntity,
 	public function setQueryable(bool $queryable): void;
 
 	/**
-	 * @return MetadataTypes\DataTypeType|null
+	 * @return MetadataTypes\DataTypeType
 	 */
-	public function getDataType(): ?MetadataTypes\DataTypeType;
+	public function getDataType(): MetadataTypes\DataTypeType;
 
 	/**
 	 * @param MetadataTypes\DataTypeType|null $dataType
 	 *
 	 * @return void
 	 */
-	public function setDataType(?MetadataTypes\DataTypeType $dataType): void;
+	public function setDataType(MetadataTypes\DataTypeType $dataType): void;
 
 	/**
 	 * @return string|null

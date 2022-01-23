@@ -267,14 +267,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			) {
 				$state = $this->devicePropertyStateRepository->findOne($entity);
 
-				$dataType = $entity->getDataType();
-
 				$this->publisher->publish(
 					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
-						'expected_value' => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
+						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $entity->getFormat()),
+						'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $entity->getFormat()),
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);
@@ -285,14 +283,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			) {
 				$state = $this->channelPropertyStateRepository->findOne($entity);
 
-				$dataType = $entity->getDataType();
-
 				$this->publisher->publish(
 					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getActualValue(), $entity->getFormat()) : $state->getActualValue(),
-						'expected_value' => $dataType !== null ? MetadataHelpers\ValueHelper::normalizeValue($dataType, $state->getExpectedValue(), $entity->getFormat()) : $state->getExpectedValue(),
+						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $entity->getFormat()),
+						'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $entity->getFormat()),
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);

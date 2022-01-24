@@ -44,10 +44,7 @@ from fastybird_devices_module.entities.channel import (
     ChannelEntity,
     ChannelPropertyEntity,
 )
-from fastybird_devices_module.entities.connector import (
-    ConnectorControlEntity,
-    ConnectorEntity,
-)
+from fastybird_devices_module.entities.connector import ConnectorControlEntity
 from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
     DeviceEntity,
@@ -270,7 +267,21 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         """Start connector service"""
         self.__stopped = False
 
-        self.__connector.start()
+        try:
+            self.__connector.start()
+
+        except Exception as ex:  # pylint: disable=broad-except
+            self.__logger.error(
+                "Connector couldn't be started. An unexpected error occurred",
+                extra={
+                    "exception": {
+                        "message": str(ex),
+                        "code": type(ex).__name__,
+                    },
+                }
+            )
+
+            raise TerminateConnectorException("Connector couldn't be started. An unexpected error occurred") from ex
 
     # -----------------------------------------------------------------------------
 
@@ -280,21 +291,35 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
         self.__logger.info("Stopping...")
 
-        # Send terminate command to...
+        try:
+            # Send terminate command to...
 
-        # ...connector
-        self.__connector.stop()
+            # ...connector
+            self.__connector.stop()
 
-        now = time.time()
+            now = time.time()
 
-        waiting_for_closing = True
+            waiting_for_closing = True
 
-        # Wait until thread is fully terminated
-        while waiting_for_closing and time.time() - now < self.__SHUTDOWN_WAITING_DELAY:
-            if self.__connector.has_unfinished_tasks():
-                self.__connector.handle()
-            else:
-                waiting_for_closing = False
+            # Wait until thread is fully terminated
+            while waiting_for_closing and time.time() - now < self.__SHUTDOWN_WAITING_DELAY:
+                if self.__connector.has_unfinished_tasks():
+                    self.__connector.handle()
+                else:
+                    waiting_for_closing = False
+
+        except Exception as ex:  # pylint: disable=broad-except
+            self.__logger.error(
+                "Connector couldn't be stopped. An unexpected error occurred",
+                extra={
+                    "exception": {
+                        "message": str(ex),
+                        "code": type(ex).__name__,
+                    },
+                }
+            )
+
+            raise TerminateConnectorException("Connector couldn't be stopped. An unexpected error occurred") from ex
 
     # -----------------------------------------------------------------------------
 
@@ -304,18 +329,47 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         if self.__stopped:
             return
 
-        self.__connector.handle()
+        try:
+            self.__connector.handle()
+
+        except Exception as ex:  # pylint: disable=broad-except
+            self.__logger.error(
+                "An unexpected error occurred during connector handling process",
+                extra={
+                    "exception": {
+                        "message": str(ex),
+                        "code": type(ex).__name__,
+                    },
+                }
+            )
+
+            raise TerminateConnectorException("An unexpected error occurred during connector handling process") from ex
+
         queue_item = self.__queue.get()
 
         if queue_item is not None:
-            if isinstance(queue_item, ConsumePropertyActionMessageQueueItem):
-                self.__write_property_command(item=queue_item)
+            try:
+                if isinstance(queue_item, ConsumePropertyActionMessageQueueItem):
+                    self.__write_property_command(item=queue_item)
 
-            if isinstance(queue_item, ConsumeControlActionMessageQueueItem):
-                self.__write_control_command(item=queue_item)
+                if isinstance(queue_item, ConsumeControlActionMessageQueueItem):
+                    self.__write_control_command(item=queue_item)
 
-            if isinstance(queue_item, ConsumeEntityMessageQueueItem):
-                self.__handle_entity_event(item=queue_item)
+                if isinstance(queue_item, ConsumeEntityMessageQueueItem):
+                    self.__handle_entity_event(item=queue_item)
+
+            except Exception as ex:  # pylint: disable=broad-except
+                self.__logger.error(
+                    "An unexpected error occurred during processing queue item",
+                    extra={
+                        "exception": {
+                            "message": str(ex),
+                            "code": type(ex).__name__,
+                        },
+                    }
+                )
+
+                raise TerminateConnectorException("An unexpected error occurred during processing queue item") from ex
 
     # -----------------------------------------------------------------------------
 
@@ -345,7 +399,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             self.__connector.initialize()
 
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             raise Exception("Connector could not be loaded") from ex
 
     # -----------------------------------------------------------------------------

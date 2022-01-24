@@ -48,7 +48,7 @@ or if you prefer npm:
 npm install @fastybird/devices-module
 ```
 
-#### Application workers in Python
+### Application workers in Python
 
 The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
 

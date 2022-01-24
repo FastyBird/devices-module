@@ -30,7 +30,7 @@ from typing import Dict, Optional, Union
 # Library libs
 from fastybird_metadata.routing import RoutingKey
 from inflection import underscore
-from kink import di, inject
+from kink import di
 
 # Library dependencies
 from fastybird_devices_module.connectors.queue import (
@@ -232,7 +232,6 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    @inject
     def __init__(  # pylint: disable=too-many-arguments
         self,
         queue: ConnectorQueue,

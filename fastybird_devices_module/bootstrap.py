@@ -147,7 +147,18 @@ def register_services(  # pylint: disable=too-many-statements
     di[ConnecotrConsumer] = ConnecotrConsumer(queue=di[ConnectorQueue], logger=di[Logger])
     di["fb-devices-module_connector-consumer"] = di[ConnecotrConsumer]
 
-    di[Connector] = Connector(queue=di[ConnectorQueue], logger=di[Logger])
+    di[Connector] = Connector(
+        queue=di[ConnectorQueue],
+        devices_repository=di[DevicesRepository],
+        devices_properties_repository=di[DevicesPropertiesRepository],
+        devices_control_repository=di[DevicesControlsRepository],
+        channels_repository=di[ChannelsRepository],
+        channels_properties_repository=di[ChannelsPropertiesRepository],
+        channels_control_repository=di[ChannelsControlsRepository],
+        connectors_repository=di[ConnectorsRepository],
+        connectors_control_repository=di[ConnectorsControlsRepository],
+        logger=di[Logger],
+    )
     di["fb-devices-module_connector-handler"] = di[Connector]
 
     # Check for presence of exchange consumer proxy

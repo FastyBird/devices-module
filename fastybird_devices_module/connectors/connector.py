@@ -83,7 +83,7 @@ class IConnector(ABC):
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def initialize(self) -> None:
+    def initialize(self, settings: Optional[Dict] = None) -> None:
         """Set connector to initial state"""
 
     # -----------------------------------------------------------------------------
@@ -396,7 +396,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if not isinstance(self.__connector, IConnector):
                 raise AttributeError(f"Instance of connector {connector_name} couldn't be created")
 
-            self.__connector.initialize()
+            self.__connector.initialize(settings=connector.params)
 
         except Exception as ex:  # pylint: disable=broad-except
             raise Exception("Connector could not be loaded") from ex

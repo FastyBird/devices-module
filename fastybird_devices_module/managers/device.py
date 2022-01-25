@@ -46,7 +46,7 @@ class DevicesManager(BaseManager[DeviceEntity]):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __REQUIRED_FIELDS: List[str] = ["identifier", "name"]
+    __REQUIRED_FIELDS: List[str] = ["identifier"]
     __WRITABLE_FIELDS: List[str] = [
         "connector",
         "name",

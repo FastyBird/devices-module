@@ -106,8 +106,8 @@ class ConnectorsControlsRepository:
         return (
             self.__session.query(ConnectorControlEntity)
             .filter(
-                ConnectorControlEntity.connector_id == connector_id.bytes
-                and ConnectorControlEntity.col_name == control_name
+                ConnectorControlEntity.connector_id == connector_id.bytes,
+                ConnectorControlEntity.col_name == control_name,
             )
             .first()
         )

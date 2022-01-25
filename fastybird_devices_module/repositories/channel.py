@@ -74,7 +74,7 @@ class ChannelsRepository:
         """Find channel by provided identifier"""
         return (
             self.__session.query(ChannelEntity)
-            .filter(ChannelEntity.device_id == device_id.bytes and ChannelEntity.col_identifier == channel_identifier)
+            .filter(ChannelEntity.device_id == device_id.bytes, ChannelEntity.col_identifier == channel_identifier)
             .first()
         )
 
@@ -130,8 +130,8 @@ class ChannelsPropertiesRepository:
         return (
             self.__session.query(ChannelPropertyEntity)
             .filter(
-                ChannelPropertyEntity.channel_id == channel_id.bytes
-                and ChannelPropertyEntity.col_identifier == property_identifier
+                ChannelPropertyEntity.channel_id == channel_id.bytes,
+                ChannelPropertyEntity.col_identifier == property_identifier,
             )
             .first()
         )
@@ -198,8 +198,8 @@ class ChannelsConfigurationRepository:
         return (
             self.__session.query(ChannelConfigurationEntity)
             .filter(
-                ChannelConfigurationEntity.channel_id == channel_id.bytes
-                and ChannelConfigurationEntity.col_identifier == configuration_identifier
+                ChannelConfigurationEntity.channel_id == channel_id.bytes,
+                ChannelConfigurationEntity.col_identifier == configuration_identifier,
             )
             .first()
         )
@@ -254,7 +254,8 @@ class ChannelsControlsRepository:
         return (
             self.__session.query(ChannelControlEntity)
             .filter(
-                ChannelControlEntity.channel_id == channel_id.bytes and ChannelControlEntity.col_name == control_name
+                ChannelControlEntity.channel_id == channel_id.bytes,
+                ChannelControlEntity.col_name == control_name,
             )
             .first()
         )

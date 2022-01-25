@@ -75,7 +75,8 @@ class DevicesRepository:
         return (
             self.__session.query(DeviceEntity)
             .filter(
-                DeviceEntity.connector_id == connector_id.bytes and DeviceEntity.col_identifier == device_identifier
+                DeviceEntity.connector_id == connector_id.bytes,
+                DeviceEntity.col_identifier == device_identifier,
             )
             .first()
         )
@@ -92,7 +93,7 @@ class DevicesRepository:
         """Find all devices for parent device"""
         return (
             self.__session.query(DeviceEntity)
-            .filter(DeviceEntity.parent is not None and DeviceEntity.parent_id == device_id.bytes)
+            .filter(DeviceEntity.parent is not None, DeviceEntity.parent_id == device_id.bytes)
             .all()
         )
 
@@ -142,8 +143,8 @@ class DevicesPropertiesRepository:
         return (
             self.__session.query(DevicePropertyEntity)
             .filter(
-                DevicePropertyEntity.device_id == device_id.bytes
-                and DevicePropertyEntity.identifier == property_identifier
+                DevicePropertyEntity.device_id == device_id.bytes,
+                DevicePropertyEntity.identifier == property_identifier,
             )
             .first()
         )
@@ -208,8 +209,8 @@ class DevicesConfigurationRepository:
         return (
             self.__session.query(DeviceConfigurationEntity)
             .filter(
-                DeviceConfigurationEntity.device_id == device_id.bytes
-                and DeviceConfigurationEntity.col_identifier == configuration_identifier
+                DeviceConfigurationEntity.device_id == device_id.bytes,
+                DeviceConfigurationEntity.col_identifier == configuration_identifier,
             )
             .first()
         )
@@ -263,7 +264,7 @@ class DevicesControlsRepository:
         """Find control by provided name"""
         return (
             self.__session.query(DeviceControlEntity)
-            .filter(DeviceControlEntity.device_id == device_id.bytes and DeviceControlEntity.col_name == control_name)
+            .filter(DeviceControlEntity.device_id == device_id.bytes, DeviceControlEntity.col_name == control_name)
             .first()
         )
 

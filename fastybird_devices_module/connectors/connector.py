@@ -54,6 +54,7 @@ from fastybird_devices_module.exceptions import (
     RestartConnectorException,
     TerminateConnectorException,
 )
+from fastybird_devices_module.logger import Logger
 from fastybird_devices_module.repositories.channel import (
     ChannelsControlsRepository,
     ChannelsPropertiesRepository,
@@ -226,7 +227,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     __connectors_repository: ConnectorsRepository
     __connectors_control_repository: ConnectorsControlsRepository
 
-    __logger: logging.Logger
+    __logger: Logger
+    __connector_logger: logging.Logger
 
     __SHUTDOWN_WAITING_DELAY: float = 3.0
 
@@ -243,7 +245,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         channels_control_repository: ChannelsControlsRepository,
         connectors_repository: ConnectorsRepository,
         connectors_control_repository: ConnectorsControlsRepository,
-        logger: logging.Logger,
+        logger: Logger,
+        connector_logger: logging.Logger,
     ) -> None:
         self.__queue = queue
 
@@ -259,6 +262,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self.__channels_control_repository = channels_control_repository
 
         self.__logger = logger
+        self.__connector_logger = connector_logger
 
     # -----------------------------------------------------------------------------
 
@@ -391,7 +395,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             # Add loaded connector to container to be accessible & autowired
             di["connector"] = connector
 
-            self.__connector = getattr(module, "create_connector")(connector=connector, logger=self.__logger)
+            self.__connector = getattr(module, "create_connector")(connector=connector, logger=self.__connector_logger)
 
             if not isinstance(self.__connector, IConnector):
                 raise AttributeError(f"Instance of connector {connector_name} couldn't be created")

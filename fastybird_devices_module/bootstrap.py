@@ -30,7 +30,7 @@ from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
 from fastybird_devices_module.connectors.connector import Connector
-from fastybird_devices_module.connectors.consumer import ConnecotrConsumer
+from fastybird_devices_module.connectors.consumer import ConnectorConsumer
 from fastybird_devices_module.connectors.queue import ConnectorQueue
 from fastybird_devices_module.helpers import KeyHashHelpers
 from fastybird_devices_module.logger import Logger
@@ -144,8 +144,8 @@ def register_services(  # pylint: disable=too-many-statements
 
     di[ConnectorQueue] = ConnectorQueue(logger=di[Logger])
     di["fb-devices-module_connector-queue"] = di[ConnectorQueue]
-    di[ConnecotrConsumer] = ConnecotrConsumer(queue=di[ConnectorQueue], logger=di[Logger])
-    di["fb-devices-module_connector-consumer"] = di[ConnecotrConsumer]
+    di[ConnectorConsumer] = ConnectorConsumer(queue=di[ConnectorQueue], logger=di[Logger])
+    di["fb-devices-module_connector-consumer"] = di[ConnectorConsumer]
 
     di[Connector] = Connector(
         queue=di[ConnectorQueue],
@@ -164,4 +164,4 @@ def register_services(  # pylint: disable=too-many-statements
     # Check for presence of exchange consumer proxy
     if Consumer in di:
         # Register connector exchange consumer into consumer proxy
-        di[Consumer].register_consumer(di[ConnecotrConsumer])
+        di[Consumer].register_consumer(di[ConnectorConsumer])

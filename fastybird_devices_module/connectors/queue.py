@@ -15,7 +15,7 @@
 #     limitations under the License.
 
 """
-FastyBird gateway data exchange module queue
+Devices module data exchange module queue
 """
 
 # Python base dependencies
@@ -89,7 +89,7 @@ class ConsumeMessageQueueItem(ABC):
     Publish message queue item
 
     @package        FastyBird:DevicesModule!
-    @module         queue
+    @module         connectors/queue
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -137,7 +137,7 @@ class ConsumePropertyActionMessageQueueItem(ConsumeMessageQueueItem):
     Publish message queue item
 
     @package        FastyBird:DevicesModule!
-    @module         queue
+    @module         connectors/queue
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -148,7 +148,7 @@ class ConsumeControlActionMessageQueueItem(ConsumeMessageQueueItem):
     Publish message queue item
 
     @package        FastyBird:DevicesModule!
-    @module         queue
+    @module         connectors/queue
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
@@ -159,7 +159,7 @@ class ConsumeEntityMessageQueueItem(ConsumeMessageQueueItem):
     Publish message queue item
 
     @package        FastyBird:DevicesModule!
-    @module         queue
+    @module         connectors/queue
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """

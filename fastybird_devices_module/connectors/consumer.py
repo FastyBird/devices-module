@@ -36,7 +36,7 @@ from fastybird_devices_module.connectors.queue import (
 )
 
 
-class ConnecotrConsumer(IConsumer):  # pylint: disable=too-few-public-methods
+class ConnectorConsumer(IConsumer):  # pylint: disable=too-few-public-methods
     """
     Data exchange service container
 

@@ -26,7 +26,7 @@ from fastybird_metadata.types import ModulePrefix
 
 class Logger:
     """
-    Plugin logger
+    Module logger
 
     @package        FastyBird:DevicesModule!
     @module         logger

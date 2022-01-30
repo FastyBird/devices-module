@@ -19,7 +19,6 @@ Devices module connectors connector worker module
 """
 
 # Python base dependencies
-import logging
 import time
 import uuid
 from abc import ABC, abstractmethod
@@ -202,7 +201,7 @@ class IConnector(ABC):
 
 class Connector:  # pylint: disable=too-many-instance-attributes
     """
-    FastyBird connector container
+    Connector container
 
     @package        FastyBird:DevicesModule!
     @module         connectors/connector

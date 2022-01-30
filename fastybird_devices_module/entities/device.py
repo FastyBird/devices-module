@@ -535,11 +535,11 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
     ]:
         """Transform entity to dictionary"""
         return {
+            **super().to_dict(),
             **{
                 "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },
-            **super().to_dict(),
         }
 
 
@@ -625,11 +625,11 @@ class DeviceConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, Configur
     def to_dict(self) -> Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]:
         """Transform entity to dictionary"""
         return {
+            **super().to_dict(),
             **{
                 "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },
-            **super().to_dict(),
         }
 
 

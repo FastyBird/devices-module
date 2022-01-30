@@ -91,73 +91,73 @@ class IConnector(ABC):
 
     @abstractmethod
     def initialize_device(self, device: DeviceEntity) -> None:
-        """Initialize device in connector registry"""
+        """Initialize device in connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def remove_device(self, device_id: uuid.UUID) -> None:
-        """Remove device from connector registry"""
+        """Remove device from connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def reset_devices(self) -> None:
-        """Reset devices registry to initial state"""
+        """Reset devices to initial state"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def initialize_device_property(self, device_property: DevicePropertyEntity) -> None:
-        """Initialize device property in connector registry"""
+        """Initialize device property in connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def remove_device_property(self, property_id: uuid.UUID) -> None:
-        """Remove device from connector registry"""
+        """Remove device from connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def reset_devices_properties(self, device: DeviceEntity) -> None:
-        """Reset devices properties registry to initial state"""
+        """Reset devices properties to initial state"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def initialize_device_channel(self, channel: ChannelEntity) -> None:
-        """Initialize device channel aka shelly device block in connector registry"""
+        """Initialize device channel in connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def remove_device_channel(self, channel_id: uuid.UUID) -> None:
-        """Remove device channel from connector registry"""
+        """Remove device channel from connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def reset_devices_channels(self, device: DeviceEntity) -> None:
-        """Reset devices channels registry to initial state"""
+        """Reset devices channels to initial state"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def initialize_device_channel_property(self, channel_property: ChannelPropertyEntity) -> None:
-        """Initialize device channel property aka shelly device sensor|state in connector registry"""
+        """Initialize device channel property in connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def remove_device_channel_property(self, property_id: uuid.UUID) -> None:
-        """Remove device channel property from connector registry"""
+        """Remove device channel property from connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def reset_devices_channels_properties(self, channel: ChannelEntity) -> None:
-        """Reset devices channels properties registry to initial state"""
+        """Reset devices channels properties to initial state"""
 
     # -----------------------------------------------------------------------------
 

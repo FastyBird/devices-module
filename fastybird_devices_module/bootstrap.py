@@ -74,7 +74,6 @@ from fastybird_devices_module.subscriber import (
 
 def register_services(  # pylint: disable=too-many-statements
     logger: logging.Logger = logging.getLogger("dummy"),
-    connector_logger: logging.Logger = logging.getLogger("dummy"),
 ) -> None:
     """Register devices module services"""
     if OrmSession not in di:
@@ -159,7 +158,6 @@ def register_services(  # pylint: disable=too-many-statements
         connectors_repository=di[ConnectorsRepository],
         connectors_control_repository=di[ConnectorsControlsRepository],
         logger=di[Logger],
-        connector_logger=connector_logger,
     )
     di["fb-devices-module_connector-handler"] = di[Connector]
 

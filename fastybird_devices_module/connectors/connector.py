@@ -228,7 +228,6 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     __connectors_control_repository: ConnectorsControlsRepository
 
     __logger: Logger
-    __connector_logger: logging.Logger
 
     __SHUTDOWN_WAITING_DELAY: float = 3.0
 
@@ -246,7 +245,6 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         connectors_repository: ConnectorsRepository,
         connectors_control_repository: ConnectorsControlsRepository,
         logger: Logger,
-        connector_logger: logging.Logger,
     ) -> None:
         self.__queue = queue
 
@@ -262,7 +260,6 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self.__channels_control_repository = channels_control_repository
 
         self.__logger = logger
-        self.__connector_logger = connector_logger
 
     # -----------------------------------------------------------------------------
 
@@ -395,7 +392,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             # Add loaded connector to container to be accessible & autowired
             di["connector"] = connector
 
-            self.__connector = getattr(module, "create_connector")(connector=connector, logger=self.__connector_logger)
+            self.__connector = getattr(module, "create_connector")(connector=connector, logger=self.__logger)
 
             if not isinstance(self.__connector, IConnector):
                 raise AttributeError(f"Instance of connector {connector_name} couldn't be created")

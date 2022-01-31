@@ -28,7 +28,7 @@ from typing import Dict, Optional, Union
 
 # Library libs
 from fastybird_metadata.routing import RoutingKey
-from fastybird_metadata.types import ControlAction, PropertyAction
+from fastybird_metadata.types import ControlAction
 from inflection import underscore
 from kink import di
 from sqlalchemy.orm import close_all_sessions
@@ -197,7 +197,7 @@ class IConnector(ABC):
         self,
         control_item: Union[ConnectorControlEntity, DeviceControlEntity, ChannelControlEntity],
         data: Optional[Dict],
-        action: Union[ControlAction, PropertyAction],
+        action: ControlAction,
     ) -> None:
         """Write connector control action"""
 
@@ -471,7 +471,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 action=ControlAction(item.data.get("name")),
             )
 
-        if item.routing_key == RoutingKey.CHANNEL_ACTION and PropertyAction.has_value(str(item.data.get("name"))):
+        if item.routing_key == RoutingKey.CHANNEL_ACTION and ControlAction.has_value(str(item.data.get("name"))):
             try:
                 device_control = self.__devices_control_repository.get_by_name(
                     device_id=uuid.UUID(item.data.get("device"), version=4), control_name=str(item.data.get("name"))
@@ -486,10 +486,10 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.write_control(
                 control_item=device_control,
                 data=item.data,
-                action=PropertyAction(item.data.get("name")),
+                action=ControlAction(item.data.get("name")),
             )
 
-        if item.routing_key == RoutingKey.CONNECTOR_ACTION and PropertyAction.has_value(str(item.data.get("name"))):
+        if item.routing_key == RoutingKey.CONNECTOR_ACTION and ControlAction.has_value(str(item.data.get("name"))):
             try:
                 channel_control = self.__channels_control_repository.get_by_name(
                     channel_id=uuid.UUID(item.data.get("channel"), version=4), control_name=str(item.data.get("name"))
@@ -504,7 +504,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.write_control(
                 control_item=channel_control,
                 data=item.data,
-                action=PropertyAction(item.data.get("name")),
+                action=ControlAction(item.data.get("name")),
             )
 
     # -----------------------------------------------------------------------------

@@ -28,8 +28,10 @@ from typing import Dict, Optional, Union
 
 # Library libs
 from fastybird_metadata.routing import RoutingKey
+from fastybird_metadata.types import ControlAction, PropertyAction
 from inflection import underscore
 from kink import di
+from sqlalchemy.orm import close_all_sessions
 
 # Library dependencies
 from fastybird_devices_module.connectors.queue import (
@@ -195,6 +197,7 @@ class IConnector(ABC):
         self,
         control_item: Union[ConnectorControlEntity, DeviceControlEntity, ChannelControlEntity],
         data: Optional[Dict],
+        action: Union[ControlAction, PropertyAction],
     ) -> None:
         """Write connector control action"""
 
@@ -277,7 +280,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                         "message": str(ex),
                         "code": type(ex).__name__,
                     },
-                }
+                },
             )
 
             raise TerminateConnectorException("Connector couldn't be started. An unexpected error occurred") from ex
@@ -315,7 +318,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                         "message": str(ex),
                         "code": type(ex).__name__,
                     },
-                }
+                },
             )
 
             raise TerminateConnectorException("Connector couldn't be stopped. An unexpected error occurred") from ex
@@ -339,7 +342,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                         "message": str(ex),
                         "code": type(ex).__name__,
                     },
-                }
+                },
             )
 
             raise TerminateConnectorException("An unexpected error occurred during connector handling process") from ex
@@ -365,7 +368,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                             "message": str(ex),
                             "code": type(ex).__name__,
                         },
-                    }
+                    },
                 )
 
                 raise TerminateConnectorException("An unexpected error occurred during processing queue item") from ex
@@ -449,7 +452,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     # -----------------------------------------------------------------------------
 
     def __write_control_command(self, item: ConsumeControlActionMessageQueueItem) -> None:
-        if item.routing_key == RoutingKey.DEVICE_ACTION:
+        if item.routing_key == RoutingKey.DEVICE_ACTION and ControlAction.has_value(str(item.data.get("name"))):
             try:
                 connector_control = self.__connectors_control_repository.get_by_name(
                     connector_id=uuid.UUID(item.data.get("connector"), version=4),
@@ -462,9 +465,13 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if connector_control is None:
                 return
 
-            self.__connector.write_control(control_item=connector_control, data=item.data)
+            self.__connector.write_control(
+                control_item=connector_control,
+                data=item.data,
+                action=ControlAction(item.data.get("name")),
+            )
 
-        if item.routing_key == RoutingKey.CHANNEL_ACTION:
+        if item.routing_key == RoutingKey.CHANNEL_ACTION and PropertyAction.has_value(str(item.data.get("name"))):
             try:
                 device_control = self.__devices_control_repository.get_by_name(
                     device_id=uuid.UUID(item.data.get("device"), version=4), control_name=str(item.data.get("name"))
@@ -476,9 +483,13 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if device_control is None:
                 return
 
-            self.__connector.write_control(control_item=device_control, data=item.data)
+            self.__connector.write_control(
+                control_item=device_control,
+                data=item.data,
+                action=PropertyAction(item.data.get("name")),
+            )
 
-        if item.routing_key == RoutingKey.CONNECTOR_ACTION:
+        if item.routing_key == RoutingKey.CONNECTOR_ACTION and PropertyAction.has_value(str(item.data.get("name"))):
             try:
                 channel_control = self.__channels_control_repository.get_by_name(
                     channel_id=uuid.UUID(item.data.get("channel"), version=4), control_name=str(item.data.get("name"))
@@ -490,7 +501,11 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if channel_control is None:
                 return
 
-            self.__connector.write_control(control_item=channel_control, data=item.data)
+            self.__connector.write_control(
+                control_item=channel_control,
+                data=item.data,
+                action=PropertyAction(item.data.get("name")),
+            )
 
     # -----------------------------------------------------------------------------
 
@@ -499,6 +514,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         item: ConsumeEntityMessageQueueItem,
     ) -> None:
         if item.routing_key == RoutingKey.CONNECTORS_ENTITY_UPDATED:
+            close_all_sessions()
+
             try:
                 connector_entity = self.__connectors_repository.get_by_id(
                     connector_id=uuid.UUID(item.data.get("connector"), version=4),
@@ -520,6 +537,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             )
 
         if item.routing_key == RoutingKey.CONNECTORS_ENTITY_DELETED:
+            close_all_sessions()
+
             try:
                 if not di["connector"].id.__eq__(uuid.UUID(item.data.get("connector"), version=4)):
                     return
@@ -530,6 +549,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 return
 
         if item.routing_key in (RoutingKey.DEVICES_ENTITY_CREATED, RoutingKey.DEVICES_ENTITY_UPDATED):
+            close_all_sessions()
+
             try:
                 device_entity = self.__devices_repository.get_by_id(
                     device_id=uuid.UUID(item.data.get("device"), version=4),
@@ -546,6 +567,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.initialize_device(device=device_entity)
 
         if item.routing_key == RoutingKey.DEVICES_ENTITY_DELETED:
+            close_all_sessions()
+
             try:
                 self.__connector.remove_device(uuid.UUID(item.data.get("device"), version=4))
 
@@ -553,6 +576,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 return
 
         if item.routing_key in (RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED, RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED):
+            close_all_sessions()
+
             try:
                 device_property_entity = self.__devices_properties_repository.get_by_id(
                     property_id=uuid.UUID(item.data.get("property"), version=4),
@@ -569,6 +594,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.initialize_device_property(device_property=device_property_entity)
 
         if item.routing_key == RoutingKey.DEVICES_PROPERTY_ENTITY_DELETED:
+            close_all_sessions()
+
             try:
                 self.__connector.remove_device_channel_property(
                     property_id=uuid.UUID(item.data.get("property"), version=4),
@@ -578,6 +605,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 return
 
         if item.routing_key in (RoutingKey.CHANNELS_ENTITY_CREATED, RoutingKey.CHANNELS_ENTITY_UPDATED):
+            close_all_sessions()
+
             try:
                 channel_entity = self.__channels_repository.get_by_id(
                     channel_id=uuid.UUID(item.data.get("channel"), version=4),
@@ -594,6 +623,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.initialize_device_channel(channel=channel_entity)
 
         if item.routing_key == RoutingKey.CHANNELS_ENTITY_DELETED:
+            close_all_sessions()
+
             try:
                 self.__connector.remove_device_channel(channel_id=uuid.UUID(item.data.get("channel"), version=4))
 
@@ -604,6 +635,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             RoutingKey.CHANNELS_PROPERTY_ENTITY_CREATED,
             RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED,
         ):
+            close_all_sessions()
+
             try:
                 channel_property_entity = self.__channels_properties_repository.get_by_id(
                     property_id=uuid.UUID(item.data.get("property"), version=4),
@@ -620,6 +653,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.initialize_device_channel_property(channel_property=channel_property_entity)
 
         if item.routing_key == RoutingKey.CHANNELS_PROPERTY_ENTITY_DELETED:
+            close_all_sessions()
+
             try:
                 self.__connector.remove_device_channel_property(
                     property_id=uuid.UUID(item.data.get("property"), version=4),

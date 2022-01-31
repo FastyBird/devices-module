@@ -58,7 +58,7 @@ class EntityCreatedMixin:  # pylint: disable=too-few-public-methods
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    _created_at: Optional[datetime.datetime] = Column(  # type: ignore[assignment]
+    col_created_at: Optional[datetime.datetime] = Column(  # type: ignore[assignment]
         DateTime, name="created_at", nullable=True, default=None
     )
 
@@ -67,14 +67,14 @@ class EntityCreatedMixin:  # pylint: disable=too-few-public-methods
     @property
     def created_at(self) -> Optional[datetime.datetime]:
         """Entity created timestamp"""
-        return self._created_at
+        return self.col_created_at
 
     # -----------------------------------------------------------------------------
 
     @created_at.setter
     def created_at(self, created_at: Optional[datetime.datetime]) -> None:
         """Entity created timestamp setter"""
-        self._created_at = created_at
+        self.col_created_at = created_at
 
 
 class EntityUpdatedMixin:  # pylint: disable=too-few-public-methods
@@ -87,7 +87,7 @@ class EntityUpdatedMixin:  # pylint: disable=too-few-public-methods
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    _updated_at: Optional[datetime.datetime] = Column(  # type: ignore[assignment]
+    col_updated_at: Optional[datetime.datetime] = Column(  # type: ignore[assignment]
         DateTime, name="updated_at", nullable=True, default=None
     )
 
@@ -96,11 +96,11 @@ class EntityUpdatedMixin:  # pylint: disable=too-few-public-methods
     @property
     def updated_at(self) -> Optional[datetime.datetime]:
         """Entity updated timestamp"""
-        return self._updated_at
+        return self.col_updated_at
 
     # -----------------------------------------------------------------------------
 
     @updated_at.setter
     def updated_at(self, updated_at: Optional[datetime.datetime]) -> None:
         """Entity updated timestamp setter"""
-        self._updated_at = updated_at
+        self.col_updated_at = updated_at

@@ -61,7 +61,6 @@ class ConnectorConsumer(IConsumer):  # pylint: disable=too-few-public-methods
         RoutingKey.CONNECTOR_ACTION,
         RoutingKey.DEVICE_ACTION,
         RoutingKey.CHANNEL_ACTION,
-        RoutingKey.TRIGGER_ACTION,
     ]
 
     __queue: ConnectorQueue

@@ -46,7 +46,6 @@ from fastybird_devices_module.entities.base import (
     EntityCreatedMixin,
     EntityUpdatedMixin,
 )
-from fastybird_devices_module.entities.configuration import ConfigurationMixin
 from fastybird_devices_module.entities.property import PropertyMixin
 
 
@@ -94,11 +93,6 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     properties: List["ChannelPropertyEntity"] = relationship(  # type: ignore[assignment]
         "ChannelPropertyEntity",
-        back_populates="channel",
-        cascade="delete, delete-orphan",
-    )
-    configuration: List["ChannelConfigurationEntity"] = relationship(  # type: ignore[assignment]
-        "ChannelConfigurationEntity",
         back_populates="channel",
         cascade="delete, delete-orphan",
     )
@@ -340,56 +334,6 @@ class ChannelStaticPropertyEntity(ChannelPropertyEntity):
     def type(self) -> PropertyType:
         """Property type"""
         return PropertyType.STATIC
-
-
-class ChannelConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, ConfigurationMixin, Base):
-    """
-    Channel configuration entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/channel
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __tablename__: str = "fb_channels_configuration"
-
-    __table_args__ = (
-        Index("configuration_identifier_idx", "configuration_identifier"),
-        UniqueConstraint("configuration_identifier", "channel_id", name="configuration_identifier_unique"),
-        UniqueConstraint("configuration_key", name="configuration_key_unique"),
-        {
-            "mysql_engine": "InnoDB",
-            "mysql_collate": "utf8mb4_general_ci",
-            "mysql_charset": "utf8mb4",
-            "mysql_comment": "Device channels configurations rows",
-        },
-    )
-
-    channel_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_channels.channel_id", ondelete="CASCADE"), name="channel_id", nullable=False
-    )
-
-    channel: ChannelEntity = relationship(ChannelEntity, back_populates="configuration")  # type: ignore[assignment]
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, channel: ChannelEntity, identifier: str, configuration_id: Optional[uuid.UUID] = None) -> None:
-        super().__init__(identifier, configuration_id)
-
-        self.channel = channel
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(self) -> Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]:
-        """Transform entity to dictionary"""
-        return {
-            **super().to_dict(),
-            **{
-                "channel": uuid.UUID(bytes=self.channel_id).__str__(),
-                "owner": self.channel.device.owner,
-            },
-        }
 
 
 class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

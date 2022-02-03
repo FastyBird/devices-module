@@ -389,9 +389,6 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 		if ($relationEntity === Schemas\Channels\ChannelSchema::RELATIONSHIPS_PROPERTIES) {
 			return $this->buildResponse($request, $response, $channel->getProperties());
-
-		} elseif ($relationEntity === Schemas\Channels\ChannelSchema::RELATIONSHIPS_CONFIGURATION) {
-			return $this->buildResponse($request, $response, $channel->getConfiguration());
 		}
 
 		return parent::readRelationship($request, $response);

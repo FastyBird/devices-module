@@ -37,7 +37,6 @@ from fastybird_devices_module.entities.base import (
     EntityUpdatedMixin,
 )
 from fastybird_devices_module.entities.channel import (
-    ChannelConfigurationEntity,
     ChannelControlEntity,
     ChannelDynamicPropertyEntity,
     ChannelEntity,
@@ -48,7 +47,6 @@ from fastybird_devices_module.entities.connector import (
     ConnectorEntity,
 )
 from fastybird_devices_module.entities.device import (
-    DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
@@ -131,11 +129,9 @@ class EntitiesSubscriber:
         ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_CREATED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_CREATED,
         DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED,
-        DeviceConfigurationEntity: RoutingKey.DEVICES_CONFIGURATION_ENTITY_CREATED,
         DeviceControlEntity: RoutingKey.DEVICES_CONTROL_ENTITY_CREATED,
         ChannelEntity: RoutingKey.CHANNELS_ENTITY_CREATED,
         ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTY_ENTITY_CREATED,
-        ChannelConfigurationEntity: RoutingKey.CHANNELS_CONFIGURATION_ENTITY_CREATED,
         ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_CREATED,
     }
 
@@ -144,11 +140,9 @@ class EntitiesSubscriber:
         ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_UPDATED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_UPDATED,
         DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED,
-        DeviceConfigurationEntity: RoutingKey.DEVICES_CONFIGURATION_ENTITY_UPDATED,
         DeviceControlEntity: RoutingKey.DEVICES_CONTROL_ENTITY_UPDATED,
         ChannelEntity: RoutingKey.CHANNELS_ENTITY_UPDATED,
         ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED,
-        ChannelConfigurationEntity: RoutingKey.CHANNELS_CONFIGURATION_ENTITY_UPDATED,
         ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_UPDATED,
     }
 
@@ -157,11 +151,9 @@ class EntitiesSubscriber:
         ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_DELETED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_DELETED,
         DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_DELETED,
-        DeviceConfigurationEntity: RoutingKey.DEVICES_CONFIGURATION_ENTITY_DELETED,
         DeviceControlEntity: RoutingKey.DEVICES_CONTROL_ENTITY_DELETED,
         ChannelEntity: RoutingKey.CHANNELS_ENTITY_DELETED,
         ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTY_ENTITY_DELETED,
-        ChannelConfigurationEntity: RoutingKey.CHANNELS_CONFIGURATION_ENTITY_DELETED,
         ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_DELETED,
     }
 

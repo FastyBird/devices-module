@@ -21,8 +21,6 @@ import {
 } from '@/lib/models/devices/types'
 import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
 import { DevicePropertyInterface } from '@/lib/models/device-properties/types'
-import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfiguration'
-import { DeviceConfigurationInterface } from '@/lib/models/device-configuration/types'
 import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
 import Connector from '@/lib/models/connectors/Connector'
@@ -51,7 +49,6 @@ export default class Device extends Model implements DeviceInterface {
   children!: DeviceInterface[]
   channels!: ChannelInterface[]
   properties!: DevicePropertyInterface[]
-  configuration!: DeviceConfigurationInterface[]
   connector!: ConnectorInterface
   connectorId!: string
 
@@ -155,7 +152,6 @@ export default class Device extends Model implements DeviceInterface {
       children: this.hasMany(Device, 'parentId'),
       channels: this.hasMany(Channel, 'deviceId'),
       properties: this.hasMany(DeviceProperty, 'deviceId'),
-      configuration: this.hasMany(DeviceConfiguration, 'deviceId'),
 
       connector: this.belongsTo(Connector, 'id'),
       connectorBackward: this.hasOne(Connector, 'id', 'connectorId'),

@@ -44,18 +44,6 @@
           },
           "data" : []
         },
-        "configuration" : {
-          "links" : {
-            "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/configuration",
-            "related" : {
-              "href" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/configuration",
-              "meta" : {
-                "count" : 0
-              }
-            }
-          },
-          "data" : []
-        },
         "controls" : {
           "links" : {
             "self" : "/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/relationships/controls",

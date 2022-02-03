@@ -121,51 +121,6 @@ interface IChannel extends Entities\IEntity,
 	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty;
 
 	/**
-	 * @return Entities\Channels\Configuration\IRow[]
-	 */
-	public function getConfiguration(): array;
-
-	/**
-	 * @param Entities\Channels\Configuration\IRow[] $configuration
-	 *
-	 * @return void
-	 */
-	public function setConfiguration(array $configuration = []): void;
-
-	/**
-	 * @param Configuration\IRow $row
-	 *
-	 * @return void
-	 */
-	public function addConfigurationRow(Entities\Channels\Configuration\IRow $row): void;
-
-	/**
-	 * @param string $id
-	 *
-	 * @return Configuration\IRow|null
-	 */
-	public function getConfigurationRow(string $id): ?Entities\Channels\Configuration\IRow;
-
-	/**
-	 * @param Configuration\IRow $property
-	 *
-	 * @return void
-	 */
-	public function removeConfigurationRow(Entities\Channels\Configuration\IRow $property): void;
-
-	/**
-	 * @return bool
-	 */
-	public function hasConfigurationRow(string $configuration): bool;
-
-	/**
-	 * @param string|null $configuration
-	 *
-	 * @return Entities\Channels\Configuration\IRow|null
-	 */
-	public function findConfigurationRow(?string $configuration): ?Entities\Channels\Configuration\IRow;
-
-	/**
 	 * @return Entities\Channels\Controls\IControl[]
 	 */
 	public function getControls(): array;

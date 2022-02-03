@@ -35,7 +35,6 @@ from fastybird_devices_module.connectors.queue import ConnectorQueue
 from fastybird_devices_module.helpers import KeyHashHelpers
 from fastybird_devices_module.logger import Logger
 from fastybird_devices_module.managers.channel import (
-    ChannelConfigurationManager,
     ChannelControlsManager,
     ChannelPropertiesManager,
     ChannelsManager,
@@ -45,13 +44,11 @@ from fastybird_devices_module.managers.connector import (
     ConnectorsManager,
 )
 from fastybird_devices_module.managers.device import (
-    DeviceConfigurationManager,
     DeviceControlsManager,
     DevicePropertiesManager,
     DevicesManager,
 )
 from fastybird_devices_module.repositories.channel import (
-    ChannelsConfigurationRepository,
     ChannelsControlsRepository,
     ChannelsPropertiesRepository,
     ChannelsRepository,
@@ -61,7 +58,6 @@ from fastybird_devices_module.repositories.connector import (
     ConnectorsRepository,
 )
 from fastybird_devices_module.repositories.device import (
-    DevicesConfigurationRepository,
     DevicesControlsRepository,
     DevicesPropertiesRepository,
     DevicesRepository,
@@ -99,16 +95,12 @@ def register_services(  # pylint: disable=too-many-statements
     di["fb-devices-module_device-property-repository"] = di[DevicesPropertiesRepository]
     di[DevicesControlsRepository] = DevicesControlsRepository(session=di[OrmSession])
     di["fb-devices-module_device-control-repository"] = di[DevicesControlsRepository]
-    di[DevicesConfigurationRepository] = DevicesConfigurationRepository(session=di[OrmSession])
-    di["fb-devices-module_device-configuration-repository"] = di[DevicesConfigurationRepository]
     di[ChannelsRepository] = ChannelsRepository(session=di[OrmSession])
     di["fb-devices-module_channel-repository"] = di[ChannelsRepository]
     di[ChannelsPropertiesRepository] = ChannelsPropertiesRepository(session=di[OrmSession])
     di["fb-devices-module_channel-property-repository"] = di[ChannelsPropertiesRepository]
     di[ChannelsControlsRepository] = ChannelsControlsRepository(session=di[OrmSession])
     di["fb-devices-module_channel-control-repository"] = di[ChannelsControlsRepository]
-    di[ChannelsConfigurationRepository] = ChannelsConfigurationRepository(session=di[OrmSession])
-    di["fb-devices-module_channel-configuration-repository"] = di[ChannelsConfigurationRepository]
 
     # Entities managers
 
@@ -120,16 +112,12 @@ def register_services(  # pylint: disable=too-many-statements
     di["fb-devices-module_devices-manager"] = di[DevicesManager]
     di[DevicePropertiesManager] = DevicePropertiesManager(session=di[OrmSession])
     di["fb-devices-module_devices-properties-manager"] = di[DevicePropertiesManager]
-    di[DeviceConfigurationManager] = DeviceConfigurationManager(session=di[OrmSession])
-    di["fb-devices-module_devices-configuration-manager"] = di[DeviceConfigurationManager]
     di[DeviceControlsManager] = DeviceControlsManager(session=di[OrmSession])
     di["fb-devices-module_devices-controls-manager"] = di[DeviceControlsManager]
     di[ChannelsManager] = ChannelsManager(session=di[OrmSession])
     di["fb-devices-module_channels-manager"] = di[ChannelsManager]
     di[ChannelPropertiesManager] = ChannelPropertiesManager(session=di[OrmSession])
     di["fb-devices-module_channels-properties-manager"] = di[ChannelPropertiesManager]
-    di[ChannelConfigurationManager] = ChannelConfigurationManager(session=di[OrmSession])
-    di["fb-devices-module_channels-configuration-manager"] = di[ChannelConfigurationManager]
     di[ChannelControlsManager] = ChannelControlsManager(session=di[OrmSession])
     di["fb-devices-module_channels-controls-manager"] = di[ChannelControlsManager]
 

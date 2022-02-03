@@ -326,49 +326,6 @@ interface IDevice extends Entities\IEntity,
 	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty;
 
 	/**
-	 * @return Entities\Devices\Configuration\IRow[]
-	 */
-	public function getConfiguration(): array;
-
-	/**
-	 * @param Entities\Devices\Configuration\IRow[] $configuration
-	 */
-	public function setConfiguration(array $configuration = []): void;
-
-	/**
-	 * @param Configuration\IRow $row
-	 *
-	 * @return void
-	 */
-	public function addConfigurationRow(Entities\Devices\Configuration\IRow $row): void;
-
-	/**
-	 * @param string $id
-	 *
-	 * @return Configuration\IRow|null
-	 */
-	public function getConfigurationRow(string $id): ?Entities\Devices\Configuration\IRow;
-
-	/**
-	 * @param Entities\Devices\Configuration\IRow $stat
-	 *
-	 * @return void
-	 */
-	public function removeConfigurationRow(Entities\Devices\Configuration\IRow $stat): void;
-
-	/**
-	 * @return bool
-	 */
-	public function hasConfigurationRow(string $configuration): bool;
-
-	/**
-	 * @param string|null $configuration
-	 *
-	 * @return Entities\Devices\Configuration\IRow|null
-	 */
-	public function findConfigurationRow(?string $configuration): ?Entities\Devices\Configuration\IRow;
-
-	/**
 	 * @return Entities\Connectors\IConnector
 	 */
 	public function getConnector(): Entities\Connectors\IConnector;

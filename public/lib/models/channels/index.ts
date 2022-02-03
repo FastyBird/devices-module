@@ -38,7 +38,6 @@ import {
 } from '@/lib/jsonapi'
 import { ChannelJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
 import ChannelProperty from '@/lib/models/channel-properties/ChannelProperty'
-import ChannelConfiguration from '@/lib/models/channel-configuration/ChannelConfiguration'
 import ChannelControl from '@/lib/models/channel-controls/ChannelControl'
 import { v4 as uuid } from 'uuid'
 
@@ -122,7 +121,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     try {
       await Channel.api().get(
-        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels/${payload.id}?include=properties,configuration,controls`,
+        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels/${payload.id}?include=properties,controls`,
         apiOptions,
       )
 
@@ -153,7 +152,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     try {
       await Channel.api().get(
-        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels?include=properties,configuration,controls`,
+        `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels?include=properties,controls`,
         apiOptions,
       )
 
@@ -225,7 +224,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     } else {
       try {
         await Channel.api().post(
-          `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels?include=properties,configuration,controls`,
+          `${ModuleApiPrefix}/v1/devices/${payload.device.id}/channels?include=properties,controls`,
           jsonApiFormatter.serialize({
             stuff: createdEntity,
           }),
@@ -309,7 +308,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     try {
       await Channel.api().patch(
-        `${ModuleApiPrefix}/v1/devices/${updatedEntity.deviceId}/channels/${updatedEntity.id}?include=properties,configuration,controls`,
+        `${ModuleApiPrefix}/v1/devices/${updatedEntity.deviceId}/channels/${updatedEntity.id}?include=properties,controls`,
         jsonApiFormatter.serialize({
           stuff: updatedEntity,
         }),
@@ -368,7 +367,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
 
     try {
       await Channel.api().post(
-        `${ModuleApiPrefix}/v1/devices/${entityToSave.deviceId}/channels?include=properties,configuration,controls`,
+        `${ModuleApiPrefix}/v1/devices/${entityToSave.deviceId}/channels?include=properties,controls`,
         jsonApiFormatter.serialize({
           stuff: entityToSave,
         }),
@@ -429,7 +428,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     } else {
       try {
         await Channel.api().delete(
-          `${ModuleApiPrefix}/v1/devices/${payload.channel.deviceId}/channels/${payload.channel.id}?include=properties,configuration,controls`,
+          `${ModuleApiPrefix}/v1/devices/${payload.channel.deviceId}/channels/${payload.channel.id}?include=properties,controls`,
           {
             save: false,
           },
@@ -578,7 +577,6 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     commit('RESET_STATE')
 
     ChannelProperty.reset()
-    ChannelConfiguration.reset()
     ChannelControl.reset()
   },
 }

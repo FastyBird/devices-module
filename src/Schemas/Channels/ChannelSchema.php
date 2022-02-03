@@ -20,7 +20,6 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
-use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -48,7 +47,6 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_DEVICE = 'device';
 
 	public const RELATIONSHIPS_PROPERTIES = 'properties';
-	public const RELATIONSHIPS_CONFIGURATION = 'configuration';
 	public const RELATIONSHIPS_CONTROLS = 'controls';
 
 	/** @var Routing\IRouter */
@@ -136,11 +134,6 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONFIGURATION => [
-				self::RELATIONSHIP_DATA          => $channel->getConfiguration(),
-				self::RELATIONSHIP_LINKS_SELF    => true,
-				self::RELATIONSHIP_LINKS_RELATED => true,
-			],
 			self::RELATIONSHIPS_CONTROLS      => [
 				self::RELATIONSHIP_DATA          => $channel->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
@@ -172,22 +165,6 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 				true,
 				[
 					'count' => count($channel->getProperties()),
-				]
-			);
-
-		} elseif ($name === self::RELATIONSHIPS_CONFIGURATION) {
-			return new JsonApi\Schema\Link(
-				false,
-				$this->router->urlFor(
-					DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONFIGURATION_ROWS,
-					[
-						Router\Routes::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
-						Router\Routes::URL_CHANNEL_ID => $channel->getPlainId(),
-					]
-				),
-				true,
-				[
-					'count' => $channel->hasControl(MetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($channel->getConfiguration()) : 0,
 				]
 			);
 
@@ -235,7 +212,6 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 	{
 		if (
 			$name === self::RELATIONSHIPS_PROPERTIES
-			|| $name === self::RELATIONSHIPS_CONFIGURATION
 			|| $name === self::RELATIONSHIPS_CONTROLS
 		) {
 			return new JsonApi\Schema\Link(

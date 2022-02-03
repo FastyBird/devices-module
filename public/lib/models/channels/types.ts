@@ -16,11 +16,6 @@ import {
   ChannelPropertyEntityTypes,
   ChannelPropertyDataResponseInterface,
 } from '@/lib/models/channel-properties/types'
-import {
-  ChannelConfigurationInterface,
-  ChannelConfigurationEntityTypes,
-  ChannelConfigurationDataResponseInterface,
-} from '@/lib/models/channel-configuration/types'
 import { ChannelControlDataResponseInterface, ChannelControlEntityTypes } from '@/lib/models/channel-controls/types'
 
 // ENTITY TYPES
@@ -47,7 +42,6 @@ export interface ChannelInterface {
   relationshipNames: string[]
 
   properties: ChannelPropertyInterface[]
-  configuration: ChannelConfigurationInterface[]
 
   device: DeviceInterface | null
   deviceBackward: DeviceInterface | null
@@ -85,15 +79,6 @@ interface ChannelPropertiesRelationshipsResponseInterface extends TJsonApiRelati
   data: ChannelPropertyRelationshipResponseInterface[]
 }
 
-interface ChannelConfigurationRelationshipResponseInterface extends TJsonApiRelationshipData {
-  id: string
-  type: ChannelConfigurationEntityTypes
-}
-
-interface ChannelConfigurationRelationshipsResponseInterface extends TJsonApiRelation {
-  data: ChannelConfigurationRelationshipResponseInterface[]
-}
-
 interface ChannelControlRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
   type: ChannelControlEntityTypes
@@ -106,7 +91,6 @@ interface ChannelControlsRelationshipsResponseInterface extends TJsonApiRelation
 interface ChannelRelationshipsResponseInterface extends TJsonApiRelationships {
   device: ChannelDeviceRelationshipsResponseInterface
   properties: ChannelPropertiesRelationshipsResponseInterface
-  configuration: ChannelConfigurationRelationshipsResponseInterface
   controls: ChannelControlsRelationshipsResponseInterface
 }
 
@@ -119,12 +103,12 @@ export interface ChannelDataResponseInterface extends TJsonApiData {
 
 export interface ChannelResponseInterface extends TJsonApiBody {
   data: ChannelDataResponseInterface
-  included?: (DeviceDataResponseInterface | ChannelPropertyDataResponseInterface | ChannelConfigurationDataResponseInterface | ChannelControlDataResponseInterface)[]
+  included?: (DeviceDataResponseInterface | ChannelPropertyDataResponseInterface | ChannelControlDataResponseInterface)[]
 }
 
 export interface ChannelsResponseInterface extends TJsonApiBody {
   data: ChannelDataResponseInterface[]
-  included?: (DeviceDataResponseInterface | ChannelPropertyDataResponseInterface | ChannelConfigurationDataResponseInterface | ChannelControlDataResponseInterface)[]
+  included?: (DeviceDataResponseInterface | ChannelPropertyDataResponseInterface | ChannelControlDataResponseInterface)[]
 }
 
 // CREATE ENTITY INTERFACES

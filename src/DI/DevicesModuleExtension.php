@@ -103,9 +103,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('models.devicePropertyRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Properties\PropertyRepository::class);
 
-		$builder->addDefinition($this->prefix('models.deviceConfigurationRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Devices\Configuration\RowRepository::class);
-
 		$builder->addDefinition($this->prefix('models.deviceControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Controls\ControlRepository::class);
 
@@ -114,9 +111,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('models.channelPropertyRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Properties\PropertyRepository::class);
-
-		$builder->addDefinition($this->prefix('models.channelConfigurationRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Channels\Configuration\RowRepository::class);
 
 		$builder->addDefinition($this->prefix('models.channelControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Controls\ControlRepository::class);
@@ -136,10 +130,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Models\Devices\Properties\PropertiesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
-		$builder->addDefinition($this->prefix('models.devicesConfigurationManager'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Devices\Configuration\RowsManager::class)
-			->setArgument('entityCrud', '__placeholder__');
-
 		$builder->addDefinition($this->prefix('models.devicesControlsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Controls\ControlsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
@@ -150,10 +140,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('models.channelsPropertiesManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Properties\PropertiesManager::class)
-			->setArgument('entityCrud', '__placeholder__');
-
-		$builder->addDefinition($this->prefix('models.channelsConfigurationManager'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Channels\Configuration\RowsManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		$builder->addDefinition($this->prefix('models.channelsControlsManager'), new DI\Definitions\ServiceDefinition())
@@ -185,10 +171,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Controllers\DevicePropertiesV1Controller::class)
 			->addTag('nette.inject');
 
-		$builder->addDefinition($this->prefix('controllers.deviceConfiguration'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DeviceConfigurationV1Controller::class)
-			->addTag('nette.inject');
-
 		$builder->addDefinition($this->prefix('controllers.deviceControls'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DeviceControlsV1Controller::class)
 			->addTag('nette.inject');
@@ -199,10 +181,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('controllers.channelProperties'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ChannelPropertiesV1Controller::class)
-			->addTag('nette.inject');
-
-		$builder->addDefinition($this->prefix('controllers.channelConfiguration'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ChannelConfigurationV1Controller::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.channelControls'), new DI\Definitions\ServiceDefinition())
@@ -227,9 +205,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('schemas.device.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Properties\StaticPropertySchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.configuration'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Configuration\RowSchema::class);
-
 		$builder->addDefinition($this->prefix('schemas.device.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Controls\ControlSchema::class);
 
@@ -241,9 +216,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('schemas.channel.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Properties\StaticPropertySchema::class);
-
-		$builder->addDefinition($this->prefix('schemas.configuration'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Channels\Configuration\RowSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Controls\ControlSchema::class);
@@ -329,9 +301,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$devicesPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesPropertiesManager');
 		$devicesPropertiesManagerService->setBody('return new ' . Models\Devices\Properties\PropertiesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Properties\Property::class . '\'));');
 
-		$devicesConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesConfigurationManager');
-		$devicesConfigurationManagerService->setBody('return new ' . Models\Devices\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Configuration\Row::class . '\'));');
-
 		$channelsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsManager');
 		$channelsManagerService->setBody('return new ' . Models\Channels\ChannelsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Channel::class . '\'));');
 
@@ -340,9 +309,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$channelsPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsPropertiesManager');
 		$channelsPropertiesManagerService->setBody('return new ' . Models\Channels\Properties\PropertiesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Properties\Property::class . '\'));');
-
-		$channelsConfigurationManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsConfigurationManager');
-		$channelsConfigurationManagerService->setBody('return new ' . Models\Channels\Configuration\RowsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Configuration\Row::class . '\'));');
 
 		$connectorsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsManager');
 		$connectorsManagerService->setBody('return new ' . Models\Connectors\ConnectorsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Connector::class . '\'));');

@@ -29,7 +29,6 @@ from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
 from fastybird_devices_module.entities.device import (
-    DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceEntity,
     DevicePropertyEntity,
@@ -161,74 +160,6 @@ class DevicesPropertiesRepository:
         """Find all devices properties for device"""
         return (
             self.__session.query(DevicePropertyEntity).filter(DevicePropertyEntity.device_id == device_id.bytes).all()
-        )
-
-
-class DevicesConfigurationRepository:
-    """
-    Devices configuration repository
-
-    @package        FastyBird:DevicesModule!
-    @module         repositories/device
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __session: OrmSession
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(
-        self,
-        session: OrmSession,
-    ) -> None:
-        self.__session = session
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_id(self, configuration_id: uuid.UUID) -> Optional[DeviceConfigurationEntity]:
-        """Find configuration by provided database identifier"""
-        return self.__session.query(DeviceConfigurationEntity).get(configuration_id.bytes)
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_key(self, configuration_key: str) -> Optional[DeviceConfigurationEntity]:
-        """Find configuration by provided key"""
-        return (
-            self.__session.query(DeviceConfigurationEntity)
-            .filter(DeviceConfigurationEntity.col_key == configuration_key)
-            .first()
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_identifier(
-        self, device_id: uuid.UUID, configuration_identifier: str
-    ) -> Optional[DeviceConfigurationEntity]:
-        """Find configuration by provided identifier"""
-        return (
-            self.__session.query(DeviceConfigurationEntity)
-            .filter(
-                DeviceConfigurationEntity.device_id == device_id.bytes,
-                DeviceConfigurationEntity.col_identifier == configuration_identifier,
-            )
-            .first()
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def get_all(self) -> List[DeviceConfigurationEntity]:
-        """Find all devices configuration"""
-        return self.__session.query(DeviceConfigurationEntity).all()
-
-    # -----------------------------------------------------------------------------
-
-    def get_all_by_device(self, device_id: uuid.UUID) -> List[DeviceConfigurationEntity]:
-        """Find all devices configuration for device"""
-        return (
-            self.__session.query(DeviceConfigurationEntity)
-            .filter(DeviceConfigurationEntity.device_id == device_id.bytes)
-            .all()
         )
 
 

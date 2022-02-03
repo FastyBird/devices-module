@@ -53,7 +53,6 @@ from fastybird_devices_module.entities.base import (
     EntityCreatedMixin,
     EntityUpdatedMixin,
 )
-from fastybird_devices_module.entities.configuration import ConfigurationMixin
 from fastybird_devices_module.entities.property import PropertyMixin
 from fastybird_devices_module.exceptions import InvalidArgumentException
 
@@ -138,11 +137,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
 
     properties: List["DevicePropertyEntity"] = relationship(  # type: ignore[assignment]
         "DevicePropertyEntity",
-        back_populates="device",
-        cascade="delete, delete-orphan",
-    )
-    configuration: List["DeviceConfigurationEntity"] = relationship(  # type: ignore[assignment]
-        "DeviceConfigurationEntity",
         back_populates="device",
         cascade="delete, delete-orphan",
     )
@@ -581,56 +575,6 @@ class DeviceStaticPropertyEntity(DevicePropertyEntity):
     def type(self) -> PropertyType:
         """Property type"""
         return PropertyType.STATIC
-
-
-class DeviceConfigurationEntity(EntityCreatedMixin, EntityUpdatedMixin, ConfigurationMixin, Base):
-    """
-    Device configuration entity
-
-    @package        FastyBird:DevicesModule!
-    @module         entities/device
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __tablename__: str = "fb_devices_configuration"
-
-    __table_args__ = (
-        Index("configuration_identifier_idx", "configuration_identifier"),
-        UniqueConstraint("configuration_identifier", "device_id", name="configuration_identifier_unique"),
-        UniqueConstraint("configuration_key", name="configuration_key_unique"),
-        {
-            "mysql_engine": "InnoDB",
-            "mysql_collate": "utf8mb4_general_ci",
-            "mysql_charset": "utf8mb4",
-            "mysql_comment": "Devices configurations rows",
-        },
-    )
-
-    device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
-    )
-
-    device: DeviceEntity = relationship(DeviceEntity, back_populates="configuration")  # type: ignore[assignment]
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(self, device: DeviceEntity, identifier: str, configuration_id: Optional[uuid.UUID] = None) -> None:
-        super().__init__(identifier, configuration_id)
-
-        self.device = device
-
-    # -----------------------------------------------------------------------------
-
-    def to_dict(self) -> Dict[str, Union[str, int, float, bool, List[Dict[str, str]], None]]:
-        """Transform entity to dictionary"""
-        return {
-            **super().to_dict(),
-            **{
-                "device": uuid.UUID(bytes=self.device_id).__str__(),
-                "owner": self.device.owner,
-            },
-        }
 
 
 class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

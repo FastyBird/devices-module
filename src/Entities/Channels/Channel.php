@@ -99,14 +99,6 @@ class Channel implements IChannel
 	private Common\Collections\Collection $properties;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Channels\Configuration\IRow>
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Configuration\Row", mappedBy="channel", cascade={"persist", "remove"}, orphanRemoval=true)
-	 */
-	private Common\Collections\Collection $configuration;
-
-	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\Controls\IControl>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -145,7 +137,6 @@ class Channel implements IChannel
 		$this->name = $name;
 
 		$this->properties = new Common\Collections\ArrayCollection();
-		$this->configuration = new Common\Collections\ArrayCollection();
 		$this->controls = new Common\Collections\ArrayCollection();
 	}
 
@@ -226,88 +217,6 @@ class Channel implements IChannel
 		$found = $this->properties
 			->filter(function (Entities\Channels\Properties\IProperty $row) use ($property): bool {
 				return $property === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfiguration(): array
-	{
-		return $this->configuration->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setConfiguration(array $configuration = []): void
-	{
-		$this->configuration = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($configuration as $entity) {
-			if (!$this->configuration->contains($entity)) {
-				// ...and assign them to collection
-				$this->configuration->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addConfigurationRow(Entities\Channels\Configuration\IRow $row): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->configuration->contains($row)) {
-			// ...and assign it to collection
-			$this->configuration->add($row);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfigurationRow(string $id): ?Entities\Channels\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Channels\Configuration\IRow $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeConfigurationRow(Entities\Channels\Configuration\IRow $property): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->configuration->contains($property)) {
-			// ...and remove it from collection
-			$this->configuration->removeElement($property);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasConfigurationRow(string $configuration): bool
-	{
-		return $this->hasConfigurationRow($configuration) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findConfigurationRow(?string $configuration): ?Entities\Channels\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Channels\Configuration\IRow $row) use ($configuration): bool {
-				return $configuration === $row->getIdentifier();
 			});
 
 		return $found->isEmpty() ? null : $found->first();

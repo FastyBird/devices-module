@@ -19,14 +19,11 @@ declare module '@vuex-orm/core' {
 
 // Re-export models types
 export * from '@/lib/types'
-export * from '@/lib/models/channel-configuration/types'
 export * from '@/lib/models/channel-controls/types'
 export * from '@/lib/models/channel-properties/types'
 export * from '@/lib/models/channels/types'
-export * from '@/lib/models/configuration/types'
 export * from '@/lib/models/connectors/types'
 export * from '@/lib/models/connector-controls/types'
-export * from '@/lib/models/device-configuration/types'
 export * from '@/lib/models/device-controls/types'
 export * from '@/lib/models/device-properties/types'
 export * from '@/lib/models/devices/types'

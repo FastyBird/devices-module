@@ -38,7 +38,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		);
 
 		Assert::same([
-			'preFlush',
 			'onFlush',
 			'prePersist',
 			'postPersist',

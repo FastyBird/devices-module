@@ -33,12 +33,6 @@ return [
 		StatusCodeInterface::STATUS_OK,
 		__DIR__ . '/responses/devices.relationships.properties.json',
 	],
-	'readRelationshipsConfiguration' => [
-		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/configuration',
-		'Bearer ' . VALID_TOKEN,
-		StatusCodeInterface::STATUS_OK,
-		__DIR__ . '/responses/devices.relationships.configuration.json',
-	],
 	'readRelationshipsChannels'      => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/relationships/channels',
 		'Bearer ' . VALID_TOKEN,

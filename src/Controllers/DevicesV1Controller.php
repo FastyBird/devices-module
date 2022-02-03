@@ -403,9 +403,6 @@ class DevicesV1Controller extends BaseV1Controller
 		if ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PROPERTIES) {
 			return $this->buildResponse($request, $response, $device->getProperties());
 
-		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONFIGURATION) {
-			return $this->buildResponse($request, $response, $device->getConfiguration());
-
 		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CHILDREN) {
 			return $this->buildResponse($request, $response, $device->getChildren());
 

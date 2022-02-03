@@ -201,14 +201,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected Common\Collections\Collection $properties;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Devices\Configuration\IRow>
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Configuration\Row", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
-	 */
-	protected Common\Collections\Collection $configuration;
-
-	/**
 	 * @var Entities\Connectors\IConnector
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -247,7 +239,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		$this->channels = new Common\Collections\ArrayCollection();
 		$this->controls = new Common\Collections\ArrayCollection();
 		$this->properties = new Common\Collections\ArrayCollection();
-		$this->configuration = new Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -528,88 +519,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		$found = $this->properties
 			->filter(function (Entities\Devices\Properties\IProperty $row) use ($property): bool {
 				return $property === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfiguration(): array
-	{
-		return $this->configuration->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setConfiguration(array $configuration = []): void
-	{
-		$this->configuration = new Common\Collections\ArrayCollection();
-
-		// Process all passed entities...
-		foreach ($configuration as $entity) {
-			if (!$this->configuration->contains($entity)) {
-				// ...and assign them to collection
-				$this->configuration->add($entity);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addConfigurationRow(Entities\Devices\Configuration\IRow $row): void
-	{
-		// Check if collection does not contain inserting entity
-		if (!$this->configuration->contains($row)) {
-			// ...and assign it to collection
-			$this->configuration->add($row);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfigurationRow(string $id): ?Entities\Devices\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Devices\Configuration\IRow $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function removeConfigurationRow(Entities\Devices\Configuration\IRow $stat): void
-	{
-		// Check if collection contain removing entity...
-		if ($this->configuration->contains($stat)) {
-			// ...and remove it from collection
-			$this->configuration->removeElement($stat);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasConfigurationRow(string $configuration): bool
-	{
-		return $this->findConfigurationRow($configuration) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findConfigurationRow(?string $configuration): ?Entities\Devices\Configuration\IRow
-	{
-		$found = $this->configuration
-			->filter(function (Entities\Devices\Configuration\IRow $row) use ($configuration): bool {
-				return $configuration === $row->getIdentifier();
 			});
 
 		return $found->isEmpty() ? null : $found->first();

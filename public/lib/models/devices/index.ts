@@ -43,7 +43,6 @@ import {
 } from '@/lib/jsonapi'
 import { DeviceJsonModelInterface, ModuleApiPrefix, SemaphoreTypes } from '@/lib/types'
 import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
-import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfiguration'
 import DeviceControl from '@/lib/models/device-controls/DeviceControl'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
 
@@ -123,7 +122,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().get(
-        `${ModuleApiPrefix}/v1/devices/${payload.id}?include=properties,configuration,controls,connector`,
+        `${ModuleApiPrefix}/v1/devices/${payload.id}?include=properties,controls,connector`,
         apiOptions,
       )
 
@@ -163,7 +162,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().get(
-        `${ModuleApiPrefix}/v1/devices?include=properties,configuration,controls,connector`,
+        `${ModuleApiPrefix}/v1/devices?include=properties,controls,connector`,
         apiOptions,
       )
 
@@ -248,7 +247,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     } else {
       try {
         await Device.api().post(
-          `${ModuleApiPrefix}/v1/devices?include=properties,configuration,controls,connector`,
+          `${ModuleApiPrefix}/v1/devices?include=properties,controls,connector`,
           jsonApiFormatter.serialize({
             stuff: createdEntity,
           }),
@@ -331,7 +330,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     } else {
       try {
         await Device.api().patch(
-          `${ModuleApiPrefix}/v1/devices/${updatedEntity.id}?include=properties,configuration,controls,connector`,
+          `${ModuleApiPrefix}/v1/devices/${updatedEntity.id}?include=properties,controls,connector`,
           jsonApiFormatter.serialize({
             stuff: updatedEntity,
           }),
@@ -387,7 +386,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().post(
-        `${ModuleApiPrefix}/v1/devices?include=properties,configuration,controls,connector`,
+        `${ModuleApiPrefix}/v1/devices?include=properties,controls,connector`,
         jsonApiFormatter.serialize({
           stuff: entityToSave,
         }),
@@ -583,7 +582,6 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     commit('RESET_STATE')
 
     DeviceProperty.reset()
-    DeviceConfiguration.reset()
     DeviceControl.reset()
 
     Channel.reset()

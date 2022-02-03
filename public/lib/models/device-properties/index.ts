@@ -289,7 +289,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
     const device = Device.find(payload.property.deviceId)
 
     if (device === null) {
-      throw new Error('devices-module.device-configuration.update.failed')
+      throw new Error('devices-module.device-properties.update.failed')
     }
 
     try {

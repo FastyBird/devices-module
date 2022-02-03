@@ -23,7 +23,6 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
-use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -47,7 +46,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CHANNELS = 'channels';
 
 	public const RELATIONSHIPS_PROPERTIES = 'properties';
-	public const RELATIONSHIPS_CONFIGURATION = 'configuration';
 	public const RELATIONSHIPS_CONTROLS = 'controls';
 
 	public const RELATIONSHIPS_CONNECTOR = 'connector';
@@ -151,11 +149,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONFIGURATION => [
-				self::RELATIONSHIP_DATA          => $device->getConfiguration(),
-				self::RELATIONSHIP_LINKS_SELF    => true,
-				self::RELATIONSHIP_LINKS_RELATED => true,
-			],
 			self::RELATIONSHIPS_CONTROLS      => [
 				self::RELATIONSHIP_DATA          => $device->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
@@ -234,21 +227,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				true,
 				[
 					'count' => count($device->getProperties()),
-				]
-			);
-
-		} elseif ($name === self::RELATIONSHIPS_CONFIGURATION) {
-			return new JsonApi\Schema\Link(
-				false,
-				$this->router->urlFor(
-					DevicesModule\Constants::ROUTE_NAME_DEVICE_CONFIGURATION_ROWS,
-					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
-					]
-				),
-				true,
-				[
-					'count' => $device->hasControl(MetadataTypes\ControlNameType::NAME_CONFIGURE) ? count($device->getConfiguration()) : 0,
 				]
 			);
 
@@ -339,7 +317,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	{
 		if (
 			$name === self::RELATIONSHIPS_PROPERTIES
-			|| $name === self::RELATIONSHIPS_CONFIGURATION
 			|| $name === self::RELATIONSHIPS_CONTROLS
 			|| $name === self::RELATIONSHIPS_CHANNELS
 			|| $name === self::RELATIONSHIPS_CHILDREN

@@ -25,7 +25,6 @@ from typing import Dict, List, Type, Union
 # Library libs
 from fastybird_devices_module.entities.connector import ConnectorEntity
 from fastybird_devices_module.entities.device import (
-    DeviceConfigurationEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
@@ -156,54 +155,6 @@ class DevicePropertiesManager(BaseManager[DevicePropertyEntity]):
     def delete(self, device_property: DevicePropertyEntity) -> bool:
         """Delete device property entity"""
         return super().delete_entity(entity_id=device_property.id, entity_type=DevicePropertyEntity)
-
-
-class DeviceConfigurationManager(BaseManager[DeviceConfigurationEntity]):
-    """
-    Device configuration manager
-
-    @package        FastyBird:DevicesModule!
-    @module         managers/device
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __REQUIRED_FIELDS: List[str] = ["device", "identifier"]
-    __WRITABLE_FIELDS: List[str] = ["name", "comment", "data_type", "default", "value", "min", "max", "step", "values"]
-
-    # -----------------------------------------------------------------------------
-
-    def create(self, data: Dict) -> DeviceConfigurationEntity:
-        """Create new device configuration entity"""
-        if "device_id" in data and "device" not in data:
-            device_id = data.get("device_id")
-
-            if isinstance(device_id, uuid.UUID):
-                data["device"] = self._session.query(DeviceEntity).get(device_id.bytes)
-
-        return super().create_entity(
-            data={**data, **{"configuration_id": data.get("id", None)}},
-            entity_type=DeviceConfigurationEntity,
-            required_fields=self.__REQUIRED_FIELDS,
-            writable_fields=self.__WRITABLE_FIELDS,
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def update(self, data: Dict, device_configuration: DeviceConfigurationEntity) -> DeviceConfigurationEntity:
-        """Update device configuration entity"""
-        return super().update_entity(
-            data=data,
-            entity_id=device_configuration.id,
-            entity_type=DeviceConfigurationEntity,
-            writable_fields=self.__WRITABLE_FIELDS,
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def delete(self, device_configuration: DeviceConfigurationEntity) -> bool:
-        """Delete device configuration entity"""
-        return super().delete_entity(entity_id=device_configuration.id, entity_type=DeviceConfigurationEntity)
 
 
 class DeviceControlsManager(BaseManager[DeviceControlEntity]):

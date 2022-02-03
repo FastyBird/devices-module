@@ -29,7 +29,6 @@ from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
 from fastybird_devices_module.entities.channel import (
-    ChannelConfigurationEntity,
     ChannelControlEntity,
     ChannelEntity,
     ChannelPropertyEntity,
@@ -149,74 +148,6 @@ class ChannelsPropertiesRepository:
         return (
             self.__session.query(ChannelPropertyEntity)
             .filter(ChannelPropertyEntity.channel_id == channel_id.bytes)
-            .all()
-        )
-
-
-class ChannelsConfigurationRepository:
-    """
-    Channel configuration repository
-
-    @package        FastyBird:DevicesModule!
-    @module         repositories/channel
-
-    @author         Adam Kadlec <adam.kadlec@fastybird.com>
-    """
-
-    __session: OrmSession
-
-    # -----------------------------------------------------------------------------
-
-    def __init__(
-        self,
-        session: OrmSession,
-    ) -> None:
-        self.__session = session
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_id(self, configuration_id: uuid.UUID) -> Optional[ChannelConfigurationEntity]:
-        """Find configuration by provided database identifier"""
-        return self.__session.query(ChannelConfigurationEntity).get(configuration_id.bytes)
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_key(self, configuration_key: str) -> Optional[ChannelConfigurationEntity]:
-        """Find configuration by provided key"""
-        return (
-            self.__session.query(ChannelConfigurationEntity)
-            .filter(ChannelConfigurationEntity.col_key == configuration_key)
-            .first()
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_identifier(
-        self, channel_id: uuid.UUID, configuration_identifier: str
-    ) -> Optional[ChannelConfigurationEntity]:
-        """Find configuration by provided identifier"""
-        return (
-            self.__session.query(ChannelConfigurationEntity)
-            .filter(
-                ChannelConfigurationEntity.channel_id == channel_id.bytes,
-                ChannelConfigurationEntity.col_identifier == configuration_identifier,
-            )
-            .first()
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def get_all(self) -> List[ChannelConfigurationEntity]:
-        """Find all channels configuration"""
-        return self.__session.query(ChannelConfigurationEntity).all()
-
-    # -----------------------------------------------------------------------------
-
-    def get_all_by_channel(self, channel_id: uuid.UUID) -> List[ChannelConfigurationEntity]:
-        """Find all channels configuration for channel"""
-        return (
-            self.__session.query(ChannelConfigurationEntity)
-            .filter(ChannelConfigurationEntity.channel_id == channel_id.bytes)
             .all()
         )
 

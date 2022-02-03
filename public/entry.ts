@@ -5,16 +5,12 @@ import Device from '@/lib/models/devices/Device'
 import devices from '@/lib/models/devices'
 import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
 import deviceProperties from '@/lib/models/device-properties'
-import DeviceConfiguration from '@/lib/models/device-configuration/DeviceConfiguration'
-import devicesConfiguration from '@/lib/models/device-configuration'
 import DeviceControl from '@/lib/models/device-controls/DeviceControl'
 import devicesControl from '@/lib/models/device-controls'
 import Channel from '@/lib/models/channels/Channel'
 import channels from '@/lib/models/channels'
 import ChannelProperty from '@/lib/models/channel-properties/ChannelProperty'
 import channelProperties from '@/lib/models/channel-properties'
-import ChannelConfiguration from '@/lib/models/channel-configuration/ChannelConfiguration'
-import channelsConfiguration from '@/lib/models/channel-configuration'
 import ChannelControl from '@/lib/models/channel-controls/ChannelControl'
 import channelsControl from '@/lib/models/channel-controls'
 import Connector from '@/lib/models/connectors/Connector'
@@ -37,11 +33,9 @@ const install: Plugin = function installVuexOrmWamp(components: ComponentsInterf
 
   config.database.register(Device, devices)
   config.database.register(DeviceProperty, deviceProperties)
-  config.database.register(DeviceConfiguration, devicesConfiguration)
   config.database.register(DeviceControl, devicesControl)
   config.database.register(Channel, channels)
   config.database.register(ChannelProperty, channelProperties)
-  config.database.register(ChannelConfiguration, channelsConfiguration)
   config.database.register(ChannelControl, channelsControl)
   config.database.register(Connector, connectors)
   config.database.register(ConnectorControl, connectorsControl)
@@ -57,13 +51,11 @@ export default plugin
 
 // Export model classes
 export {
-  ChannelConfiguration,
   ChannelControl,
   ChannelProperty,
   Channel,
   Connector,
   ConnectorControl,
-  DeviceConfiguration,
   DeviceControl,
   DeviceProperty,
   Device,

@@ -7,11 +7,9 @@ import {
 
 import Device from '@/lib/models/devices/Device'
 import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
-import { DeviceConfigurationEntityTypes } from '@/lib/models/device-configuration/types'
 import Channel from '@/lib/models/channels/Channel'
 import { ChannelEntityTypes } from '@/lib/models/channels/types'
 import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
-import { ChannelConfigurationEntityTypes } from '@/lib/models/channel-configuration/types'
 import Connector from '@/lib/models/connectors/Connector'
 import { RelationInterface } from '@/lib/types'
 import { DeviceEntityTypes } from '@/lib/models/devices/types'
@@ -25,14 +23,12 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
     if (
       Object.values<string>(ChannelEntityTypes).includes(model.type)
       || Object.values<string>(DevicePropertyEntityTypes).includes(model.type)
-      || Object.values<string>(DeviceConfigurationEntityTypes).includes(model.type)
     ) {
       exceptProps.push('deviceId')
       exceptProps.push('device')
       exceptProps.push('deviceBackward')
     } else if (
       Object.values<string>(ChannelPropertyEntityTypes).includes(model.type)
-      || Object.values<string>(ChannelConfigurationEntityTypes).includes(model.type)
     ) {
       exceptProps.push('channelId')
       exceptProps.push('channel')

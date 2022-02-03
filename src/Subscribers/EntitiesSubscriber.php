@@ -84,47 +84,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	public function getSubscribedEvents(): array
 	{
 		return [
-			ORM\Events::preFlush,
 			ORM\Events::onFlush,
 			ORM\Events::prePersist,
 			ORM\Events::postPersist,
 			ORM\Events::postUpdate,
 		];
-	}
-
-	/**
-	 * @return void
-	 */
-	public function preFlush(): void
-	{
-		$uow = $this->entityManager->getUnitOfWork();
-
-		foreach ($uow->getScheduledEntityDeletions() as $entity) {
-			// Check for valid entity
-			if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
-				continue;
-			}
-
-			if (
-				(
-					$entity instanceof Entities\Devices\Controls\IControl
-					|| $entity instanceof Entities\Channels\Controls\IControl
-				)
-				&& $entity->getName() === MetadataTypes\ControlNameType::NAME_CONFIGURE
-			) {
-				if ($entity instanceof Entities\Devices\Controls\IControl) {
-					foreach ($entity->getDevice()->getConfiguration() as $row) {
-						$uow->scheduleForDelete($row);
-					}
-				}
-
-				if ($entity instanceof Entities\Channels\Controls\IControl) {
-					foreach ($entity->getChannel()->getConfiguration() as $row) {
-						$uow->scheduleForDelete($row);
-					}
-				}
-			}
-		}
 	}
 
 	/**

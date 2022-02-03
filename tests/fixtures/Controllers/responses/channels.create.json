@@ -40,18 +40,6 @@
         },
         "data" : []
       },
-      "configuration" : {
-        "links" : {
-          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/e0f879e3-0e8f-4b72-bde4-7e3fbb89decc/relationships/configuration",
-          "related" : {
-            "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/e0f879e3-0e8f-4b72-bde4-7e3fbb89decc/configuration",
-            "meta" : {
-              "count" : 0
-            }
-          }
-        },
-        "data" : []
-      },
       "controls" : {
         "links" : {
           "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/e0f879e3-0e8f-4b72-bde4-7e3fbb89decc/relationships/controls",

@@ -22,7 +22,7 @@
 
 ## What is FastyBird IoT devices module?
 
-Devices module is a combined [Nette framework](https://nette.org) extension and [Vex ORM](https://vuex-orm.org) plugin
+Devices module is a combined [Nette framework](https://nette.org) extension, [Vuex ORM](https://vuex-orm.org) plugin
 and also [Python](https://python.org) module for managing connectors and connected devices and their basic logic.
 
 [FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is

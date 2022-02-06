@@ -46,7 +46,7 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_connectors"
+    __tablename__: str = "fb_devices_module_connectors"
 
     col_type: str = Column(VARCHAR(40), name="connector_type", nullable=False)  # type: ignore[assignment]
 
@@ -215,7 +215,7 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_connectors_controls"
+    __tablename__: str = "fb_devices_module_connectors_controls"
 
     col_control_id: bytes = Column(BINARY(16), primary_key=True, name="control_id")  # type: ignore[assignment]
     col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]

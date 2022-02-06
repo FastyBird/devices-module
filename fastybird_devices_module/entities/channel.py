@@ -59,7 +59,7 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_channels"
+    __tablename__: str = "fb_devices_module_channels"
 
     __table_args__ = (
         Index("channel_identifier_idx", "channel_identifier"),
@@ -223,7 +223,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_channels_properties"
+    __tablename__: str = "fb_devices_module_channels_properties"
 
     __table_args__ = (
         Index("property_identifier_idx", "property_identifier"),
@@ -346,7 +346,7 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_channels_controls"
+    __tablename__: str = "fb_devices_module_channels_controls"
 
     __table_args__ = (
         Index("control_name_idx", "control_name"),

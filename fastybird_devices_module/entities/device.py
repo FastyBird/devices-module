@@ -67,7 +67,7 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_devices"
+    __tablename__: str = "fb_devices_module_devices"
 
     __table_args__ = (
         Index("device_identifier_idx", "device_identifier"),
@@ -464,7 +464,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_devices_properties"
+    __tablename__: str = "fb_devices_module_devices_properties"
 
     __table_args__ = (
         Index("property_identifier_idx", "property_identifier"),
@@ -587,7 +587,7 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __tablename__: str = "fb_devices_controls"
+    __tablename__: str = "fb_devices_module_devices_controls"
 
     __table_args__ = (
         Index("control_name_idx", "control_name"),

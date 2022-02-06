@@ -88,7 +88,7 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     device_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
+        BINARY(16), ForeignKey("fb_devices_module_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
     )
 
     properties: List["ChannelPropertyEntity"] = relationship(  # type: ignore[assignment]
@@ -242,7 +242,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     col_type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
     channel_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_channels.channel_id"), name="channel_id", nullable=False
+        BINARY(16), ForeignKey("fb_devices_module_channels.channel_id"), name="channel_id", nullable=False
     )
 
     channel: ChannelEntity = relationship(ChannelEntity, back_populates="properties")  # type: ignore[assignment]
@@ -365,7 +365,7 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     channel_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_channels.channel_id", ondelete="CASCADE"), name="channel_id", nullable=False
+        BINARY(16), ForeignKey("fb_devices_module_channels.channel_id", ondelete="CASCADE"), name="channel_id", nullable=False
     )
 
     channel: ChannelEntity = relationship(ChannelEntity, back_populates="controls")  # type: ignore[assignment]

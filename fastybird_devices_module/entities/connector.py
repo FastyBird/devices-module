@@ -221,7 +221,7 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     connector_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=False
+        BINARY(16), ForeignKey("fb_devices_module_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=False
     )
 
     connector: ConnectorEntity = relationship(ConnectorEntity, back_populates="controls")  # type: ignore[assignment]

@@ -125,10 +125,10 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="SET NULL"), name="parent_id", nullable=True
+        BINARY(16), ForeignKey("fb_devices_module_devices.device_id", ondelete="SET NULL"), name="parent_id", nullable=True
     )
     connector_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=False
+        BINARY(16), ForeignKey("fb_devices_module_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=False
     )
 
     children: List["DeviceEntity"] = relationship(  # type: ignore[assignment]
@@ -483,7 +483,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
     col_type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id"), name="device_id", nullable=False
+        BINARY(16), ForeignKey("fb_devices_module_devices.device_id"), name="device_id", nullable=False
     )
 
     device: DeviceEntity = relationship(DeviceEntity, back_populates="properties")  # type: ignore[assignment]
@@ -606,7 +606,7 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
+        BINARY(16), ForeignKey("fb_devices_module_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
     )
 
     device: DeviceEntity = relationship(DeviceEntity, back_populates="controls")  # type: ignore[assignment]

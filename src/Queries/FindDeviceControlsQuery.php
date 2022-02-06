@@ -55,26 +55,14 @@ class FindDeviceControlsQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param string $key
+	 * @param string $name
 	 *
 	 * @return void
 	 */
-	public function byKey(string $key): void
+	public function byName(string $name): void
 	{
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($key): void {
-			$qb->andWhere('c.key = :key')->setParameter('key', $key);
-		};
-	}
-
-	/**
-	 * @param string $identifier
-	 *
-	 * @return void
-	 */
-	public function byIdentifier(string $identifier): void
-	{
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($identifier): void {
-			$qb->andWhere('c.identifier = :identifier')->setParameter('identifier', $identifier);
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($name): void {
+			$qb->andWhere('c.name = :name')->setParameter('name', $name);
 		};
 	}
 

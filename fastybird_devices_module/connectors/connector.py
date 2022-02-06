@@ -19,17 +19,19 @@ Devices module connectors connector worker module
 """
 
 # Python base dependencies
+import pkgutil
+import re
 import time
+import types
 import uuid
 from abc import ABC, abstractmethod
 from importlib import util as import_util
-from types import ModuleType
 from typing import Dict, Optional, Union
 
 # Library libs
 from fastybird_metadata.routing import RoutingKey
 from fastybird_metadata.types import ControlAction
-from inflection import underscore
+from inflection import dasherize
 from kink import di
 from sqlalchemy.orm import close_all_sessions
 
@@ -375,21 +377,20 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    def load(self, connector_name: str, connector_id: uuid.UUID) -> None:
+    def load(self, connector_id: uuid.UUID) -> None:
         """Try to load connector"""
         try:
-            module = self.__import_connector_module(module_name=f"fastybird_{underscore(connector_name)}_connector")
-
-            if module is None:
-                raise AttributeError(f"Connector {connector_name} couldn't be loaded")
-
-            if not hasattr(module, "create_connector"):
-                raise ValueError(f"Connector {connector_name} hasn't initialization method")
+            connectors = self.__import_connectors()
 
             connector = self.__connectors_repository.get_by_id(connector_id=connector_id)
 
             if connector is None:
-                return
+                raise AttributeError(f"Connector {connector_id} was not found in database")
+
+            if dasherize(connector.type) not in connectors:
+                raise AttributeError(f"Connector {connector.type} couldn't be loaded")
+
+            module = connectors[dasherize(connector.type)]
 
             # Add loaded connector to container to be accessible & autowired
             di["connector"] = connector
@@ -397,7 +398,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector = getattr(module, "create_connector")(connector=connector, logger=self.__logger)
 
             if not isinstance(self.__connector, IConnector):
-                raise AttributeError(f"Instance of connector {connector_name} couldn't be created")
+                raise AttributeError(f"Instance of connector {connector.type} couldn't be created")
 
             self.__connector.initialize(settings=connector.params)
 
@@ -407,16 +408,24 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     # -----------------------------------------------------------------------------
 
     @staticmethod
-    def __import_connector_module(module_name: str) -> Optional[ModuleType]:
-        module_spec = import_util.find_spec(name=module_name)
+    def __import_connectors() -> Dict[str, types.ModuleType]:
+        connectors: Dict[str, types.ModuleType] = {}
 
-        if module_spec is None:
-            return None
+        for module in pkgutil.iter_modules():
+            match = re.compile("fastybird_(?P<name>[a-zA-Z_]+)_connector")
+            parsed_module_name = match.fullmatch(module.name)
 
-        module = import_util.module_from_spec(module_spec)
-        module_spec.loader.exec_module(module)  # type: ignore[union-attr]
+            if parsed_module_name is not None:
+                module_spec = import_util.find_spec(name=module.name)
 
-        return module
+                if module_spec is not None:
+                    loaded_module = import_util.module_from_spec(module_spec)
+                    module_spec.loader.exec_module(loaded_module)  # type: ignore[union-attr]
+
+                    if hasattr(loaded_module, "create_connector"):
+                        connectors[parsed_module_name.group("name")] = loaded_module
+
+        return connectors
 
     # -----------------------------------------------------------------------------
 

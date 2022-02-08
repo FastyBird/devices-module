@@ -28,7 +28,6 @@ use Throwable;
 abstract class Property implements IProperty
 {
 
-	use TKey;
 	use TEntity;
 	use TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
@@ -42,13 +41,6 @@ abstract class Property implements IProperty
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
 	protected Uuid\UuidInterface $id;
-
-	/**
-	 * @var string|null
-	 *
-	 * @ORM\Column(type="string", name="property_key", length=50)
-	 */
-	protected ?string $key = null;
 
 	/**
 	 * @var string
@@ -175,7 +167,6 @@ abstract class Property implements IProperty
 		$data = [
 			'id'                 => $this->getPlainId(),
 			'type'               => $this->getType()->getValue(),
-			'key'                => $this->getKey(),
 			'identifier'         => $this->getIdentifier(),
 			'name'               => $this->getName(),
 			'settable'           => $this->isSettable(),

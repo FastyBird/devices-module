@@ -16,7 +16,7 @@ import {
 // ============
 
 export enum ConnectorEntityTypes {
-  VIRTUAL = 'devices-module/connector-virtual',
+  VIRTUAL = 'devices-module/connector/virtual',
 }
 
 // ENTITY INTERFACE

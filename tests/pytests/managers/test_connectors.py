@@ -54,7 +54,6 @@ class TestDevicesManager(DbTestCase):
         self.assertEqual("26d7a945-ba29-471e-9e3c-304ef0acb199", connector_entity.id.__str__())
         self.assertEqual("Other virtual connector", connector_entity.name)
         self.assertFalse(connector_entity.enabled)
-        self.assertIsNotNone(connector_entity.key)
         self.assertIsNotNone(connector_entity.created_at)
 
         entity = connector_repository.get_by_id(

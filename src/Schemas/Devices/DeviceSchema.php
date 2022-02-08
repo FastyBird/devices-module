@@ -86,7 +86,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	public function getAttributes($device, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			'key'        => $device->getKey(),
 			'identifier' => $device->getIdentifier(),
 			'name'       => $device->getName(),
 			'comment'    => $device->getComment(),

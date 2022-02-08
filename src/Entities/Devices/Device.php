@@ -37,9 +37,7 @@ use Throwable;
  *       "comment"="Devices"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="device_identifier_unique", columns={"device_identifier"}, options={"where": "connector_id IS NULL"}),
- *       @ORM\UniqueConstraint(name="device_identifier_connector_unique", columns={"device_identifier", "connector_id"}, options={"where": "connector_id IS NOT NULL"}),
- *       @ORM\UniqueConstraint(name="device_key_unique", columns={"device_key"})
+ *       @ORM\UniqueConstraint(name="device_identifier_unique", columns={"device_identifier", "connector_id"})
  *     },
  *     indexes={
  *       @ORM\Index(name="device_identifier_idx", columns={"device_identifier"}),
@@ -57,7 +55,6 @@ use Throwable;
 abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
 {
 
-	use Entities\TKey;
 	use Entities\TEntity;
 	use Entities\TEntityParams;
 	use SimpleAuthEntities\TEntityOwner;
@@ -80,13 +77,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 * @ORM\Column(type="string", name="device_identifier", length=50, nullable=false)
 	 */
 	protected string $identifier;
-
-	/**
-	 * @var string|null
-	 *
-	 * @ORM\Column(type="string", name="device_key", length=50, nullable=false)
-	 */
-	protected ?string $key = null;
 
 	/**
 	 * @var Entities\Devices\IDevice|null
@@ -532,7 +522,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		return [
 			'id'         => $this->getPlainId(),
 			'type'       => $this->getType(),
-			'key'        => $this->getKey(),
 			'identifier' => $this->getIdentifier(),
 			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
 			'name'       => $this->getName(),

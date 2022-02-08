@@ -33,9 +33,6 @@ use Throwable;
  *       "collate"="utf8mb4_general_ci",
  *       "charset"="utf8mb4",
  *       "comment"="Communication connectors"
- *     },
- *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="connector_key_unique", columns={"connector_key"})
  *     }
  * )
  * @ORM\InheritanceType("SINGLE_TABLE")
@@ -48,7 +45,6 @@ use Throwable;
 abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
 {
 
-	use Entities\TKey;
 	use Entities\TEntity;
 	use Entities\TEntityParams;
 	use SimpleAuthEntities\TEntityOwner;
@@ -73,13 +69,6 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	protected string $name;
 
 	/**
-	 * @var string|null
-	 *
-	 * @ORM\Column(type="string", name="connector_key", length=50)
-	 */
-	protected ?string $key = null;
-
-	/**
 	 * @var bool
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -94,6 +83,14 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
 	protected Common\Collections\Collection $devices;
+
+	/**
+	 * @var Common\Collections\Collection<int, Entities\Connectors\Properties\IProperty>
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Properties\Property", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
+	 */
+	private Common\Collections\Collection $properties;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Connectors\Controls\IControl>
@@ -118,6 +115,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 		$this->name = $name;
 
 		$this->devices = new Common\Collections\ArrayCollection();
+		$this->properties = new Common\Collections\ArrayCollection();
 		$this->controls = new Common\Collections\ArrayCollection();
 	}
 
@@ -127,6 +125,88 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	public function getDevices(): array
 	{
 		return $this->devices->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getProperties(): array
+	{
+		return $this->properties->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setProperties(array $properties = []): void
+	{
+		$this->properties = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($properties as $entity) {
+			if (!$this->properties->contains($entity)) {
+				// ...and assign them to collection
+				$this->properties->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addProperty(Entities\Connectors\Properties\IProperty $property): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->properties->contains($property)) {
+			// ...and assign it to collection
+			$this->properties->add($property);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getProperty(string $id): ?Entities\Connectors\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Connectors\Properties\IProperty $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeProperty(Entities\Connectors\Properties\IProperty $property): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->properties->contains($property)) {
+			// ...and remove it from collection
+			$this->properties->removeElement($property);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasProperty(string $property): bool
+	{
+		return $this->findProperty($property) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findProperty(string $property): ?Entities\Connectors\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Connectors\Properties\IProperty $row) use ($property): bool {
+				return $property === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -220,7 +300,6 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 			'id'      => $this->getPlainId(),
 			'type'    => $this->getType(),
 			'name'    => $this->getName(),
-			'key'     => $this->getKey(),
 			'enabled' => $this->isEnabled(),
 
 			'owner' => $this->getOwnerId(),

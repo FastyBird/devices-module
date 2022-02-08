@@ -10,7 +10,7 @@
     "self" : "/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
   },
   "data" : {
-    "type" : "devices-module/connector-virtual",
+    "type" : "devices-module/connector/virtual",
     "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
     "attributes" : {
       "name" : "Virtual",
@@ -20,22 +20,34 @@
       "devices" : {
         "data" : [
           {
-            "type" : "devices-module/device-virtual",
+            "type" : "devices-module/device/virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           {
-            "type" : "devices-module/device-virtual",
+            "type" : "devices-module/device/virtual",
             "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596"
           },
           {
-            "type" : "devices-module/device-virtual",
+            "type" : "devices-module/device/virtual",
             "id" : "bf4cd870-2aac-45f0-a85e-e1cefd2d6d9a"
           },
           {
-            "type" : "devices-module/device-virtual",
+            "type" : "devices-module/device/virtual",
             "id" : "e36a2788-1ef8-4cdf-ab09-4735f191a509"
           }
         ]
+      },
+      "properties" : {
+        "links" : {
+          "self" : "/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/relationships/properties",
+          "related" : {
+            "href" : "/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties",
+            "meta" : {
+              "count" : 0
+            }
+          }
+        },
+        "data" : []
       },
       "controls" : {
         "links" : {
@@ -49,7 +61,7 @@
         },
         "data" : [
           {
-            "type" : "devices-module/connector-control",
+            "type" : "devices-module/control/connector",
             "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
           }
         ]

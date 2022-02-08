@@ -64,7 +64,6 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			'key'                => $property->getKey(),
 			'identifier'         => $property->getIdentifier(),
 			'name'               => $property->getName(),
 			'settable'           => $property->isSettable(),

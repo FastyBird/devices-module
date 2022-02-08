@@ -1,6 +1,6 @@
 {
   "data" : {
-    "type" : "devices-module/device-property-static",
+    "type" : "devices-module/device/property/static",
     "id" : "50b0fd41-0a6e-44f0-b513-c536208afccf",
     "attributes" : {
       "identifier" : "battery",

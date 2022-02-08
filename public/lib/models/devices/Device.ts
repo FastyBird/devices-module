@@ -33,7 +33,6 @@ export default class Device extends Model implements DeviceInterface {
   type!: DeviceEntityTypes
   draft!: boolean
   parentId!: string | null
-  key!: string
   identifier!: string
   name!: string | null
   comment!: string | null
@@ -130,7 +129,6 @@ export default class Device extends Model implements DeviceInterface {
 
       parentId: this.string(null).nullable(),
 
-      key: this.string(''),
       identifier: this.string(''),
       name: this.string(null).nullable(),
       comment: this.string(null).nullable(),

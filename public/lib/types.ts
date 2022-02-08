@@ -9,6 +9,7 @@ import { ChannelEntityTypes } from '@/lib/models/channels/types'
 import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
 import { ChannelControlEntityTypes } from '@/lib/models/channel-controls/types'
 import { ConnectorEntityTypes } from '@/lib/models/connectors/types'
+import { ConnectorPropertyEntityTypes } from '@/lib/models/connector-properties/types'
 import { ConnectorControlEntityTypes } from '@/lib/models/connector-controls/types'
 
 export interface DeviceJsonModelInterface extends TJsonaModel {
@@ -46,6 +47,11 @@ export interface ConnectorJsonModelInterface extends TJsonaModel {
   type: ConnectorEntityTypes
 }
 
+export interface ConnectorPropertyJsonModelInterface extends TJsonaModel {
+  id: string
+  type: ConnectorPropertyEntityTypes
+}
+
 export interface ConnectorControlJsonModelInterface extends TJsonaModel {
   id: string
   type: ConnectorControlEntityTypes
@@ -53,7 +59,7 @@ export interface ConnectorControlJsonModelInterface extends TJsonaModel {
 
 export interface RelationInterface extends TJsonaModel {
   id: string
-  type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceControlEntityTypes | ChannelPropertyEntityTypes | ChannelControlEntityTypes | ConnectorEntityTypes | ConnectorControlEntityTypes
+  type: DeviceEntityTypes | ChannelEntityTypes | DevicePropertyEntityTypes | DeviceControlEntityTypes | ChannelPropertyEntityTypes | ChannelControlEntityTypes | ConnectorEntityTypes | ConnectorPropertyEntityTypes | ConnectorControlEntityTypes
 }
 
 export const ModuleApiPrefix = `/${ModulePrefix.MODULE_DEVICES}`

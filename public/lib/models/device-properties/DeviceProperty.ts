@@ -10,7 +10,6 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 import Property from '@/lib/models/properties/Property'
 import {
   DevicePropertyCreateInterface,
-  DevicePropertyEntityTypes,
   DevicePropertyInterface,
   DevicePropertyUpdateInterface,
 } from '@/lib/models/device-properties/types'
@@ -18,7 +17,6 @@ import {
 // ENTITY MODEL
 // ============
 export default class DeviceProperty extends Property implements DevicePropertyInterface {
-  type!: DevicePropertyEntityTypes
   device!: DeviceInterface | null
   deviceBackward!: DeviceInterface | null
   deviceId!: string

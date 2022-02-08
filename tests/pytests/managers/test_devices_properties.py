@@ -68,7 +68,6 @@ class TestDevicePropertyEntity(DbTestCase):
         self.assertEqual("26d7a945-ba29-471e-9e3c-304ef0acb199", property_entity.id.__str__())
         self.assertEqual("property-identifier", property_entity.identifier)
         self.assertEqual("Property name", property_entity.name)
-        self.assertIsNotNone(property_entity.key)
         self.assertIsNotNone(property_entity.created_at)
 
         entity = property_repository.get_by_id(

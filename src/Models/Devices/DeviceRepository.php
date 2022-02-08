@@ -38,11 +38,11 @@ final class DeviceRepository implements IDeviceRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository|null
+	 * @var ORM\EntityRepository[]
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\IDevice>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Devices\IDevice>[]
 	 */
-	private ?ORM\EntityRepository $repository = null;
+	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */
 	private Persistence\ManagerRegistry $managerRegistry;
@@ -56,12 +56,45 @@ final class DeviceRepository implements IDeviceRepository
 	 * {@inheritDoc}
 	 */
 	public function findOneBy(
-		Queries\FindDevicesQuery $queryObject
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
 	): ?Entities\Devices\IDevice {
 		/** @var Entities\Devices\IDevice|null $device */
-		$device = $queryObject->fetchOne($this->getRepository());
+		$device = $queryObject->fetchOne($this->getRepository($type));
 
 		return $device;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
+	public function findAllBy(
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
+	): array {
+		$result = $queryObject->fetch($this->getRepository($type));
+
+		return is_array($result) ? $result : $result->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
+	public function getResultSet(
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
+	): DoctrineOrmQuery\ResultSet {
+		$result = $queryObject->fetch($this->getRepository($type));
+
+		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
+			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+		}
+
+		return $result;
 	}
 
 	/**
@@ -73,49 +106,19 @@ final class DeviceRepository implements IDeviceRepository
 	 *
 	 * @phpstan-return ORM\EntityRepository<Entities\Devices\IDevice>
 	 */
-	private function getRepository(string $type = Entities\Devices\Device::class): ORM\EntityRepository
+	private function getRepository(string $type): ORM\EntityRepository
 	{
-		if (!isset($this->repository)) {
+		if (!isset($this->repository[$type])) {
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
 				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
 			}
 
-			$this->repository = $repository;
+			$this->repository[$type] = $repository;
 		}
 
-		return $this->repository;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function findAllBy(
-		Queries\FindDevicesQuery $queryObject
-	): array {
-		$result = $queryObject->fetch($this->getRepository());
-
-		return is_array($result) ? $result : $result->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function getResultSet(
-		Queries\FindDevicesQuery $queryObject
-	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
-		}
-
-		return $result;
+		return $this->repository[$type];
 	}
 
 }

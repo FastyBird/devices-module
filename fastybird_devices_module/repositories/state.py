@@ -26,8 +26,24 @@ from typing import Optional
 # Library libs
 from fastybird_devices_module.state.property import (
     IChannelPropertyState,
+    IConnectorPropertyState,
     IDevicePropertyState,
 )
+
+
+class IConnectorPropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods
+    """
+    State repository for connector property
+
+    @package        FastyBird:ConnectorsModule!
+    @module         repositories/state
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    @abstractmethod
+    def get_by_id(self, property_id: uuid.UUID) -> Optional[IConnectorPropertyState]:
+        """Find connector property state record by provided database identifier"""
 
 
 class IDevicePropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods

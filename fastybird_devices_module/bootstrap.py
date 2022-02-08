@@ -32,7 +32,6 @@ from sqlalchemy.orm import Session as OrmSession
 from fastybird_devices_module.connectors.connector import Connector
 from fastybird_devices_module.connectors.consumer import ConnectorConsumer
 from fastybird_devices_module.connectors.queue import ConnectorQueue
-from fastybird_devices_module.helpers import KeyHashHelpers
 from fastybird_devices_module.logger import Logger
 from fastybird_devices_module.managers.channel import (
     ChannelControlsManager,
@@ -80,9 +79,6 @@ def register_services(  # pylint: disable=too-many-statements
     di[Logger] = Logger(logger=logger)
     di["fb-devices-module_logger"] = di[Logger]
 
-    di[KeyHashHelpers] = KeyHashHelpers()
-    di["fb-devices-module_helpers-key-hash"] = di[KeyHashHelpers]
-
     # Entities repositories
 
     di[ConnectorsRepository] = ConnectorsRepository(session=di[OrmSession])
@@ -123,7 +119,7 @@ def register_services(  # pylint: disable=too-many-statements
 
     # Entities subscribers
 
-    di[EntitiesSubscriber] = EntitiesSubscriber(session=di[OrmSession], key_hash_helpers=di[KeyHashHelpers])
+    di[EntitiesSubscriber] = EntitiesSubscriber(session=di[OrmSession])
     di["fb-devices-module_entities-subscriber"] = di[EntitiesSubscriber]
     di[EntityCreatedSubscriber] = EntityCreatedSubscriber()
     di["fb-devices-module_entity-created-subscriber"] = di[EntityCreatedSubscriber]

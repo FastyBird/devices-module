@@ -368,7 +368,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
       throw new ApiError(
         'devices-module.channel-properties.save.failed',
         e,
-        'Save draft device failed.',
+        'Save draft channel property failed.',
       )
     } finally {
       commit('CLEAR_SEMAPHORE', {
@@ -403,7 +403,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
       throw new OrmError(
         'devices-module.channel-properties.delete.failed',
         e,
-        'Delete device failed.',
+        'Delete channel property failed.',
       )
     }
 
@@ -440,7 +440,7 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
         throw new OrmError(
           'devices-module.channel-properties.delete.failed',
           e,
-          'Delete device failed.',
+          'Delete channel property failed.',
         )
       } finally {
         commit('CLEAR_SEMAPHORE', {

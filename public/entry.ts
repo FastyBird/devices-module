@@ -15,6 +15,8 @@ import ChannelControl from '@/lib/models/channel-controls/ChannelControl'
 import channelsControl from '@/lib/models/channel-controls'
 import Connector from '@/lib/models/connectors/Connector'
 import connectors from '@/lib/models/connectors'
+import ConnectorProperty from '@/lib/models/connector-properties/ConnectorProperty'
+import connectorProperties from '@/lib/models/connector-properties'
 import ConnectorControl from '@/lib/models/connector-controls/ConnectorControl'
 import connectorsControl from '@/lib/models/connector-controls'
 
@@ -38,6 +40,7 @@ const install: Plugin = function installVuexOrmWamp(components: ComponentsInterf
   config.database.register(ChannelProperty, channelProperties)
   config.database.register(ChannelControl, channelsControl)
   config.database.register(Connector, connectors)
+  config.database.register(ConnectorProperty, connectorProperties)
   config.database.register(ConnectorControl, connectorsControl)
 }
 
@@ -51,14 +54,15 @@ export default plugin
 
 // Export model classes
 export {
-  ChannelControl,
-  ChannelProperty,
-  Channel,
-  Connector,
-  ConnectorControl,
-  DeviceControl,
-  DeviceProperty,
   Device,
+  DeviceProperty,
+  DeviceControl,
+  Channel,
+  ChannelProperty,
+  ChannelControl,
+  Connector,
+  ConnectorProperty,
+  ConnectorControl,
 }
 
 export * from '@/lib/errors'

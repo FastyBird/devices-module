@@ -33,8 +33,7 @@ use Throwable;
  *       "comment"="Device channels"
  *     },
  *     uniqueConstraints={
- *       @ORM\UniqueConstraint(name="channel_identifier_unique", columns={"channel_identifier", "device_id"}),
- *       @ORM\UniqueConstraint(name="channel_key_unique", columns={"channel_key"})
+ *       @ORM\UniqueConstraint(name="channel_identifier_unique", columns={"channel_identifier", "device_id"})
  *     },
  *     indexes={
  *       @ORM\Index(name="channel_identifier_idx", columns={"channel_identifier"})
@@ -44,7 +43,6 @@ use Throwable;
 class Channel implements IChannel
 {
 
-	use Entities\TKey;
 	use Entities\TEntity;
 	use Entities\TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
@@ -58,13 +56,6 @@ class Channel implements IChannel
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
 	 */
 	protected Uuid\UuidInterface $id;
-
-	/**
-	 * @var string|null
-	 *
-	 * @ORM\Column(type="string", name="channel_key", length=50)
-	 */
-	private ?string $key = null;
 
 	/**
 	 * @var string
@@ -311,7 +302,6 @@ class Channel implements IChannel
 	{
 		return [
 			'id'         => $this->getPlainId(),
-			'key'        => $this->getKey(),
 			'identifier' => $this->getIdentifier(),
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),

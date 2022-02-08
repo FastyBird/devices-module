@@ -18,7 +18,6 @@
       "type" : "devices-module/channel",
       "id" : "6821f8e9-ae69-4d5c-9b7c-d2b213f1ae0a",
       "attributes" : {
-        "key" : "bLikxq",
         "identifier" : "channel-two",
         "name" : "Channel two",
         "comment" : null
@@ -29,7 +28,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "devices-module/device-virtual",
+            "type" : "devices-module/device/virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         },
@@ -45,11 +44,11 @@
           },
           "data" : [
             {
-              "type" : "devices-module/channel-property-dynamic",
+              "type" : "devices-module/channel/property/dynamic",
               "id" : "24c436f4-a2e4-4d2b-b910-1a3ff785b784"
             },
             {
-              "type" : "devices-module/channel-property-dynamic",
+              "type" : "devices-module/channel/property/dynamic",
               "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
             }
           ]
@@ -66,7 +65,7 @@
           },
           "data" : [
             {
-              "type" : "devices-module/channel-control",
+              "type" : "devices-module/control/channel",
               "id" : "177d6fc7-1905-4fd9-b847-e2da8189dd6a"
             }
           ]

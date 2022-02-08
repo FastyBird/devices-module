@@ -52,7 +52,6 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         BINARY(16), primary_key=True, name="property_id", default=uuid.uuid4
     )
     col_identifier: str = Column(VARCHAR(50), name="property_identifier", nullable=False)  # type: ignore[assignment]
-    col_key: str = Column(VARCHAR(50), name="property_key", unique=True, nullable=False)  # type: ignore[assignment]
     col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="property_name", nullable=True, default=None
     )
@@ -117,20 +116,6 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     def identifier(self) -> str:
         """Property unique identifier"""
         return self.col_identifier
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def key(self) -> str:
-        """Property unique key"""
-        return self.col_key
-
-    # -----------------------------------------------------------------------------
-
-    @key.setter
-    def key(self, key: str) -> None:
-        """Property unique key setter"""
-        self.col_key = key
 
     # -----------------------------------------------------------------------------
 
@@ -418,7 +403,6 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         ] = {
             "id": self.id.__str__(),
             "type": self.type.value,
-            "key": self.key,
             "identifier": self.identifier,
             "name": self.name,
             "settable": self.settable,

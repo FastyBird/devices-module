@@ -24,7 +24,6 @@ export default class Channel extends Model implements ChannelInterface {
   id!: string
   type!: ChannelEntityTypes
   draft!: boolean
-  key!: string
   identifier!: string
   name!: string | null
   comment!: string | null
@@ -95,7 +94,6 @@ export default class Channel extends Model implements ChannelInterface {
 
       draft: this.boolean(false),
 
-      key: this.string(''),
       identifier: this.string(''),
       name: this.string(null).nullable(),
       comment: this.string(null).nullable(),

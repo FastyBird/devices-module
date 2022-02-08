@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 
 /**
- * Device channel property repository interface
+ * Device property repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -32,20 +32,30 @@ interface IPropertyRepository
 
 	/**
 	 * @param Queries\FindChannelPropertiesQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return Entities\Channels\Properties\IProperty|null
+	 *
+	 * @phpstan-param class-string $type
 	 */
-	public function findOneBy(Queries\FindChannelPropertiesQuery $queryObject): ?Entities\Channels\Properties\IProperty;
+	public function findOneBy(
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
+	): ?Entities\Channels\Properties\IProperty;
 
 	/**
 	 * @param Queries\FindChannelPropertiesQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
+	 *
+	 * @phpstan-param class-string $type
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\IProperty>
 	 */
 	public function getResultSet(
-		Queries\FindChannelPropertiesQuery $queryObject
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
 	): DoctrineOrmQuery\ResultSet;
 
 }

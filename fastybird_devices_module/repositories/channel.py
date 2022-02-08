@@ -63,12 +63,6 @@ class ChannelsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, channel_key: str) -> Optional[ChannelEntity]:
-        """Find channel by provided key"""
-        return self.__session.query(ChannelEntity).filter(ChannelEntity.col_key == channel_key).first()
-
-    # -----------------------------------------------------------------------------
-
     def get_by_identifier(self, device_id: uuid.UUID, channel_identifier: str) -> Optional[ChannelEntity]:
         """Find channel by provided identifier"""
         return (
@@ -115,12 +109,6 @@ class ChannelsPropertiesRepository:
     def get_by_id(self, property_id: uuid.UUID) -> Optional[ChannelPropertyEntity]:
         """Find property by provided database identifier"""
         return self.__session.query(ChannelPropertyEntity).get(property_id.bytes)
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_key(self, property_key: str) -> Optional[ChannelPropertyEntity]:
-        """Find property by provided key"""
-        return self.__session.query(ChannelPropertyEntity).filter(ChannelPropertyEntity.col_key == property_key).first()
 
     # -----------------------------------------------------------------------------
 

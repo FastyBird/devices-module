@@ -11,13 +11,16 @@ import {
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import { cleanInvalid } from '@/lib/helpers'
+import { ConnectorPropertyEntityTypes } from '@/lib/models/connector-properties/types'
+import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
+import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
 
 // ENTITY MODEL
 // ============
 export default class Property extends Model implements PropertyInterface {
   id!: string
+  type!: ConnectorPropertyEntityTypes | DevicePropertyEntityTypes | ChannelPropertyEntityTypes
   draft!: boolean
-  key!: string
   identifier!: string
   name!: string | null
   settable!: boolean
@@ -100,7 +103,15 @@ export default class Property extends Model implements PropertyInterface {
     return this.queryable
   }
 
-  get formattedActualValue(): string {
+  get formattedActualValue(): string | null {
+    if (
+      this.type !== ConnectorPropertyEntityTypes.DYNAMIC
+      && this.type !== DevicePropertyEntityTypes.DYNAMIC
+      && this.type !== ChannelPropertyEntityTypes.DYNAMIC
+    ) {
+      return null
+    }
+
     const storeInstance = Property.store()
     const actualValue = normalizeValue(this.dataType, this.actualValue !== null ? String(this.actualValue) : null, this.format)
 
@@ -153,6 +164,14 @@ export default class Property extends Model implements PropertyInterface {
 
   get formattedExpectedValue(): string | null {
     if (this.expectedValue === null) {
+      return null
+    }
+
+    if (
+      this.type !== ConnectorPropertyEntityTypes.DYNAMIC
+      && this.type !== DevicePropertyEntityTypes.DYNAMIC
+      && this.type !== ChannelPropertyEntityTypes.DYNAMIC
+    ) {
       return null
     }
 
@@ -243,7 +262,6 @@ export default class Property extends Model implements PropertyInterface {
 
       draft: this.boolean(false),
 
-      key: this.string(''),
       identifier: this.string(''),
       name: this.string(null).nullable(),
       settable: this.boolean(false),
@@ -274,16 +292,44 @@ export default class Property extends Model implements PropertyInterface {
       return properties.map((property: PropertyInterface) => {
         property.invalid = cleanInvalid(property.dataType, property.invalid)
 
-        property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-        property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        if (
+          property.type === ConnectorPropertyEntityTypes.DYNAMIC
+          || property.type === DevicePropertyEntityTypes.DYNAMIC
+          || property.type === ChannelPropertyEntityTypes.DYNAMIC
+        ) {
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        }
+
+        if (
+          property.type === ConnectorPropertyEntityTypes.STATIC
+          || property.type === DevicePropertyEntityTypes.STATIC
+          || property.type === ChannelPropertyEntityTypes.STATIC
+        ) {
+          property.value = normalizeValue(property.dataType, String(property.value), property.format)
+        }
 
         return property
       })
     } else {
       properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
-      properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-      properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      if (
+        properties.type === ConnectorPropertyEntityTypes.DYNAMIC
+        || properties.type === DevicePropertyEntityTypes.DYNAMIC
+        || properties.type === ChannelPropertyEntityTypes.DYNAMIC
+      ) {
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      }
+
+      if (
+        properties.type === ConnectorPropertyEntityTypes.STATIC
+        || properties.type === DevicePropertyEntityTypes.STATIC
+        || properties.type === ChannelPropertyEntityTypes.STATIC
+      ) {
+        properties.value = normalizeValue(properties.dataType, String(properties.value), properties.format)
+      }
 
       return properties
     }
@@ -294,16 +340,44 @@ export default class Property extends Model implements PropertyInterface {
       return properties.map((property: PropertyInterface) => {
         property.invalid = cleanInvalid(property.dataType, property.invalid)
 
-        property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-        property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        if (
+          property.type === ConnectorPropertyEntityTypes.DYNAMIC
+          || property.type === DevicePropertyEntityTypes.DYNAMIC
+          || property.type === ChannelPropertyEntityTypes.DYNAMIC
+        ) {
+          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
+          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
+        }
+
+        if (
+          property.type === ConnectorPropertyEntityTypes.STATIC
+          || property.type === DevicePropertyEntityTypes.STATIC
+          || property.type === ChannelPropertyEntityTypes.STATIC
+        ) {
+          property.value = normalizeValue(property.dataType, String(property.value), property.format)
+        }
 
         return property
       })
     } else {
       properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
-      properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-      properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      if (
+        properties.type === ConnectorPropertyEntityTypes.DYNAMIC
+        || properties.type === DevicePropertyEntityTypes.DYNAMIC
+        || properties.type === ChannelPropertyEntityTypes.DYNAMIC
+      ) {
+        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
+        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
+      }
+
+      if (
+        properties.type === ConnectorPropertyEntityTypes.STATIC
+        || properties.type === DevicePropertyEntityTypes.STATIC
+        || properties.type === ChannelPropertyEntityTypes.STATIC
+      ) {
+        properties.value = normalizeValue(properties.dataType, String(properties.value), properties.format)
+      }
 
       return properties
     }

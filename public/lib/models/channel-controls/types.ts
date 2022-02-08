@@ -16,7 +16,7 @@ import {
 // ============
 
 export enum ChannelControlEntityTypes {
-  CONTROL = 'devices-module/channel-control',
+  CONTROL = 'devices-module/control/channel',
 }
 
 // ENTITY INTERFACE

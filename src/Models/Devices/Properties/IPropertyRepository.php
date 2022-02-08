@@ -32,22 +32,30 @@ interface IPropertyRepository
 
 	/**
 	 * @param Queries\FindDevicePropertiesQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return Entities\Devices\Properties\IProperty|null
+	 *
+	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
-		Queries\FindDevicePropertiesQuery $queryObject
+		Queries\FindDevicePropertiesQuery $queryObject,
+		string $type = Entities\Devices\Properties\Property::class
 	): ?Entities\Devices\Properties\IProperty;
 
 	/**
 	 * @param Queries\FindDevicePropertiesQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
+	 *
+	 * @phpstan-param class-string $type
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\IProperty>
 	 */
 	public function getResultSet(
-		Queries\FindDevicePropertiesQuery $queryObject
+		Queries\FindDevicePropertiesQuery $queryObject,
+		string $type = Entities\Devices\Properties\Property::class
 	): DoctrineOrmQuery\ResultSet;
 
 }

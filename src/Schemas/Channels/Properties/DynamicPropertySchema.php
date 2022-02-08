@@ -41,7 +41,7 @@ final class DynamicPropertySchema extends PropertySchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/channel-property-dynamic';
+	public const SCHEMA_TYPE = 'devices-module/channel/property/dynamic';
 
 	/** @var Models\States\IChannelPropertyRepository|null */
 	private ?Models\States\IChannelPropertyRepository $propertyRepository;

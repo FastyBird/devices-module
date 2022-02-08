@@ -39,7 +39,7 @@ final class ControlSchema extends JsonApiSchemas\JsonApiSchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/connector-control';
+	public const SCHEMA_TYPE = 'devices-module/control/connector';
 
 	/**
 	 * Define relationships names

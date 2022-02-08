@@ -64,7 +64,6 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     __table_args__ = (
         Index("channel_identifier_idx", "channel_identifier"),
         UniqueConstraint("channel_identifier", "device_id", name="channel_identifier_unique"),
-        UniqueConstraint("channel_key", name="channel_key_unique"),
         {
             "mysql_engine": "InnoDB",
             "mysql_collate": "utf8mb4_general_ci",
@@ -77,7 +76,6 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         BINARY(16), primary_key=True, name="channel_id", default=uuid.uuid4
     )
     col_identifier: str = Column(VARCHAR(50), name="channel_identifier", nullable=False)  # type: ignore[assignment]
-    col_key: str = Column(VARCHAR(50), name="channel_key", nullable=False, unique=True)  # type: ignore[assignment]
     col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="channel_name", nullable=True, default=None
     )
@@ -88,7 +86,10 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     device_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices_module_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
+        BINARY(16),
+        ForeignKey("fb_devices_module_devices.device_id", ondelete="CASCADE"),
+        name="device_id",
+        nullable=False,
     )
 
     properties: List["ChannelPropertyEntity"] = relationship(  # type: ignore[assignment]
@@ -142,20 +143,6 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     # -----------------------------------------------------------------------------
 
     @property
-    def key(self) -> str:
-        """Channel unique key"""
-        return self.col_key
-
-    # -----------------------------------------------------------------------------
-
-    @key.setter
-    def key(self, key: str) -> None:
-        """Channel unique key setter"""
-        self.col_key = key
-
-    # -----------------------------------------------------------------------------
-
-    @property
     def name(self) -> Optional[str]:
         """Channel name"""
         return self.col_name
@@ -203,7 +190,6 @@ class ChannelEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             **super().to_dict(),
             **{
                 "id": self.id.__str__(),
-                "key": self.key,
                 "identifier": self.identifier,
                 "name": self.name,
                 "comment": self.comment,
@@ -230,7 +216,6 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
         Index("property_settable_idx", "property_settable"),
         Index("property_queryable_idx", "property_queryable"),
         UniqueConstraint("property_identifier", "channel_id", name="property_identifier_unique"),
-        UniqueConstraint("property_key", name="property_key_unique"),
         {
             "mysql_engine": "InnoDB",
             "mysql_collate": "utf8mb4_general_ci",
@@ -365,7 +350,10 @@ class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     channel_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices_module_channels.channel_id", ondelete="CASCADE"), name="channel_id", nullable=False
+        BINARY(16),
+        ForeignKey("fb_devices_module_channels.channel_id", ondelete="CASCADE"),
+        name="channel_id",
+        nullable=False,
     )
 
     channel: ChannelEntity = relationship(ChannelEntity, back_populates="controls")  # type: ignore[assignment]

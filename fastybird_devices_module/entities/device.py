@@ -74,7 +74,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
         Index("device_name_idx", "device_name"),
         Index("device_enabled_idx", "device_enabled"),
         UniqueConstraint("device_identifier", "connector_id", name="device_identifier_connector_unique"),
-        UniqueConstraint("device_key", name="device_key_unique"),
         {
             "mysql_engine": "InnoDB",
             "mysql_collate": "utf8mb4_general_ci",
@@ -89,7 +88,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
         BINARY(16), primary_key=True, name="device_id", default=uuid.uuid4
     )
     col_identifier: str = Column(VARCHAR(50), name="device_identifier", nullable=False)  # type: ignore[assignment]
-    col_key: str = Column(VARCHAR(50), name="device_key", nullable=False, unique=True)  # type: ignore[assignment]
     col_name: Optional[str] = Column(  # type: ignore[assignment]
         VARCHAR(255), name="device_name", nullable=True, default=None
     )
@@ -125,10 +123,16 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
     parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices_module_devices.device_id", ondelete="SET NULL"), name="parent_id", nullable=True
+        BINARY(16),
+        ForeignKey("fb_devices_module_devices.device_id", ondelete="SET NULL"),
+        name="parent_id",
+        nullable=True,
     )
     connector_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices_module_connectors.connector_id", ondelete="CASCADE"), name="connector_id", nullable=False
+        BINARY(16),
+        ForeignKey("fb_devices_module_connectors.connector_id", ondelete="CASCADE"),
+        name="connector_id",
+        nullable=False,
     )
 
     children: List["DeviceEntity"] = relationship(  # type: ignore[assignment]
@@ -195,20 +199,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     def identifier(self) -> str:
         """Device unique key"""
         return self.col_identifier
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def key(self) -> str:
-        """Device unique key"""
-        return self.col_key
-
-    # -----------------------------------------------------------------------------
-
-    @key.setter
-    def key(self, key: str) -> None:
-        """Device unique key setter"""
-        self.col_key = key
 
     # -----------------------------------------------------------------------------
 
@@ -411,7 +401,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
         return {
             "id": self.id.__str__(),
             "type": self.type,
-            "key": self.key,
             "identifier": self.identifier,
             "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
             "name": self.name,
@@ -471,7 +460,6 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
         Index("property_settable_idx", "property_settable"),
         Index("property_queryable_idx", "property_queryable"),
         UniqueConstraint("property_identifier", "device_id", name="property_identifier_unique"),
-        UniqueConstraint("property_key", name="property_key_unique"),
         {
             "mysql_engine": "InnoDB",
             "mysql_collate": "utf8mb4_general_ci",
@@ -606,7 +594,10 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]
 
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16), ForeignKey("fb_devices_module_devices.device_id", ondelete="CASCADE"), name="device_id", nullable=False
+        BINARY(16),
+        ForeignKey("fb_devices_module_devices.device_id", ondelete="CASCADE"),
+        name="device_id",
+        nullable=False,
     )
 
     device: DeviceEntity = relationship(DeviceEntity, back_populates="controls")  # type: ignore[assignment]

@@ -32,31 +32,43 @@ interface IDeviceRepository
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return Entities\Devices\IDevice|null
+	 *
+	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
-		Queries\FindDevicesQuery $queryObject
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
 	): ?Entities\Devices\IDevice;
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return Entities\Devices\IDevice[]
+	 *
+	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
-		Queries\FindDevicesQuery $queryObject
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
 	): array;
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
+	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
+	 *
+	 * @phpstan-param class-string $type
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\IDevice>
 	 */
 	public function getResultSet(
-		Queries\FindDevicesQuery $queryObject
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
 	): DoctrineOrmQuery\ResultSet;
 
 }

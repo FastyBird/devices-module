@@ -16,7 +16,7 @@ import {
 // ============
 
 export enum DeviceControlEntityTypes {
-  CONTROL = 'devices-module/device-control',
+  CONTROL = 'devices-module/control/device',
 }
 
 // ENTITY INTERFACE

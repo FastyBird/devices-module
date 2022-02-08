@@ -10,10 +10,9 @@
     "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
   },
   "data" : {
-    "type" : "devices-module/device-virtual",
+    "type" : "devices-module/device/virtual",
     "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa",
     "attributes" : {
-      "key" : "bLikkz",
       "identifier" : "first-device",
       "name" : "First device",
       "comment" : null,
@@ -39,23 +38,23 @@
         },
         "data" : [
           {
-            "type" : "devices-module/device-property-dynamic",
+            "type" : "devices-module/device/property/dynamic",
             "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c"
           },
           {
-            "type" : "devices-module/device-property-static",
+            "type" : "devices-module/device/property/static",
             "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb"
           },
           {
-            "type" : "devices-module/device-property-static",
+            "type" : "devices-module/device/property/static",
             "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa"
           },
           {
-            "type" : "devices-module/device-property-dynamic",
+            "type" : "devices-module/device/property/dynamic",
             "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db"
           },
           {
-            "type" : "devices-module/device-property-static",
+            "type" : "devices-module/device/property/static",
             "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552"
           }
         ]
@@ -72,7 +71,7 @@
         },
         "data" : [
           {
-            "type" : "devices-module/device-control",
+            "type" : "devices-module/control/device",
             "id" : "7c055b2b-60c3-4017-93db-e9478d8aa662"
           }
         ]
@@ -110,7 +109,7 @@
         },
         "data" : [
           {
-            "type" : "devices-module/device-virtual",
+            "type" : "devices-module/device/virtual",
             "id" : "a1036ff8-6ee8-4405-aaed-58bae0814596"
           }
         ]
@@ -121,7 +120,7 @@
           "related" : "/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         },
         "data" : {
-          "type" : "devices-module/connector-virtual",
+          "type" : "devices-module/connector/virtual",
           "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
       },

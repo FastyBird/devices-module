@@ -42,7 +42,6 @@ class TestChannelsPropertiesRepository(DbTestCase):
         entity = property_repository.get_by_id(property_id=uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4))
 
         self.assertIsInstance(entity, ChannelPropertyEntity)
-        self.assertEqual("bLikx4", entity.key)
 
     # -----------------------------------------------------------------------------
 
@@ -57,7 +56,6 @@ class TestChannelsPropertiesRepository(DbTestCase):
                 "type": PropertyType.DYNAMIC.value,
                 "name": "switch",
                 "identifier": "switch",
-                "key": "bLikx4",
                 "channel": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "queryable": True,
                 "settable": True,

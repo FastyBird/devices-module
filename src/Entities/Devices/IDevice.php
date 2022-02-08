@@ -29,7 +29,6 @@ use IPub\DoctrineTimestampable;
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
 interface IDevice extends Entities\IEntity,
-	Entities\IKey,
 	Entities\IEntityParams,
 	SimpleAuthEntities\IEntityOwner,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated

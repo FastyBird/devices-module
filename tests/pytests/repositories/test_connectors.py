@@ -43,16 +43,6 @@ class TestConnectorsRepository(DbTestCase):
         )
 
         self.assertIsInstance(entity, ConnectorEntity)
-        self.assertEqual("bLikvZ", entity.key)
-
-    # -----------------------------------------------------------------------------
-
-    @inject
-    def test_get_item_by_key(self, connector_repository: ConnectorsRepository) -> None:
-        entity = connector_repository.get_by_key(connector_key="bLikvZ")
-
-        self.assertIsInstance(entity, ConnectorEntity)
-        self.assertEqual(uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4), entity.id)
 
     # -----------------------------------------------------------------------------
 
@@ -67,7 +57,6 @@ class TestConnectorsRepository(DbTestCase):
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "type": "virtual",
-                "key": "bLikvZ",
                 "name": "Virtual",
                 "enabled": True,
                 "owner": None,

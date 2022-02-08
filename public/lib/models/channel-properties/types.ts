@@ -19,16 +19,14 @@ import { PropertyInterface } from '@/lib/models/properties/types'
 // ============
 
 export enum ChannelPropertyEntityTypes {
-  DYNAMIC = 'devices-module/channel-property-dynamic',
-  STATIC = 'devices-module/channel-property-static',
+  DYNAMIC = 'devices-module/channel/property/dynamic',
+  STATIC = 'devices-module/channel/property/static',
 }
 
 // ENTITY INTERFACE
 // ================
 
 export interface ChannelPropertyInterface extends PropertyInterface {
-  type: ChannelPropertyEntityTypes
-
   channel: ChannelInterface | null
   channelBackward: ChannelInterface | null
 
@@ -41,7 +39,6 @@ export interface ChannelPropertyInterface extends PropertyInterface {
 // =============
 
 interface ChannelPropertyAttributesResponseInterface {
-  key: string
   identifier: string
   name: string | null
   settable: boolean

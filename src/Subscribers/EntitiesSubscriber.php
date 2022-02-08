@@ -20,7 +20,6 @@ use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata\Helpers as MetadataHelpers;
@@ -47,14 +46,14 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
-	/** @var Helpers\EntityKeyHelper */
-	private Helpers\EntityKeyHelper $entityKeyGenerator;
-
 	/** @var Models\States\IDevicePropertyRepository|null */
 	private ?Models\States\IDevicePropertyRepository $devicePropertyStateRepository;
 
 	/** @var Models\States\IChannelPropertyRepository|null */
 	private ?Models\States\IChannelPropertyRepository $channelPropertyStateRepository;
+
+	/** @var Models\States\IConnectorPropertyRepository|null */
+	private ?Models\States\IConnectorPropertyRepository $connectorPropertyStateRepository;
 
 	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
@@ -63,15 +62,15 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	private ORM\EntityManagerInterface $entityManager;
 
 	public function __construct(
-		Helpers\EntityKeyHelper $entityKeyGenerator,
 		ORM\EntityManagerInterface $entityManager,
 		?ExchangePublisher\Publisher $publisher = null,
 		?Models\States\IDevicePropertyRepository $devicePropertyStateRepository = null,
-		?Models\States\IChannelPropertyRepository $channelPropertyStateRepository = null
+		?Models\States\IChannelPropertyRepository $channelPropertyStateRepository = null,
+		?Models\States\IConnectorPropertyRepository $connectorPropertyStateRepository = null
 	) {
-		$this->entityKeyGenerator = $entityKeyGenerator;
 		$this->devicePropertyStateRepository = $devicePropertyStateRepository;
 		$this->channelPropertyStateRepository = $channelPropertyStateRepository;
+		$this->connectorPropertyStateRepository = $connectorPropertyStateRepository;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
 	}
@@ -85,7 +84,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	{
 		return [
 			ORM\Events::onFlush,
-			ORM\Events::prePersist,
 			ORM\Events::postPersist,
 			ORM\Events::postUpdate,
 		];
@@ -256,6 +254,22 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);
+			} elseif (
+				$entity instanceof Entities\Connectors\Properties\IProperty
+				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
+				&& $this->connectorPropertyStateRepository !== null
+			) {
+				$state = $this->connectorPropertyStateRepository->findOne($entity);
+
+				$this->publisher->publish(
+					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
+					$publishRoutingKey,
+					Utils\ArrayHash::from(array_merge($state !== null ? [
+						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()),
+						'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()),
+						'pending'        => $state->isPending(),
+					] : [], $entity->toArray()))
+				);
 			} else {
 				$this->publisher->publish(
 					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
@@ -285,27 +299,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 */
-	public function prePersist(ORM\Event\LifecycleEventArgs $eventArgs): void
-	{
-		$entity = $eventArgs->getObject();
-
-		// Check for valid entity
-		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
-			return;
-		}
-
-		if (method_exists($entity, 'setKey') && method_exists($entity, 'getKey')) {
-			if ($entity->getKey() === null) {
-				$entity->setKey($this->entityKeyGenerator->generate($entity));
-			}
-		}
 	}
 
 	/**

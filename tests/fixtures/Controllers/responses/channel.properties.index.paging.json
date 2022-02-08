@@ -15,10 +15,9 @@
   },
   "data" : [
     {
-      "type" : "devices-module/channel-property-dynamic",
+      "type" : "devices-module/channel/property/dynamic",
       "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
       "attributes" : {
-        "key" : "bLikx4",
         "identifier" : "switch",
         "name" : "switch",
         "settable" : true,

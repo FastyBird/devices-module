@@ -1,6 +1,6 @@
 {
   "data" : {
-    "type" : "devices-module/channel-property-dynamic",
+    "type" : "devices-module/channel/property/dynamic",
     "id" : "17ebf5c3-1485-4235-8f23-99ac9f906739",
     "attributes" : {
       "identifier" : "switch_02",

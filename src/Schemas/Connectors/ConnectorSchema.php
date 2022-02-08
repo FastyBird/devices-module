@@ -41,6 +41,7 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 * Define relationships names
 	 */
 	public const RELATIONSHIPS_DEVICES = 'devices';
+	public const RELATIONSHIPS_PROPERTIES = 'properties';
 	public const RELATIONSHIPS_CONTROLS = 'controls';
 
 	/** @var Routing\IRouter */
@@ -110,6 +111,11 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => false,
 			],
+			self::RELATIONSHIPS_PROPERTIES    => [
+				self::RELATIONSHIP_DATA          => $connector->getProperties(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
 			self::RELATIONSHIPS_CONTROLS => [
 				self::RELATIONSHIP_DATA          => $connector->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
@@ -130,7 +136,22 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public function getRelationshipRelatedLink($connector, string $name): JsonApi\Contracts\Schema\LinkInterface
 	{
-		if ($name === self::RELATIONSHIPS_CONTROLS) {
+		if ($name === self::RELATIONSHIPS_PROPERTIES) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_CONNECTOR_PROPERTIES,
+					[
+						Router\Routes::URL_CONNECTOR_ID => $connector->getPlainId(),
+					]
+				),
+				true,
+				[
+					'count' => count($connector->getProperties()),
+				]
+			);
+
+		} elseif ($name === self::RELATIONSHIPS_CONTROLS) {
 			return new JsonApi\Schema\Link(
 				false,
 				$this->router->urlFor(
@@ -161,7 +182,10 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public function getRelationshipSelfLink($connector, string $name): JsonApi\Contracts\Schema\LinkInterface
 	{
-		if ($name === self::RELATIONSHIPS_CONTROLS) {
+		if (
+			$name === self::RELATIONSHIPS_PROPERTIES
+			|| $name === self::RELATIONSHIPS_CONTROLS
+		) {
 			return new JsonApi\Schema\Link(
 				false,
 				$this->router->urlFor(

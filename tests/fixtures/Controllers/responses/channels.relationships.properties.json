@@ -2,7 +2,7 @@
   "data" : [
     {
       "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
-      "type" : "devices-module/channel-property-dynamic"
+      "type" : "devices-module/channel/property/dynamic"
     }
   ],
   "jsonapi" : {

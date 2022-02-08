@@ -396,7 +396,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
       throw new OrmError(
         'devices-module.device-properties.delete.failed',
         e,
-        'Delete device failed.',
+        'Delete device property failed.',
       )
     }
 
@@ -431,7 +431,7 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
         throw new OrmError(
           'devices-module.device-properties.delete.failed',
           e,
-          'Delete device failed.',
+          'Delete device property failed.',
         )
       } finally {
         commit('CLEAR_SEMAPHORE', {

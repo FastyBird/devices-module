@@ -41,7 +41,6 @@ class TestChannelsRepository(DbTestCase):
         entity = channel_repository.get_by_id(channel_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4))
 
         self.assertIsInstance(entity, ChannelEntity)
-        self.assertEqual("bLikxh", entity.key)
 
     # -----------------------------------------------------------------------------
 
@@ -54,7 +53,6 @@ class TestChannelsRepository(DbTestCase):
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "identifier": "channel-one",
-                "key": "bLikxh",
                 "name": "Channel one",
                 "comment": None,
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",

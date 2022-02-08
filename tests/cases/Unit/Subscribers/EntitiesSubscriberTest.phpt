@@ -4,7 +4,6 @@ namespace Tests\Cases;
 
 use Doctrine\ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Subscribers;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata;
@@ -29,17 +28,13 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
-
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$entityKeyHelper,
 			$entityManager,
 			$publisher
 		);
 
 		Assert::same([
 			'onFlush',
-			'prePersist',
 			'postPersist',
 			'postUpdate',
 		], $subscriber->getSubscribedEvents());
@@ -58,7 +53,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'virtual',
-					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
 					'name'                  => 'Device custom name',
@@ -79,10 +73,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager();
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
-
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$entityKeyHelper,
 			$entityManager,
 			$publisher
 		);
@@ -90,7 +81,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
 		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
-		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -160,7 +150,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'virtual',
-					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
 					'name'                  => 'Device custom name',
@@ -181,10 +170,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager(true);
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
-
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$entityKeyHelper,
 			$entityManager,
 			$publisher
 		);
@@ -192,7 +178,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
 		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
-		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -217,7 +202,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'virtual',
-					'key'                   => 'bLikmS',
 					'parent'                => null,
 					'owner'                 => null,
 					'name'                  => 'Device custom name',
@@ -239,7 +223,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
 		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
-		$entity->setKey('bLikmS');
 		$entity->setName('Device custom name');
 
 		$uow = Mockery::mock(ORM\UnitOfWork::class);
@@ -262,10 +245,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->andReturn($uow)
 			->times(1);
 
-		$entityKeyHelper = Mockery::mock(Helpers\EntityKeyHelper::class);
-
 		$subscriber = new Subscribers\EntitiesSubscriber(
-			$entityKeyHelper,
 			$entityManager,
 			$publisher
 		);

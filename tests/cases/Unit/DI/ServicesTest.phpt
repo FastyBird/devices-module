@@ -5,7 +5,6 @@ namespace Tests\Cases;
 use FastyBird\DevicesModule\Commands;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\DI;
-use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Middleware;
 use FastyBird\DevicesModule\Models;
@@ -83,8 +82,6 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Router\Routes::class));
 
 		Assert::notNull($container->getByType(Subscribers\EntitiesSubscriber::class));
-
-		Assert::notNull($container->getByType(Helpers\EntityKeyHelper::class));
 	}
 
 	/**

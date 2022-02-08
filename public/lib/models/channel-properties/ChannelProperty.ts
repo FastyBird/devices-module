@@ -9,7 +9,6 @@ import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
 import {
   ChannelPropertyCreateInterface,
-  ChannelPropertyEntityTypes,
   ChannelPropertyInterface,
   ChannelPropertyUpdateInterface,
 } from '@/lib/models/channel-properties/types'
@@ -20,7 +19,6 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 // ENTITY MODEL
 // ============
 export default class ChannelProperty extends Property implements ChannelPropertyInterface {
-  type!: ChannelPropertyEntityTypes
   channel!: ChannelInterface | null
   channelBackward!: ChannelInterface | null
   channelId!: string

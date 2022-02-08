@@ -63,12 +63,6 @@ class DevicesRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, device_key: str) -> Optional[DeviceEntity]:
-        """Find device by provided key"""
-        return self.__session.query(DeviceEntity).filter(DeviceEntity.col_key == device_key).first()
-
-    # -----------------------------------------------------------------------------
-
     def get_by_identifier(self, connector_id: uuid.UUID, device_identifier: str) -> Optional[DeviceEntity]:
         """Find device by provided identifier"""
         return (
@@ -128,12 +122,6 @@ class DevicesPropertiesRepository:
     def get_by_id(self, property_id: uuid.UUID) -> Optional[DevicePropertyEntity]:
         """Find property by provided database identifier"""
         return self.__session.query(DevicePropertyEntity).get(property_id.bytes)
-
-    # -----------------------------------------------------------------------------
-
-    def get_by_key(self, property_key: str) -> Optional[DevicePropertyEntity]:
-        """Find property by provided key"""
-        return self.__session.query(DevicePropertyEntity).filter(DevicePropertyEntity.col_key == property_key).first()
 
     # -----------------------------------------------------------------------------
 

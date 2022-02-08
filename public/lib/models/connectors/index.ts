@@ -311,7 +311,9 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              entityData[camelName] = ConnectorEntityTypes.VIRTUAL
+              if (payload.routingKey === RoutingKeys.CONNECTORS_ENTITY_CREATED) {
+                entityData[camelName] = ConnectorEntityTypes.VIRTUAL
+              }
             } else {
               entityData[camelName] = body[attrName]
             }

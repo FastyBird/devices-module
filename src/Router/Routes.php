@@ -69,6 +69,9 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\ConnectorsV1Controller */
 	private Controllers\ConnectorsV1Controller $connectorsV1Controller;
 
+	/** @var Controllers\ConnectorPropertiesV1Controller */
+	private Controllers\ConnectorPropertiesV1Controller $connectorPropertiesV1Controller;
+
 	/** @var Controllers\ConnectorControlsV1Controller */
 	private Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller;
 
@@ -91,6 +94,7 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
 		Controllers\ChannelControlsV1Controller $channelControlsV1Controller,
 		Controllers\ConnectorsV1Controller $connectorsV1Controller,
+		Controllers\ConnectorPropertiesV1Controller $connectorPropertiesV1Controller,
 		Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller,
 		Middleware\AccessMiddleware $devicesAccessControlMiddleware,
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
@@ -106,6 +110,7 @@ class Routes implements WebServerRouter\IRoutes
 		$this->channelPropertiesV1Controller = $channelPropertiesV1Controller;
 		$this->channelControlsV1Controller = $channelControlsV1Controller;
 		$this->connectorsV1Controller = $connectorsV1Controller;
+		$this->connectorPropertiesV1Controller = $connectorPropertiesV1Controller;
 		$this->connectorControlsV1Controller = $connectorControlsV1Controller;
 
 		$this->devicesAccessControlMiddleware = $devicesAccessControlMiddleware;
@@ -320,6 +325,32 @@ class Routes implements WebServerRouter\IRoutes
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_RELATIONSHIP);
 
 				$group->group('/{' . self::URL_CONNECTOR_ID . '}', function (Routing\RouteCollector $group): void {
+					/**
+					 * CONNECTOR PROPERTIES
+					 */
+					$group->group('/properties', function (Routing\RouteCollector $group): void {
+						$route = $group->get('', [$this->connectorPropertiesV1Controller, 'index']);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_PROPERTIES);
+
+						$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
+							$this->connectorPropertiesV1Controller,
+							'read',
+						]);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_PROPERTY);
+
+						$group->post('', [$this->connectorPropertiesV1Controller, 'create']);
+
+						$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->connectorPropertiesV1Controller, 'update']);
+
+						$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->connectorPropertiesV1Controller, 'delete']);
+
+						$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+							$this->connectorPropertiesV1Controller,
+							'readRelationship',
+						]);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_CONNECTOR_PROPERTY_RELATIONSHIP);
+					});
+
 					/**
 					 * CONNECTOR CONTROLS
 					 */

@@ -34,7 +34,6 @@ export interface ChannelInterface {
 
   draft: boolean
 
-  key: string
   identifier: string
   name: string | null
   comment: string | null
@@ -55,7 +54,6 @@ export interface ChannelInterface {
 // =============
 
 interface ChannelAttributesResponseInterface {
-  key: string
   identifier: string
   name: string | null
   comment: string | null

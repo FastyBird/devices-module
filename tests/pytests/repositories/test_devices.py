@@ -41,7 +41,6 @@ class TestDevicesRepository(DbTestCase):
         entity = device_repository.get_by_id(device_id=uuid.UUID("69786d15-fd0c-4d9f-9378-33287c2009fa", version=4))
 
         self.assertIsInstance(entity, DeviceEntity)
-        self.assertEqual("bLikkz", entity.key)
 
     # -----------------------------------------------------------------------------
 
@@ -55,7 +54,6 @@ class TestDevicesRepository(DbTestCase):
                 "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
                 "type": "virtual",
                 "identifier": "first-device",
-                "key": "bLikkz",
                 "name": "First device",
                 "comment": None,
                 "enabled": True,

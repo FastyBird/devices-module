@@ -26,7 +26,7 @@ import { ConnectorInterface } from '@/lib/models/connectors/types'
 // ============
 
 export enum DeviceEntityTypes {
-  VIRTUAL = 'devices-module/device-virtual',
+  VIRTUAL = 'devices-module/device/virtual',
 }
 
 // ENTITY INTERFACE
@@ -40,7 +40,6 @@ export interface DeviceInterface {
 
   parentId: string | null
 
-  key: string
   identifier: string
   name: string | null
   comment: string | null
@@ -78,7 +77,6 @@ export interface DeviceInterface {
 // =============
 
 interface DeviceAttributesResponseInterface {
-  key: string
   identifier: string
   name: string | null
   comment: string | null

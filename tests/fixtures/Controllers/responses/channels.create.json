@@ -13,7 +13,6 @@
     "type" : "devices-module/channel",
     "id" : "e0f879e3-0e8f-4b72-bde4-7e3fbb89decc",
     "attributes" : {
-      "key" : "bJtCcu",
       "identifier" : "custom-channel",
       "name" : "Device custom added channel",
       "comment" : null
@@ -24,7 +23,7 @@
           "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
         },
         "data" : {
-          "type" : "devices-module/device-virtual",
+          "type" : "devices-module/device/virtual",
           "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
         }
       },

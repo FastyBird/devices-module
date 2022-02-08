@@ -542,7 +542,9 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              entityData[camelName] = DeviceEntityTypes.VIRTUAL
+              if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_CREATED) {
+                entityData[camelName] = DeviceEntityTypes.VIRTUAL
+              }
             } else {
               entityData[camelName] = body[attrName]
             }

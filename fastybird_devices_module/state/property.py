@@ -98,6 +98,17 @@ class IPropertyState(ABC):
         """Transform state to dictionary"""
 
 
+class IConnectorPropertyState(IPropertyState, ABC):
+    """
+    Connector property state
+
+    @package        FastyBird:DevicesModule!
+    @module         state/property
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+
 class IDevicePropertyState(IPropertyState, ABC):
     """
     Device property state

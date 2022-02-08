@@ -19,16 +19,14 @@ import { PropertyInterface } from '@/lib/models/properties/types'
 // ============
 
 export enum DevicePropertyEntityTypes {
-  DYNAMIC = 'devices-module/device-property-dynamic',
-  STATIC = 'devices-module/device-property-static',
+  DYNAMIC = 'devices-module/device/property/dynamic',
+  STATIC = 'devices-module/device/property/static',
 }
 
 // ENTITY INTERFACE
 // ================
 
 export interface DevicePropertyInterface extends PropertyInterface {
-  type: DevicePropertyEntityTypes
-
   device: DeviceInterface | null
   deviceBackward: DeviceInterface | null
 
@@ -41,7 +39,6 @@ export interface DevicePropertyInterface extends PropertyInterface {
 // =============
 
 interface DevicePropertyAttributesResponseInterface {
-  key: string
   identifier: string
   name: string | null
   settable: boolean

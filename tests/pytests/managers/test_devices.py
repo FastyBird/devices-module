@@ -65,7 +65,6 @@ class TestDeviceEntity(DbTestCase):
         self.assertEqual("device-identifier", device_entity.identifier)
         self.assertEqual("New device name", device_entity.name)
         self.assertTrue(device_entity.enabled)
-        self.assertIsNotNone(device_entity.key)
         self.assertIsNotNone(device_entity.created_at)
 
         entity = device_repository.get_by_id(
@@ -105,7 +104,6 @@ class TestDeviceEntity(DbTestCase):
         self.assertEqual("first-device", device_entity.identifier)
         self.assertEqual("Edited name", device_entity.name)
         self.assertFalse(device_entity.enabled)
-        self.assertIsNotNone(device_entity.key)
         self.assertIsNotNone(device_entity.created_at)
 
         entity = device_repository.get_by_id(

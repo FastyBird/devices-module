@@ -42,7 +42,6 @@ class TestDevicesPropertiesRepository(DbTestCase):
         entity = property_repository.get_by_id(property_id=uuid.UUID("3134ba8e-f134-4bf2-9c80-c977c4deb0fb", version=4))
 
         self.assertIsInstance(entity, DeviceStaticPropertyEntity)
-        self.assertEqual("bLykvV", entity.key)
 
     # -----------------------------------------------------------------------------
 
@@ -57,7 +56,6 @@ class TestDevicesPropertiesRepository(DbTestCase):
                 "type": PropertyType.STATIC.value,
                 "name": "password",
                 "identifier": "password",
-                "key": "bLykvV",
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",
                 "queryable": False,
                 "settable": False,

@@ -19,7 +19,6 @@ use Doctrine\Persistence;
 use FastyBird\DevicesModule\Commands;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Helpers;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Middleware;
 use FastyBird\DevicesModule\Models;
@@ -118,6 +117,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('models.connectorRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\ConnectorRepository::class);
 
+		$builder->addDefinition($this->prefix('models.connectorPropertyRepository'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Connectors\Properties\PropertyRepository::class);
+
 		$builder->addDefinition($this->prefix('models.connectorControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\Controls\ControlRepository::class);
 
@@ -148,6 +150,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('models.connectorsManager'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\ConnectorsManager::class)
+			->setArgument('entityCrud', '__placeholder__');
+
+		$builder->addDefinition($this->prefix('models.connectorsPropertiesManager'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Connectors\Properties\PropertiesManager::class)
 			->setArgument('entityCrud', '__placeholder__');
 
 		$builder->addDefinition($this->prefix('models.connectorsControlsManager'), new DI\Definitions\ServiceDefinition())
@@ -191,6 +197,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Controllers\ConnectorsV1Controller::class)
 			->addTag('nette.inject');
 
+		$builder->addDefinition($this->prefix('controllers.connectorProperties'), new DI\Definitions\ServiceDefinition())
+			->setType(Controllers\ConnectorPropertiesV1Controller::class)
+			->addTag('nette.inject');
+
 		$builder->addDefinition($this->prefix('controllers.connectorsControls'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ConnectorControlsV1Controller::class)
 			->addTag('nette.inject');
@@ -223,6 +233,12 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('schemas.connector.virtual'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\VirtualConnectorSchema::class);
 
+		$builder->addDefinition($this->prefix('schemas.connector.property.dynamic'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\Properties\DynamicPropertySchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.connector.property.static'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\Properties\StaticPropertySchema::class);
+
 		$builder->addDefinition($this->prefix('schemas.connector.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\Controls\ControlSchema::class);
 
@@ -248,9 +264,11 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('hydrators.connectors.virtual'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\VirtualConnectorHydrator::class);
 
-		// Helpers
-		$builder->addDefinition($this->prefix('helpers.entityKey'), new DI\Definitions\ServiceDefinition())
-			->setType(Helpers\EntityKeyHelper::class);
+		$builder->addDefinition($this->prefix('hydrators.connector.property.dynamic'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\ConnectorDynamicPropertyHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.connector.property.static'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\ConnectorStaticPropertyHydrator::class);
 	}
 
 	/**
@@ -295,23 +313,26 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$devicesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesManager');
 		$devicesManagerService->setBody('return new ' . Models\Devices\DevicesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Device::class . '\'));');
 
-		$devicesControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesControlsManager');
-		$devicesControlsManagerService->setBody('return new ' . Models\Devices\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Controls\Control::class . '\'));');
-
 		$devicesPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesPropertiesManager');
 		$devicesPropertiesManagerService->setBody('return new ' . Models\Devices\Properties\PropertiesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Properties\Property::class . '\'));');
+
+		$devicesControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__devicesControlsManager');
+		$devicesControlsManagerService->setBody('return new ' . Models\Devices\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Devices\Controls\Control::class . '\'));');
 
 		$channelsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsManager');
 		$channelsManagerService->setBody('return new ' . Models\Channels\ChannelsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Channel::class . '\'));');
 
-		$channelsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsControlsManager');
-		$channelsControlsManagerService->setBody('return new ' . Models\Channels\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Controls\Control::class . '\'));');
-
 		$channelsPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsPropertiesManager');
 		$channelsPropertiesManagerService->setBody('return new ' . Models\Channels\Properties\PropertiesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Properties\Property::class . '\'));');
 
+		$channelsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__channelsControlsManager');
+		$channelsControlsManagerService->setBody('return new ' . Models\Channels\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Channels\Controls\Control::class . '\'));');
+
 		$connectorsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsManager');
 		$connectorsManagerService->setBody('return new ' . Models\Connectors\ConnectorsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Connector::class . '\'));');
+
+		$connectorsPropertiesManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsPropertiesManager');
+		$connectorsPropertiesManagerService->setBody('return new ' . Models\Connectors\Properties\PropertiesManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Properties\Property::class . '\'));');
 
 		$connectorsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsControlsManager');
 		$connectorsControlsManagerService->setBody('return new ' . Models\Connectors\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Controls\Control::class . '\'));');

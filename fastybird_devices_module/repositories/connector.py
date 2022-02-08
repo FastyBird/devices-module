@@ -62,12 +62,6 @@ class ConnectorsRepository:
 
     # -----------------------------------------------------------------------------
 
-    def get_by_key(self, connector_key: str) -> Optional[ConnectorEntity]:
-        """Find connector by provided key"""
-        return self.__session.query(ConnectorEntity).filter(ConnectorEntity.col_key == connector_key).first()
-
-    # -----------------------------------------------------------------------------
-
     def get_all(self) -> List[ConnectorEntity]:
         """Find all connectors"""
         return self.__session.query(ConnectorEntity).all()

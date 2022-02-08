@@ -38,11 +38,11 @@ final class PropertyRepository implements IPropertyRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository|null
+	 * @var ORM\EntityRepository[]
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Properties\IProperty>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Properties\IProperty>[]
 	 */
-	private ?ORM\EntityRepository $repository = null;
+	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */
 	private Persistence\ManagerRegistry $managerRegistry;
@@ -55,12 +55,32 @@ final class PropertyRepository implements IPropertyRepository
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findOneBy(Queries\FindChannelPropertiesQuery $queryObject): ?Entities\Channels\Properties\IProperty
-	{
+	public function findOneBy(
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
+	): ?Entities\Channels\Properties\IProperty {
 		/** @var Entities\Channels\Properties\IProperty|null $property */
-		$property = $queryObject->fetchOne($this->getRepository());
+		$property = $queryObject->fetchOne($this->getRepository($type));
 
 		return $property;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
+	public function getResultSet(
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
+	): DoctrineOrmQuery\ResultSet {
+		$result = $queryObject->fetch($this->getRepository($type));
+
+		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
+			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+		}
+
+		return $result;
 	}
 
 	/**
@@ -70,38 +90,21 @@ final class PropertyRepository implements IPropertyRepository
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return  ORM\EntityRepository<Entities\Channels\Properties\IProperty>
+	 * @phpstan-return ORM\EntityRepository<Entities\Channels\Properties\IProperty>
 	 */
-	private function getRepository(string $type = Entities\Channels\Properties\Property::class): ORM\EntityRepository
+	private function getRepository(string $type): ORM\EntityRepository
 	{
-		if ($this->repository === null) {
+		if (!isset($this->repository[$type])) {
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
 				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
 			}
 
-			$this->repository = $repository;
+			$this->repository[$type] = $repository;
 		}
 
-		return $this->repository;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function getResultSet(
-		Queries\FindChannelPropertiesQuery $queryObject
-	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
-		}
-
-		return $result;
+		return $this->repository[$type];
 	}
 
 }

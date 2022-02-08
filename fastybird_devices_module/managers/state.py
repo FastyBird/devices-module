@@ -28,11 +28,53 @@ from fastybird_metadata.types import ButtonPayload, SwitchPayload
 
 # Library libs
 from fastybird_devices_module.entities.channel import ChannelPropertyEntity
+from fastybird_devices_module.entities.connector import ConnectorPropertyEntity
 from fastybird_devices_module.entities.device import DevicePropertyEntity
 from fastybird_devices_module.state.property import (
     IChannelPropertyState,
+    IConnectorPropertyState,
     IDevicePropertyState,
 )
+
+
+class IConnectorPropertiesStatesManager:
+    """
+    Connector properties states manager
+
+    @package        FastyBird:ConnectorsModule!
+    @module         managers/state
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    @abstractmethod
+    def create(
+        self,
+        connector_property: ConnectorPropertyEntity,
+        data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+    ) -> IConnectorPropertyState:
+        """Create new connector property state record"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def update(
+        self,
+        connector_property: ConnectorPropertyEntity,
+        state: IConnectorPropertyState,
+        data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+    ) -> IConnectorPropertyState:
+        """Update existing connector property state record"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def delete(
+        self,
+        connector_property: ConnectorPropertyEntity,
+        state: IConnectorPropertyState,
+    ) -> bool:
+        """Delete existing connector property state"""
 
 
 class IDevicePropertiesStatesManager:

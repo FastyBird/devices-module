@@ -44,7 +44,9 @@ from fastybird_devices_module.entities.channel import (
 )
 from fastybird_devices_module.entities.connector import (
     ConnectorControlEntity,
+    ConnectorDynamicPropertyEntity,
     ConnectorEntity,
+    ConnectorPropertyEntity,
 )
 from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
@@ -52,9 +54,9 @@ from fastybird_devices_module.entities.device import (
     DeviceEntity,
     DevicePropertyEntity,
 )
-from fastybird_devices_module.helpers import KeyHashHelpers
 from fastybird_devices_module.repositories.state import (
     IChannelPropertyStateRepository,
+    IConnectorPropertyStateRepository,
     IDevicePropertyStateRepository,
 )
 
@@ -110,11 +112,12 @@ class EntityUpdatedSubscriber:  # pylint: disable=too-few-public-methods
 @inject(
     bind={
         "publisher": Publisher,
+        "connector_property_state_repository": IConnectorPropertyStateRepository,
         "device_property_state_repository": IDevicePropertyStateRepository,
         "channel_property_state_repository": IChannelPropertyStateRepository,
     }
 )
-class EntitiesSubscriber:
+class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
     """
     Data exchanges utils
 
@@ -126,6 +129,7 @@ class EntitiesSubscriber:
 
     CREATED_ENTITIES_ROUTING_KEYS_MAPPING: Dict[Type[Base], RoutingKey] = {
         ConnectorEntity: RoutingKey.CONNECTORS_ENTITY_CREATED,
+        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTY_ENTITY_CREATED,
         ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_CREATED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_CREATED,
         DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED,
@@ -137,6 +141,7 @@ class EntitiesSubscriber:
 
     UPDATED_ENTITIES_ROUTING_KEYS_MAPPING: Dict[Type[Base], RoutingKey] = {
         ConnectorEntity: RoutingKey.CONNECTORS_ENTITY_UPDATED,
+        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTY_ENTITY_UPDATED,
         ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_UPDATED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_UPDATED,
         DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED,
@@ -148,6 +153,7 @@ class EntitiesSubscriber:
 
     DELETED_ENTITIES_ROUTING_KEYS_MAPPING: Dict[Type[Base], RoutingKey] = {
         ConnectorEntity: RoutingKey.CONNECTORS_ENTITY_DELETED,
+        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTY_ENTITY_DELETED,
         ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_DELETED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_DELETED,
         DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_DELETED,
@@ -157,10 +163,9 @@ class EntitiesSubscriber:
         ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_DELETED,
     }
 
-    __key_hash_helpers: KeyHashHelpers
-
     __publisher: Optional[Publisher] = None
 
+    __connector_property_state_repository: Optional[IConnectorPropertyStateRepository]
     __device_property_state_repository: Optional[IDevicePropertyStateRepository]
     __channel_property_state_repository: Optional[IChannelPropertyStateRepository]
 
@@ -169,31 +174,18 @@ class EntitiesSubscriber:
     def __init__(  # pylint: disable=too-many-arguments
         self,
         session: OrmSession,
-        key_hash_helpers: KeyHashHelpers,
         publisher: Optional[Publisher] = None,
+        connector_property_state_repository: Optional[IConnectorPropertyStateRepository] = None,
         device_property_state_repository: Optional[IDevicePropertyStateRepository] = None,
         channel_property_state_repository: Optional[IChannelPropertyStateRepository] = None,
     ) -> None:
-        self.__key_hash_helpers = key_hash_helpers
-
         self.__publisher = publisher
 
+        self.__connector_property_state_repository = connector_property_state_repository
         self.__device_property_state_repository = device_property_state_repository
         self.__channel_property_state_repository = channel_property_state_repository
 
-        event.listen(
-            Base, "before_insert", lambda mapper, connection, target: self.before_insert(target), propagate=True
-        )
-
         event.listen(session, "after_flush", lambda active_session, transaction: self.after_flush(active_session))
-
-    # -----------------------------------------------------------------------------
-
-    def before_insert(self, target: Base) -> None:
-        """Event"""
-        if hasattr(target, "key"):
-            if target.key is None:
-                target.key = self.__key_hash_helpers.generate_key(target)
 
     # -----------------------------------------------------------------------------
 
@@ -272,6 +264,14 @@ class EntitiesSubscriber:
     # -----------------------------------------------------------------------------
 
     def __get_entity_extended_data(self, entity: Base) -> Dict:
+        if (
+            isinstance(entity, ConnectorDynamicPropertyEntity)
+            and self.__connector_property_state_repository is not None
+        ):
+            connector_property_state = self.__connector_property_state_repository.get_by_id(property_id=entity.id)
+
+            return connector_property_state.to_dict() if connector_property_state is not None else {}
+
         if isinstance(entity, DeviceDynamicPropertyEntity) and self.__device_property_state_repository is not None:
             device_property_state = self.__device_property_state_repository.get_by_id(property_id=entity.id)
 

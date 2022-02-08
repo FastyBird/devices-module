@@ -66,6 +66,53 @@ interface IConnector extends Entities\IEntity,
 	public function getDevices(): array;
 
 	/**
+	 * @return Entities\Connectors\Properties\IProperty[]
+	 */
+	public function getProperties(): array;
+
+	/**
+	 * @param Entities\Connectors\Properties\IProperty[] $properties
+	 *
+	 * @return void
+	 */
+	public function setProperties(array $properties = []): void;
+
+	/**
+	 * @param Entities\Connectors\Properties\IProperty $property
+	 *
+	 * @return void
+	 */
+	public function addProperty(Entities\Connectors\Properties\IProperty $property): void;
+
+	/**
+	 * @param string $id
+	 *
+	 * @return Entities\Connectors\Properties\IProperty|null
+	 */
+	public function getProperty(string $id): ?Entities\Connectors\Properties\IProperty;
+
+	/**
+	 * @param Properties\IProperty $property
+	 *
+	 * @return void
+	 */
+	public function removeProperty(Entities\Connectors\Properties\IProperty $property): void;
+
+	/**
+	 * @param string $property
+	 *
+	 * @return bool
+	 */
+	public function hasProperty(string $property): bool;
+
+	/**
+	 * @param string $property
+	 *
+	 * @return Properties\IProperty|null
+	 */
+	public function findProperty(string $property): ?Entities\Connectors\Properties\IProperty;
+
+	/**
 	 * @return Entities\Connectors\Controls\IControl[]
 	 */
 	public function getControls(): array;

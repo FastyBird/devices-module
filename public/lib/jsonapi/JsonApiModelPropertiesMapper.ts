@@ -25,34 +25,34 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
   getAttributes(model: TJsonaModel): { [index: string]: any } {
     const exceptProps = ['id', '$id', 'type', 'draft', RELATIONSHIP_NAMES_PROP]
 
-    const connector_property_entity_regex = new RegExp(CONNECTOR_PROPERTY_ENTITY_REG_EXP)
-    const connector_control_entity_regex = new RegExp(CONNECTOR_CONTROL_ENTITY_REG_EXP)
-    const device_entity_regex = new RegExp(DEVICE_ENTITY_REG_EXP)
-    const device_property_entity_regex = new RegExp(DEVICE_PROPERTY_ENTITY_REG_EXP)
-    const device_control_entity_regex = new RegExp(DEVICE_CONTROL_ENTITY_REG_EXP)
-    const channel_entity_regex = new RegExp(CHANNEL_ENTITY_REG_EXP)
-    const channel_property_entity_regex = new RegExp(CHANNEL_PROPERTY_ENTITY_REG_EXP)
-    const channel_control_entity_regex = new RegExp(CHANNEL_CONTROL_ENTITY_REG_EXP)
+    const connectorPropertyEntityRegex = new RegExp(CONNECTOR_PROPERTY_ENTITY_REG_EXP)
+    const connectorControlEntityRegex = new RegExp(CONNECTOR_CONTROL_ENTITY_REG_EXP)
+    const deviceEntityRegex = new RegExp(DEVICE_ENTITY_REG_EXP)
+    const devicePropertyEntityRegex = new RegExp(DEVICE_PROPERTY_ENTITY_REG_EXP)
+    const deviceControlEntityRegex = new RegExp(DEVICE_CONTROL_ENTITY_REG_EXP)
+    const channelEntityRegex = new RegExp(CHANNEL_ENTITY_REG_EXP)
+    const channelPropertyEntityRegex = new RegExp(CHANNEL_PROPERTY_ENTITY_REG_EXP)
+    const channelControlEntityRegex = new RegExp(CHANNEL_CONTROL_ENTITY_REG_EXP)
 
     if (
-      channel_entity_regex.test(model.type)
-      || device_property_entity_regex.test(model.type)
-      || device_control_entity_regex.test(model.type)
+      channelEntityRegex.test(model.type)
+      || devicePropertyEntityRegex.test(model.type)
+      || deviceControlEntityRegex.test(model.type)
     ) {
       exceptProps.push('deviceId')
       exceptProps.push('device')
       exceptProps.push('deviceBackward')
     } else if (
-      channel_property_entity_regex.test(model.type)
-      || channel_control_entity_regex.test(model.type)
+      channelPropertyEntityRegex.test(model.type)
+      || channelControlEntityRegex.test(model.type)
     ) {
       exceptProps.push('channelId')
       exceptProps.push('channel')
       exceptProps.push('channelBackward')
     } else if (
-      device_entity_regex.test(model.type)
-      || connector_property_entity_regex.test(model.type)
-      || connector_control_entity_regex.test(model.type)
+      deviceEntityRegex.test(model.type)
+      || connectorPropertyEntityRegex.test(model.type)
+      || connectorControlEntityRegex.test(model.type)
     ) {
       exceptProps.push('connectorId')
       exceptProps.push('connector')

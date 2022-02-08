@@ -58,12 +58,12 @@ class JsonApiJsonPropertiesMapper extends JsonPropertiesMapper implements IJsonP
   setRelationships(model: TJsonaModel, relationships: TJsonaRelationships): void {
     Object.keys(relationships)
       .forEach((propName) => {
-        const case_regex = new RegExp(CASE_REG_EXP, 'g')
-        const connector_entity_regex = new RegExp(CONNECTOR_ENTITY_REG_EXP)
-        const device_entity_regex = new RegExp(DEVICE_ENTITY_REG_EXP)
-        const channel_entity_regex = new RegExp(CHANNEL_ENTITY_REG_EXP)
+        const caseRegex = new RegExp(CASE_REG_EXP, 'g')
+        const connectorEntityRegex = new RegExp(CONNECTOR_ENTITY_REG_EXP)
+        const deviceEntityRegex = new RegExp(DEVICE_ENTITY_REG_EXP)
+        const channelEntityRegex = new RegExp(CHANNEL_ENTITY_REG_EXP)
 
-        const camelName = propName.replace(case_regex, g => g[1].toUpperCase())
+        const camelName = propName.replace(caseRegex, g => g[1].toUpperCase())
 
         if (typeof relationships[propName] === 'function') {
           defineRelationGetter(model, propName, relationships[propName] as TJsonaRelationshipBuild)
@@ -84,11 +84,11 @@ class JsonApiJsonPropertiesMapper extends JsonPropertiesMapper implements IJsonP
                 }),
               },
             )
-          } else if (connector_entity_regex.test(String(get(relation, 'type')).toLowerCase())) {
+          } else if (connectorEntityRegex.test(String(get(relation, 'type')).toLowerCase())) {
             Object.assign(model, { connectorId: get(relation, 'id') })
-          } else if (device_entity_regex.test(String(get(relation, 'type')).toLowerCase())) {
+          } else if (deviceEntityRegex.test(String(get(relation, 'type')).toLowerCase())) {
             Object.assign(model, { deviceId: get(relation, 'id') })
-          } else if (channel_entity_regex.test(String(get(relation, 'type')).toLowerCase())) {
+          } else if (channelEntityRegex.test(String(get(relation, 'type')).toLowerCase())) {
             Object.assign(model, { channelId: get(relation, 'id') })
           } else {
             Object.assign(model, { [camelName]: relation })

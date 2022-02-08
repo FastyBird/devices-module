@@ -269,6 +269,16 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('hydrators.connector.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\ConnectorStaticPropertyHydrator::class);
+
+		// States managers
+		$builder->addDefinition($this->prefix('states.connectors.properties'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\ConnectorPropertiesManager::class);
+
+		$builder->addDefinition($this->prefix('states.devices.properties'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\DevicePropertiesManager::class);
+
+		$builder->addDefinition($this->prefix('states.channels.properties'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\ChannelPropertiesManager::class);
 	}
 
 	/**

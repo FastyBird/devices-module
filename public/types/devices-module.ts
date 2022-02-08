@@ -2,7 +2,7 @@ import { Database, Model } from '@vuex-orm/core'
 
 export interface GlobalConfigInterface {
   database: Database
-  originName?: string
+  sourceName?: string
 }
 
 export interface ComponentsInterface {
@@ -12,8 +12,8 @@ export interface ComponentsInterface {
 declare module '@vuex-orm/core' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Model {
-    // Exchange origin name
-    const $devicesModuleOrigin: string
+    // Exchange source name
+    const $devicesModuleSource: string
   }
 }
 

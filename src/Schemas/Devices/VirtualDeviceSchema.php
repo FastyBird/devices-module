@@ -35,7 +35,7 @@ final class VirtualDeviceSchema extends DeviceSchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES . '/device/' . Entities\Devices\VirtualDevice::DEVICE_TYPE;
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/device/' . Entities\Devices\VirtualDevice::DEVICE_TYPE;
 
 	/**
 	 * {@inheritDoc}

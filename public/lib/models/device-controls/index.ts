@@ -2,7 +2,6 @@ import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema
   from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.device.control.json'
 import {
-  ModuleOrigin,
   DeviceControlEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
   ActionRoutes,
@@ -162,7 +161,7 @@ const moduleActions: ActionTree<DeviceControlState, unknown> = {
     return new Promise((resolve, reject) => {
       DeviceControl.wamp().call<{ data: string }>({
         routing_key: ActionRoutes.DEVICE,
-        origin: DeviceControl.$devicesModuleOrigin,
+        source: DeviceControl.$devicesModuleSource,
         data: {
           action: ControlAction.SET,
           device: device.id,
@@ -183,11 +182,7 @@ const moduleActions: ActionTree<DeviceControlState, unknown> = {
     })
   },
 
-  async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
-    if (payload.origin !== ModuleOrigin.MODULE_DEVICES) {
-      return false
-    }
-
+  async socketData({ state, commit }, payload: { source: string, routingKey: string, data: string }): Promise<boolean> {
     if (
       ![
         RoutingKeys.DEVICES_CONTROL_ENTITY_REPORTED,
@@ -242,7 +237,7 @@ const moduleActions: ActionTree<DeviceControlState, unknown> = {
         })
 
         const entityData: { [index: string]: string | boolean | number | string[] | number[] | DataType | null | undefined } = {
-          type: `${origin}/control/device`,
+          type: `${payload.source}/control/device`,
         }
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')

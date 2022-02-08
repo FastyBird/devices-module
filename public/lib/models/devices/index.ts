@@ -1,7 +1,6 @@
 import { Item } from '@vuex-orm/core'
 import * as exchangeEntitySchema from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.device.json'
 import {
-  ModuleOrigin,
   DeviceEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
   ConnectionState,
@@ -474,11 +473,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     }
   },
 
-  async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
-    if (payload.origin !== ModuleOrigin.MODULE_DEVICES) {
-      return false
-    }
-
+  async socketData({ state, commit }, payload: { source: string, routingKey: string, data: string }): Promise<boolean> {
     if (
       ![
         RoutingKeys.DEVICES_ENTITY_REPORTED,
@@ -542,7 +537,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
             if (camelName === 'type') {
               if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_CREATED) {
-                entityData[camelName] = `${origin}/device/${body[attrName]}`
+                entityData[camelName] = `${payload.source}/device/${body[attrName]}`
               }
             } else {
               entityData[camelName] = body[attrName]

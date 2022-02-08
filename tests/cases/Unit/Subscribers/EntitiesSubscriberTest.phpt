@@ -45,10 +45,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
+			->withArgs(function (string $source, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
-				Assert::same(Metadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
+				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_CREATED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
@@ -142,10 +142,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
+			->withArgs(function (string $source, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
-				Assert::same(Metadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
+				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_UPDATED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
@@ -194,10 +194,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $origin, string $key, Utils\ArrayHash $data): bool {
+			->withArgs(function (string $source, string $key, Utils\ArrayHash $data): bool {
 				unset($data['id']);
 
-				Assert::same(Metadata\Constants::MODULE_DEVICES_ORIGIN, $origin);
+				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_DELETED_ENTITY_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',

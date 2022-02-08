@@ -27,7 +27,7 @@ from typing import Dict, Optional, Union
 
 # Library dependencies
 from fastybird_metadata.routing import RoutingKey
-from fastybird_metadata.types import ConnectorOrigin, ModuleOrigin, PluginOrigin
+from fastybird_metadata.types import ConnectorSource, ModuleSource, PluginSource
 
 
 class ConnectorQueue:
@@ -94,7 +94,7 @@ class ConsumeMessageQueueItem(ABC):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __origin: Union[ModuleOrigin, PluginOrigin, ConnectorOrigin]
+    __source: Union[ModuleSource, PluginSource, ConnectorSource]
     __routing_key: RoutingKey
     __data: Dict
 
@@ -102,20 +102,20 @@ class ConsumeMessageQueueItem(ABC):
 
     def __init__(
         self,
-        origin: Union[ModuleOrigin, PluginOrigin, ConnectorOrigin],
+        source: Union[ModuleSource, PluginSource, ConnectorSource],
         routing_key: RoutingKey,
         data: Dict,
     ) -> None:
-        self.__origin = origin
+        self.__source = source
         self.__routing_key = routing_key
         self.__data = data
 
     # -----------------------------------------------------------------------------
 
     @property
-    def origin(self) -> Union[ModuleOrigin, PluginOrigin, ConnectorOrigin]:
-        """Message module origin"""
-        return self.__origin
+    def source(self) -> Union[ModuleSource, PluginSource, ConnectorSource]:
+        """Message module source"""
+        return self.__source
 
     # -----------------------------------------------------------------------------
 

@@ -35,7 +35,7 @@ final class VirtualConnectorSchema extends ConnectorSchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES . '/connector/' . Entities\Connectors\VirtualConnector::CONNECTOR_TYPE;
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/connector/' . Entities\Connectors\VirtualConnector::CONNECTOR_TYPE;
 
 	/**
 	 * {@inheritDoc}

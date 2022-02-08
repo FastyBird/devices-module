@@ -1,4 +1,4 @@
-import { ModuleOrigin } from '@fastybird/metadata'
+import { ModuleSource } from '@fastybird/metadata'
 import { Plugin } from '@vuex-orm/core/dist/src/plugins/use'
 
 import Device from '@/lib/models/devices/Device'
@@ -25,12 +25,12 @@ import { ComponentsInterface, GlobalConfigInterface } from '@/types/devices-modu
 
 // install function executed by VuexORM.use()
 const install: Plugin = function installVuexOrmWamp(components: ComponentsInterface, config: GlobalConfigInterface) {
-  if (typeof config.originName !== 'undefined') {
+  if (typeof config.sourceName !== 'undefined') {
     // @ts-ignore
-    components.Model.$devicesModuleOrigin = config.originName
+    components.Model.$devicesModuleSource = config.sourceName
   } else {
     // @ts-ignore
-    components.Model.$devicesModuleOrigin = ModuleOrigin.MODULE_DEVICES_ORIGIN
+    components.Model.$devicesModuleSource = ModuleSource.MODULE_DEVICES_SOURCE
   }
 
   config.database.register(Device, devices)

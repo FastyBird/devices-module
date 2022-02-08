@@ -3,7 +3,6 @@ import { RpCallResponse } from '@fastybird/vue-wamp-v1'
 import * as exchangeEntitySchema
   from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.connector.property.json'
 import {
-  ModuleOrigin,
   ConnectorPropertyEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
   ActionRoutes,
@@ -481,7 +480,7 @@ const moduleActions: ActionTree<ConnectorPropertyState, unknown> = {
     return new Promise((resolve, reject) => {
       ConnectorProperty.wamp().call<{ data: string }>({
         routing_key: ActionRoutes.CONNECTOR_PROPERTY,
-        origin: ConnectorProperty.$devicesModuleOrigin,
+        source: ConnectorProperty.$devicesModuleSource,
         data: {
           action: PropertyAction.SET,
           connector: connector.id,
@@ -516,11 +515,7 @@ const moduleActions: ActionTree<ConnectorPropertyState, unknown> = {
     })
   },
 
-  async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
-    if (payload.origin !== ModuleOrigin.MODULE_DEVICES) {
-      return false
-    }
-
+  async socketData({ state, commit }, payload: { source: string, routingKey: string, data: string }): Promise<boolean> {
     if (
       ![
         RoutingKeys.CONNECTORS_PROPERTY_ENTITY_REPORTED,
@@ -584,7 +579,7 @@ const moduleActions: ActionTree<ConnectorPropertyState, unknown> = {
 
             if (camelName === 'type') {
               if (payload.routingKey === RoutingKeys.CONNECTORS_PROPERTY_ENTITY_CREATED) {
-                entityData[camelName] = `${origin}/property/connector/${body[attrName]}`
+                entityData[camelName] = `${payload.source}/property/connector/${body[attrName]}`
               }
             } else if (camelName === 'connector') {
               const connector = Connector.query().where('id', body[attrName]).first()

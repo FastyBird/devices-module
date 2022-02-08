@@ -1,7 +1,6 @@
 import { Item } from '@vuex-orm/core'
 import * as exchangeEntitySchema from '@fastybird/metadata/resources/schemas/modules/devices-module/entity.channel.json'
 import {
-  ModuleOrigin,
   ChannelEntity as ExchangeEntity,
   DevicesModuleRoutes as RoutingKeys,
 } from '@fastybird/metadata'
@@ -459,11 +458,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     }
   },
 
-  async socketData({ state, commit }, payload: { origin: string, routingKey: string, data: string }): Promise<boolean> {
-    if (payload.origin !== ModuleOrigin.MODULE_DEVICES) {
-      return false
-    }
-
+  async socketData({ state, commit }, payload: { source: string, routingKey: string, data: string }): Promise<boolean> {
     if (
       ![
         RoutingKeys.CHANNELS_ENTITY_REPORTED,
@@ -518,7 +513,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
         })
 
         const entityData: { [index: string]: string | string[] | null | undefined } = {
-          type: `${origin}/channel`,
+          type: `${payload.source}/channel`,
         }
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')

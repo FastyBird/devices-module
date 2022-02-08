@@ -230,7 +230,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$state = $this->devicePropertyStateRepository->findOne($entity);
 
 				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+					$entity->getSource(),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
 						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()),
@@ -246,7 +246,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$state = $this->channelPropertyStateRepository->findOne($entity);
 
 				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+					$entity->getSource(),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
 						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()),
@@ -262,7 +262,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$state = $this->connectorPropertyStateRepository->findOne($entity);
 
 				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+					$entity->getSource(),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
 						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()),
@@ -272,7 +272,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				);
 			} else {
 				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+					$entity->getSource(),
 					$publishRoutingKey,
 					Utils\ArrayHash::from($entity->toArray())
 				);

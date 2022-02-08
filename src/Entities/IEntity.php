@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud;
 use Ramsey\Uuid;
 
@@ -43,5 +44,10 @@ interface IEntity extends DoctrineCrud\Entities\IEntity
 	 * @return mixed[]
 	 */
 	public function toArray(): array;
+
+	/**
+	 * @return MetadataTypes\ModuleSourceType|MetadataTypes\ConnectorSourceType|MetadataTypes\PluginSourceType
+	 */
+	public function getSource();
 
 }

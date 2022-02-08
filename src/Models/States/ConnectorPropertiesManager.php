@@ -130,7 +130,7 @@ final class ConnectorPropertiesManager
 		}
 
 		$this->publisher->publish(
-			MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+			$property->getSource(),
 			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CONNECTORS_PROPERTY_ENTITY_UPDATED),
 			Utils\ArrayHash::from(array_merge($property->toArray(), [
 				'actual_value'   => $state === null ? null : MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()),

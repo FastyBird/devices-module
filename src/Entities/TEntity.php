@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
+use FastyBird\Metadata\Types as MetadataTypes;
 use Ramsey\Uuid;
 
 /**
@@ -44,6 +45,14 @@ trait TEntity
 	public function getPlainId(): string
 	{
 		return $this->id->toString();
+	}
+
+	/**
+	 * @return MetadataTypes\ModuleSourceType|MetadataTypes\ConnectorSourceType|MetadataTypes\PluginSourceType
+	 */
+	public function getSource()
+	{
+		return MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES);
 	}
 
 }

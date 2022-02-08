@@ -12,14 +12,14 @@ import { RelationInterface } from '@/lib/types'
 
 const RELATIONSHIP_NAMES_PROP = 'relationshipNames'
 
-const CONNECTOR_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/property/connector/([a-z0-9-]+)$'
-const CONNECTOR_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/control/connector$'
-const DEVICE_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/device/([a-z0-9-]+)$'
-const DEVICE_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/property/device/([a-z0-9-]+)$'
-const DEVICE_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/control/connector$'
-const CHANNEL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/channel$'
-const CHANNEL_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/property/channel/([a-z0-9-]+)$'
-const CHANNEL_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/control/connector$'
+const CONNECTOR_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)/property/connector/([a-z0-9-]+)$'
+const CONNECTOR_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)/control/connector$'
+const DEVICE_ENTITY_REG_EXP = '^([a-z0-9.-]+)/device/([a-z0-9-]+)$'
+const DEVICE_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)/property/device/([a-z0-9-]+)$'
+const DEVICE_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)/control/connector$'
+const CHANNEL_ENTITY_REG_EXP = '^([a-z0-9.-]+)/channel$'
+const CHANNEL_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)/property/channel/([a-z0-9-]+)$'
+const CHANNEL_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)/control/connector$'
 
 class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IModelPropertiesMapper {
   getAttributes(model: TJsonaModel): { [index: string]: any } {

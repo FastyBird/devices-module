@@ -139,4 +139,5 @@ final class DevicePropertiesManager
 			]))
 		);
 	}
+
 }

@@ -69,17 +69,7 @@ final class ChannelPropertiesManager
 		/** @var States\IChannelProperty $createdState */
 		$createdState = $this->manager->create($property, $values);
 
-		if ($this->publisher !== null) {
-			$this->publisher->publish(
-				MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
-				MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CHANNELS_PROPERTY_ENTITY_CREATED),
-				Utils\ArrayHash::from(array_merge($property->toArray(), [
-					'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $createdState->getActualValue(), $property->getFormat()),
-					'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $createdState->getExpectedValue(), $property->getFormat()),
-					'pending'        => $createdState->isPending(),
-				]))
-			);
-		}
+		$this->publishEntity($property, $createdState);
 
 		return $createdState;
 	}
@@ -103,17 +93,7 @@ final class ChannelPropertiesManager
 		/** @var States\IChannelProperty $updatedState */
 		$updatedState = $this->manager->update($property, $state, $values);
 
-		if ($this->publisher !== null) {
-			$this->publisher->publish(
-				MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
-				MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CHANNELS_PROPERTY_ENTITY_UPDATED),
-				Utils\ArrayHash::from(array_merge($property->toArray(), [
-					'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $updatedState->getActualValue(), $property->getFormat()),
-					'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $updatedState->getExpectedValue(), $property->getFormat()),
-					'pending'        => $updatedState->isPending(),
-				]))
-			);
-		}
+		$this->publishEntity($property, $updatedState);
 
 		return $updatedState;
 	}
@@ -135,20 +115,29 @@ final class ChannelPropertiesManager
 		$result = $this->manager->delete($property, $state);
 
 		if ($result) {
-			if ($this->publisher !== null) {
-				$this->publisher->publish(
-					MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
-					MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CHANNELS_PROPERTY_ENTITY_UPDATED),
-					Utils\ArrayHash::from(array_merge($property->toArray(), [
-						'actual_value'   => null,
-						'expected_value' => null,
-						'pending'        => false,
-					]))
-				);
-			}
+			$this->publishEntity($property, null);
 		}
 
 		return $result;
+	}
+
+	private function publishEntity(
+		Entities\Channels\Properties\IProperty $property,
+		?States\IChannelProperty $state
+	): void {
+		if ($this->publisher === null) {
+			return;
+		}
+
+		$this->publisher->publish(
+			MetadataTypes\ModuleOriginType::get(MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES),
+			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CHANNELS_PROPERTY_ENTITY_UPDATED),
+			Utils\ArrayHash::from(array_merge($property->toArray(), [
+				'actual_value'   => $state === null ? null : MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()),
+				'expected_value' => $state === null ? null : MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat()),
+				'pending'        => !($state === null) && $state->isPending(),
+			]))
+		);
 	}
 
 }

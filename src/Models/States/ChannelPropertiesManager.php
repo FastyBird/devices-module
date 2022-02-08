@@ -45,11 +45,19 @@ final class ChannelPropertiesManager
 	protected ?IChannelPropertiesManager $manager;
 
 	public function __construct(
+		?IChannelPropertiesManager $manager,
 		?ExchangePublisher\IPublisher $publisher
 	) {
+		$this->manager = $manager;
 		$this->publisher = $publisher;
 	}
 
+	/**
+	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param Utils\ArrayHash $values
+	 *
+	 * @return States\IChannelProperty
+	 */
 	public function create(
 		Entities\Channels\Properties\IProperty $property,
 		Utils\ArrayHash $values
@@ -76,6 +84,13 @@ final class ChannelPropertiesManager
 		return $createdState;
 	}
 
+	/**
+	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param States\IChannelProperty $state
+	 * @param Utils\ArrayHash $values
+	 *
+	 * @return States\IChannelProperty
+	 */
 	public function update(
 		Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state,
@@ -86,11 +101,7 @@ final class ChannelPropertiesManager
 		}
 
 		/** @var States\IChannelProperty $updatedState */
-		$updatedState = $this->manager->update(
-			$property,
-			$state,
-			$values
-		);
+		$updatedState = $this->manager->update($property, $state, $values);
 
 		if ($this->publisher !== null) {
 			$this->publisher->publish(
@@ -107,6 +118,12 @@ final class ChannelPropertiesManager
 		return $updatedState;
 	}
 
+	/**
+	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param States\IChannelProperty $state
+	 *
+	 * @return bool
+	 */
 	public function delete(
 		Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state

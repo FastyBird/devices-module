@@ -45,11 +45,19 @@ final class ConnectorPropertiesManager
 	protected ?IConnectorPropertiesManager $manager;
 
 	public function __construct(
+		?IConnectorPropertiesManager $manager,
 		?ExchangePublisher\IPublisher $publisher
 	) {
+		$this->manager = $manager;
 		$this->publisher = $publisher;
 	}
 
+	/**
+	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Utils\ArrayHash $values
+	 *
+	 * @return States\IConnectorProperty
+	 */
 	public function create(
 		Entities\Connectors\Properties\IProperty $property,
 		Utils\ArrayHash $values
@@ -76,6 +84,13 @@ final class ConnectorPropertiesManager
 		return $createdState;
 	}
 
+	/**
+	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param States\IConnectorProperty $state
+	 * @param Utils\ArrayHash $values
+	 *
+	 * @return States\IConnectorProperty
+	 */
 	public function update(
 		Entities\Connectors\Properties\IProperty $property,
 		States\IConnectorProperty $state,
@@ -86,11 +101,7 @@ final class ConnectorPropertiesManager
 		}
 
 		/** @var States\IConnectorProperty $updatedState */
-		$updatedState = $this->manager->update(
-			$property,
-			$state,
-			$values
-		);
+		$updatedState = $this->manager->update($property, $state, $values);
 
 		if ($this->publisher !== null) {
 			$this->publisher->publish(
@@ -107,6 +118,12 @@ final class ConnectorPropertiesManager
 		return $updatedState;
 	}
 
+	/**
+	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param States\IConnectorProperty $state
+	 *
+	 * @return bool
+	 */
 	public function delete(
 		Entities\Connectors\Properties\IProperty $property,
 		States\IConnectorProperty $state

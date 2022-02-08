@@ -45,11 +45,19 @@ final class DevicePropertiesManager
 	protected ?IDevicePropertiesManager $manager;
 
 	public function __construct(
+		?IDevicePropertiesManager $manager,
 		?ExchangePublisher\IPublisher $publisher
 	) {
+		$this->manager = $manager;
 		$this->publisher = $publisher;
 	}
 
+	/**
+	 * @param Entities\Devices\Properties\IProperty $property
+	 * @param Utils\ArrayHash $values
+	 *
+	 * @return States\IDeviceProperty
+	 */
 	public function create(
 		Entities\Devices\Properties\IProperty $property,
 		Utils\ArrayHash $values
@@ -76,6 +84,13 @@ final class DevicePropertiesManager
 		return $createdState;
 	}
 
+	/**
+	 * @param Entities\Devices\Properties\IProperty $property
+	 * @param States\IDeviceProperty $state
+	 * @param Utils\ArrayHash $values
+	 *
+	 * @return States\IDeviceProperty
+	 */
 	public function update(
 		Entities\Devices\Properties\IProperty $property,
 		States\IDeviceProperty $state,
@@ -86,11 +101,7 @@ final class DevicePropertiesManager
 		}
 
 		/** @var States\IDeviceProperty $updatedState */
-		$updatedState = $this->manager->update(
-			$property,
-			$state,
-			$values
-		);
+		$updatedState = $this->manager->update($property, $state, $values);
 
 		if ($this->publisher !== null) {
 			$this->publisher->publish(
@@ -107,6 +118,12 @@ final class DevicePropertiesManager
 		return $updatedState;
 	}
 
+	/**
+	 * @param Entities\Devices\Properties\IProperty $property
+	 * @param States\IDeviceProperty $state
+	 *
+	 * @return bool
+	 */
 	public function delete(
 		Entities\Devices\Properties\IProperty $property,
 		States\IDeviceProperty $state

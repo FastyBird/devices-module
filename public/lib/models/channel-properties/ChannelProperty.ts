@@ -24,7 +24,7 @@ export default class ChannelProperty extends Property implements ChannelProperty
   channelId!: string
 
   static get entity(): string {
-    return 'devices_channel_property'
+    return 'devices_module_channel_property'
   }
 
   get deviceInstance(): DeviceInterface | null {

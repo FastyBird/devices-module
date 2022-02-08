@@ -8,29 +8,20 @@ import {
 
 import {
   DeviceInterface,
-  DeviceEntityTypes,
   DeviceDataResponseInterface,
 } from '@/lib/models/devices/types'
 import {
   ChannelPropertyInterface,
-  ChannelPropertyEntityTypes,
   ChannelPropertyDataResponseInterface,
 } from '@/lib/models/channel-properties/types'
-import { ChannelControlDataResponseInterface, ChannelControlEntityTypes } from '@/lib/models/channel-controls/types'
-
-// ENTITY TYPES
-// ============
-
-export enum ChannelEntityTypes {
-  CHANNEL = 'devices-module/channel',
-}
+import { ChannelControlDataResponseInterface } from '@/lib/models/channel-controls/types'
 
 // ENTITY INTERFACE
 // ================
 
 export interface ChannelInterface {
   id: string
-  type: ChannelEntityTypes
+  type: string
 
   draft: boolean
 
@@ -61,7 +52,7 @@ interface ChannelAttributesResponseInterface {
 
 interface ChannelDeviceRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: DeviceEntityTypes
+  type: string
 }
 
 interface ChannelDeviceRelationshipsResponseInterface extends TJsonApiRelation {
@@ -70,7 +61,7 @@ interface ChannelDeviceRelationshipsResponseInterface extends TJsonApiRelation {
 
 interface ChannelPropertyRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: ChannelPropertyEntityTypes
+  type: string
 }
 
 interface ChannelPropertiesRelationshipsResponseInterface extends TJsonApiRelation {
@@ -79,7 +70,7 @@ interface ChannelPropertiesRelationshipsResponseInterface extends TJsonApiRelati
 
 interface ChannelControlRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: ChannelControlEntityTypes
+  type: string
 }
 
 interface ChannelControlsRelationshipsResponseInterface extends TJsonApiRelation {
@@ -94,7 +85,7 @@ interface ChannelRelationshipsResponseInterface extends TJsonApiRelationships {
 
 export interface ChannelDataResponseInterface extends TJsonApiData {
   id: string
-  type: ChannelEntityTypes
+  type: string
   attributes: ChannelAttributesResponseInterface
   relationships: ChannelRelationshipsResponseInterface
 }
@@ -113,7 +104,7 @@ export interface ChannelsResponseInterface extends TJsonApiBody {
 // ========================
 
 export interface ChannelCreateInterface {
-  type: ChannelEntityTypes
+  type: string
 
   identifier: string
   name?: string | null

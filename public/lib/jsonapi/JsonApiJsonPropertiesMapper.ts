@@ -10,11 +10,11 @@ import { defineRelationGetter } from 'jsona/lib/simplePropertyMappers'
 import clone from 'lodash/clone'
 import get from 'lodash/get'
 
-import { DeviceEntityTypes } from '@/lib/models/devices/types'
-import { ChannelEntityTypes } from '@/lib/models/channels/types'
-
 const RELATIONSHIP_NAMES_PROP = 'relationshipNames'
 const CASE_REG_EXP = '_([a-z0-9])'
+const CONNECTOR_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/connector/([a-z0-9.]+)$'
+const DEVICE_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/device/([a-z0-9.]+)$'
+const CHANNEL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/channel$'
 
 class JsonApiJsonPropertiesMapper extends JsonPropertiesMapper implements IJsonPropertiesMapper {
 
@@ -58,8 +58,12 @@ class JsonApiJsonPropertiesMapper extends JsonPropertiesMapper implements IJsonP
   setRelationships(model: TJsonaModel, relationships: TJsonaRelationships): void {
     Object.keys(relationships)
       .forEach((propName) => {
-        const regex = new RegExp(CASE_REG_EXP, 'g')
-        const camelName = propName.replace(regex, g => g[1].toUpperCase())
+        const case_regex = new RegExp(CASE_REG_EXP, 'g')
+        const connector_entity_regex = new RegExp(CONNECTOR_ENTITY_REG_EXP)
+        const device_entity_regex = new RegExp(DEVICE_ENTITY_REG_EXP)
+        const channel_entity_regex = new RegExp(CHANNEL_ENTITY_REG_EXP)
+
+        const camelName = propName.replace(case_regex, g => g[1].toUpperCase())
 
         if (typeof relationships[propName] === 'function') {
           defineRelationGetter(model, propName, relationships[propName] as TJsonaRelationshipBuild)
@@ -80,13 +84,11 @@ class JsonApiJsonPropertiesMapper extends JsonPropertiesMapper implements IJsonP
                 }),
               },
             )
-          } else if (
-            Object.values<string>(DeviceEntityTypes).includes(String(get(relation, 'type')).toLowerCase())
-          ) {
+          } else if (connector_entity_regex.test(String(get(relation, 'type')).toLowerCase())) {
+            Object.assign(model, { connectorId: get(relation, 'id') })
+          } else if (device_entity_regex.test(String(get(relation, 'type')).toLowerCase())) {
             Object.assign(model, { deviceId: get(relation, 'id') })
-          } else if (
-            Object.values<string>(ChannelEntityTypes).includes(String(get(relation, 'type')).toLowerCase())
-          ) {
+          } else if (channel_entity_regex.test(String(get(relation, 'type')).toLowerCase())) {
             Object.assign(model, { channelId: get(relation, 'id') })
           } else {
             Object.assign(model, { [camelName]: relation })

@@ -22,7 +22,7 @@ export default class ConnectorProperty extends Property implements ConnectorProp
   connectorId!: string
 
   static get entity(): string {
-    return 'devices_connector_property'
+    return 'devices_module_connector_property'
   }
 
   get title(): string {

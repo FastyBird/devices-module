@@ -8,24 +8,16 @@ import {
 
 import {
   ConnectorDataResponseInterface,
-  ConnectorEntityTypes,
   ConnectorInterface,
   ConnectorResponseInterface,
 } from '@/lib/models/connectors/types'
-
-// ENTITY TYPES
-// ============
-
-export enum ConnectorControlEntityTypes {
-  CONTROL = 'connectors-module/connector-control',
-}
 
 // ENTITY INTERFACE
 // ================
 
 export interface ConnectorControlInterface {
   id: string
-  type: ConnectorControlEntityTypes
+  type: string
 
   name: string
 
@@ -44,7 +36,7 @@ interface ConnectorControlAttributesResponseInterface {
 
 interface ConnectorRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: ConnectorEntityTypes
+  type: string
 }
 
 interface ConnectorRelationshipsResponseInterface extends TJsonApiRelation {
@@ -57,7 +49,7 @@ interface ConnectorControlRelationshipsResponseInterface extends TJsonApiRelatio
 
 export interface ConnectorControlDataResponseInterface extends TJsonApiData {
   id: string
-  type: ConnectorControlEntityTypes
+  type: string
   attributes: ConnectorControlAttributesResponseInterface
   relationships: ConnectorControlRelationshipsResponseInterface
   included?: (ConnectorResponseInterface)[]

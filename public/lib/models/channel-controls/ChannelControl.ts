@@ -6,7 +6,6 @@ import {
 import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
 import {
-  ChannelControlEntityTypes,
   ChannelControlInterface,
 } from '@/lib/models/channel-controls/types'
 import Device from '@/lib/models/devices/Device'
@@ -16,14 +15,14 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 // ============
 export default class ChannelControl extends Model implements ChannelControlInterface {
   id!: string
-  type!: ChannelControlEntityTypes
+  type!: string
   name!: string
   channel!: ChannelInterface | null
   channelBackward!: ChannelInterface | null
   channelId!: string
 
   static get entity(): string {
-    return 'devices_channel_control'
+    return 'devices_module_channel_control'
   }
 
   get deviceInstance(): DeviceInterface | null {

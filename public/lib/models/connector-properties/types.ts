@@ -10,18 +10,9 @@ import {
 
 import {
   ConnectorDataResponseInterface,
-  ConnectorEntityTypes,
   ConnectorInterface,
 } from '@/lib/models/connectors/types'
 import { PropertyInterface } from '@/lib/models/properties/types'
-
-// ENTITY TYPES
-// ============
-
-export enum ConnectorPropertyEntityTypes {
-  DYNAMIC = 'devices-module/connector/property/dynamic',
-  STATIC = 'devices-module/connector/property/static',
-}
 
 // ENTITY INTERFACE
 // ================
@@ -58,7 +49,7 @@ interface ConnectorPropertyAttributesResponseInterface {
 
 interface ConnectorRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: ConnectorEntityTypes
+  type: string
 }
 
 interface ConnectorRelationshipsResponseInterface extends TJsonApiRelation {
@@ -71,7 +62,7 @@ interface ConnectorPropertyRelationshipsResponseInterface extends TJsonApiRelati
 
 export interface ConnectorPropertyDataResponseInterface extends TJsonApiData {
   id: string
-  type: ConnectorPropertyEntityTypes
+  type: string
   attributes: ConnectorPropertyAttributesResponseInterface
   relationships: ConnectorPropertyRelationshipsResponseInterface
 }
@@ -90,7 +81,7 @@ export interface ConnectorPropertiesResponseInterface extends TJsonApiBody {
 // ========================
 
 export interface ConnectorPropertyCreateInterface {
-  type: ConnectorPropertyEntityTypes
+  type: string
 
   identifier: string
   name?: string | null

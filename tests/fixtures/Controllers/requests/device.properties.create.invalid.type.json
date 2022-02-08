@@ -1,6 +1,6 @@
 {
   "data" : {
-    "type" : "devices-module/other-device-property",
+    "type" : "com.fastybird.devices-module/other-device-property",
     "id" : "50b0fd41-0a6e-44f0-b513-c536208afccf",
     "attributes" : {
       "type" : "static",
@@ -20,7 +20,7 @@
     "relationships" : {
       "device" : {
         "data" : {
-          "type" : "devices-module/device",
+          "type" : "com.fastybird.devices-module/device",
           "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
         }
       }

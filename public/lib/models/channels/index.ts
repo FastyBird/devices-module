@@ -21,7 +21,6 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 import Channel from '@/lib/models/channels/Channel'
 import {
   ChannelCreateInterface,
-  ChannelEntityTypes,
   ChannelInterface,
   ChannelResponseInterface,
   ChannelsResponseInterface,
@@ -519,7 +518,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
         })
 
         const entityData: { [index: string]: string | string[] | null | undefined } = {
-          type: ChannelEntityTypes.CHANNEL,
+          type: `${origin}/channel`,
         }
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')

@@ -15,7 +15,7 @@
   },
   "data" : [
     {
-      "type" : "devices-module/control/channel",
+      "type" : "com.fastybird.devices-module/control/channel",
       "id" : "15db9bef-3b57-4a87-bf67-e3c19fc3ba34",
       "attributes" : {
         "name" : "configure"
@@ -26,7 +26,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
           },
           "data" : {
-            "type" : "devices-module/channel",
+            "type" : "com.fastybird.devices-module/channel",
             "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
           }
         }

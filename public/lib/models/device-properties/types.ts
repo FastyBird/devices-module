@@ -10,18 +10,9 @@ import {
 
 import {
   DeviceDataResponseInterface,
-  DeviceEntityTypes,
   DeviceInterface,
 } from '@/lib/models/devices/types'
 import { PropertyInterface } from '@/lib/models/properties/types'
-
-// ENTITY TYPES
-// ============
-
-export enum DevicePropertyEntityTypes {
-  DYNAMIC = 'devices-module/device/property/dynamic',
-  STATIC = 'devices-module/device/property/static',
-}
 
 // ENTITY INTERFACE
 // ================
@@ -58,7 +49,7 @@ interface DevicePropertyAttributesResponseInterface {
 
 interface DeviceRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: DeviceEntityTypes
+  type: string
 }
 
 interface DeviceRelationshipsResponseInterface extends TJsonApiRelation {
@@ -71,7 +62,7 @@ interface DevicePropertyRelationshipsResponseInterface extends TJsonApiRelations
 
 export interface DevicePropertyDataResponseInterface extends TJsonApiData {
   id: string
-  type: DevicePropertyEntityTypes
+  type: string
   attributes: DevicePropertyAttributesResponseInterface
   relationships: DevicePropertyRelationshipsResponseInterface
 }
@@ -90,7 +81,7 @@ export interface DevicePropertiesResponseInterface extends TJsonApiBody {
 // ========================
 
 export interface DevicePropertyCreateInterface {
-  type: DevicePropertyEntityTypes
+  type: string
 
   identifier: string
   name?: string | null

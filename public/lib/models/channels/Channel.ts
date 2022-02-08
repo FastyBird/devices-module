@@ -10,7 +10,6 @@ import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import {
   ChannelCreateInterface,
-  ChannelEntityTypes,
   ChannelInterface,
   ChannelUpdateInterface,
 } from '@/lib/models/channels/types'
@@ -22,7 +21,7 @@ import { ChannelPropertyInterface } from '@/lib/models/channel-properties/types'
 
 export default class Channel extends Model implements ChannelInterface {
   id!: string
-  type!: ChannelEntityTypes
+  type!: string
   draft!: boolean
   identifier!: string
   name!: string | null
@@ -34,7 +33,7 @@ export default class Channel extends Model implements ChannelInterface {
   deviceId!: string
 
   static get entity(): string {
-    return 'devices_channel'
+    return 'devices_module_channel'
   }
 
   get title(): string {

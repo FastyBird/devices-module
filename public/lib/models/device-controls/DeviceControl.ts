@@ -5,23 +5,20 @@ import {
 
 import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
-import {
-  DeviceControlEntityTypes,
-  DeviceControlInterface,
-} from '@/lib/models/device-controls/types'
+import { DeviceControlInterface } from '@/lib/models/device-controls/types'
 
 // ENTITY MODEL
 // ============
 export default class DeviceControl extends Model implements DeviceControlInterface {
   id!: string
-  type!: DeviceControlEntityTypes
+  type!: string
   name!: string
   device!: DeviceInterface | null
   deviceBackward!: DeviceInterface | null
   deviceId!: string
 
   static get entity(): string {
-    return 'devices_device_control'
+    return 'devices_module_device_control'
   }
 
   get deviceInstance(): DeviceInterface | null {

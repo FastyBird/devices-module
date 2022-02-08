@@ -20,6 +20,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 
@@ -39,7 +40,7 @@ final class ControlSchema extends JsonApiSchemas\JsonApiSchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/control/channel';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES . '/control/channel';
 
 	/**
 	 * Define relationships names

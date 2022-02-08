@@ -24,7 +24,6 @@ import Connector from '@/lib/models/connectors/Connector'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
 import ConnectorControl from '@/lib/models/connector-controls/ConnectorControl'
 import {
-  ConnectorControlEntityTypes,
   ConnectorControlInterface,
   ConnectorControlResponseInterface,
   ConnectorControlsResponseInterface,
@@ -243,7 +242,7 @@ const moduleActions: ActionTree<ConnectorControlState, unknown> = {
         })
 
         const entityData: { [index: string]: string | boolean | number | string[] | number[] | DataType | null | undefined } = {
-          type: ConnectorControlEntityTypes.CONTROL,
+          type: `${origin}/control/connector`,
         }
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')

@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Schemas\Connectors;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Schemas;
+use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
  * Modbus connector entity schema
@@ -34,7 +35,7 @@ final class VirtualConnectorSchema extends ConnectorSchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/connector/virtual';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES . '/connector/' . Entities\Connectors\VirtualConnector::CONNECTOR_TYPE;
 
 	/**
 	 * {@inheritDoc}

@@ -8,23 +8,15 @@ import {
 
 import {
   DeviceDataResponseInterface,
-  DeviceEntityTypes,
   DeviceInterface,
 } from '@/lib/models/devices/types'
-
-// ENTITY TYPES
-// ============
-
-export enum DeviceControlEntityTypes {
-  CONTROL = 'devices-module/control/device',
-}
 
 // ENTITY INTERFACE
 // ================
 
 export interface DeviceControlInterface {
   id: string
-  type: DeviceControlEntityTypes
+  type: string
 
   name: string
 
@@ -43,7 +35,7 @@ interface DeviceControlAttributesResponseInterface {
 
 interface DeviceRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: DeviceEntityTypes
+  type: string
 }
 
 interface DeviceRelationshipsResponseInterface extends TJsonApiRelation {
@@ -56,7 +48,7 @@ interface DeviceControlRelationshipsResponseInterface extends TJsonApiRelationsh
 
 export interface DeviceControlDataResponseInterface extends TJsonApiData {
   id: string
-  type: DeviceControlEntityTypes
+  type: string
   attributes: DeviceControlAttributesResponseInterface
   relationships: DeviceControlRelationshipsResponseInterface
 }

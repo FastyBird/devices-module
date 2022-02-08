@@ -1,5 +1,5 @@
 import { Fields, Model } from '@vuex-orm/core'
-import { DataType, HardwareManufacturer, normalizeValue } from '@fastybird/metadata'
+import { DataType, HardwareManufacturer, normalizeValue, PropertyType } from '@fastybird/metadata'
 
 import {
   PropertyCommandResult,
@@ -11,15 +11,12 @@ import {
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import { cleanInvalid } from '@/lib/helpers'
-import { ConnectorPropertyEntityTypes } from '@/lib/models/connector-properties/types'
-import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
-import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
 
 // ENTITY MODEL
 // ============
 export default class Property extends Model implements PropertyInterface {
   id!: string
-  type!: ConnectorPropertyEntityTypes | DevicePropertyEntityTypes | ChannelPropertyEntityTypes
+  type!: string
   draft!: boolean
   identifier!: string
   name!: string | null
@@ -104,11 +101,7 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get formattedActualValue(): string | null {
-    if (
-      this.type !== ConnectorPropertyEntityTypes.DYNAMIC
-      && this.type !== DevicePropertyEntityTypes.DYNAMIC
-      && this.type !== ChannelPropertyEntityTypes.DYNAMIC
-    ) {
+    if (!this.type.endsWith(PropertyType.DYNAMIC)) {
       return null
     }
 
@@ -167,11 +160,7 @@ export default class Property extends Model implements PropertyInterface {
       return null
     }
 
-    if (
-      this.type !== ConnectorPropertyEntityTypes.DYNAMIC
-      && this.type !== DevicePropertyEntityTypes.DYNAMIC
-      && this.type !== ChannelPropertyEntityTypes.DYNAMIC
-    ) {
+    if (!this.type.endsWith(PropertyType.DYNAMIC)) {
       return null
     }
 
@@ -292,20 +281,12 @@ export default class Property extends Model implements PropertyInterface {
       return properties.map((property: PropertyInterface) => {
         property.invalid = cleanInvalid(property.dataType, property.invalid)
 
-        if (
-          property.type === ConnectorPropertyEntityTypes.DYNAMIC
-          || property.type === DevicePropertyEntityTypes.DYNAMIC
-          || property.type === ChannelPropertyEntityTypes.DYNAMIC
-        ) {
+        if (property.type.endsWith(PropertyType.DYNAMIC)) {
           property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
           property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
         }
 
-        if (
-          property.type === ConnectorPropertyEntityTypes.STATIC
-          || property.type === DevicePropertyEntityTypes.STATIC
-          || property.type === ChannelPropertyEntityTypes.STATIC
-        ) {
+        if (property.type.endsWith(PropertyType.STATIC)) {
           property.value = normalizeValue(property.dataType, String(property.value), property.format)
         }
 
@@ -314,20 +295,12 @@ export default class Property extends Model implements PropertyInterface {
     } else {
       properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
-      if (
-        properties.type === ConnectorPropertyEntityTypes.DYNAMIC
-        || properties.type === DevicePropertyEntityTypes.DYNAMIC
-        || properties.type === ChannelPropertyEntityTypes.DYNAMIC
-      ) {
+      if (properties.type.endsWith(PropertyType.DYNAMIC)) {
         properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
         properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
       }
 
-      if (
-        properties.type === ConnectorPropertyEntityTypes.STATIC
-        || properties.type === DevicePropertyEntityTypes.STATIC
-        || properties.type === ChannelPropertyEntityTypes.STATIC
-      ) {
+      if (properties.type.endsWith(PropertyType.STATIC)) {
         properties.value = normalizeValue(properties.dataType, String(properties.value), properties.format)
       }
 
@@ -340,20 +313,12 @@ export default class Property extends Model implements PropertyInterface {
       return properties.map((property: PropertyInterface) => {
         property.invalid = cleanInvalid(property.dataType, property.invalid)
 
-        if (
-          property.type === ConnectorPropertyEntityTypes.DYNAMIC
-          || property.type === DevicePropertyEntityTypes.DYNAMIC
-          || property.type === ChannelPropertyEntityTypes.DYNAMIC
-        ) {
+        if (property.type.endsWith(PropertyType.DYNAMIC)) {
           property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
           property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
         }
 
-        if (
-          property.type === ConnectorPropertyEntityTypes.STATIC
-          || property.type === DevicePropertyEntityTypes.STATIC
-          || property.type === ChannelPropertyEntityTypes.STATIC
-        ) {
+        if (property.type.endsWith(PropertyType.STATIC)) {
           property.value = normalizeValue(property.dataType, String(property.value), property.format)
         }
 
@@ -362,20 +327,12 @@ export default class Property extends Model implements PropertyInterface {
     } else {
       properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
 
-      if (
-        properties.type === ConnectorPropertyEntityTypes.DYNAMIC
-        || properties.type === DevicePropertyEntityTypes.DYNAMIC
-        || properties.type === ChannelPropertyEntityTypes.DYNAMIC
-      ) {
+      if (properties.type.endsWith(PropertyType.DYNAMIC)) {
         properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
         properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
       }
 
-      if (
-        properties.type === ConnectorPropertyEntityTypes.STATIC
-        || properties.type === DevicePropertyEntityTypes.STATIC
-        || properties.type === ChannelPropertyEntityTypes.STATIC
-      ) {
+      if (properties.type.endsWith(PropertyType.STATIC)) {
         properties.value = normalizeValue(properties.dataType, String(properties.value), properties.format)
       }
 

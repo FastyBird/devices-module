@@ -6,25 +6,15 @@ import {
   TJsonApiRelationshipData,
 } from 'jsona/lib/JsonaTypes'
 
-import { DeviceEntityTypes, DeviceInterface } from '@/lib/models/devices/types'
-import {
-  ConnectorControlDataResponseInterface,
-  ConnectorControlEntityTypes,
-} from '@/lib/models/connector-controls/types'
-
-// ENTITY TYPES
-// ============
-
-export enum ConnectorEntityTypes {
-  VIRTUAL = 'devices-module/connector/virtual',
-}
+import { DeviceInterface } from '@/lib/models/devices/types'
+import { ConnectorControlDataResponseInterface } from '@/lib/models/connector-controls/types'
 
 // ENTITY INTERFACE
 // ================
 
 export interface ConnectorInterface {
   id: string
-  type: ConnectorEntityTypes
+  type: string
 
   name: string
   enabled: boolean
@@ -75,7 +65,7 @@ interface FbMqttConnectorAttributesResponseInterface extends ConnectorAttributes
 
 interface ConnectorDeviceRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: DeviceEntityTypes
+  type: string
 }
 
 interface ConnectorDevicesRelationshipsResponseInterface extends TJsonApiRelation {
@@ -84,7 +74,7 @@ interface ConnectorDevicesRelationshipsResponseInterface extends TJsonApiRelatio
 
 interface ConnectorControlRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: ConnectorControlEntityTypes
+  type: string
 }
 
 interface ConnectorControlsRelationshipsResponseInterface extends TJsonApiRelation {
@@ -98,7 +88,7 @@ interface ConnectorRelationshipsResponseInterface extends TJsonApiRelationships 
 
 export interface ConnectorDataResponseInterface extends TJsonApiData {
   id: string
-  type: ConnectorEntityTypes
+  type: string
   attributes: FbBusConnectorAttributesResponseInterface | FbMqttConnectorAttributesResponseInterface
   relationships: ConnectorRelationshipsResponseInterface
 }

@@ -11,7 +11,7 @@
   },
   "data" : [
     {
-      "type" : "devices-module/device/property/dynamic",
+      "type" : "com.fastybird.devices-module/property/device/dynamic",
       "id" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
       "attributes" : {
         "identifier" : "rssi",
@@ -33,7 +33,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "devices-module/device/virtual",
+            "type" : "com.fastybird.devices-module/device/virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
@@ -43,7 +43,7 @@
       }
     },
     {
-      "type" : "devices-module/device/property/static",
+      "type" : "com.fastybird.devices-module/property/device/static",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
         "identifier" : "password",
@@ -64,7 +64,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "devices-module/device/virtual",
+            "type" : "com.fastybird.devices-module/device/virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
@@ -74,7 +74,7 @@
       }
     },
     {
-      "type" : "devices-module/device/property/static",
+      "type" : "com.fastybird.devices-module/property/device/static",
       "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
       "attributes" : {
         "identifier" : "status_led",
@@ -98,7 +98,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "devices-module/device/virtual",
+            "type" : "com.fastybird.devices-module/device/virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
@@ -108,7 +108,7 @@
       }
     },
     {
-      "type" : "devices-module/device/property/dynamic",
+      "type" : "com.fastybird.devices-module/property/device/dynamic",
       "id" : "bbcccf8c-33ab-431b-a795-d7bb38b6b6db",
       "attributes" : {
         "identifier" : "uptime",
@@ -130,7 +130,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "devices-module/device/virtual",
+            "type" : "com.fastybird.devices-module/device/virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }
@@ -140,7 +140,7 @@
       }
     },
     {
-      "type" : "devices-module/device/property/static",
+      "type" : "com.fastybird.devices-module/property/device/static",
       "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
       "attributes" : {
         "identifier" : "username",
@@ -161,7 +161,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "devices-module/device/virtual",
+            "type" : "com.fastybird.devices-module/device/virtual",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }

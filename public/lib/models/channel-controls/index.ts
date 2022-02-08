@@ -25,7 +25,6 @@ import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
 import ChannelControl from '@/lib/models/channel-controls/ChannelControl'
 import {
-  ChannelControlEntityTypes,
   ChannelControlInterface,
   ChannelControlResponseInterface,
   ChannelControlsResponseInterface,
@@ -251,7 +250,7 @@ const moduleActions: ActionTree<ChannelControlState, unknown> = {
         })
 
         const entityData: { [index: string]: string | boolean | number | string[] | number[] | DataType | null | undefined } = {
-          type: ChannelControlEntityTypes.CONTROL,
+          type: `${origin}/control/channel`,
         }
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')

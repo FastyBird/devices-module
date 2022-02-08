@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Schemas\Devices;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Schemas;
+use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
  * Virtual device entity schema
@@ -34,7 +35,7 @@ final class VirtualDeviceSchema extends DeviceSchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/device/virtual';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES . '/device/' . Entities\Devices\VirtualDevice::DEVICE_TYPE;
 
 	/**
 	 * {@inheritDoc}

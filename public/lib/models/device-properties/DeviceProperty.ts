@@ -22,7 +22,7 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
   deviceId!: string
 
   static get entity(): string {
-    return 'devices_device_property'
+    return 'devices_module_device_property'
   }
 
   get deviceInstance(): DeviceInterface | null {

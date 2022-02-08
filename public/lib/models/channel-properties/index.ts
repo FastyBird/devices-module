@@ -9,7 +9,6 @@ import {
   ActionRoutes,
   DataType,
   normalizeValue,
-  PropertyType,
   PropertyAction,
 } from '@fastybird/metadata'
 
@@ -28,7 +27,6 @@ import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
 import ChannelProperty from '@/lib/models/channel-properties/ChannelProperty'
 import {
-  ChannelPropertyEntityTypes,
   ChannelPropertyInterface,
   ChannelPropertyResponseInterface,
   ChannelPropertiesResponseInterface,
@@ -593,14 +591,8 @@ const moduleActions: ActionTree<ChannelPropertyState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              switch (body[attrName]) {
-                case PropertyType.DYNAMIC:
-                  entityData[camelName] = ChannelPropertyEntityTypes.DYNAMIC
-                  break
-
-                case PropertyType.STATIC:
-                  entityData[camelName] = ChannelPropertyEntityTypes.STATIC
-                  break
+              if (payload.routingKey === RoutingKeys.CHANNELS_PROPERTY_ENTITY_CREATED) {
+                entityData[camelName] = `${origin}/property/channel/${body[attrName]}`
               }
             } else if (camelName === 'channel') {
               const channel = Channel.query().where('id', body[attrName]).first()

@@ -5,23 +5,20 @@ import {
 
 import Connector from '@/lib/models/connectors/Connector'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
-import {
-  ConnectorControlEntityTypes,
-  ConnectorControlInterface,
-} from '@/lib/models/connector-controls/types'
+import { ConnectorControlInterface } from '@/lib/models/connector-controls/types'
 
 // ENTITY MODEL
 // ============
 export default class ConnectorControl extends Model implements ConnectorControlInterface {
   id!: string
-  type!: ConnectorControlEntityTypes
+  type!: string
   name!: string
   connector!: ConnectorInterface | null
   connectorBackward!: ConnectorInterface | null
   connectorId!: string
 
   static get entity(): string {
-    return 'connectors_connector_control'
+    return 'devices_module_connector_control'
   }
 
   get connectorInstance(): ConnectorInterface | null {

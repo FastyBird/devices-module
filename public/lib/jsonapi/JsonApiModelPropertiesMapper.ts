@@ -6,35 +6,53 @@ import {
 } from 'jsona/lib/JsonaTypes'
 
 import Device from '@/lib/models/devices/Device'
-import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
 import Channel from '@/lib/models/channels/Channel'
-import { ChannelEntityTypes } from '@/lib/models/channels/types'
-import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
 import Connector from '@/lib/models/connectors/Connector'
 import { RelationInterface } from '@/lib/types'
-import { DeviceEntityTypes } from '@/lib/models/devices/types'
 
 const RELATIONSHIP_NAMES_PROP = 'relationshipNames'
+
+const CONNECTOR_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/property/connector/([a-z0-9-]+)$'
+const CONNECTOR_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/control/connector$'
+const DEVICE_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/device/([a-z0-9-]+)$'
+const DEVICE_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/property/device/([a-z0-9-]+)$'
+const DEVICE_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/control/connector$'
+const CHANNEL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/channel$'
+const CHANNEL_PROPERTY_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/property/channel/([a-z0-9-]+)$'
+const CHANNEL_CONTROL_ENTITY_REG_EXP = '^([a-z0-9.-]+)\/control/connector$'
 
 class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IModelPropertiesMapper {
   getAttributes(model: TJsonaModel): { [index: string]: any } {
     const exceptProps = ['id', '$id', 'type', 'draft', RELATIONSHIP_NAMES_PROP]
 
+    const connector_property_entity_regex = new RegExp(CONNECTOR_PROPERTY_ENTITY_REG_EXP)
+    const connector_control_entity_regex = new RegExp(CONNECTOR_CONTROL_ENTITY_REG_EXP)
+    const device_entity_regex = new RegExp(DEVICE_ENTITY_REG_EXP)
+    const device_property_entity_regex = new RegExp(DEVICE_PROPERTY_ENTITY_REG_EXP)
+    const device_control_entity_regex = new RegExp(DEVICE_CONTROL_ENTITY_REG_EXP)
+    const channel_entity_regex = new RegExp(CHANNEL_ENTITY_REG_EXP)
+    const channel_property_entity_regex = new RegExp(CHANNEL_PROPERTY_ENTITY_REG_EXP)
+    const channel_control_entity_regex = new RegExp(CHANNEL_CONTROL_ENTITY_REG_EXP)
+
     if (
-      Object.values<string>(ChannelEntityTypes).includes(model.type)
-      || Object.values<string>(DevicePropertyEntityTypes).includes(model.type)
+      channel_entity_regex.test(model.type)
+      || device_property_entity_regex.test(model.type)
+      || device_control_entity_regex.test(model.type)
     ) {
       exceptProps.push('deviceId')
       exceptProps.push('device')
       exceptProps.push('deviceBackward')
     } else if (
-      Object.values<string>(ChannelPropertyEntityTypes).includes(model.type)
+      channel_property_entity_regex.test(model.type)
+      || channel_control_entity_regex.test(model.type)
     ) {
       exceptProps.push('channelId')
       exceptProps.push('channel')
       exceptProps.push('channelBackward')
     } else if (
-      Object.values<string>(DeviceEntityTypes).includes(model.type)
+      device_entity_regex.test(model.type)
+      || connector_property_entity_regex.test(model.type)
+      || connector_control_entity_regex.test(model.type)
     ) {
       exceptProps.push('connectorId')
       exceptProps.push('connector')

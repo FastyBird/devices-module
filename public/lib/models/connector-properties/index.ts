@@ -9,7 +9,6 @@ import {
   ActionRoutes,
   DataType,
   normalizeValue,
-  PropertyType,
   PropertyAction,
 } from '@fastybird/metadata'
 
@@ -27,7 +26,6 @@ import Connector from '@/lib/models/connectors/Connector'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
 import ConnectorProperty from '@/lib/models/connector-properties/ConnectorProperty'
 import {
-  ConnectorPropertyEntityTypes,
   ConnectorPropertyInterface,
   ConnectorPropertyResponseInterface,
   ConnectorPropertiesResponseInterface,
@@ -585,14 +583,8 @@ const moduleActions: ActionTree<ConnectorPropertyState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              switch (body[attrName]) {
-                case PropertyType.DYNAMIC:
-                  entityData[camelName] = ConnectorPropertyEntityTypes.DYNAMIC
-                  break
-
-                case PropertyType.STATIC:
-                  entityData[camelName] = ConnectorPropertyEntityTypes.STATIC
-                  break
+              if (payload.routingKey === RoutingKeys.CONNECTORS_PROPERTY_ENTITY_CREATED) {
+                entityData[camelName] = `${origin}/property/connector/${body[attrName]}`
               }
             } else if (camelName === 'connector') {
               const connector = Connector.query().where('id', body[attrName]).first()

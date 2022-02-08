@@ -15,7 +15,6 @@ import capitalize from 'lodash/capitalize'
 
 import {
   DeviceCreateInterface,
-  DeviceEntityTypes,
   DeviceInterface,
   DeviceUpdateInterface,
 } from '@/lib/models/devices/types'
@@ -30,7 +29,7 @@ import { ConnectorInterface } from '@/lib/models/connectors/types'
 // ============
 export default class Device extends Model implements DeviceInterface {
   id!: string
-  type!: DeviceEntityTypes
+  type!: string
   draft!: boolean
   parentId!: string | null
   identifier!: string
@@ -52,7 +51,7 @@ export default class Device extends Model implements DeviceInterface {
   connectorId!: string
 
   static get entity(): string {
-    return 'devices_device'
+    return 'devices_module_device'
   }
 
   get isEnabled(): boolean {

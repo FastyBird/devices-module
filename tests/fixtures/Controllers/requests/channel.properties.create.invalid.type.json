@@ -1,6 +1,6 @@
 {
   "data" : {
-    "type" : "devices-module/other-channel-property",
+    "type" : "com.fastybird.devices-module/other-channel-property",
     "id" : "06644f70-7707-41c3-9a97-a5d66219659c",
     "attributes" : {
       "type" : "dynamic",
@@ -15,7 +15,7 @@
     "relationships" : {
       "channel" : {
         "data" : {
-          "type" : "devices-module/channel",
+          "type" : "com.fastybird.devices-module/channel",
           "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
       }

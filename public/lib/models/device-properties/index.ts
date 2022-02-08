@@ -9,7 +9,6 @@ import {
   ActionRoutes,
   DataType,
   normalizeValue,
-  PropertyType,
   PropertyAction,
 } from '@fastybird/metadata'
 
@@ -27,7 +26,6 @@ import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
 import {
-  DevicePropertyEntityTypes,
   DevicePropertyInterface,
   DevicePropertyResponseInterface,
   DevicePropertiesResponseInterface,
@@ -577,14 +575,8 @@ const moduleActions: ActionTree<DevicePropertyState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              switch (body[attrName]) {
-                case PropertyType.DYNAMIC:
-                  entityData[camelName] = DevicePropertyEntityTypes.DYNAMIC
-                  break
-
-                case PropertyType.STATIC:
-                  entityData[camelName] = DevicePropertyEntityTypes.STATIC
-                  break
+              if (payload.routingKey === RoutingKeys.DEVICES_PROPERTY_ENTITY_CREATED) {
+                entityData[camelName] = `${origin}/property/connector/${body[attrName]}`
               }
             } else if (camelName === 'device') {
               const device = Device.query().where('id', body[attrName]).first()

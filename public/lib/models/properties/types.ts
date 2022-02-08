@@ -1,7 +1,4 @@
 import { DataType } from '@fastybird/metadata'
-import { ChannelPropertyEntityTypes } from '@/lib/models/channel-properties/types'
-import { DevicePropertyEntityTypes } from '@/lib/models/device-properties/types'
-import { ConnectorPropertyEntityTypes } from '@/lib/models/connector-properties/types'
 
 // ENTITY TYPES
 // ============
@@ -57,7 +54,7 @@ export enum ActorNameTypes {
 
 export interface PropertyInterface {
   id: string
-  type: ConnectorPropertyEntityTypes | DevicePropertyEntityTypes | ChannelPropertyEntityTypes
+  type: string
 
   draft: boolean
 

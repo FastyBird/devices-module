@@ -5,7 +5,6 @@ import {
 } from '@vuex-orm/core'
 
 import {
-  ConnectorEntityTypes,
   ConnectorInterface,
   FbBusConnectorUpdateInterface,
   FbMqttConnectorUpdateInterface,
@@ -21,7 +20,7 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 // ============
 export default class Connector extends Model implements ConnectorInterface {
   id!: string
-  type!: ConnectorEntityTypes
+  type!: string
   name!: string
   enabled!: boolean
   relationshipNames!: string[]
@@ -36,7 +35,7 @@ export default class Connector extends Model implements ConnectorInterface {
   password!: string
 
   static get entity(): string {
-    return 'devices_connector'
+    return 'devices_module_connector'
   }
 
   get isEnabled(): boolean {

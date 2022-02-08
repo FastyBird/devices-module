@@ -24,7 +24,6 @@ import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import DeviceControl from '@/lib/models/device-controls/DeviceControl'
 import {
-  DeviceControlEntityTypes,
   DeviceControlInterface,
   DeviceControlResponseInterface,
   DeviceControlsResponseInterface,
@@ -243,7 +242,7 @@ const moduleActions: ActionTree<DeviceControlState, unknown> = {
         })
 
         const entityData: { [index: string]: string | boolean | number | string[] | number[] | DataType | null | undefined } = {
-          type: DeviceControlEntityTypes.CONTROL,
+          type: `${origin}/control/device`,
         }
 
         const camelRegex = new RegExp('_([a-z0-9])', 'g')

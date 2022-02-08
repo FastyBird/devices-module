@@ -37,7 +37,7 @@ final class StaticPropertySchema extends PropertySchema
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = 'devices-module/channel/property/static';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleOriginType::ORIGIN_MODULE_DEVICES . '/property/channel/' . MetadataTypes\PropertyTypeType::TYPE_STATIC;
 
 	/**
 	 * {@inheritDoc}

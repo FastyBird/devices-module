@@ -20,7 +20,6 @@ import uniq from 'lodash/uniq'
 
 import Connector from '@/lib/models/connectors/Connector'
 import {
-  ConnectorEntityTypes,
   ConnectorInterface,
   ConnectorResponseInterface,
   ConnectorsResponseInterface,
@@ -312,7 +311,7 @@ const moduleActions: ActionTree<ConnectorState, unknown> = {
 
             if (camelName === 'type') {
               if (payload.routingKey === RoutingKeys.CONNECTORS_ENTITY_CREATED) {
-                entityData[camelName] = ConnectorEntityTypes.VIRTUAL
+                entityData[camelName] = `${origin}/connector/${body[attrName]}`
               }
             } else {
               entityData[camelName] = body[attrName]

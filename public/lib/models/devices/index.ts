@@ -25,7 +25,6 @@ import uniq from 'lodash/uniq'
 import Device from '@/lib/models/devices/Device'
 import {
   DeviceCreateInterface,
-  DeviceEntityTypes,
   DeviceInterface,
   DeviceResponseInterface,
   DevicesResponseInterface,
@@ -122,7 +121,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().get(
-        `${ModuleApiPrefix}/v1/devices/${payload.id}?include=properties,controls,connector`,
+        `${ModuleApiPrefix}/v1/devices/${payload.id}?include=properties,controls`,
         apiOptions,
       )
 
@@ -162,7 +161,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().get(
-        `${ModuleApiPrefix}/v1/devices?include=properties,controls,connector`,
+        `${ModuleApiPrefix}/v1/devices?include=properties,controls`,
         apiOptions,
       )
 
@@ -247,7 +246,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     } else {
       try {
         await Device.api().post(
-          `${ModuleApiPrefix}/v1/devices?include=properties,controls,connector`,
+          `${ModuleApiPrefix}/v1/devices?include=properties,controls`,
           jsonApiFormatter.serialize({
             stuff: createdEntity,
           }),
@@ -330,7 +329,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     } else {
       try {
         await Device.api().patch(
-          `${ModuleApiPrefix}/v1/devices/${updatedEntity.id}?include=properties,controls,connector`,
+          `${ModuleApiPrefix}/v1/devices/${updatedEntity.id}?include=properties,controls`,
           jsonApiFormatter.serialize({
             stuff: updatedEntity,
           }),
@@ -386,7 +385,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
     try {
       await Device.api().post(
-        `${ModuleApiPrefix}/v1/devices?include=properties,controls,connector`,
+        `${ModuleApiPrefix}/v1/devices?include=properties,controls`,
         jsonApiFormatter.serialize({
           stuff: entityToSave,
         }),
@@ -543,7 +542,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
 
             if (camelName === 'type') {
               if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_CREATED) {
-                entityData[camelName] = DeviceEntityTypes.VIRTUAL
+                entityData[camelName] = `${origin}/device/${body[attrName]}`
               }
             } else {
               entityData[camelName] = body[attrName]

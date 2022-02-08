@@ -8,33 +8,21 @@ import {
 
 import {
   DevicePropertyInterface,
-  DevicePropertyEntityTypes,
   DevicePropertyDataResponseInterface,
 } from '@/lib/models/device-properties/types'
 import {
   ChannelInterface,
-  ChannelEntityTypes,
   ChannelDataResponseInterface,
 } from '@/lib/models/channels/types'
-import {
-  DeviceControlDataResponseInterface,
-  DeviceControlEntityTypes,
-} from '@/lib/models/device-controls/types'
+import { DeviceControlDataResponseInterface } from '@/lib/models/device-controls/types'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
-
-// ENTITY TYPES
-// ============
-
-export enum DeviceEntityTypes {
-  VIRTUAL = 'devices-module/device/virtual',
-}
 
 // ENTITY INTERFACE
 // ================
 
 export interface DeviceInterface {
   id: string
-  type: DeviceEntityTypes
+  type: string
 
   draft: boolean
 
@@ -88,7 +76,7 @@ interface DeviceAttributesResponseInterface {
 
 interface DeviceRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: DeviceEntityTypes
+  type: string
 }
 
 interface DeviceParentRelationshipsResponseInterface extends TJsonApiRelation {
@@ -101,7 +89,7 @@ interface DeviceChildrenRelationshipsResponseInterface extends TJsonApiRelation 
 
 interface DevicePropertyRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: DevicePropertyEntityTypes
+  type: string
 }
 
 interface DevicePropertiesRelationshipsResponseInterface extends TJsonApiRelation {
@@ -110,7 +98,7 @@ interface DevicePropertiesRelationshipsResponseInterface extends TJsonApiRelatio
 
 interface DeviceControlRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: DeviceControlEntityTypes
+  type: string
 }
 
 interface DeviceControlsRelationshipsResponseInterface extends TJsonApiRelation {
@@ -119,7 +107,7 @@ interface DeviceControlsRelationshipsResponseInterface extends TJsonApiRelation 
 
 interface DeviceChannelRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: ChannelEntityTypes
+  type: string
 }
 
 interface DeviceChannelsRelationshipsResponseInterface extends TJsonApiRelation {
@@ -136,7 +124,7 @@ interface DeviceRelationshipsResponseInterface extends TJsonApiRelationships {
 
 export interface DeviceDataResponseInterface extends TJsonApiData {
   id: string
-  type: DeviceEntityTypes
+  type: string
   attributes: DeviceAttributesResponseInterface
   relationships: DeviceRelationshipsResponseInterface
 }
@@ -155,7 +143,7 @@ export interface DevicesResponseInterface extends TJsonApiBody {
 // ========================
 
 export interface DeviceCreateInterface {
-  type: DeviceEntityTypes
+  type: string
 
   identifier: string
   name?: string | null

@@ -8,23 +8,15 @@ import {
 
 import {
   ChannelDataResponseInterface,
-  ChannelEntityTypes,
   ChannelInterface,
 } from '@/lib/models/channels/types'
-
-// ENTITY TYPES
-// ============
-
-export enum ChannelControlEntityTypes {
-  CONTROL = 'devices-module/control/channel',
-}
 
 // ENTITY INTERFACE
 // ================
 
 export interface ChannelControlInterface {
   id: string
-  type: ChannelControlEntityTypes
+  type: string
 
   name: string
 
@@ -43,7 +35,7 @@ interface ChannelControlAttributesResponseInterface {
 
 interface ChannelRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
-  type: ChannelEntityTypes
+  type: string
 }
 
 interface ChannelRelationshipsResponseInterface extends TJsonApiRelation {
@@ -56,7 +48,7 @@ interface ChannelControlRelationshipsResponseInterface extends TJsonApiRelations
 
 export interface ChannelControlDataResponseInterface extends TJsonApiData {
   id: string
-  type: ChannelControlEntityTypes
+  type: string
   attributes: ChannelControlAttributesResponseInterface
   relationships: ChannelControlRelationshipsResponseInterface
 }

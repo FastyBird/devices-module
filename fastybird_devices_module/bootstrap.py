@@ -127,9 +127,9 @@ def register_services(  # pylint: disable=too-many-statements
     di[ConnectorPropertiesStatesManager] = ConnectorPropertiesStatesManager()
     di["fb-devices-module_connectors-properties-states-manager"] = di[ConnectorPropertiesStatesManager]
     di[DevicePropertiesStatesManager] = DevicePropertiesStatesManager()
-    di["fb-devices-module_connectors-properties-states-manager"] = di[DevicePropertiesStatesManager]
+    di["fb-devices-module_devices-properties-states-manager"] = di[DevicePropertiesStatesManager]
     di[ChannelPropertiesStatesManager] = ChannelPropertiesStatesManager()
-    di["fb-devices-module_connectors-properties-states-manager"] = di[ChannelPropertiesStatesManager]
+    di["fb-devices-module_channels-properties-states-manager"] = di[ChannelPropertiesStatesManager]
 
     # Entities subscribers
 

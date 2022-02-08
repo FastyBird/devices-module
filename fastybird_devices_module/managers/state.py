@@ -27,7 +27,7 @@ from typing import Dict, Optional, Union
 from fastybird_exchange.publisher import Publisher
 from fastybird_metadata.helpers import normalize_value
 from fastybird_metadata.routing import RoutingKey
-from fastybird_metadata.types import ButtonPayload, ModuleSource, SwitchPayload
+from fastybird_metadata.types import ButtonPayload, SwitchPayload
 from kink import inject
 
 # Library libs
@@ -283,7 +283,7 @@ class ConnectorPropertiesStatesManager:
         )
 
         self.__publisher.publish(
-            source=ModuleSource.DEVICES_MODULE,
+            source=connector_property.source,
             routing_key=RoutingKey.CONNECTORS_PROPERTY_ENTITY_UPDATED,
             data={
                 **connector_property.to_dict(),
@@ -422,7 +422,7 @@ class DevicePropertiesStatesManager:
         )
 
         self.__publisher.publish(
-            source=ModuleSource.DEVICES_MODULE,
+            source=device_property.source,
             routing_key=RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED,
             data={
                 **device_property.to_dict(),
@@ -561,7 +561,7 @@ class ChannelPropertiesStatesManager:
         )
 
         self.__publisher.publish(
-            source=ModuleSource.DEVICES_MODULE,
+            source=channel_property.source,
             routing_key=RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED,
             data={
                 **channel_property.to_dict(),

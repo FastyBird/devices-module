@@ -25,7 +25,6 @@ from typing import Dict, Optional, Type
 # Library dependencies
 from fastybird_exchange.publisher import Publisher
 from fastybird_metadata.routing import RoutingKey
-from fastybird_metadata.types import ModuleSource
 from kink import inject
 from sqlalchemy import event
 from sqlalchemy.orm import Session as OrmSession
@@ -201,7 +200,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                 exchange_data = {**entity.to_dict(), **self.__get_entity_extended_data(entity=entity)}
 
                 self.__publisher.publish(
-                    source=ModuleSource.DEVICES_MODULE,
+                    source=entity.source,
                     routing_key=routing_key,
                     data=exchange_data,
                 )
@@ -216,7 +215,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                 exchange_data = {**entity.to_dict(), **self.__get_entity_extended_data(entity=entity)}
 
                 self.__publisher.publish(
-                    source=ModuleSource.DEVICES_MODULE,
+                    source=entity.source,
                     routing_key=routing_key,
                     data=exchange_data,
                 )
@@ -226,7 +225,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
             if routing_key is not None:
                 self.__publisher.publish(
-                    source=ModuleSource.DEVICES_MODULE,
+                    source=entity.source,
                     routing_key=routing_key,
                     data={**entity.to_dict(), **self.__get_entity_extended_data(entity=entity)},
                 )

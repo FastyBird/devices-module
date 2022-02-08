@@ -20,9 +20,10 @@ Devices module base entities module
 
 # Python base dependencies
 import datetime
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 # Library dependencies
+from fastybird_metadata.types import ConnectorSource, ModuleSource, PluginSource
 from sqlalchemy import Column, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -46,6 +47,13 @@ class Base(OrmBase):  # type: ignore[misc,valid-type]  # pylint: disable=too-few
     def to_dict(self) -> Dict:  # pylint: disable=no-self-use
         """Transform entity to dictionary"""
         return {}
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def source(self) -> Union[ModuleSource, ConnectorSource, PluginSource]:
+        """Entity source type"""
+        return ModuleSource.DEVICES_MODULE
 
 
 class EntityCreatedMixin:  # pylint: disable=too-few-public-methods

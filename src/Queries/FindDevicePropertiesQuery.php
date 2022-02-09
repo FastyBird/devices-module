@@ -80,6 +80,19 @@ class FindDevicePropertiesQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
+	 * @param Entities\Devices\Properties\IProperty $property
+	 *
+	 * @return void
+	 */
+	public function forParent(Entities\Devices\Properties\IProperty $property): void
+	{
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($property): void {
+			$qb->andWhere('p.parent = :parent')
+				->setParameter('parent', $property->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+		};
+	}
+
+	/**
 	 * @param string $sortBy
 	 * @param string $sortDir
 	 *

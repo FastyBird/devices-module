@@ -42,17 +42,17 @@ final class DeviceControlsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
+	protected Models\Devices\IDeviceRepository $devicesRepository;
 
 	/** @var Models\Devices\Controls\IControlRepository */
-	private Models\Devices\Controls\IControlRepository $controlRepository;
+	private Models\Devices\Controls\IControlRepository $deviceControlsRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $deviceRepository,
-		Models\Devices\Controls\IControlRepository $controlRepository
+		Models\Devices\IDeviceRepository $devicesRepository,
+		Models\Devices\Controls\IControlRepository $deviceControlsRepository
 	) {
-		$this->deviceRepository = $deviceRepository;
-		$this->controlRepository = $controlRepository;
+		$this->devicesRepository = $devicesRepository;
+		$this->deviceControlsRepository = $deviceControlsRepository;
 	}
 
 	/**
@@ -73,7 +73,7 @@ final class DeviceControlsV1Controller extends BaseV1Controller
 		$findQuery = new Queries\FindDeviceControlsQuery();
 		$findQuery->forDevice($device);
 
-		$controls = $this->controlRepository->getResultSet($findQuery);
+		$controls = $this->deviceControlsRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $controls);
@@ -100,7 +100,7 @@ final class DeviceControlsV1Controller extends BaseV1Controller
 			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & control
-			$control = $this->controlRepository->findOneBy($findQuery);
+			$control = $this->deviceControlsRepository->findOneBy($findQuery);
 
 			if ($control !== null) {
 				return $this->buildResponse($request, $response, $control);
@@ -138,7 +138,7 @@ final class DeviceControlsV1Controller extends BaseV1Controller
 			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & control
-			$control = $this->controlRepository->findOneBy($findQuery);
+			$control = $this->deviceControlsRepository->findOneBy($findQuery);
 
 			if ($control !== null) {
 				if ($relationEntity === Schemas\Devices\Controls\ControlSchema::RELATIONSHIPS_DEVICE) {

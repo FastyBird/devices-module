@@ -470,11 +470,22 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
 
     col_type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
+    parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+        BINARY(16),
+        ForeignKey("fb_devices_module_devices_properties.property_id", ondelete="SET NULL"),
+        name="parent_id",
+        nullable=True,
+    )
+
     device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices_module_devices.device_id"), name="device_id", nullable=False
     )
 
     device: DeviceEntity = relationship(DeviceEntity, back_populates="properties")  # type: ignore[assignment]
+
+    children: List["DevicePropertyEntity"] = relationship(  # type: ignore[assignment]
+        "DevicePropertyEntity", backref=backref("parent", remote_side=[PropertyMixin.col_property_id])
+    )
 
     __mapper_args__ = {
         "polymorphic_identity": "device_property",
@@ -520,6 +531,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
             **super().to_dict(),
             **{
                 "device": uuid.UUID(bytes=self.device_id).__str__(),
+                "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
                 "owner": self.device.owner,
             },
         }

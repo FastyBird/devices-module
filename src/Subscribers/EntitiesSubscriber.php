@@ -47,13 +47,13 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	use Nette\SmartObject;
 
 	/** @var Models\States\IDevicePropertyRepository|null */
-	private ?Models\States\IDevicePropertyRepository $devicePropertyStateRepository;
+	private ?Models\States\IDevicePropertyRepository $devicePropertiesStatesRepository;
 
 	/** @var Models\States\IChannelPropertyRepository|null */
-	private ?Models\States\IChannelPropertyRepository $channelPropertyStateRepository;
+	private ?Models\States\IChannelPropertyRepository $channelPropertiesStatesRepository;
 
 	/** @var Models\States\IConnectorPropertyRepository|null */
-	private ?Models\States\IConnectorPropertyRepository $connectorPropertyStateRepository;
+	private ?Models\States\IConnectorPropertyRepository $connectorPropertiesStatesRepository;
 
 	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
@@ -64,13 +64,13 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	public function __construct(
 		ORM\EntityManagerInterface $entityManager,
 		?ExchangePublisher\Publisher $publisher = null,
-		?Models\States\IDevicePropertyRepository $devicePropertyStateRepository = null,
-		?Models\States\IChannelPropertyRepository $channelPropertyStateRepository = null,
-		?Models\States\IConnectorPropertyRepository $connectorPropertyStateRepository = null
+		?Models\States\IDevicePropertyRepository $devicePropertiesStatesRepository = null,
+		?Models\States\IChannelPropertyRepository $channelPropertiesStatesRepository = null,
+		?Models\States\IConnectorPropertyRepository $connectorPropertiesStatesRepository = null
 	) {
-		$this->devicePropertyStateRepository = $devicePropertyStateRepository;
-		$this->channelPropertyStateRepository = $channelPropertyStateRepository;
-		$this->connectorPropertyStateRepository = $connectorPropertyStateRepository;
+		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
+		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;
+		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
 	}
@@ -225,9 +225,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			if (
 				$entity instanceof Entities\Devices\Properties\IProperty
 				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->devicePropertyStateRepository !== null
+				&& $this->devicePropertiesStatesRepository !== null
 			) {
-				$state = $this->devicePropertyStateRepository->findOne($entity);
+				$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
 				$this->publisher->publish(
 					$entity->getSource(),
@@ -241,9 +241,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			} elseif (
 				$entity instanceof Entities\Channels\Properties\IProperty
 				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->channelPropertyStateRepository !== null
+				&& $this->channelPropertiesStatesRepository !== null
 			) {
-				$state = $this->channelPropertyStateRepository->findOne($entity);
+				$state = $this->channelPropertiesStatesRepository->findOne($entity);
 
 				$this->publisher->publish(
 					$entity->getSource(),
@@ -257,9 +257,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			} elseif (
 				$entity instanceof Entities\Connectors\Properties\IProperty
 				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->connectorPropertyStateRepository !== null
+				&& $this->connectorPropertiesStatesRepository !== null
 			) {
-				$state = $this->connectorPropertyStateRepository->findOne($entity);
+				$state = $this->connectorPropertiesStatesRepository->findOne($entity);
 
 				$this->publisher->publish(
 					$entity->getSource(),

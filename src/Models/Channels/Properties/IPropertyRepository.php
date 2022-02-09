@@ -47,6 +47,19 @@ interface IPropertyRepository
 	 * @param Queries\FindChannelPropertiesQuery $queryObject
 	 * @param string $type
 	 *
+	 * @return Entities\Channels\Properties\IProperty[]
+	 *
+	 * @phpstan-param class-string $type
+	 */
+	public function findAllBy(
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
+	): array;
+
+	/**
+	 * @param Queries\FindChannelPropertiesQuery $queryObject
+	 * @param string $type
+	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-param class-string $type

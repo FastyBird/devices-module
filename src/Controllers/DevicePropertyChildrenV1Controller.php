@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
 /**
- * DeviceChildrenV1Controller.php
+ * DevicePropertyChildrenV1Controller.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Controllers
- * @since          0.1.0
+ * @since          0.33.0
  *
- * @date           04.06.19
+ * @date           09.02.22
  */
 
 namespace FastyBird\DevicesModule\Controllers;
@@ -23,7 +23,7 @@ use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use Psr\Http\Message;
 
 /**
- * Device children API controller
+ * Device property children API controller
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Controllers
@@ -33,18 +33,24 @@ use Psr\Http\Message;
  * @Secured
  * @Secured\User(loggedIn)
  */
-final class DeviceChildrenV1Controller extends BaseV1Controller
+final class DevicePropertyChildrenV1Controller extends BaseV1Controller
 {
 
 	use Controllers\Finders\TDeviceFinder;
+	use Controllers\Finders\TDevicePropertyFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
 	protected Models\Devices\IDeviceRepository $devicesRepository;
 
+	/** @var Models\Devices\Properties\IPropertyRepository */
+	private Models\Devices\Properties\IPropertyRepository $devicePropertiesRepository;
+
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository
+		Models\Devices\IDeviceRepository $devicesRepository,
+		Models\Devices\Properties\IPropertyRepository $devicePropertiesRepository
 	) {
 		$this->devicesRepository = $devicesRepository;
+		$this->devicePropertiesRepository = $devicePropertiesRepository;
 	}
 
 	/**
@@ -61,11 +67,13 @@ final class DeviceChildrenV1Controller extends BaseV1Controller
 	): Message\ResponseInterface {
 		// At first, try to load device
 		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		// & property
+		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_PROPERTY_ID), $device);
 
-		$findQuery = new Queries\FindDevicesQuery();
-		$findQuery->forParent($device);
+		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery->forParent($property);
 
-		$children = $this->devicesRepository->getResultSet($findQuery);
+		$children = $this->devicePropertiesRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $children);

@@ -25,7 +25,7 @@ use Ramsey\Uuid;
 
 /**
  * @property-read Localization\ITranslator $translator
- * @property-read Models\Devices\IDeviceRepository $deviceRepository
+ * @property-read Models\Devices\IDeviceRepository $devicesRepository
  */
 trait TDeviceFinder
 {
@@ -43,7 +43,7 @@ trait TDeviceFinder
 			$findQuery = new Queries\FindDevicesQuery();
 			$findQuery->byId(Uuid\Uuid::fromString($id));
 
-			$device = $this->deviceRepository->findOneBy($findQuery);
+			$device = $this->devicesRepository->findOneBy($findQuery);
 
 			if ($device === null) {
 				throw new JsonApiExceptions\JsonApiErrorException(

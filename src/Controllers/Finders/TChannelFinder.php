@@ -25,7 +25,7 @@ use Ramsey\Uuid;
 
 /**
  * @property-read Localization\ITranslator $translator
- * @property-read Models\Channels\IChannelRepository $channelRepository
+ * @property-read Models\Channels\IChannelRepository $channelsRepository
  */
 trait TChannelFinder
 {
@@ -47,7 +47,7 @@ trait TChannelFinder
 			$findQuery->byId(Uuid\Uuid::fromString($id));
 			$findQuery->forDevice($device);
 
-			$channel = $this->channelRepository->findOneBy($findQuery);
+			$channel = $this->channelsRepository->findOneBy($findQuery);
 
 			if ($channel === null) {
 				throw new JsonApiExceptions\JsonApiErrorException(

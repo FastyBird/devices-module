@@ -44,21 +44,21 @@ final class ChannelsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TChannelFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
+	protected Models\Devices\IDeviceRepository $devicesRepository;
 
 	/** @var Models\Channels\IChannelsManager */
 	protected Models\Channels\IChannelsManager $channelsManager;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelRepository;
+	protected Models\Channels\IChannelRepository $channelsRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $deviceRepository,
-		Models\Channels\IChannelRepository $channelRepository,
+		Models\Devices\IDeviceRepository $devicesRepository,
+		Models\Channels\IChannelRepository $channelsRepository,
 		Models\Channels\IChannelsManager $channelsManager
 	) {
-		$this->deviceRepository = $deviceRepository;
-		$this->channelRepository = $channelRepository;
+		$this->devicesRepository = $devicesRepository;
+		$this->channelsRepository = $channelsRepository;
 		$this->channelsManager = $channelsManager;
 	}
 
@@ -80,7 +80,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 		$findQuery = new Queries\FindChannelsQuery();
 		$findQuery->forDevice($device);
 
-		$channels = $this->channelRepository->getResultSet($findQuery);
+		$channels = $this->channelsRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $channels);
@@ -389,6 +389,9 @@ final class ChannelsV1Controller extends BaseV1Controller
 
 		if ($relationEntity === Schemas\Channels\ChannelSchema::RELATIONSHIPS_PROPERTIES) {
 			return $this->buildResponse($request, $response, $channel->getProperties());
+
+		} elseif ($relationEntity === Schemas\Channels\ChannelSchema::RELATIONSHIPS_CONTROLS) {
+			return $this->buildResponse($request, $response, $channel->getControls());
 		}
 
 		return parent::readRelationship($request, $response);

@@ -54,21 +54,21 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CHILDREN = 'children';
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
+	protected Models\Devices\IDeviceRepository $devicesRepository;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelRepository;
+	protected Models\Channels\IChannelRepository $channelsRepository;
 
 	/** @var Routing\IRouter */
 	protected Routing\IRouter $router;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $deviceRepository,
-		Models\Channels\IChannelRepository $channelRepository,
+		Models\Devices\IDeviceRepository $devicesRepository,
+		Models\Channels\IChannelRepository $channelsRepository,
 		Routing\IRouter $router
 	) {
-		$this->deviceRepository = $deviceRepository;
-		$this->channelRepository = $channelRepository;
+		$this->devicesRepository = $devicesRepository;
+		$this->channelsRepository = $channelsRepository;
 
 		$this->router = $router;
 	}
@@ -158,11 +158,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CHILDREN      => [
-				self::RELATIONSHIP_DATA          => $this->getChildren($device),
-				self::RELATIONSHIP_LINKS_SELF    => true,
-				self::RELATIONSHIP_LINKS_RELATED => true,
-			],
 			self::RELATIONSHIPS_CONNECTOR     => [
 				self::RELATIONSHIP_DATA          => $device->getConnector(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
@@ -172,6 +167,11 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_DATA          => $device->getParent(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => $device->getParent() !== null,
+			],
+			self::RELATIONSHIPS_CHILDREN      => [
+				self::RELATIONSHIP_DATA          => $this->getChildren($device),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 		];
 	}
@@ -186,7 +186,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		$findQuery = new Queries\FindChannelsQuery();
 		$findQuery->forDevice($device);
 
-		return $this->channelRepository->findAllBy($findQuery);
+		return $this->channelsRepository->findAllBy($findQuery);
 	}
 
 	/**
@@ -199,7 +199,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		$findQuery = new Queries\FindDevicesQuery();
 		$findQuery->forParent($device);
 
-		return $this->deviceRepository->findAllBy($findQuery);
+		return $this->devicesRepository->findAllBy($findQuery);
 	}
 
 	/**

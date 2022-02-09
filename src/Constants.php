@@ -40,6 +40,7 @@ final class Constants
 	public const ROUTE_NAME_DEVICE_PROPERTIES = 'device.properties';
 	public const ROUTE_NAME_DEVICE_PROPERTY = 'device.property';
 	public const ROUTE_NAME_DEVICE_PROPERTY_RELATIONSHIP = 'device.property.relationship';
+	public const ROUTE_NAME_DEVICE_PROPERTY_CHILDREN = 'device.property.children';
 	public const ROUTE_NAME_DEVICE_CONTROLS = 'device.controls';
 	public const ROUTE_NAME_DEVICE_CONTROL = 'device.control';
 	public const ROUTE_NAME_DEVICE_CONTROL_RELATIONSHIP = 'device.control.relationship';
@@ -49,6 +50,7 @@ final class Constants
 	public const ROUTE_NAME_CHANNEL_PROPERTIES = 'channel.properties';
 	public const ROUTE_NAME_CHANNEL_PROPERTY = 'channel.property';
 	public const ROUTE_NAME_CHANNEL_PROPERTY_RELATIONSHIP = 'channel.property.relationship';
+	public const ROUTE_NAME_CHANNEL_PROPERTY_CHILDREN = 'channel.property.children';
 	public const ROUTE_NAME_CHANNEL_CONTROLS = 'channel.controls';
 	public const ROUTE_NAME_CHANNEL_CONTROL = 'channel.control';
 	public const ROUTE_NAME_CHANNEL_CONTROL_RELATIONSHIP = 'channel.control.relationship';

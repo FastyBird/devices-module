@@ -56,9 +56,11 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Controllers\DevicesV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceChildrenV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DevicePropertiesV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\DevicePropertyChildrenV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\DeviceControlsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelPropertiesV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\ChannelPropertyChildrenV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ChannelControlsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ConnectorsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ConnectorControlsV1Controller::class));

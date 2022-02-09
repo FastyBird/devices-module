@@ -44,15 +44,15 @@ final class DynamicPropertySchema extends PropertySchema
 	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/property/connector/' . MetadataTypes\PropertyTypeType::TYPE_DYNAMIC;
 
 	/** @var Models\States\IConnectorPropertyRepository|null */
-	private ?Models\States\IConnectorPropertyRepository $propertyRepository;
+	private ?Models\States\IConnectorPropertyRepository $propertiesStatesRepository;
 
 	public function __construct(
 		Routing\IRouter $router,
-		?Models\States\IConnectorPropertyRepository $propertyRepository
+		?Models\States\IConnectorPropertyRepository $propertiesStatesRepository
 	) {
 		parent::__construct($router);
 
-		$this->propertyRepository = $propertyRepository;
+		$this->propertiesStatesRepository = $propertiesStatesRepository;
 	}
 
 	/**
@@ -81,7 +81,7 @@ final class DynamicPropertySchema extends PropertySchema
 	 */
 	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		$state = $this->propertyRepository === null ? null : $this->propertyRepository->findOne($property);
+		$state = $this->propertiesStatesRepository === null ? null : $this->propertiesStatesRepository->findOne($property);
 
 		$actualValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()) : null;
 		$expectedValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat()) : null;

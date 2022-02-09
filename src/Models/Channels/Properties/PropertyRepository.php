@@ -66,6 +66,23 @@ final class PropertyRepository implements IPropertyRepository
 	}
 
 	/**
+	 * @param Queries\FindChannelPropertiesQuery $queryObject
+	 * @param string $type
+	 *
+	 * @return Entities\Channels\Properties\IProperty[]
+	 *
+	 * @phpstan-param class-string $type
+	 */
+	public function findAllBy(
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
+	): array {
+		$result = $queryObject->fetch($this->getRepository($type));
+
+		return is_array($result) ? $result : $result->toArray();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @throws Throwable

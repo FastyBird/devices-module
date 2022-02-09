@@ -22,6 +22,8 @@ export default class ChannelProperty extends Property implements ChannelProperty
   channel!: ChannelInterface | null
   channelBackward!: ChannelInterface | null
   channelId!: string
+  parentId!: string | null
+  children!: ChannelPropertyInterface[]
 
   static get entity(): string {
     return 'devices_module_channel_property'
@@ -103,6 +105,10 @@ export default class ChannelProperty extends Property implements ChannelProperty
       channelBackward: this.hasOne(Channel, 'id', 'channelId'),
 
       channelId: this.string(''),
+
+      parentId: this.string(null).nullable(),
+
+      children: this.hasMany(ChannelProperty, 'parentId'),
     })
   }
 

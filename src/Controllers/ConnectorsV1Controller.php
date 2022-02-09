@@ -45,13 +45,13 @@ class ConnectorsV1Controller extends BaseV1Controller
 	private Models\Connectors\IConnectorsManager $connectorsManager;
 
 	/** @var Models\Connectors\IConnectorRepository */
-	private Models\Connectors\IConnectorRepository $connectorRepository;
+	private Models\Connectors\IConnectorRepository $connectorsRepository;
 
 	public function __construct(
-		Models\Connectors\IConnectorRepository $connectorRepository,
+		Models\Connectors\IConnectorRepository $connectorsRepository,
 		Models\Connectors\IConnectorsManager $connectorsManager
 	) {
-		$this->connectorRepository = $connectorRepository;
+		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorsManager = $connectorsManager;
 	}
 
@@ -67,7 +67,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 	): Message\ResponseInterface {
 		$findQuery = new Queries\FindConnectorsQuery();
 
-		$connectors = $this->connectorRepository->getResultSet($findQuery);
+		$connectors = $this->connectorsRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $connectors);
@@ -103,7 +103,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 			$findQuery = new Queries\FindConnectorsQuery();
 			$findQuery->byId(Uuid\Uuid::fromString($id));
 
-			$connector = $this->connectorRepository->findOneBy($findQuery);
+			$connector = $this->connectorsRepository->findOneBy($findQuery);
 
 			if ($connector === null) {
 				throw new JsonApiExceptions\JsonApiErrorException(
@@ -215,6 +215,12 @@ class ConnectorsV1Controller extends BaseV1Controller
 
 		if ($relationEntity === Schemas\Connectors\ConnectorSchema::RELATIONSHIPS_DEVICES) {
 			return $this->buildResponse($request, $response, $connector->getDevices());
+
+		} elseif ($relationEntity === Schemas\Connectors\ConnectorSchema::RELATIONSHIPS_PROPERTIES) {
+			return $this->buildResponse($request, $response, $connector->getProperties());
+
+		} elseif ($relationEntity === Schemas\Connectors\ConnectorSchema::RELATIONSHIPS_CONTROLS) {
+			return $this->buildResponse($request, $response, $connector->getControls());
 		}
 
 		return parent::readRelationship($request, $response);

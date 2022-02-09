@@ -42,17 +42,17 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TConnectorFinder;
 
 	/** @var Models\Connectors\IConnectorRepository */
-	protected Models\Connectors\IConnectorRepository $connectorRepository;
+	protected Models\Connectors\IConnectorRepository $connectorsRepository;
 
 	/** @var Models\Connectors\Controls\IControlRepository */
-	private Models\Connectors\Controls\IControlRepository $controlRepository;
+	private Models\Connectors\Controls\IControlRepository $connectorControlsRepository;
 
 	public function __construct(
-		Models\Connectors\IConnectorRepository $connectorRepository,
-		Models\Connectors\Controls\IControlRepository $controlRepository
+		Models\Connectors\IConnectorRepository $connectorsRepository,
+		Models\Connectors\Controls\IControlRepository $connectorControlsRepository
 	) {
-		$this->connectorRepository = $connectorRepository;
-		$this->controlRepository = $controlRepository;
+		$this->connectorsRepository = $connectorsRepository;
+		$this->connectorControlsRepository = $connectorControlsRepository;
 	}
 
 	/**
@@ -73,7 +73,7 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 		$findQuery = new Queries\FindConnectorControlsQuery();
 		$findQuery->forConnector($connector);
 
-		$controls = $this->controlRepository->getResultSet($findQuery);
+		$controls = $this->connectorControlsRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $controls);
@@ -100,7 +100,7 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & control
-			$control = $this->controlRepository->findOneBy($findQuery);
+			$control = $this->connectorControlsRepository->findOneBy($findQuery);
 
 			if ($control !== null) {
 				return $this->buildResponse($request, $response, $control);
@@ -138,7 +138,7 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & control
-			$control = $this->controlRepository->findOneBy($findQuery);
+			$control = $this->connectorControlsRepository->findOneBy($findQuery);
 
 			if ($control !== null) {
 				if ($relationEntity === Schemas\Connectors\Controls\ControlSchema::RELATIONSHIPS_CONNECTOR) {

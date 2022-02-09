@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
 /**
- * TConnectorFinder.php
+ * TDevicePropertyFinder.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Controllers
- * @since          0.4.0
+ * @since          0.33.0
  *
- * @date           29.09.21
+ * @date           09.02.22
  */
 
 namespace FastyBird\DevicesModule\Controllers\Finders;
@@ -25,27 +25,31 @@ use Ramsey\Uuid;
 
 /**
  * @property-read Localization\ITranslator $translator
- * @property-read Models\Connectors\IConnectorRepository $connectorsRepository
+ * @property-read Models\Devices\Properties\IPropertyRepository $devicePropertiesRepository
  */
-trait TConnectorFinder
+trait TDevicePropertyFinder
 {
 
 	/**
 	 * @param string $id
+	 * @param Entities\Devices\IDevice $device
 	 *
-	 * @return Entities\Connectors\IConnector
+	 * @return Entities\Devices\Properties\IProperty
 	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
-	protected function findConnector(string $id): Entities\Connectors\IConnector
-	{
+	private function findProperty(
+		string $id,
+		Entities\Devices\IDevice $device
+	): Entities\Devices\Properties\IProperty {
 		try {
-			$findQuery = new Queries\FindConnectorsQuery();
+			$findQuery = new Queries\FindDevicePropertiesQuery();
+			$findQuery->forDevice($device);
 			$findQuery->byId(Uuid\Uuid::fromString($id));
 
-			$connector = $this->connectorsRepository->findOneBy($findQuery);
+			$property = $this->devicePropertiesRepository->findOneBy($findQuery);
 
-			if ($connector === null) {
+			if ($property === null) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
@@ -60,7 +64,7 @@ trait TConnectorFinder
 			);
 		}
 
-		return $connector;
+		return $property;
 	}
 
 }

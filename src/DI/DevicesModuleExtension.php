@@ -96,7 +96,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Commands\InitializeCommand::class);
 
 		// Database repositories
-		$builder->addDefinition($this->prefix('models.deviceRepository'), new DI\Definitions\ServiceDefinition())
+		$builder->addDefinition($this->prefix('models.devicesRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\DeviceRepository::class);
 
 		$builder->addDefinition($this->prefix('models.devicePropertyRepository'), new DI\Definitions\ServiceDefinition())
@@ -105,7 +105,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('models.deviceControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\Controls\ControlRepository::class);
 
-		$builder->addDefinition($this->prefix('models.channelRepository'), new DI\Definitions\ServiceDefinition())
+		$builder->addDefinition($this->prefix('models.channelsRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\ChannelRepository::class);
 
 		$builder->addDefinition($this->prefix('models.channelPropertyRepository'), new DI\Definitions\ServiceDefinition())
@@ -114,7 +114,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('models.channelControlRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Channels\Controls\ControlRepository::class);
 
-		$builder->addDefinition($this->prefix('models.connectorRepository'), new DI\Definitions\ServiceDefinition())
+		$builder->addDefinition($this->prefix('models.connectorsRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Connectors\ConnectorRepository::class);
 
 		$builder->addDefinition($this->prefix('models.connectorPropertyRepository'), new DI\Definitions\ServiceDefinition())
@@ -177,6 +177,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Controllers\DevicePropertiesV1Controller::class)
 			->addTag('nette.inject');
 
+		$builder->addDefinition($this->prefix('controllers.devicePropertyChildren'), new DI\Definitions\ServiceDefinition())
+			->setType(Controllers\DevicePropertyChildrenV1Controller::class)
+			->addTag('nette.inject');
+
 		$builder->addDefinition($this->prefix('controllers.deviceControls'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DeviceControlsV1Controller::class)
 			->addTag('nette.inject');
@@ -187,6 +191,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('controllers.channelProperties'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\ChannelPropertiesV1Controller::class)
+			->addTag('nette.inject');
+
+		$builder->addDefinition($this->prefix('controllers.channelPropertyChildren'), new DI\Definitions\ServiceDefinition())
+			->setType(Controllers\ChannelPropertyChildrenV1Controller::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.channelControls'), new DI\Definitions\ServiceDefinition())

@@ -517,37 +517,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
-	{
-		return [
-			'id'         => $this->getPlainId(),
-			'type'       => $this->getType(),
-			'identifier' => $this->getIdentifier(),
-			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
-			'enabled'    => $this->isEnabled(),
-
-			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof MetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()
-				->getValue() : $this->getHardwareManufacturer(),
-			'hardware_model'        => $this->getHardwareModel() instanceof MetadataTypes\DeviceModelType ? $this->getHardwareModel()
-				->getValue() : $this->getHardwareModel(),
-			'hardware_version'      => $this->getHardwareVersion(),
-			'hardware_mac_address'  => $this->getHardwareMacAddress(),
-
-			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof MetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()
-				->getValue() : $this->getFirmwareManufacturer(),
-			'firmware_version'      => $this->getFirmwareVersion(),
-
-			'connector' => $this->getConnector()->getPlainId(),
-
-			'owner' => $this->getOwnerId(),
-		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
@@ -777,6 +746,37 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		}
 
 		return $this->owner;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id'         => $this->getPlainId(),
+			'type'       => $this->getType(),
+			'identifier' => $this->getIdentifier(),
+			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+			'enabled'    => $this->isEnabled(),
+
+			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof MetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()
+				->getValue() : $this->getHardwareManufacturer(),
+			'hardware_model'        => $this->getHardwareModel() instanceof MetadataTypes\DeviceModelType ? $this->getHardwareModel()
+				->getValue() : $this->getHardwareModel(),
+			'hardware_version'      => $this->getHardwareVersion(),
+			'hardware_mac_address'  => $this->getHardwareMacAddress(),
+
+			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof MetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()
+				->getValue() : $this->getFirmwareManufacturer(),
+			'firmware_version'      => $this->getFirmwareVersion(),
+
+			'connector' => $this->getConnector()->getPlainId(),
+
+			'owner' => $this->getOwnerId(),
+		];
 	}
 
 }

@@ -43,22 +43,22 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TChannelFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
+	protected Models\Devices\IDeviceRepository $devicesRepository;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelRepository;
+	protected Models\Channels\IChannelRepository $channelsRepository;
 
 	/** @var Models\Channels\Controls\IControlRepository */
-	protected Models\Channels\Controls\IControlRepository $controlRepository;
+	protected Models\Channels\Controls\IControlRepository $channelControlsRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $deviceRepository,
-		Models\Channels\IChannelRepository $channelRepository,
-		Models\Channels\Controls\IControlRepository $controlRepository
+		Models\Devices\IDeviceRepository $devicesRepository,
+		Models\Channels\IChannelRepository $channelsRepository,
+		Models\Channels\Controls\IControlRepository $channelControlsRepository
 	) {
-		$this->deviceRepository = $deviceRepository;
-		$this->channelRepository = $channelRepository;
-		$this->controlRepository = $controlRepository;
+		$this->devicesRepository = $devicesRepository;
+		$this->channelsRepository = $channelsRepository;
+		$this->channelControlsRepository = $channelControlsRepository;
 	}
 
 	/**
@@ -82,7 +82,7 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 		$findQuery = new Queries\FindChannelControlsQuery();
 		$findQuery->forChannel($channel);
 
-		$controls = $this->controlRepository->getResultSet($findQuery);
+		$controls = $this->channelControlsRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $controls);
@@ -112,7 +112,7 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & control
-			$control = $this->controlRepository->findOneBy($findQuery);
+			$control = $this->channelControlsRepository->findOneBy($findQuery);
 
 			if ($control !== null) {
 				return $this->buildResponse($request, $response, $control);
@@ -153,7 +153,7 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 			// & control
-			$control = $this->controlRepository->findOneBy($findQuery);
+			$control = $this->channelControlsRepository->findOneBy($findQuery);
 
 			if ($control !== null) {
 				if ($relationEntity === Schemas\Channels\Controls\ControlSchema::RELATIONSHIPS_CHANNEL) {

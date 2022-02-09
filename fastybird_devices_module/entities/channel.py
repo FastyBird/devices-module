@@ -37,7 +37,7 @@ from sqlalchemy import (
     Index,
     UniqueConstraint,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 # Library libs
 import fastybird_devices_module.entities  # pylint: disable=unused-import
@@ -230,7 +230,18 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
         BINARY(16), ForeignKey("fb_devices_module_channels.channel_id"), name="channel_id", nullable=False
     )
 
+    parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+        BINARY(16),
+        ForeignKey("fb_devices_module_channels_properties.property_id", ondelete="SET NULL"),
+        name="parent_id",
+        nullable=True,
+    )
+
     channel: ChannelEntity = relationship(ChannelEntity, back_populates="properties")  # type: ignore[assignment]
+
+    children: List["ChannelPropertyEntity"] = relationship(  # type: ignore[assignment]
+        "ChannelPropertyEntity", backref=backref("parent", remote_side=[PropertyMixin.col_property_id])
+    )
 
     __mapper_args__ = {
         "polymorphic_identity": "channel_property",
@@ -276,6 +287,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
             **super().to_dict(),
             **{
                 "channel": uuid.UUID(bytes=self.channel_id).__str__(),
+                "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
                 "owner": self.channel.device.owner,
             },
         }

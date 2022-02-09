@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
-use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
@@ -45,24 +44,25 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 {
 
 	use Controllers\Finders\TDeviceFinder;
+	use Controllers\Finders\TDevicePropertyFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
+	protected Models\Devices\IDeviceRepository $devicesRepository;
 
 	/** @var Models\Devices\Properties\IPropertiesManager */
-	protected Models\Devices\Properties\IPropertiesManager $propertiesManager;
+	protected Models\Devices\Properties\IPropertiesManager $devicePropertiesManager;
 
 	/** @var Models\Devices\Properties\IPropertyRepository */
-	private Models\Devices\Properties\IPropertyRepository $propertyRepository;
+	private Models\Devices\Properties\IPropertyRepository $devicePropertiesRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $deviceRepository,
-		Models\Devices\Properties\IPropertyRepository $propertyRepository,
-		Models\Devices\Properties\IPropertiesManager $propertiesManager
+		Models\Devices\IDeviceRepository $devicesRepository,
+		Models\Devices\Properties\IPropertyRepository $devicePropertiesRepository,
+		Models\Devices\Properties\IPropertiesManager $devicePropertiesManager
 	) {
-		$this->deviceRepository = $deviceRepository;
-		$this->propertyRepository = $propertyRepository;
-		$this->propertiesManager = $propertiesManager;
+		$this->devicesRepository = $devicesRepository;
+		$this->devicePropertiesRepository = $devicePropertiesRepository;
+		$this->devicePropertiesManager = $devicePropertiesManager;
 	}
 
 	/**
@@ -83,7 +83,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 		$findQuery = new Queries\FindDevicePropertiesQuery();
 		$findQuery->forDevice($device);
 
-		$properties = $this->propertyRepository->getResultSet($findQuery);
+		$properties = $this->devicePropertiesRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $properties);
@@ -107,43 +107,6 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $device);
 
 		return $this->buildResponse($request, $response, $property);
-	}
-
-	/**
-	 * @param string $id
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Devices\Properties\IProperty
-	 *
-	 * @throws JsonApiExceptions\IJsonApiException
-	 */
-	private function findProperty(
-		string $id,
-		Entities\Devices\IDevice $device
-	): Entities\Devices\Properties\IProperty {
-		try {
-			$findQuery = new Queries\FindDevicePropertiesQuery();
-			$findQuery->forDevice($device);
-			$findQuery->byId(Uuid\Uuid::fromString($id));
-
-			$property = $this->propertyRepository->findOneBy($findQuery);
-
-			if ($property === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
-					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
-				);
-			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
-		}
-
-		return $property;
 	}
 
 	/**
@@ -174,7 +137,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->create($hydrator->hydrate($document));
+				$property = $this->devicePropertiesManager->create($hydrator->hydrate($document));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -305,7 +268,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->update($property, $hydrator->hydrate($document, $property));
+				$property = $this->devicePropertiesManager->update($property, $hydrator->hydrate($document, $property));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -376,7 +339,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 			$this->getOrmConnection()->beginTransaction();
 
 			// Remove property
-			$this->propertiesManager->delete($property);
+			$this->devicePropertiesManager->delete($property);
 
 			// Commit all changes into database
 			$this->getOrmConnection()->commit();
@@ -432,6 +395,15 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 
 			if ($relationEntity === Schemas\Devices\Properties\PropertySchema::RELATIONSHIPS_DEVICE) {
 				return $this->buildResponse($request, $response, $property->getDevice());
+
+			} elseif (
+				$relationEntity === Schemas\Devices\Properties\PropertySchema::RELATIONSHIPS_PARENT
+				&& $property->getParent() !== null
+			) {
+				return $this->buildResponse($request, $response, $property->getParent());
+
+			} elseif ($relationEntity === Schemas\Devices\Properties\PropertySchema::RELATIONSHIPS_CHILDREN) {
+				return $this->buildResponse($request, $response, $property->getChildren());
 			}
 		}
 

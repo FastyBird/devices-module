@@ -17,6 +17,8 @@ namespace FastyBird\DevicesModule\Schemas\Channels\Properties;
 
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Models;
+use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
@@ -42,13 +44,21 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	 */
 	public const RELATIONSHIPS_CHANNEL = 'channel';
 
+	public const RELATIONSHIPS_PARENT = 'parent';
+	public const RELATIONSHIPS_CHILDREN = 'children';
+
 	/** @var Routing\IRouter */
 	private Routing\IRouter $router;
 
+	/** @var Models\Channels\Properties\IPropertyRepository */
+	private Models\Channels\Properties\IPropertyRepository $propertiesRepository;
+
 	public function __construct(
-		Routing\IRouter $router
+		Routing\IRouter $router,
+		Models\Channels\Properties\IPropertyRepository $propertiesRepository
 	) {
 		$this->router = $router;
+		$this->propertiesRepository = $propertiesRepository;
 	}
 
 	/**
@@ -114,9 +124,19 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	public function getRelationships($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			self::RELATIONSHIPS_CHANNEL => [
+			self::RELATIONSHIPS_CHANNEL  => [
 				self::RELATIONSHIP_DATA          => $property->getChannel(),
 				self::RELATIONSHIP_LINKS_SELF    => false,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
+			self::RELATIONSHIPS_PARENT   => [
+				self::RELATIONSHIP_DATA          => $property->getParent(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => $property->getParent() !== null,
+			],
+			self::RELATIONSHIPS_CHILDREN => [
+				self::RELATIONSHIP_DATA          => $this->getChildren($property),
+				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 		];
@@ -146,9 +166,88 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 				),
 				false
 			);
+
+		} elseif ($name === self::RELATIONSHIPS_PARENT && $property->getParent() !== null) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY,
+					[
+						Router\Routes::URL_DEVICE_ID  => $property->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID => $property->getChannel()->getPlainId(),
+						Router\Routes::URL_ITEM_ID    => $property->getPlainId(),
+					]
+				),
+				false
+			);
+
+		} elseif ($name === self::RELATIONSHIPS_CHILDREN) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_CHILDREN,
+					[
+						Router\Routes::URL_DEVICE_ID   => $property->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID  => $property->getChannel()->getPlainId(),
+						Router\Routes::URL_PROPERTY_ID => $property->getPlainId(),
+					]
+				),
+				true,
+				[
+					'count' => count($property->getChildren()),
+				]
+			);
 		}
 
 		return parent::getRelationshipRelatedLink($property, $name);
+	}
+
+	/**
+	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param string $name
+	 *
+	 * @return JsonApi\Contracts\Schema\LinkInterface
+	 *
+	 * @phpstan-param T $property
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+	 */
+	public function getRelationshipSelfLink($property, string $name): JsonApi\Contracts\Schema\LinkInterface
+	{
+		if (
+			$name === self::RELATIONSHIPS_CHILDREN
+			|| $name === self::RELATIONSHIPS_PARENT
+		) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_RELATIONSHIP,
+					[
+						Router\Routes::URL_DEVICE_ID   => $property->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID  => $property->getChannel()->getPlainId(),
+						Router\Routes::URL_ITEM_ID     => $property->getPlainId(),
+						Router\Routes::RELATION_ENTITY => $name,
+
+					]
+				),
+				false
+			);
+		}
+
+		return parent::getRelationshipSelfLink($property, $name);
+	}
+
+	/**
+	 * @param Entities\Channels\Properties\IProperty $property
+	 *
+	 * @return Entities\Channels\Properties\IProperty[]
+	 */
+	private function getChildren(Entities\Channels\Properties\IProperty $property): array
+	{
+		$findQuery = new Queries\FindChannelPropertiesQuery();
+		$findQuery->forParent($property);
+
+		return $this->propertiesRepository->findAllBy($findQuery);
 	}
 
 }

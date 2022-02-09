@@ -24,6 +24,10 @@ export interface ChannelPropertyInterface extends PropertyInterface {
   channelId: string
 
   title: string
+
+  parentId: string | null
+
+  children: ChannelPropertyInterface[]
 }
 
 // API RESPONSES
@@ -47,17 +51,27 @@ interface ChannelPropertyAttributesResponseInterface {
   pending: boolean
 }
 
-interface ChannelRelationshipResponseInterface extends TJsonApiRelationshipData {
+interface ChannelPropertyRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
   type: string
 }
 
 interface ChannelRelationshipsResponseInterface extends TJsonApiRelation {
-  data: ChannelRelationshipResponseInterface
+  data: ChannelPropertyRelationshipResponseInterface
+}
+
+interface ChannelPropertyParentRelationshipsResponseInterface extends TJsonApiRelation {
+  data: ChannelPropertyRelationshipResponseInterface
+}
+
+interface ChannelPropertyChildrenRelationshipsResponseInterface extends TJsonApiRelation {
+  data: ChannelPropertyRelationshipResponseInterface[]
 }
 
 interface ChannelPropertyRelationshipsResponseInterface extends TJsonApiRelationships {
   channel: ChannelRelationshipsResponseInterface
+  parent: ChannelPropertyParentRelationshipsResponseInterface
+  children: ChannelPropertyChildrenRelationshipsResponseInterface
 }
 
 export interface ChannelPropertyDataResponseInterface extends TJsonApiData {

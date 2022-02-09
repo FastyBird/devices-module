@@ -24,6 +24,10 @@ export interface DevicePropertyInterface extends PropertyInterface {
   deviceId: string
 
   title: string
+
+  parentId: string | null
+
+  children: DevicePropertyInterface[]
 }
 
 // API RESPONSES
@@ -47,17 +51,27 @@ interface DevicePropertyAttributesResponseInterface {
   pending: boolean
 }
 
-interface DeviceRelationshipResponseInterface extends TJsonApiRelationshipData {
+interface DevicePropertyRelationshipResponseInterface extends TJsonApiRelationshipData {
   id: string
   type: string
 }
 
 interface DeviceRelationshipsResponseInterface extends TJsonApiRelation {
-  data: DeviceRelationshipResponseInterface
+  data: DevicePropertyRelationshipResponseInterface
+}
+
+interface DevicePropertyParentRelationshipsResponseInterface extends TJsonApiRelation {
+  data: DevicePropertyRelationshipResponseInterface
+}
+
+interface DevicePropertyChildrenRelationshipsResponseInterface extends TJsonApiRelation {
+  data: DevicePropertyRelationshipResponseInterface[]
 }
 
 interface DevicePropertyRelationshipsResponseInterface extends TJsonApiRelationships {
   device: DeviceRelationshipsResponseInterface
+  parent: DevicePropertyParentRelationshipsResponseInterface
+  children: DevicePropertyChildrenRelationshipsResponseInterface
 }
 
 export interface DevicePropertyDataResponseInterface extends TJsonApiData {

@@ -47,6 +47,19 @@ interface IPropertyRepository
 	 * @param Queries\FindDevicePropertiesQuery $queryObject
 	 * @param string $type
 	 *
+	 * @return Entities\Devices\Properties\IProperty[]
+	 *
+	 * @phpstan-param class-string $type
+	 */
+	public function findAllBy(
+		Queries\FindDevicePropertiesQuery $queryObject,
+		string $type = Entities\Devices\Properties\Property::class
+	): array;
+
+	/**
+	 * @param Queries\FindDevicePropertiesQuery $queryObject
+	 * @param string $type
+	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-param class-string $type

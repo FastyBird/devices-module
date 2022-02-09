@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities\Channels\Properties;
 
+use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
@@ -60,6 +61,22 @@ abstract class Property extends Entities\Property implements IProperty
 	protected Entities\Channels\IChannel $channel;
 
 	/**
+	 * @var IProperty|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Properties\Property", inversedBy="children")
+	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="property_id", nullable=true, onDelete="SET NULL")
+	 */
+	protected ?IProperty $parent = null;
+
+	/**
+	 * @var Common\Collections\Collection<int, IProperty>
+	 *
+	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Properties\Property", mappedBy="parent")
+	 */
+	protected Common\Collections\Collection $children;
+
+	/**
 	 * @param Entities\Channels\IChannel $channel
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
@@ -76,6 +93,89 @@ abstract class Property extends Entities\Property implements IProperty
 		$this->channel = $channel;
 
 		$channel->addProperty($this);
+
+		$this->children = new Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getParent(): ?IProperty
+	{
+		return $this->parent;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setParent(IProperty $device): void
+	{
+		$this->parent = $device;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeParent(): void
+	{
+		$this->parent = null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChildren(): array
+	{
+		return $this->children->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setChildren(array $children): void
+	{
+		$this->children = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		/** @var IProperty $entity */
+		foreach ($children as $entity) {
+			if (!$this->children->contains($entity)) {
+				// ...and assign them to collection
+				$this->children->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addChild(IProperty $child): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->children->contains($child)) {
+			// ...and assign it to collection
+			$this->children->add($child);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeChild(IProperty $child): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->children->contains($child)) {
+			// ...and remove it from collection
+			$this->children->removeElement($child);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getChannel(): Entities\Channels\IChannel
+	{
+		return $this->channel;
 	}
 
 	/**
@@ -85,17 +185,10 @@ abstract class Property extends Entities\Property implements IProperty
 	{
 		return array_merge(parent::toArray(), [
 			'channel' => $this->getChannel()->getPlainId(),
+			'parent'  => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
 
 			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
 		]);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getChannel(): Entities\Channels\IChannel
-	{
-		return $this->channel;
 	}
 
 }

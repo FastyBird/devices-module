@@ -45,26 +45,26 @@ class DevicesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
+	protected Models\Devices\IDeviceRepository $devicesRepository;
 
 	/** @var Models\Devices\IDevicesManager */
 	protected Models\Devices\IDevicesManager $devicesManager;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelRepository;
+	protected Models\Channels\IChannelRepository $channelsRepository;
 
 	/** @var Models\Channels\IChannelsManager */
 	protected Models\Channels\IChannelsManager $channelsManager;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $deviceRepository,
+		Models\Devices\IDeviceRepository $devicesRepository,
 		Models\Devices\IDevicesManager $devicesManager,
-		Models\Channels\IChannelRepository $channelRepository,
+		Models\Channels\IChannelRepository $channelsRepository,
 		Models\Channels\IChannelsManager $channelsManager
 	) {
-		$this->deviceRepository = $deviceRepository;
+		$this->devicesRepository = $devicesRepository;
 		$this->devicesManager = $devicesManager;
-		$this->channelRepository = $channelRepository;
+		$this->channelsRepository = $channelsRepository;
 		$this->channelsManager = $channelsManager;
 	}
 
@@ -80,7 +80,7 @@ class DevicesV1Controller extends BaseV1Controller
 	): Message\ResponseInterface {
 		$findQuery = new Queries\FindDevicesQuery();
 
-		$devices = $this->deviceRepository->getResultSet($findQuery);
+		$devices = $this->devicesRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $devices);
@@ -400,8 +400,20 @@ class DevicesV1Controller extends BaseV1Controller
 
 		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
 
-		if ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PROPERTIES) {
+		if ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONNECTOR) {
+			return $this->buildResponse($request, $response, $device->getConnector());
+
+		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PROPERTIES) {
 			return $this->buildResponse($request, $response, $device->getProperties());
+
+		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONTROLS) {
+			return $this->buildResponse($request, $response, $device->getControls());
+
+		} elseif (
+			$relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PARENT
+			&& $device->getParent() !== null
+		) {
+			return $this->buildResponse($request, $response, $device->getParent());
 
 		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CHILDREN) {
 			return $this->buildResponse($request, $response, $device->getChildren());
@@ -410,7 +422,7 @@ class DevicesV1Controller extends BaseV1Controller
 			$findQuery = new Queries\FindChannelsQuery();
 			$findQuery->forDevice($device);
 
-			return $this->buildResponse($request, $response, $this->channelRepository->findAllBy($findQuery));
+			return $this->buildResponse($request, $response, $this->channelsRepository->findAllBy($findQuery));
 		}
 
 		return parent::readRelationship($request, $response);

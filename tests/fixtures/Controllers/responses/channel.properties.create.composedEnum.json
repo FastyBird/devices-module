@@ -51,6 +51,24 @@
           "type" : "com.fastybird.devices-module/channel",
           "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
+      },
+      "parent" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties/17ebf5c3-1485-4235-8f23-99ac9f906739/relationships/parent"
+        },
+        "data" : null
+      },
+      "children" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties/17ebf5c3-1485-4235-8f23-99ac9f906739/relationships/children",
+          "related" : {
+            "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels/17c59dfa-2edd-438e-8c49-faa4e38e5a5e/properties/17ebf5c3-1485-4235-8f23-99ac9f906739/children",
+            "meta" : {
+              "count" : 0
+            }
+          }
+        },
+        "data" : []
       }
     },
     "links" : {

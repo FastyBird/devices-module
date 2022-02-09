@@ -20,6 +20,8 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
   device!: DeviceInterface | null
   deviceBackward!: DeviceInterface | null
   deviceId!: string
+  parentId!: string | null
+  children!: DevicePropertyInterface[]
 
   static get entity(): string {
     return 'devices_module_device_property'
@@ -58,6 +60,10 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
       deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
 
       deviceId: this.string(''),
+
+      parentId: this.string(null).nullable(),
+
+      children: this.hasMany(DeviceProperty, 'parentId'),
     })
   }
 

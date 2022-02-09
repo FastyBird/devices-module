@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
 use FastyBird\DevicesModule\Controllers;
-use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
@@ -46,29 +45,30 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 	use Controllers\Finders\TChannelFinder;
+	use Controllers\Finders\TChannelPropertyFinder;
 
 	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $deviceRepository;
+	protected Models\Devices\IDeviceRepository $devicesRepository;
 
 	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelRepository;
+	protected Models\Channels\IChannelRepository $channelsRepository;
 
 	/** @var Models\Channels\Properties\IPropertyRepository */
-	protected Models\Channels\Properties\IPropertyRepository $propertyRepository;
+	protected Models\Channels\Properties\IPropertyRepository $channelPropertiesRepository;
 
 	/** @var Models\Channels\Properties\IPropertiesManager */
-	protected Models\Channels\Properties\IPropertiesManager $propertiesManager;
+	protected Models\Channels\Properties\IPropertiesManager $channelPropertiesManager;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $deviceRepository,
-		Models\Channels\IChannelRepository $channelRepository,
-		Models\Channels\Properties\IPropertyRepository $propertyRepository,
-		Models\Channels\Properties\IPropertiesManager $propertiesManager
+		Models\Devices\IDeviceRepository $devicesRepository,
+		Models\Channels\IChannelRepository $channelsRepository,
+		Models\Channels\Properties\IPropertyRepository $channelPropertiesRepository,
+		Models\Channels\Properties\IPropertiesManager $channelPropertiesManager
 	) {
-		$this->deviceRepository = $deviceRepository;
-		$this->channelRepository = $channelRepository;
-		$this->propertyRepository = $propertyRepository;
-		$this->propertiesManager = $propertiesManager;
+		$this->devicesRepository = $devicesRepository;
+		$this->channelsRepository = $channelsRepository;
+		$this->channelPropertiesRepository = $channelPropertiesRepository;
+		$this->channelPropertiesManager = $channelPropertiesManager;
 	}
 
 	/**
@@ -91,7 +91,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		$findQuery = new Queries\FindChannelPropertiesQuery();
 		$findQuery->forChannel($channel);
 
-		$properties = $this->propertyRepository->getResultSet($findQuery);
+		$properties = $this->channelPropertiesRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $properties);
@@ -117,43 +117,6 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $channel);
 
 		return $this->buildResponse($request, $response, $property);
-	}
-
-	/**
-	 * @param string $id
-	 * @param Entities\Channels\IChannel $channel
-	 *
-	 * @return Entities\Channels\Properties\IProperty
-	 *
-	 * @throws JsonApiExceptions\IJsonApiException
-	 */
-	private function findProperty(
-		string $id,
-		Entities\Channels\IChannel $channel
-	): Entities\Channels\Properties\IProperty {
-		try {
-			$findQuery = new Queries\FindChannelPropertiesQuery();
-			$findQuery->forChannel($channel);
-			$findQuery->byId(Uuid\Uuid::fromString($id));
-
-			$property = $this->propertyRepository->findOneBy($findQuery);
-
-			if ($property === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
-					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
-				);
-			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
-		}
-
-		return $property;
 	}
 
 	/**
@@ -186,7 +149,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->create($hydrator->hydrate($document));
+				$property = $this->channelPropertiesManager->create($hydrator->hydrate($document));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -320,7 +283,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->update($property, $hydrator->hydrate($document, $property));
+				$property = $this->channelPropertiesManager->update($property, $hydrator->hydrate($document, $property));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -393,7 +356,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 			$this->getOrmConnection()->beginTransaction();
 
 			// Remove channel
-			$this->propertiesManager->delete($property);
+			$this->channelPropertiesManager->delete($property);
 
 			// Commit all changes into database
 			$this->getOrmConnection()->commit();
@@ -451,6 +414,15 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 
 			if ($relationEntity === Schemas\Channels\Properties\PropertySchema::RELATIONSHIPS_CHANNEL) {
 				return $this->buildResponse($request, $response, $property->getChannel());
+
+			} elseif (
+				$relationEntity === Schemas\Channels\Properties\PropertySchema::RELATIONSHIPS_PARENT
+				&& $property->getParent() !== null
+			) {
+				return $this->buildResponse($request, $response, $property->getParent());
+
+			} elseif ($relationEntity === Schemas\Channels\Properties\PropertySchema::RELATIONSHIPS_CHILDREN) {
+				return $this->buildResponse($request, $response, $property->getChildren());
 			}
 		}
 

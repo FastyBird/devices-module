@@ -48,22 +48,22 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TConnectorFinder;
 
 	/** @var Models\Connectors\IConnectorRepository */
-	protected Models\Connectors\IConnectorRepository $connectorRepository;
+	protected Models\Connectors\IConnectorRepository $connectorsRepository;
 
 	/** @var Models\Connectors\Properties\IPropertyRepository */
-	protected Models\Connectors\Properties\IPropertyRepository $propertyRepository;
+	protected Models\Connectors\Properties\IPropertyRepository $connectorPropertiesRepository;
 
 	/** @var Models\Connectors\Properties\IPropertiesManager */
-	protected Models\Connectors\Properties\IPropertiesManager $propertiesManager;
+	protected Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager;
 
 	public function __construct(
-		Models\Connectors\IConnectorRepository $connectorRepository,
-		Models\Connectors\Properties\IPropertyRepository $propertyRepository,
-		Models\Connectors\Properties\IPropertiesManager $propertiesManager
+		Models\Connectors\IConnectorRepository $connectorsRepository,
+		Models\Connectors\Properties\IPropertyRepository $connectorPropertiesRepository,
+		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager
 	) {
-		$this->connectorRepository = $connectorRepository;
-		$this->propertyRepository = $propertyRepository;
-		$this->propertiesManager = $propertiesManager;
+		$this->connectorsRepository = $connectorsRepository;
+		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
+		$this->connectorPropertiesManager = $connectorPropertiesManager;
 	}
 
 	/**
@@ -84,7 +84,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 		$findQuery = new Queries\FindConnectorPropertiesQuery();
 		$findQuery->forConnector($connector);
 
-		$properties = $this->propertyRepository->getResultSet($findQuery);
+		$properties = $this->connectorPropertiesRepository->getResultSet($findQuery);
 
 		// @phpstan-ignore-next-line
 		return $this->buildResponse($request, $response, $properties);
@@ -127,7 +127,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 			$findQuery->forConnector($connector);
 			$findQuery->byId(Uuid\Uuid::fromString($id));
 
-			$property = $this->propertyRepository->findOneBy($findQuery);
+			$property = $this->connectorPropertiesRepository->findOneBy($findQuery);
 
 			if ($property === null) {
 				throw new JsonApiExceptions\JsonApiErrorException(
@@ -175,7 +175,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->create($hydrator->hydrate($document));
+				$property = $this->connectorPropertiesManager->create($hydrator->hydrate($document));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -307,7 +307,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->propertiesManager->update($property, $hydrator->hydrate($document, $property));
+				$property = $this->connectorPropertiesManager->update($property, $hydrator->hydrate($document, $property));
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -378,7 +378,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 			$this->getOrmConnection()->beginTransaction();
 
 			// Remove connector
-			$this->propertiesManager->delete($property);
+			$this->connectorPropertiesManager->delete($property);
 
 			// Commit all changes into database
 			$this->getOrmConnection()->commit();

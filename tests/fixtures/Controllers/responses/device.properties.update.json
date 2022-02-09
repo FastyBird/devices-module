@@ -38,6 +38,24 @@
           "type" : "com.fastybird.devices-module/device/virtual",
           "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
         }
+      },
+      "parent" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c/relationships/parent"
+        },
+        "data" : null
+      },
+      "children" : {
+        "links" : {
+          "self" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c/relationships/children",
+          "related" : {
+            "href" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c/children",
+            "meta" : {
+              "count" : 0
+            }
+          }
+        },
+        "data" : []
       }
     },
     "links" : {

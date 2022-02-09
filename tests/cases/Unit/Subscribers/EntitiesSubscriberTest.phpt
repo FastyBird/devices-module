@@ -4,6 +4,8 @@ namespace Tests\Cases;
 
 use Doctrine\ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Subscribers;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata;
@@ -28,8 +30,26 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 
+		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
+		$connectorPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
+		$devicePropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
+		$channelPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
+			$devicePropertiesStateRepository,
+			$channelPropertiesStateRepository,
+			$connectorPropertiesStateRepository,
 			$publisher
 		);
 
@@ -73,8 +93,26 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager();
 
+		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
+		$connectorPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
+		$devicePropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
+		$channelPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
+			$devicePropertiesStateRepository,
+			$channelPropertiesStateRepository,
+			$connectorPropertiesStateRepository,
 			$publisher
 		);
 
@@ -91,50 +129,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->times(1);
 
 		$subscriber->postPersist($eventArgs);
-	}
-
-	/**
-	 * @param bool $withUow
-	 *
-	 * @return ORM\EntityManagerInterface|Mockery\MockInterface
-	 */
-	private function getEntityManager(bool $withUow = false): Mockery\MockInterface
-	{
-		$metadata = new stdClass();
-		$metadata->fieldMappings = [
-			[
-				'fieldName' => 'identifier',
-			],
-			[
-				'fieldName' => 'name',
-			],
-		];
-
-		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
-		$entityManager
-			->shouldReceive('getClassMetadata')
-			->withArgs([Entities\Devices\Device::class])
-			->andReturn($metadata);
-
-		if ($withUow) {
-			$uow = Mockery::mock(ORM\UnitOfWork::class);
-			$uow
-				->shouldReceive('getEntityChangeSet')
-				->andReturn(['name'])
-				->times(1)
-				->getMock()
-				->shouldReceive('isScheduledForDelete')
-				->andReturn(false)
-				->getMock();
-
-			$entityManager
-				->shouldReceive('getUnitOfWork')
-				->withNoArgs()
-				->andReturn($uow)
-				->times(1);
-		}
-
-		return $entityManager;
 	}
 
 	public function testPublishUpdatedEntity(): void
@@ -170,8 +164,26 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityManager = $this->getEntityManager(true);
 
+		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
+		$connectorPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
+		$devicePropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
+		$channelPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
+			$devicePropertiesStateRepository,
+			$channelPropertiesStateRepository,
+			$connectorPropertiesStateRepository,
 			$publisher
 		);
 
@@ -245,12 +257,74 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->andReturn($uow)
 			->times(1);
 
+		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
+		$connectorPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
+		$devicePropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
+		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
+		$channelPropertiesStateRepository
+			->shouldReceive('findOne')
+			->andThrow(Exceptions\NotImplementedException::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
+			$devicePropertiesStateRepository,
+			$channelPropertiesStateRepository,
+			$connectorPropertiesStateRepository,
 			$publisher
 		);
 
 		$subscriber->onFlush();
+	}
+
+	/**
+	 * @param bool $withUow
+	 *
+	 * @return ORM\EntityManagerInterface|Mockery\MockInterface
+	 */
+	private function getEntityManager(bool $withUow = false): Mockery\MockInterface
+	{
+		$metadata = new stdClass();
+		$metadata->fieldMappings = [
+			[
+				'fieldName' => 'identifier',
+			],
+			[
+				'fieldName' => 'name',
+			],
+		];
+
+		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
+		$entityManager
+			->shouldReceive('getClassMetadata')
+			->withArgs([Entities\Devices\Device::class])
+			->andReturn($metadata);
+
+		if ($withUow) {
+			$uow = Mockery::mock(ORM\UnitOfWork::class);
+			$uow
+				->shouldReceive('getEntityChangeSet')
+				->andReturn(['name'])
+				->times(1)
+				->getMock()
+				->shouldReceive('isScheduledForDelete')
+				->andReturn(false)
+				->getMock();
+
+			$entityManager
+				->shouldReceive('getUnitOfWork')
+				->withNoArgs()
+				->andReturn($uow)
+				->times(1);
+		}
+
+		return $entityManager;
 	}
 
 }

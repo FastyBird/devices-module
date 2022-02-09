@@ -54,9 +54,9 @@ from fastybird_devices_module.entities.device import (
     DevicePropertyEntity,
 )
 from fastybird_devices_module.repositories.state import (
-    IChannelPropertiesStatesRepository,
-    IConnectorPropertiesStatesRepository,
-    IDevicePropertiesStatesRepository,
+    ChannelPropertiesStatesRepository,
+    ConnectorPropertiesStatesRepository,
+    DevicePropertiesStatesRepository,
 )
 
 
@@ -111,9 +111,6 @@ class EntityUpdatedSubscriber:  # pylint: disable=too-few-public-methods
 @inject(
     bind={
         "publisher": Publisher,
-        "connector_properties_states_repository": IConnectorPropertiesStatesRepository,
-        "device_properties_states_repository": IDevicePropertiesStatesRepository,
-        "channel_properties_states_repository": IChannelPropertiesStatesRepository,
     }
 )
 class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
@@ -164,19 +161,19 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
     __publisher: Optional[Publisher] = None
 
-    __connector_properties_states_repository: Optional[IConnectorPropertiesStatesRepository]
-    __device_properties_states_repository: Optional[IDevicePropertiesStatesRepository]
-    __channel_properties_states_repository: Optional[IChannelPropertiesStatesRepository]
+    __connector_properties_states_repository: ConnectorPropertiesStatesRepository
+    __device_properties_states_repository: DevicePropertiesStatesRepository
+    __channel_properties_states_repository: ChannelPropertiesStatesRepository
 
     # -----------------------------------------------------------------------------
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
         session: OrmSession,
+        connector_properties_states_repository: ConnectorPropertiesStatesRepository,
+        device_properties_states_repository: DevicePropertiesStatesRepository,
+        channel_properties_states_repository: ChannelPropertiesStatesRepository,
         publisher: Optional[Publisher] = None,
-        connector_properties_states_repository: Optional[IConnectorPropertiesStatesRepository] = None,
-        device_properties_states_repository: Optional[IDevicePropertiesStatesRepository] = None,
-        channel_properties_states_repository: Optional[IChannelPropertiesStatesRepository] = None,
     ) -> None:
         self.__publisher = publisher
 
@@ -263,21 +260,32 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
     # -----------------------------------------------------------------------------
 
     def __get_entity_extended_data(self, entity: Base) -> Dict:
-        if (
-            isinstance(entity, ConnectorDynamicPropertyEntity)
-            and self.__connector_properties_states_repository is not None
-        ):
-            connector_property_state = self.__connector_properties_states_repository.get_by_id(property_id=entity.id)
+        if isinstance(entity, ConnectorDynamicPropertyEntity):
+            try:
+                connector_property_state = self.__connector_properties_states_repository.get_by_id(
+                    property_id=entity.id,
+                )
+
+            except NotImplementedError:
+                return {}
 
             return connector_property_state.to_dict() if connector_property_state is not None else {}
 
-        if isinstance(entity, DeviceDynamicPropertyEntity) and self.__device_properties_states_repository is not None:
-            device_property_state = self.__device_properties_states_repository.get_by_id(property_id=entity.id)
+        if isinstance(entity, DeviceDynamicPropertyEntity):
+            try:
+                device_property_state = self.__device_properties_states_repository.get_by_id(property_id=entity.id)
+
+            except NotImplementedError:
+                return {}
 
             return device_property_state.to_dict() if device_property_state is not None else {}
 
-        if isinstance(entity, ChannelDynamicPropertyEntity) and self.__channel_properties_states_repository is not None:
-            channel_property_state = self.__channel_properties_states_repository.get_by_id(property_id=entity.id)
+        if isinstance(entity, ChannelDynamicPropertyEntity):
+            try:
+                channel_property_state = self.__channel_properties_states_repository.get_by_id(property_id=entity.id)
+
+            except NotImplementedError:
+                return {}
 
             return channel_property_state.to_dict() if channel_property_state is not None else {}
 

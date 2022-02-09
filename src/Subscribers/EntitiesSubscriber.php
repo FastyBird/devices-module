@@ -231,6 +231,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
 				} catch (Exceptions\NotImplementedException $ex) {
+					$this->publisher->publish(
+						$entity->getSource(),
+						$publishRoutingKey,
+						Utils\ArrayHash::from($entity->toArray())
+					);
+
 					return;
 				}
 
@@ -251,6 +257,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
 
 				} catch (Exceptions\NotImplementedException $ex) {
+					$this->publisher->publish(
+						$entity->getSource(),
+						$publishRoutingKey,
+						Utils\ArrayHash::from($entity->toArray())
+					);
+
 					return;
 				}
 
@@ -271,6 +283,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
 
 				} catch (Exceptions\NotImplementedException $ex) {
+					$this->publisher->publish(
+						$entity->getSource(),
+						$publishRoutingKey,
+						Utils\ArrayHash::from($entity->toArray())
+					);
+
 					return;
 				}
 

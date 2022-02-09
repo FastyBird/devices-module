@@ -29,7 +29,7 @@ from fastybird_devices_module.entities.device import (
 )
 from fastybird_devices_module.managers.device import DevicePropertiesManager
 from fastybird_devices_module.repositories.device import (
-    DevicesPropertiesRepository,
+    DevicePropertiesRepository,
     DevicesRepository,
 )
 
@@ -42,7 +42,7 @@ class TestDevicePropertyEntity(DbTestCase):
     def test_create_entity(
         self,
         device_repository: DevicesRepository,
-        property_repository: DevicesPropertiesRepository,
+        property_repository: DevicePropertiesRepository,
         properties_manager: DevicePropertiesManager,
     ) -> None:
         device = device_repository.get_by_id(

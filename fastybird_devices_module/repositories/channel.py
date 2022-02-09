@@ -84,7 +84,7 @@ class ChannelsRepository:
         return self.__session.query(ChannelEntity).filter(ChannelEntity.device_id == device_id.bytes).all()
 
 
-class ChannelsPropertiesRepository:
+class ChannelPropertiesRepository:
     """
     Channel property repository
 
@@ -150,7 +150,7 @@ class ChannelsPropertiesRepository:
         )
 
 
-class ChannelsControlsRepository:
+class ChannelControlsRepository:
     """
     Channels controls repository
 

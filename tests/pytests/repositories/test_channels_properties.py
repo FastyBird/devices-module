@@ -24,21 +24,21 @@ from kink import inject
 
 # Library libs
 from fastybird_devices_module.entities.channel import ChannelPropertyEntity
-from fastybird_devices_module.repositories.channel import ChannelsPropertiesRepository
+from fastybird_devices_module.repositories.channel import ChannelPropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestChannelsPropertiesRepository(DbTestCase):
+class TestChannelPropertiesRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, property_repository: ChannelsPropertiesRepository) -> None:
+    def test_repository_iterator(self, property_repository: ChannelPropertiesRepository) -> None:
         self.assertEqual(3, len(property_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, property_repository: ChannelsPropertiesRepository) -> None:
+    def test_get_item(self, property_repository: ChannelPropertiesRepository) -> None:
         entity = property_repository.get_by_id(property_id=uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4))
 
         self.assertIsInstance(entity, ChannelPropertyEntity)
@@ -46,7 +46,7 @@ class TestChannelsPropertiesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_transform_to_dict(self, property_repository: ChannelsPropertiesRepository) -> None:
+    def test_transform_to_dict(self, property_repository: ChannelPropertiesRepository) -> None:
         entity = property_repository.get_by_id(property_id=uuid.UUID("bbcccf8c-33ab-431b-a795-d7bb38b6b6db", version=4))
 
         self.assertIsInstance(entity, ChannelPropertyEntity)

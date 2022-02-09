@@ -97,7 +97,7 @@ class DevicesRepository:
         return self.__session.query(DeviceEntity).filter(DeviceEntity.connector_id == connector_id.bytes).all()
 
 
-class DevicesPropertiesRepository:
+class DevicePropertiesRepository:
     """
     Devices properties repository
 
@@ -155,13 +155,11 @@ class DevicesPropertiesRepository:
     def get_all_by_parent(self, property_id: uuid.UUID) -> List[DevicePropertyEntity]:
         """Find all child properties"""
         return (
-            self.__session.query(DevicePropertyEntity)
-            .filter(DevicePropertyEntity.parent_id == property_id.bytes)
-            .all()
+            self.__session.query(DevicePropertyEntity).filter(DevicePropertyEntity.parent_id == property_id.bytes).all()
         )
 
 
-class DevicesControlsRepository:
+class DeviceControlsRepository:
     """
     Devices controls repository
 

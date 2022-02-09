@@ -40,6 +40,7 @@ from fastybird_devices_module.managers.channel import (
 )
 from fastybird_devices_module.managers.connector import (
     ConnectorControlsManager,
+    ConnectorPropertiesManager,
     ConnectorsManager,
 )
 from fastybird_devices_module.managers.device import (
@@ -53,17 +54,18 @@ from fastybird_devices_module.managers.state import (
     DevicePropertiesStatesManager,
 )
 from fastybird_devices_module.repositories.channel import (
-    ChannelsControlsRepository,
-    ChannelsPropertiesRepository,
+    ChannelControlsRepository,
+    ChannelPropertiesRepository,
     ChannelsRepository,
 )
 from fastybird_devices_module.repositories.connector import (
-    ConnectorsControlsRepository,
+    ConnectorControlsRepository,
+    ConnectorPropertiesRepository,
     ConnectorsRepository,
 )
 from fastybird_devices_module.repositories.device import (
-    DevicesControlsRepository,
-    DevicesPropertiesRepository,
+    DeviceControlsRepository,
+    DevicePropertiesRepository,
     DevicesRepository,
 )
 from fastybird_devices_module.subscriber import (
@@ -87,49 +89,53 @@ def register_services(  # pylint: disable=too-many-statements
     # Entities repositories
 
     di[ConnectorsRepository] = ConnectorsRepository(session=di[OrmSession])
-    di["fb-devices-module_connector-repository"] = di[ConnectorsRepository]
-    di[ConnectorsControlsRepository] = ConnectorsControlsRepository(session=di[OrmSession])
-    di["fb-devices-module_connector-control-repository"] = di[ConnectorsControlsRepository]
+    di["fb-devices-module_connectors-repository"] = di[ConnectorsRepository]
+    di[ConnectorPropertiesRepository] = ConnectorPropertiesRepository(session=di[OrmSession])
+    di["fb-devices-module_connector-properties-repository"] = di[ConnectorPropertiesRepository]
+    di[ConnectorControlsRepository] = ConnectorControlsRepository(session=di[OrmSession])
+    di["fb-devices-module_connector-controls-repository"] = di[ConnectorControlsRepository]
     di[DevicesRepository] = DevicesRepository(session=di[OrmSession])
-    di["fb-devices-module_device-repository"] = di[DevicesRepository]
-    di[DevicesPropertiesRepository] = DevicesPropertiesRepository(session=di[OrmSession])
-    di["fb-devices-module_device-property-repository"] = di[DevicesPropertiesRepository]
-    di[DevicesControlsRepository] = DevicesControlsRepository(session=di[OrmSession])
-    di["fb-devices-module_device-control-repository"] = di[DevicesControlsRepository]
+    di["fb-devices-module_devices-repository"] = di[DevicesRepository]
+    di[DevicePropertiesRepository] = DevicePropertiesRepository(session=di[OrmSession])
+    di["fb-devices-module_device-properties-repository"] = di[DevicePropertiesRepository]
+    di[DeviceControlsRepository] = DeviceControlsRepository(session=di[OrmSession])
+    di["fb-devices-module_device-controls-repository"] = di[DeviceControlsRepository]
     di[ChannelsRepository] = ChannelsRepository(session=di[OrmSession])
-    di["fb-devices-module_channel-repository"] = di[ChannelsRepository]
-    di[ChannelsPropertiesRepository] = ChannelsPropertiesRepository(session=di[OrmSession])
-    di["fb-devices-module_channel-property-repository"] = di[ChannelsPropertiesRepository]
-    di[ChannelsControlsRepository] = ChannelsControlsRepository(session=di[OrmSession])
-    di["fb-devices-module_channel-control-repository"] = di[ChannelsControlsRepository]
+    di["fb-devices-module_channels-repository"] = di[ChannelsRepository]
+    di[ChannelPropertiesRepository] = ChannelPropertiesRepository(session=di[OrmSession])
+    di["fb-devices-module_channel-properties-repository"] = di[ChannelPropertiesRepository]
+    di[ChannelControlsRepository] = ChannelControlsRepository(session=di[OrmSession])
+    di["fb-devices-module_channel-controls-repository"] = di[ChannelControlsRepository]
 
     # Entities managers
 
     di[ConnectorsManager] = ConnectorsManager(session=di[OrmSession])
     di["fb-devices-module_connectors-manager"] = di[ConnectorsManager]
+    di[ConnectorPropertiesManager] = ConnectorPropertiesManager(session=di[OrmSession])
+    di["fb-devices-module_connector-properties-manager"] = di[ConnectorPropertiesManager]
     di[ConnectorControlsManager] = ConnectorControlsManager(session=di[OrmSession])
-    di["fb-devices-module_connectors-controls-manager"] = di[ConnectorControlsManager]
+    di["fb-devices-module_connector-controls-manager"] = di[ConnectorControlsManager]
     di[DevicesManager] = DevicesManager(session=di[OrmSession])
     di["fb-devices-module_devices-manager"] = di[DevicesManager]
     di[DevicePropertiesManager] = DevicePropertiesManager(session=di[OrmSession])
-    di["fb-devices-module_devices-properties-manager"] = di[DevicePropertiesManager]
+    di["fb-devices-module_device-properties-manager"] = di[DevicePropertiesManager]
     di[DeviceControlsManager] = DeviceControlsManager(session=di[OrmSession])
-    di["fb-devices-module_devices-controls-manager"] = di[DeviceControlsManager]
+    di["fb-devices-module_device-controls-manager"] = di[DeviceControlsManager]
     di[ChannelsManager] = ChannelsManager(session=di[OrmSession])
     di["fb-devices-module_channels-manager"] = di[ChannelsManager]
     di[ChannelPropertiesManager] = ChannelPropertiesManager(session=di[OrmSession])
-    di["fb-devices-module_channels-properties-manager"] = di[ChannelPropertiesManager]
+    di["fb-devices-module_channel-properties-manager"] = di[ChannelPropertiesManager]
     di[ChannelControlsManager] = ChannelControlsManager(session=di[OrmSession])
-    di["fb-devices-module_channels-controls-manager"] = di[ChannelControlsManager]
+    di["fb-devices-module_channel-controls-manager"] = di[ChannelControlsManager]
 
     # States managers
 
     di[ConnectorPropertiesStatesManager] = ConnectorPropertiesStatesManager()
-    di["fb-devices-module_connectors-properties-states-manager"] = di[ConnectorPropertiesStatesManager]
+    di["fb-devices-module_connector-properties-states-manager"] = di[ConnectorPropertiesStatesManager]
     di[DevicePropertiesStatesManager] = DevicePropertiesStatesManager()
-    di["fb-devices-module_devices-properties-states-manager"] = di[DevicePropertiesStatesManager]
+    di["fb-devices-module_device-properties-states-manager"] = di[DevicePropertiesStatesManager]
     di[ChannelPropertiesStatesManager] = ChannelPropertiesStatesManager()
-    di["fb-devices-module_channels-properties-states-manager"] = di[ChannelPropertiesStatesManager]
+    di["fb-devices-module_channel-properties-states-manager"] = di[ChannelPropertiesStatesManager]
 
     # Entities subscribers
 
@@ -148,13 +154,13 @@ def register_services(  # pylint: disable=too-many-statements
     di[Connector] = Connector(
         queue=di[ConnectorQueue],
         devices_repository=di[DevicesRepository],
-        devices_properties_repository=di[DevicesPropertiesRepository],
-        devices_control_repository=di[DevicesControlsRepository],
+        devices_properties_repository=di[DevicePropertiesRepository],
+        devices_control_repository=di[DeviceControlsRepository],
         channels_repository=di[ChannelsRepository],
-        channels_properties_repository=di[ChannelsPropertiesRepository],
-        channels_control_repository=di[ChannelsControlsRepository],
+        channels_properties_repository=di[ChannelPropertiesRepository],
+        channels_control_repository=di[ChannelControlsRepository],
         connectors_repository=di[ConnectorsRepository],
-        connectors_control_repository=di[ConnectorsControlsRepository],
+        connectors_control_repository=di[ConnectorControlsRepository],
         logger=di[Logger],
     )
     di["fb-devices-module_connector-handler"] = di[Connector]

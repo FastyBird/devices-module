@@ -54,9 +54,9 @@ from fastybird_devices_module.entities.device import (
     DevicePropertyEntity,
 )
 from fastybird_devices_module.repositories.state import (
-    IChannelPropertyStateRepository,
-    IConnectorPropertyStateRepository,
-    IDevicePropertyStateRepository,
+    IChannelPropertiesStatesRepository,
+    IConnectorPropertiesStatesRepository,
+    IDevicePropertiesStatesRepository,
 )
 
 
@@ -111,9 +111,9 @@ class EntityUpdatedSubscriber:  # pylint: disable=too-few-public-methods
 @inject(
     bind={
         "publisher": Publisher,
-        "connector_property_state_repository": IConnectorPropertyStateRepository,
-        "device_property_state_repository": IDevicePropertyStateRepository,
-        "channel_property_state_repository": IChannelPropertyStateRepository,
+        "connector_properties_states_repository": IConnectorPropertiesStatesRepository,
+        "device_properties_states_repository": IDevicePropertiesStatesRepository,
+        "channel_properties_states_repository": IChannelPropertiesStatesRepository,
     }
 )
 class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
@@ -164,9 +164,9 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
     __publisher: Optional[Publisher] = None
 
-    __connector_property_state_repository: Optional[IConnectorPropertyStateRepository]
-    __device_property_state_repository: Optional[IDevicePropertyStateRepository]
-    __channel_property_state_repository: Optional[IChannelPropertyStateRepository]
+    __connector_properties_states_repository: Optional[IConnectorPropertiesStatesRepository]
+    __device_properties_states_repository: Optional[IDevicePropertiesStatesRepository]
+    __channel_properties_states_repository: Optional[IChannelPropertiesStatesRepository]
 
     # -----------------------------------------------------------------------------
 
@@ -174,15 +174,15 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
         self,
         session: OrmSession,
         publisher: Optional[Publisher] = None,
-        connector_property_state_repository: Optional[IConnectorPropertyStateRepository] = None,
-        device_property_state_repository: Optional[IDevicePropertyStateRepository] = None,
-        channel_property_state_repository: Optional[IChannelPropertyStateRepository] = None,
+        connector_properties_states_repository: Optional[IConnectorPropertiesStatesRepository] = None,
+        device_properties_states_repository: Optional[IDevicePropertiesStatesRepository] = None,
+        channel_properties_states_repository: Optional[IChannelPropertiesStatesRepository] = None,
     ) -> None:
         self.__publisher = publisher
 
-        self.__connector_property_state_repository = connector_property_state_repository
-        self.__device_property_state_repository = device_property_state_repository
-        self.__channel_property_state_repository = channel_property_state_repository
+        self.__connector_properties_states_repository = connector_properties_states_repository
+        self.__device_properties_states_repository = device_properties_states_repository
+        self.__channel_properties_states_repository = channel_properties_states_repository
 
         event.listen(session, "after_flush", lambda active_session, transaction: self.after_flush(active_session))
 
@@ -265,19 +265,19 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
     def __get_entity_extended_data(self, entity: Base) -> Dict:
         if (
             isinstance(entity, ConnectorDynamicPropertyEntity)
-            and self.__connector_property_state_repository is not None
+            and self.__connector_properties_states_repository is not None
         ):
-            connector_property_state = self.__connector_property_state_repository.get_by_id(property_id=entity.id)
+            connector_property_state = self.__connector_properties_states_repository.get_by_id(property_id=entity.id)
 
             return connector_property_state.to_dict() if connector_property_state is not None else {}
 
-        if isinstance(entity, DeviceDynamicPropertyEntity) and self.__device_property_state_repository is not None:
-            device_property_state = self.__device_property_state_repository.get_by_id(property_id=entity.id)
+        if isinstance(entity, DeviceDynamicPropertyEntity) and self.__device_properties_states_repository is not None:
+            device_property_state = self.__device_properties_states_repository.get_by_id(property_id=entity.id)
 
             return device_property_state.to_dict() if device_property_state is not None else {}
 
-        if isinstance(entity, ChannelDynamicPropertyEntity) and self.__channel_property_state_repository is not None:
-            channel_property_state = self.__channel_property_state_repository.get_by_id(property_id=entity.id)
+        if isinstance(entity, ChannelDynamicPropertyEntity) and self.__channel_properties_states_repository is not None:
+            channel_property_state = self.__channel_properties_states_repository.get_by_id(property_id=entity.id)
 
             return channel_property_state.to_dict() if channel_property_state is not None else {}
 

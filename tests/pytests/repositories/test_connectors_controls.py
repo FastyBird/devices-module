@@ -23,21 +23,21 @@ from kink import inject
 
 # Library libs
 from fastybird_devices_module.entities.connector import ConnectorControlEntity
-from fastybird_devices_module.repositories.connector import ConnectorsControlsRepository
+from fastybird_devices_module.repositories.connector import ConnectorControlsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestConnectorsControlsRepository(DbTestCase):
+class TestConnectorControlsRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, control_repository: ConnectorsControlsRepository) -> None:
+    def test_repository_iterator(self, control_repository: ConnectorControlsRepository) -> None:
         self.assertEqual(1, len(control_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, control_repository: ConnectorsControlsRepository) -> None:
+    def test_get_item(self, control_repository: ConnectorControlsRepository) -> None:
         entity = control_repository.get_by_id(control_id=uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4))
 
         self.assertIsInstance(entity, ConnectorControlEntity)
@@ -46,7 +46,7 @@ class TestConnectorsControlsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_transform_to_dict(self, control_repository: ConnectorsControlsRepository) -> None:
+    def test_transform_to_dict(self, control_repository: ConnectorControlsRepository) -> None:
         entity = control_repository.get_by_id(control_id=uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4))
 
         self.assertIsInstance(entity, ConnectorControlEntity)

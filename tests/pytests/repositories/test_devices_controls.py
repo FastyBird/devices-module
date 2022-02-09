@@ -23,21 +23,21 @@ from kink import inject
 
 # Library libs
 from fastybird_devices_module.entities.device import DeviceControlEntity
-from fastybird_devices_module.repositories.device import DevicesControlsRepository
+from fastybird_devices_module.repositories.device import DeviceControlsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestDevicesControlsRepository(DbTestCase):
+class TestDeviceControlsRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, control_repository: DevicesControlsRepository) -> None:
+    def test_repository_iterator(self, control_repository: DeviceControlsRepository) -> None:
         self.assertEqual(1, len(control_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, control_repository: DevicesControlsRepository) -> None:
+    def test_get_item(self, control_repository: DeviceControlsRepository) -> None:
         entity = control_repository.get_by_id(control_id=uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4))
 
         self.assertIsInstance(entity, DeviceControlEntity)
@@ -46,7 +46,7 @@ class TestDevicesControlsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_transform_to_dict(self, control_repository: DevicesControlsRepository) -> None:
+    def test_transform_to_dict(self, control_repository: DeviceControlsRepository) -> None:
         entity = control_repository.get_by_id(control_id=uuid.UUID("7c055b2b-60c3-4017-93db-e9478d8aa662", version=4))
 
         self.assertIsInstance(entity, DeviceControlEntity)

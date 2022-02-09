@@ -59,17 +59,17 @@ from fastybird_devices_module.exceptions import (
 )
 from fastybird_devices_module.logger import Logger
 from fastybird_devices_module.repositories.channel import (
-    ChannelsControlsRepository,
-    ChannelsPropertiesRepository,
+    ChannelControlsRepository,
+    ChannelPropertiesRepository,
     ChannelsRepository,
 )
 from fastybird_devices_module.repositories.connector import (
-    ConnectorsControlsRepository,
+    ConnectorControlsRepository,
     ConnectorsRepository,
 )
 from fastybird_devices_module.repositories.device import (
-    DevicesControlsRepository,
-    DevicesPropertiesRepository,
+    DeviceControlsRepository,
+    DevicePropertiesRepository,
     DevicesRepository,
 )
 
@@ -221,15 +221,15 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     __connector: IConnector
 
     __devices_repository: DevicesRepository
-    __devices_properties_repository: DevicesPropertiesRepository
-    __devices_control_repository: DevicesControlsRepository
+    __devices_properties_repository: DevicePropertiesRepository
+    __devices_control_repository: DeviceControlsRepository
 
     __channels_repository: ChannelsRepository
-    __channels_properties_repository: ChannelsPropertiesRepository
-    __channels_control_repository: ChannelsControlsRepository
+    __channels_properties_repository: ChannelPropertiesRepository
+    __channels_control_repository: ChannelControlsRepository
 
     __connectors_repository: ConnectorsRepository
-    __connectors_control_repository: ConnectorsControlsRepository
+    __connectors_control_repository: ConnectorControlsRepository
 
     __logger: Logger
 
@@ -241,13 +241,13 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self,
         queue: ConnectorQueue,
         devices_repository: DevicesRepository,
-        devices_properties_repository: DevicesPropertiesRepository,
-        devices_control_repository: DevicesControlsRepository,
+        devices_properties_repository: DevicePropertiesRepository,
+        devices_control_repository: DeviceControlsRepository,
         channels_repository: ChannelsRepository,
-        channels_properties_repository: ChannelsPropertiesRepository,
-        channels_control_repository: ChannelsControlsRepository,
+        channels_properties_repository: ChannelPropertiesRepository,
+        channels_control_repository: ChannelControlsRepository,
         connectors_repository: ConnectorsRepository,
-        connectors_control_repository: ConnectorsControlsRepository,
+        connectors_control_repository: ConnectorControlsRepository,
         logger: Logger,
     ) -> None:
         self.__queue = queue

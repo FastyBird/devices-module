@@ -24,21 +24,21 @@ from kink import inject
 
 # Library libs
 from fastybird_devices_module.entities.device import DeviceStaticPropertyEntity
-from fastybird_devices_module.repositories.device import DevicesPropertiesRepository
+from fastybird_devices_module.repositories.device import DevicePropertiesRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestDevicesPropertiesRepository(DbTestCase):
+class TestDevicePropertiesRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, property_repository: DevicesPropertiesRepository) -> None:
+    def test_repository_iterator(self, property_repository: DevicePropertiesRepository) -> None:
         self.assertEqual(5, len(property_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, property_repository: DevicesPropertiesRepository) -> None:
+    def test_get_item(self, property_repository: DevicePropertiesRepository) -> None:
         entity = property_repository.get_by_id(property_id=uuid.UUID("3134ba8e-f134-4bf2-9c80-c977c4deb0fb", version=4))
 
         self.assertIsInstance(entity, DeviceStaticPropertyEntity)
@@ -46,7 +46,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_transform_to_dict(self, property_repository: DevicesPropertiesRepository) -> None:
+    def test_transform_to_dict(self, property_repository: DevicePropertiesRepository) -> None:
         entity = property_repository.get_by_id(property_id=uuid.UUID("3134ba8e-f134-4bf2-9c80-c977c4deb0fb", version=4))
 
         self.assertIsInstance(entity, DeviceStaticPropertyEntity)

@@ -31,7 +31,7 @@ from fastybird_devices_module.state.property import (
 )
 
 
-class IConnectorPropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods
+class IConnectorPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-methods
     """
     State repository for connector property
 
@@ -46,7 +46,7 @@ class IConnectorPropertyStateRepository(ABC):  # pylint: disable=too-few-public-
         """Find connector property state record by provided database identifier"""
 
 
-class IDevicePropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods
+class IDevicePropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-methods
     """
     State repository for device property
 
@@ -61,7 +61,7 @@ class IDevicePropertyStateRepository(ABC):  # pylint: disable=too-few-public-met
         """Find device property state record by provided database identifier"""
 
 
-class IChannelPropertyStateRepository(ABC):  # pylint: disable=too-few-public-methods
+class IChannelPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-methods
     """
     State repository for channel property
 

@@ -31,6 +31,7 @@ from sqlalchemy.orm import Session as OrmSession
 from fastybird_devices_module.entities.connector import (
     ConnectorControlEntity,
     ConnectorEntity,
+    ConnectorPropertyEntity,
 )
 
 
@@ -67,7 +68,7 @@ class ConnectorsRepository:
         return self.__session.query(ConnectorEntity).all()
 
 
-class ConnectorsControlsRepository:
+class ConnectorControlsRepository:
     """
     Connectors controls repository
 
@@ -119,5 +120,71 @@ class ConnectorsControlsRepository:
         return (
             self.__session.query(ConnectorControlEntity)
             .filter(ConnectorControlEntity.connector_id == connector_id.bytes)
+            .all()
+        )
+
+
+class ConnectorPropertiesRepository:
+    """
+    Connectors properties repository
+
+    @package        FastyBird:ConnectorsModule!
+    @module         repositories/connector
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __session: OrmSession
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        session: OrmSession,
+    ) -> None:
+        self.__session = session
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, property_id: uuid.UUID) -> Optional[ConnectorPropertyEntity]:
+        """Find property by provided database identifier"""
+        return self.__session.query(ConnectorPropertyEntity).get(property_id.bytes)
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_identifier(self, connector_id: uuid.UUID, property_identifier: str) -> Optional[ConnectorPropertyEntity]:
+        """Find property by provided identifier"""
+        return (
+            self.__session.query(ConnectorPropertyEntity)
+            .filter(
+                ConnectorPropertyEntity.connector_id == connector_id.bytes,
+                ConnectorPropertyEntity.identifier == property_identifier,
+            )
+            .first()
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def get_all(self) -> List[ConnectorPropertyEntity]:
+        """Find all connectors properties"""
+        return self.__session.query(ConnectorPropertyEntity).all()
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_connector(self, connector_id: uuid.UUID) -> List[ConnectorPropertyEntity]:
+        """Find all connectors properties for connector"""
+        return (
+            self.__session.query(ConnectorPropertyEntity)
+            .filter(ConnectorPropertyEntity.connector_id == connector_id.bytes)
+            .all()
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_parent(self, property_id: uuid.UUID) -> List[ConnectorPropertyEntity]:
+        """Find all child properties"""
+        return (
+            self.__session.query(ConnectorPropertyEntity)
+            .filter(ConnectorPropertyEntity.parent_id == property_id.bytes)
             .all()
         )

@@ -23,21 +23,21 @@ from kink import inject
 
 # Library libs
 from fastybird_devices_module.entities.channel import ChannelControlEntity
-from fastybird_devices_module.repositories.channel import ChannelsControlsRepository
+from fastybird_devices_module.repositories.channel import ChannelControlsRepository
 
 # Tests libs
 from tests.pytests.tests import DbTestCase
 
 
-class TestChannelsControlsRepository(DbTestCase):
+class TestChannelControlsRepository(DbTestCase):
     @inject
-    def test_repository_iterator(self, control_repository: ChannelsControlsRepository) -> None:
+    def test_repository_iterator(self, control_repository: ChannelControlsRepository) -> None:
         self.assertEqual(2, len(control_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_get_item(self, control_repository: ChannelsControlsRepository) -> None:
+    def test_get_item(self, control_repository: ChannelControlsRepository) -> None:
         entity = control_repository.get_by_id(control_id=uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4))
 
         self.assertIsInstance(entity, ChannelControlEntity)
@@ -46,7 +46,7 @@ class TestChannelsControlsRepository(DbTestCase):
     # -----------------------------------------------------------------------------
 
     @inject
-    def test_transform_to_dict(self, control_repository: ChannelsControlsRepository) -> None:
+    def test_transform_to_dict(self, control_repository: ChannelControlsRepository) -> None:
         entity = control_repository.get_by_id(control_id=uuid.UUID("15db9bef-3b57-4a87-bf67-e3c19fc3ba34", version=4))
 
         self.assertIsInstance(entity, ChannelControlEntity)

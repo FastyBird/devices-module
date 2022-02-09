@@ -47,9 +47,9 @@ final class DynamicPropertySchema extends PropertySchema
 	private ?Models\States\IChannelPropertiesRepository $propertiesStatesRepository;
 
 	public function __construct(
-		Routing\IRouter                                  $router,
+		Routing\IRouter $router,
 		Models\Channels\Properties\IPropertiesRepository $propertiesRepository,
-		?Models\States\IChannelPropertiesRepository        $propertiesStatesRepository
+		?Models\States\IChannelPropertiesRepository $propertiesStatesRepository
 	) {
 		parent::__construct($router, $propertiesRepository);
 

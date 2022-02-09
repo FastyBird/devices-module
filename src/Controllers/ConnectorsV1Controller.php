@@ -49,7 +49,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 
 	public function __construct(
 		Models\Connectors\IConnectorsRepository $connectorsRepository,
-		Models\Connectors\IConnectorsManager    $connectorsManager
+		Models\Connectors\IConnectorsManager $connectorsManager
 	) {
 		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorsManager = $connectorsManager;

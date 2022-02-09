@@ -47,7 +47,7 @@ final class DynamicPropertySchema extends PropertySchema
 	private ?Models\States\IDevicePropertiesRepository $propertiesStatesRepository;
 
 	public function __construct(
-		Routing\IRouter                                 $router,
+		Routing\IRouter $router,
 		Models\Devices\Properties\IPropertiesRepository $propertiesRepository,
 		?Models\States\IDevicePropertiesRepository $propertiesStatesRepository
 	) {

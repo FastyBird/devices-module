@@ -48,7 +48,7 @@ final class DeviceControlsV1Controller extends BaseV1Controller
 	private Models\Devices\Controls\IControlsRepository $deviceControlsRepository;
 
 	public function __construct(
-		Models\Devices\IDevicesRepository          $devicesRepository,
+		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Devices\Controls\IControlsRepository $deviceControlsRepository
 	) {
 		$this->devicesRepository = $devicesRepository;

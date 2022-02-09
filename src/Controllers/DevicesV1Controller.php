@@ -57,10 +57,10 @@ class DevicesV1Controller extends BaseV1Controller
 	protected Models\Channels\IChannelsManager $channelsManager;
 
 	public function __construct(
-		Models\Devices\IDevicesRepository    $devicesRepository,
-		Models\Devices\IDevicesManager      $devicesManager,
+		Models\Devices\IDevicesRepository $devicesRepository,
+		Models\Devices\IDevicesManager $devicesManager,
 		Models\Channels\IChannelsRepository $channelsRepository,
-		Models\Channels\IChannelsManager    $channelsManager
+		Models\Channels\IChannelsManager $channelsManager
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->devicesManager = $devicesManager;

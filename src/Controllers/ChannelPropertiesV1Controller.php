@@ -60,10 +60,10 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	protected Models\Channels\Properties\IPropertiesManager $channelPropertiesManager;
 
 	public function __construct(
-		Models\Devices\IDevicesRepository               $devicesRepository,
-		Models\Channels\IChannelsRepository            $channelsRepository,
+		Models\Devices\IDevicesRepository $devicesRepository,
+		Models\Channels\IChannelsRepository $channelsRepository,
 		Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository,
-		Models\Channels\Properties\IPropertiesManager  $channelPropertiesManager
+		Models\Channels\Properties\IPropertiesManager $channelPropertiesManager
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->channelsRepository = $channelsRepository;

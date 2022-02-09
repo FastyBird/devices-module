@@ -46,7 +46,7 @@ final class DevicePropertyChildrenV1Controller extends BaseV1Controller
 	private Models\Devices\Properties\IPropertiesRepository $devicePropertiesRepository;
 
 	public function __construct(
-		Models\Devices\IDevicesRepository             $devicesRepository,
+		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Devices\Properties\IPropertiesRepository $devicePropertiesRepository
 	) {
 		$this->devicesRepository = $devicesRepository;

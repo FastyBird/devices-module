@@ -63,9 +63,9 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	protected Routing\IRouter $router;
 
 	public function __construct(
-		Models\Devices\IDevicesRepository    $devicesRepository,
+		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Channels\IChannelsRepository $channelsRepository,
-		Routing\IRouter                     $router
+		Routing\IRouter $router
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->channelsRepository = $channelsRepository;
@@ -143,32 +143,32 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	public function getRelationships($device, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			self::RELATIONSHIPS_PROPERTIES    => [
+			self::RELATIONSHIPS_PROPERTIES => [
 				self::RELATIONSHIP_DATA          => $device->getProperties(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONTROLS      => [
+			self::RELATIONSHIPS_CONTROLS   => [
 				self::RELATIONSHIP_DATA          => $device->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CHANNELS      => [
+			self::RELATIONSHIPS_CHANNELS   => [
 				self::RELATIONSHIP_DATA          => $this->getChannels($device),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONNECTOR     => [
+			self::RELATIONSHIPS_CONNECTOR  => [
 				self::RELATIONSHIP_DATA          => $device->getConnector(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => $device->getConnector() !== null,
 			],
-			self::RELATIONSHIPS_PARENT        => [
+			self::RELATIONSHIPS_PARENT     => [
 				self::RELATIONSHIP_DATA          => $device->getParent(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => $device->getParent() !== null,
 			],
-			self::RELATIONSHIPS_CHILDREN      => [
+			self::RELATIONSHIPS_CHILDREN   => [
 				self::RELATIONSHIP_DATA          => $this->getChildren($device),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,

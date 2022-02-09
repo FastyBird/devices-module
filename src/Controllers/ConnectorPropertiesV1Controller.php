@@ -57,9 +57,9 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	protected Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager;
 
 	public function __construct(
-		Models\Connectors\IConnectorsRepository          $connectorsRepository,
+		Models\Connectors\IConnectorsRepository $connectorsRepository,
 		Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository,
-		Models\Connectors\Properties\IPropertiesManager  $connectorPropertiesManager
+		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager
 	) {
 		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;

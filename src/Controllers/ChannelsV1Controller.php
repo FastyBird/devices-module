@@ -53,9 +53,9 @@ final class ChannelsV1Controller extends BaseV1Controller
 	protected Models\Channels\IChannelsRepository $channelsRepository;
 
 	public function __construct(
-		Models\Devices\IDevicesRepository    $devicesRepository,
+		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Channels\IChannelsRepository $channelsRepository,
-		Models\Channels\IChannelsManager    $channelsManager
+		Models\Channels\IChannelsManager $channelsManager
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->channelsRepository = $channelsRepository;

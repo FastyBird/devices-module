@@ -67,6 +67,7 @@ class TestDevicesPropertiesRepository(DbTestCase):
                 "owner": "455354e8-96bd-4c29-84e7-9f10e1d4db4b",
                 "value": "device-password",
                 "default": None,
+                "parent": None,
             },
             entity.to_dict(),
         )

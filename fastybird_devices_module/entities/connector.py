@@ -234,6 +234,10 @@ class ConnectorPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMi
 
     col_type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
+    col_property_id: bytes = Column(  # type: ignore[assignment]
+        BINARY(16), primary_key=True, name="property_id", default=uuid.uuid4
+    )
+
     connector_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16), ForeignKey("fb_devices_module_connectors.connector_id"), name="connector_id", nullable=False
     )

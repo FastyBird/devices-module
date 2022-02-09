@@ -470,6 +470,10 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
 
     col_type: str = Column(VARCHAR(20), name="property_type", nullable=False)  # type: ignore[assignment]
 
+    col_property_id: bytes = Column(  # type: ignore[assignment]
+        BINARY(16), primary_key=True, name="property_id", default=uuid.uuid4
+    )
+
     parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16),
         ForeignKey("fb_devices_module_devices_properties.property_id", ondelete="SET NULL"),
@@ -484,7 +488,7 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
     device: DeviceEntity = relationship(DeviceEntity, back_populates="properties")  # type: ignore[assignment]
 
     children: List["DevicePropertyEntity"] = relationship(  # type: ignore[assignment]
-        "DevicePropertyEntity", backref=backref("parent", remote_side=[PropertyMixin.col_property_id])
+        "DevicePropertyEntity", backref=backref("parent", remote_side=[col_property_id])
     )
 
     __mapper_args__ = {

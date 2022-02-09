@@ -139,6 +139,16 @@ class ChannelsPropertiesRepository:
             .all()
         )
 
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_parent(self, property_id: uuid.UUID) -> List[ChannelPropertyEntity]:
+        """Find all child properties"""
+        return (
+            self.__session.query(ChannelPropertyEntity)
+            .filter(ChannelPropertyEntity.parent_id == property_id.bytes)
+            .all()
+        )
+
 
 class ChannelsControlsRepository:
     """

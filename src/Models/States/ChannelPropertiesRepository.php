@@ -50,7 +50,7 @@ final class ChannelPropertiesRepository
 	public function findOne(
 		Entities\Channels\Properties\IProperty $property
 	): ?States\IChannelProperty {
-		if ($this->manager === null) {
+		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Channel properties state repository is not registered');
 		}
 

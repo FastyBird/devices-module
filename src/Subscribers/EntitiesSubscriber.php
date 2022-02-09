@@ -67,7 +67,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
 		Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
-		?ExchangePublisher\Publisher $publisher = null,
+		?ExchangePublisher\Publisher $publisher = null
 	) {
 		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
 		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;

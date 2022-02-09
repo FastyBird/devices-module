@@ -50,7 +50,7 @@ final class ConnectorPropertiesRepository
 	public function findOne(
 		Entities\Connectors\Properties\IProperty $property
 	): ?States\IConnectorProperty {
-		if ($this->manager === null) {
+		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Connector properties state repository is not registered');
 		}
 

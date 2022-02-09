@@ -50,7 +50,7 @@ final class DevicePropertiesRepository
 	public function findOne(
 		Entities\Devices\Properties\IProperty $property
 	): ?States\IDeviceProperty {
-		if ($this->manager === null) {
+		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Device properties state repository is not registered');
 		}
 

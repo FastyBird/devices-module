@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * IPropertyRepository.php
+ * IDevicesRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,65 +10,65 @@
  * @subpackage     Models
  * @since          0.1.0
  *
- * @date           21.11.18
+ * @date           28.07.18
  */
 
-namespace FastyBird\DevicesModule\Models\Channels\Properties;
+namespace FastyBird\DevicesModule\Models\Devices;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 
 /**
- * Device property repository interface
+ * Device repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IPropertyRepository
+interface IDevicesRepository
 {
 
 	/**
-	 * @param Queries\FindChannelPropertiesQuery $queryObject
+	 * @param Queries\FindDevicesQuery $queryObject
 	 * @param string $type
 	 *
-	 * @return Entities\Channels\Properties\IProperty|null
+	 * @return Entities\Devices\IDevice|null
 	 *
 	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
-		Queries\FindChannelPropertiesQuery $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
-	): ?Entities\Channels\Properties\IProperty;
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
+	): ?Entities\Devices\IDevice;
 
 	/**
-	 * @param Queries\FindChannelPropertiesQuery $queryObject
+	 * @param Queries\FindDevicesQuery $queryObject
 	 * @param string $type
 	 *
-	 * @return Entities\Channels\Properties\IProperty[]
+	 * @return Entities\Devices\IDevice[]
 	 *
 	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
-		Queries\FindChannelPropertiesQuery $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
 	): array;
 
 	/**
-	 * @param Queries\FindChannelPropertiesQuery $queryObject
+	 * @param Queries\FindDevicesQuery $queryObject
 	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\IProperty>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\IDevice>
 	 */
 	public function getResultSet(
-		Queries\FindChannelPropertiesQuery $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
+		Queries\FindDevicesQuery $queryObject,
+		string $type = Entities\Devices\Device::class
 	): DoctrineOrmQuery\ResultSet;
 
 }

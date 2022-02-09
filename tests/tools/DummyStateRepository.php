@@ -7,7 +7,7 @@ use FastyBird\DevicesModule\States;
 use Ramsey\Uuid;
 use RuntimeException;
 
-class DummyStateRepository implements Models\States\IPropertyRepository
+class DummyStateRepository implements Models\States\IPropertiesRepository
 {
 
 	public function findOne(Uuid\UuidInterface $id): ?States\IProperty

@@ -43,13 +43,13 @@ final class DynamicPropertySchema extends PropertySchema
 	 */
 	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/property/device/' . MetadataTypes\PropertyTypeType::TYPE_DYNAMIC;
 
-	/** @var Models\States\IDevicePropertyRepository|null */
-	private ?Models\States\IDevicePropertyRepository $propertiesStatesRepository;
+	/** @var Models\States\IDevicePropertiesRepository|null */
+	private ?Models\States\IDevicePropertiesRepository $propertiesStatesRepository;
 
 	public function __construct(
-		Routing\IRouter $router,
-		Models\Devices\Properties\IPropertyRepository $propertiesRepository,
-		?Models\States\IDevicePropertyRepository $propertiesStatesRepository
+		Routing\IRouter                                 $router,
+		Models\Devices\Properties\IPropertiesRepository $propertiesRepository,
+		?Models\States\IDevicePropertiesRepository $propertiesStatesRepository
 	) {
 		parent::__construct($router, $propertiesRepository);
 

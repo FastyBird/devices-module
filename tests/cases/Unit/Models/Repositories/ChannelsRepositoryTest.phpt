@@ -14,13 +14,13 @@ require_once __DIR__ . '/../../DbTestCase.php';
 /**
  * @testCase
  */
-final class ChannelRepositoryTest extends DbTestCase
+final class ChannelsRepositoryTest extends DbTestCase
 {
 
 	public function testReadOne(): void
 	{
-		/** @var Models\Channels\ChannelRepository $repository */
-		$repository = $this->getContainer()->getByType(Models\Channels\ChannelRepository::class);
+		/** @var Models\Channels\ChannelsRepository $repository */
+		$repository = $this->getContainer()->getByType(Models\Channels\ChannelsRepository::class);
 
 		$findQuery = new Queries\FindChannelsQuery();
 		$findQuery->byIdentifier('channel-one');
@@ -34,8 +34,8 @@ final class ChannelRepositoryTest extends DbTestCase
 
 	public function testReadResultSet(): void
 	{
-		/** @var Models\Channels\ChannelRepository $repository */
-		$repository = $this->getContainer()->getByType(Models\Channels\ChannelRepository::class);
+		/** @var Models\Channels\ChannelsRepository $repository */
+		$repository = $this->getContainer()->getByType(Models\Channels\ChannelsRepository::class);
 
 		$findQuery = new Queries\FindChannelsQuery();
 
@@ -47,5 +47,5 @@ final class ChannelRepositoryTest extends DbTestCase
 
 }
 
-$test_case = new ChannelRepositoryTest();
+$test_case = new ChannelsRepositoryTest();
 $test_case->run();

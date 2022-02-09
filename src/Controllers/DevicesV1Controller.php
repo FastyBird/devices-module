@@ -44,23 +44,23 @@ class DevicesV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $devicesRepository;
+	/** @var Models\Devices\IDevicesRepository */
+	protected Models\Devices\IDevicesRepository $devicesRepository;
 
 	/** @var Models\Devices\IDevicesManager */
 	protected Models\Devices\IDevicesManager $devicesManager;
 
-	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelsRepository;
+	/** @var Models\Channels\IChannelsRepository */
+	protected Models\Channels\IChannelsRepository $channelsRepository;
 
 	/** @var Models\Channels\IChannelsManager */
 	protected Models\Channels\IChannelsManager $channelsManager;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository,
-		Models\Devices\IDevicesManager $devicesManager,
-		Models\Channels\IChannelRepository $channelsRepository,
-		Models\Channels\IChannelsManager $channelsManager
+		Models\Devices\IDevicesRepository    $devicesRepository,
+		Models\Devices\IDevicesManager      $devicesManager,
+		Models\Channels\IChannelsRepository $channelsRepository,
+		Models\Channels\IChannelsManager    $channelsManager
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->devicesManager = $devicesManager;

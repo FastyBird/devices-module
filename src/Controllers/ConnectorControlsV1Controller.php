@@ -41,15 +41,15 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TConnectorFinder;
 
-	/** @var Models\Connectors\IConnectorRepository */
-	protected Models\Connectors\IConnectorRepository $connectorsRepository;
+	/** @var Models\Connectors\IConnectorsRepository */
+	protected Models\Connectors\IConnectorsRepository $connectorsRepository;
 
-	/** @var Models\Connectors\Controls\IControlRepository */
-	private Models\Connectors\Controls\IControlRepository $connectorControlsRepository;
+	/** @var Models\Connectors\Controls\IControlsRepository */
+	private Models\Connectors\Controls\IControlsRepository $connectorControlsRepository;
 
 	public function __construct(
-		Models\Connectors\IConnectorRepository $connectorsRepository,
-		Models\Connectors\Controls\IControlRepository $connectorControlsRepository
+		Models\Connectors\IConnectorsRepository $connectorsRepository,
+		Models\Connectors\Controls\IControlsRepository $connectorControlsRepository
 	) {
 		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorControlsRepository = $connectorControlsRepository;

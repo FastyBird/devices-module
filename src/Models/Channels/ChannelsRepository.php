@@ -1,19 +1,19 @@
 <?php declare(strict_types = 1);
 
 /**
- * ControlRepository.php
+ * ChannelsRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- * @since          0.4.0
+ * @since          0.1.0
  *
- * @date           29.09.21
+ * @date           23.04.17
  */
 
-namespace FastyBird\DevicesModule\Models\Connectors\Controls;
+namespace FastyBird\DevicesModule\Models\Channels;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
@@ -25,14 +25,14 @@ use Nette;
 use Throwable;
 
 /**
- * Connector control structure repository
+ * Channel repository
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ControlRepository implements IControlRepository
+final class ChannelsRepository implements IChannelsRepository
 {
 
 	use Nette\SmartObject;
@@ -40,7 +40,7 @@ final class ControlRepository implements IControlRepository
 	/**
 	 * @var ORM\EntityRepository|null
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\Controls\IControl>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Channels\IChannel>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -55,12 +55,12 @@ final class ControlRepository implements IControlRepository
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findOneBy(Queries\FindConnectorControlsQuery $queryObject): ?Entities\Connectors\Controls\IControl
+	public function findOneBy(Queries\FindChannelsQuery $queryObject): ?Entities\Channels\IChannel
 	{
-		/** @var Entities\Connectors\Controls\IControl|null $control */
-		$control = $queryObject->fetchOne($this->getRepository());
+		/** @var Entities\Channels\IChannel|null $channel */
+		$channel = $queryObject->fetchOne($this->getRepository());
 
-		return $control;
+		return $channel;
 	}
 
 	/**
@@ -70,9 +70,9 @@ final class ControlRepository implements IControlRepository
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return  ORM\EntityRepository<Entities\Connectors\Controls\IControl>
+	 * @phpstan-return ORM\EntityRepository<Entities\Channels\IChannel>
 	 */
-	private function getRepository(string $type = Entities\Connectors\Controls\Control::class): ORM\EntityRepository
+	private function getRepository(string $type = Entities\Channels\Channel::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
 			$repository = $this->managerRegistry->getRepository($type);
@@ -92,8 +92,20 @@ final class ControlRepository implements IControlRepository
 	 *
 	 * @throws Throwable
 	 */
+	public function findAllBy(Queries\FindChannelsQuery $queryObject): array
+	{
+		$result = $queryObject->fetch($this->getRepository());
+
+		return is_array($result) ? $result : $result->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
 	public function getResultSet(
-		Queries\FindConnectorControlsQuery $queryObject
+		Queries\FindChannelsQuery $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 

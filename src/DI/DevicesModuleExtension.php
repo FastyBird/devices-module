@@ -97,31 +97,31 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		// Database repositories
 		$builder->addDefinition($this->prefix('models.devicesRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Devices\DeviceRepository::class);
+			->setType(Models\Devices\DevicesRepository::class);
 
-		$builder->addDefinition($this->prefix('models.devicePropertyRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Devices\Properties\PropertyRepository::class);
+		$builder->addDefinition($this->prefix('models.devicePropertiesRepository'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Devices\Properties\PropertiesRepository::class);
 
-		$builder->addDefinition($this->prefix('models.deviceControlRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Devices\Controls\ControlRepository::class);
+		$builder->addDefinition($this->prefix('models.deviceControlsRepository'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Devices\Controls\ControlsRepository::class);
 
 		$builder->addDefinition($this->prefix('models.channelsRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Channels\ChannelRepository::class);
+			->setType(Models\Channels\ChannelsRepository::class);
 
-		$builder->addDefinition($this->prefix('models.channelPropertyRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Channels\Properties\PropertyRepository::class);
+		$builder->addDefinition($this->prefix('models.channelPropertiesRepository'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Channels\Properties\PropertiesRepository::class);
 
-		$builder->addDefinition($this->prefix('models.channelControlRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Channels\Controls\ControlRepository::class);
+		$builder->addDefinition($this->prefix('models.channelControlsRepository'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Channels\Controls\ControlsRepository::class);
 
 		$builder->addDefinition($this->prefix('models.connectorsRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Connectors\ConnectorRepository::class);
+			->setType(Models\Connectors\ConnectorsRepository::class);
 
-		$builder->addDefinition($this->prefix('models.connectorPropertyRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Connectors\Properties\PropertyRepository::class);
+		$builder->addDefinition($this->prefix('models.connectorPropertiesRepository'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Connectors\Properties\PropertiesRepository::class);
 
-		$builder->addDefinition($this->prefix('models.connectorControlRepository'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\Connectors\Controls\ControlRepository::class);
+		$builder->addDefinition($this->prefix('models.connectorControlsRepository'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\Connectors\Controls\ControlsRepository::class);
 
 		// Database managers
 		$builder->addDefinition($this->prefix('models.devicesManager'), new DI\Definitions\ServiceDefinition())

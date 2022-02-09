@@ -41,15 +41,15 @@ final class DeviceControlsV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $devicesRepository;
+	/** @var Models\Devices\IDevicesRepository */
+	protected Models\Devices\IDevicesRepository $devicesRepository;
 
-	/** @var Models\Devices\Controls\IControlRepository */
-	private Models\Devices\Controls\IControlRepository $deviceControlsRepository;
+	/** @var Models\Devices\Controls\IControlsRepository */
+	private Models\Devices\Controls\IControlsRepository $deviceControlsRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository,
-		Models\Devices\Controls\IControlRepository $deviceControlsRepository
+		Models\Devices\IDevicesRepository          $devicesRepository,
+		Models\Devices\Controls\IControlsRepository $deviceControlsRepository
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->deviceControlsRepository = $deviceControlsRepository;

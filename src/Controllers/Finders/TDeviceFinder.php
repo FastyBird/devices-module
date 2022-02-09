@@ -25,7 +25,7 @@ use Ramsey\Uuid;
 
 /**
  * @property-read Localization\ITranslator $translator
- * @property-read Models\Devices\IDeviceRepository $devicesRepository
+ * @property-read Models\Devices\IDevicesRepository $devicesRepository
  */
 trait TDeviceFinder
 {

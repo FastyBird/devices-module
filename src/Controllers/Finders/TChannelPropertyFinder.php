@@ -25,7 +25,7 @@ use Ramsey\Uuid;
 
 /**
  * @property-read Localization\ITranslator $translator
- * @property-read Models\Channels\Properties\IPropertyRepository $channelPropertiesRepository
+ * @property-read Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository
  */
 trait TChannelPropertyFinder
 {

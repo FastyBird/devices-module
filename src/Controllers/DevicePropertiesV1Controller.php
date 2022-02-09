@@ -46,19 +46,19 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 	use Controllers\Finders\TDevicePropertyFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $devicesRepository;
+	/** @var Models\Devices\IDevicesRepository */
+	protected Models\Devices\IDevicesRepository $devicesRepository;
 
 	/** @var Models\Devices\Properties\IPropertiesManager */
 	protected Models\Devices\Properties\IPropertiesManager $devicePropertiesManager;
 
-	/** @var Models\Devices\Properties\IPropertyRepository */
-	private Models\Devices\Properties\IPropertyRepository $devicePropertiesRepository;
+	/** @var Models\Devices\Properties\IPropertiesRepository */
+	private Models\Devices\Properties\IPropertiesRepository $devicePropertiesRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository,
-		Models\Devices\Properties\IPropertyRepository $devicePropertiesRepository,
-		Models\Devices\Properties\IPropertiesManager $devicePropertiesManager
+		Models\Devices\IDevicesRepository               $devicesRepository,
+		Models\Devices\Properties\IPropertiesRepository $devicePropertiesRepository,
+		Models\Devices\Properties\IPropertiesManager    $devicePropertiesManager
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->devicePropertiesRepository = $devicePropertiesRepository;

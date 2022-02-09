@@ -38,11 +38,11 @@ final class DeviceChildrenV1Controller extends BaseV1Controller
 
 	use Controllers\Finders\TDeviceFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $devicesRepository;
+	/** @var Models\Devices\IDevicesRepository */
+	protected Models\Devices\IDevicesRepository $devicesRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository
+		Models\Devices\IDevicesRepository $devicesRepository
 	) {
 		$this->devicesRepository = $devicesRepository;
 	}

@@ -40,15 +40,15 @@ final class ChannelPropertyChildrenV1Controller extends BaseV1Controller
 	use Controllers\Finders\TChannelFinder;
 	use Controllers\Finders\TChannelPropertyFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $devicesRepository;
+	/** @var Models\Devices\IDevicesRepository */
+	protected Models\Devices\IDevicesRepository $devicesRepository;
 
-	/** @var Models\Channels\Properties\IPropertyRepository */
-	protected Models\Channels\Properties\IPropertyRepository $channelPropertiesRepository;
+	/** @var Models\Channels\Properties\IPropertiesRepository */
+	protected Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository,
-		Models\Channels\Properties\IPropertyRepository $channelPropertiesRepository
+		Models\Devices\IDevicesRepository $devicesRepository,
+		Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->channelPropertiesRepository = $channelPropertiesRepository;

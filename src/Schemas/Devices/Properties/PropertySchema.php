@@ -50,12 +50,12 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	/** @var Routing\IRouter */
 	private Routing\IRouter $router;
 
-	/** @var Models\Devices\Properties\IPropertyRepository */
-	private Models\Devices\Properties\IPropertyRepository $propertiesRepository;
+	/** @var Models\Devices\Properties\IPropertiesRepository */
+	private Models\Devices\Properties\IPropertiesRepository $propertiesRepository;
 
 	public function __construct(
 		Routing\IRouter $router,
-		Models\Devices\Properties\IPropertyRepository $propertiesRepository
+		Models\Devices\Properties\IPropertiesRepository $propertiesRepository
 	) {
 		$this->router = $router;
 		$this->propertiesRepository = $propertiesRepository;

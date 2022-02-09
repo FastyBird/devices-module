@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * PropertyRepository.php
+ * ConnectorsRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,10 +10,10 @@
  * @subpackage     Models
  * @since          0.1.0
  *
- * @date           21.11.18
+ * @date           16.04.21
  */
 
-namespace FastyBird\DevicesModule\Models\Channels\Properties;
+namespace FastyBird\DevicesModule\Models\Connectors;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
@@ -25,14 +25,14 @@ use Nette;
 use Throwable;
 
 /**
- * Device channel property structure repository
+ * Connector repository
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class PropertyRepository implements IPropertyRepository
+final class ConnectorsRepository implements IConnectorsRepository
 {
 
 	use Nette\SmartObject;
@@ -40,7 +40,7 @@ final class PropertyRepository implements IPropertyRepository
 	/**
 	 * @var ORM\EntityRepository[]
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Properties\IProperty>[]
+	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\IConnector>[]
 	 */
 	private array $repository = [];
 
@@ -56,26 +56,23 @@ final class PropertyRepository implements IPropertyRepository
 	 * {@inheritDoc}
 	 */
 	public function findOneBy(
-		Queries\FindChannelPropertiesQuery $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
-	): ?Entities\Channels\Properties\IProperty {
-		/** @var Entities\Channels\Properties\IProperty|null $property */
-		$property = $queryObject->fetchOne($this->getRepository($type));
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
+	): ?Entities\Connectors\IConnector {
+		/** @var Entities\Connectors\IConnector|null $connector */
+		$connector = $queryObject->fetchOne($this->getRepository($type));
 
-		return $property;
+		return $connector;
 	}
 
 	/**
-	 * @param Queries\FindChannelPropertiesQuery $queryObject
-	 * @param string $type
+	 * {@inheritDoc}
 	 *
-	 * @return Entities\Channels\Properties\IProperty[]
-	 *
-	 * @phpstan-param class-string $type
+	 * @throws Throwable
 	 */
 	public function findAllBy(
-		Queries\FindChannelPropertiesQuery $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
 	): array {
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -88,8 +85,8 @@ final class PropertyRepository implements IPropertyRepository
 	 * @throws Throwable
 	 */
 	public function getResultSet(
-		Queries\FindChannelPropertiesQuery $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
+		Queries\FindConnectorsQuery $queryObject,
+		string $type = Entities\Connectors\Connector::class
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -107,7 +104,7 @@ final class PropertyRepository implements IPropertyRepository
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Channels\Properties\IProperty>
+	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\IConnector>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{

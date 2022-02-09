@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * IControlRepository.php
+ * IControlsRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -27,7 +27,7 @@ use IPub\DoctrineOrmQuery;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IControlRepository
+interface IControlsRepository
 {
 
 	/**

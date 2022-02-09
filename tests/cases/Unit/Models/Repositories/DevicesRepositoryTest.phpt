@@ -14,13 +14,13 @@ require_once __DIR__ . '/../../DbTestCase.php';
 /**
  * @testCase
  */
-final class DeviceRepositoryTest extends DbTestCase
+final class DevicesRepositoryTest extends DbTestCase
 {
 
 	public function testReadOne(): void
 	{
-		/** @var Models\Devices\DeviceRepository $repository */
-		$repository = $this->getContainer()->getByType(Models\Devices\DeviceRepository::class);
+		/** @var Models\Devices\DevicesRepository $repository */
+		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
 		$findQuery = new Queries\FindDevicesQuery();
 		$findQuery->byIdentifier('first-device');
@@ -43,8 +43,8 @@ final class DeviceRepositoryTest extends DbTestCase
 
 	public function testReadResultSet(): void
 	{
-		/** @var Models\Devices\DeviceRepository $repository */
-		$repository = $this->getContainer()->getByType(Models\Devices\DeviceRepository::class);
+		/** @var Models\Devices\DevicesRepository $repository */
+		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
 		$findQuery = new Queries\FindDevicesQuery();
 
@@ -56,5 +56,5 @@ final class DeviceRepositoryTest extends DbTestCase
 
 }
 
-$test_case = new DeviceRepositoryTest();
+$test_case = new DevicesRepositoryTest();
 $test_case->run();

@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * IControlRepository.php
+ * IControlsRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -13,39 +13,39 @@
  * @date           29.09.21
  */
 
-namespace FastyBird\DevicesModule\Models\Channels\Controls;
+namespace FastyBird\DevicesModule\Models\Connectors\Controls;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 
 /**
- * Device channel control repository interface
+ * Connector control repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IControlRepository
+interface IControlsRepository
 {
 
 	/**
-	 * @param Queries\FindChannelControlsQuery $queryObject
+	 * @param Queries\FindConnectorControlsQuery $queryObject
 	 *
-	 * @return Entities\Channels\Controls\IControl|null
+	 * @return Entities\Connectors\Controls\IControl|null
 	 */
-	public function findOneBy(Queries\FindChannelControlsQuery $queryObject): ?Entities\Channels\Controls\IControl;
+	public function findOneBy(Queries\FindConnectorControlsQuery $queryObject): ?Entities\Connectors\Controls\IControl;
 
 	/**
-	 * @param Queries\FindChannelControlsQuery $queryObject
+	 * @param Queries\FindConnectorControlsQuery $queryObject
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\IControl>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\IControl>
 	 */
 	public function getResultSet(
-		Queries\FindChannelControlsQuery $queryObject
+		Queries\FindConnectorControlsQuery $queryObject
 	): DoctrineOrmQuery\ResultSet;
 
 }

@@ -1,19 +1,19 @@
 <?php declare(strict_types = 1);
 
 /**
- * ChannelRepository.php
+ * ControlsRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- * @since          0.1.0
+ * @since          0.4.0
  *
- * @date           23.04.17
+ * @date           29.09.21
  */
 
-namespace FastyBird\DevicesModule\Models\Channels;
+namespace FastyBird\DevicesModule\Models\Devices\Controls;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
@@ -25,14 +25,14 @@ use Nette;
 use Throwable;
 
 /**
- * Channel repository
+ * Device control structure repository
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ChannelRepository implements IChannelRepository
+final class ControlsRepository implements IControlsRepository
 {
 
 	use Nette\SmartObject;
@@ -40,7 +40,7 @@ final class ChannelRepository implements IChannelRepository
 	/**
 	 * @var ORM\EntityRepository|null
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Channels\IChannel>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Controls\IControl>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -55,12 +55,12 @@ final class ChannelRepository implements IChannelRepository
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findOneBy(Queries\FindChannelsQuery $queryObject): ?Entities\Channels\IChannel
+	public function findOneBy(Queries\FindDeviceControlsQuery $queryObject): ?Entities\Devices\Controls\IControl
 	{
-		/** @var Entities\Channels\IChannel|null $channel */
-		$channel = $queryObject->fetchOne($this->getRepository());
+		/** @var Entities\Devices\Controls\IControl|null $control */
+		$control = $queryObject->fetchOne($this->getRepository());
 
-		return $channel;
+		return $control;
 	}
 
 	/**
@@ -70,9 +70,9 @@ final class ChannelRepository implements IChannelRepository
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Channels\IChannel>
+	 * @phpstan-return  ORM\EntityRepository<Entities\Devices\Controls\IControl>
 	 */
-	private function getRepository(string $type = Entities\Channels\Channel::class): ORM\EntityRepository
+	private function getRepository(string $type = Entities\Devices\Controls\Control::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
 			$repository = $this->managerRegistry->getRepository($type);
@@ -92,20 +92,8 @@ final class ChannelRepository implements IChannelRepository
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindChannelsQuery $queryObject): array
-	{
-		$result = $queryObject->fetch($this->getRepository());
-
-		return is_array($result) ? $result : $result->toArray();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
 	public function getResultSet(
-		Queries\FindChannelsQuery $queryObject
+		Queries\FindDeviceControlsQuery $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 

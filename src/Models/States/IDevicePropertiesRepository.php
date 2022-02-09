@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * IDevicePropertyRepository.php
+ * IDevicePropertiesRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -26,7 +26,7 @@ use FastyBird\DevicesModule\States;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IDevicePropertyRepository extends IPropertyRepository
+interface IDevicePropertiesRepository extends IPropertiesRepository
 {
 
 	/**

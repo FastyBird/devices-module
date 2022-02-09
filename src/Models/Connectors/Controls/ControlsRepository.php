@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * ControlRepository.php
+ * ControlsRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -13,7 +13,7 @@
  * @date           29.09.21
  */
 
-namespace FastyBird\DevicesModule\Models\Devices\Controls;
+namespace FastyBird\DevicesModule\Models\Connectors\Controls;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
@@ -25,14 +25,14 @@ use Nette;
 use Throwable;
 
 /**
- * Device control structure repository
+ * Connector control structure repository
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ControlRepository implements IControlRepository
+final class ControlsRepository implements IControlsRepository
 {
 
 	use Nette\SmartObject;
@@ -40,7 +40,7 @@ final class ControlRepository implements IControlRepository
 	/**
 	 * @var ORM\EntityRepository|null
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Controls\IControl>|null
+	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\Controls\IControl>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -55,9 +55,9 @@ final class ControlRepository implements IControlRepository
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findOneBy(Queries\FindDeviceControlsQuery $queryObject): ?Entities\Devices\Controls\IControl
+	public function findOneBy(Queries\FindConnectorControlsQuery $queryObject): ?Entities\Connectors\Controls\IControl
 	{
-		/** @var Entities\Devices\Controls\IControl|null $control */
+		/** @var Entities\Connectors\Controls\IControl|null $control */
 		$control = $queryObject->fetchOne($this->getRepository());
 
 		return $control;
@@ -70,9 +70,9 @@ final class ControlRepository implements IControlRepository
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return  ORM\EntityRepository<Entities\Devices\Controls\IControl>
+	 * @phpstan-return  ORM\EntityRepository<Entities\Connectors\Controls\IControl>
 	 */
-	private function getRepository(string $type = Entities\Devices\Controls\Control::class): ORM\EntityRepository
+	private function getRepository(string $type = Entities\Connectors\Controls\Control::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
 			$repository = $this->managerRegistry->getRepository($type);
@@ -93,7 +93,7 @@ final class ControlRepository implements IControlRepository
 	 * @throws Throwable
 	 */
 	public function getResultSet(
-		Queries\FindDeviceControlsQuery $queryObject
+		Queries\FindConnectorControlsQuery $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 

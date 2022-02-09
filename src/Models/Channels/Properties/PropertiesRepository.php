@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * PropertyRepository.php
+ * PropertiesRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -13,7 +13,7 @@
  * @date           21.11.18
  */
 
-namespace FastyBird\DevicesModule\Models\Devices\Properties;
+namespace FastyBird\DevicesModule\Models\Channels\Properties;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
@@ -32,7 +32,7 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class PropertyRepository implements IPropertyRepository
+final class PropertiesRepository implements IPropertiesRepository
 {
 
 	use Nette\SmartObject;
@@ -40,7 +40,7 @@ final class PropertyRepository implements IPropertyRepository
 	/**
 	 * @var ORM\EntityRepository[]
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Properties\IProperty>[]
+	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Properties\IProperty>[]
 	 */
 	private array $repository = [];
 
@@ -56,26 +56,26 @@ final class PropertyRepository implements IPropertyRepository
 	 * {@inheritDoc}
 	 */
 	public function findOneBy(
-		Queries\FindDevicePropertiesQuery $queryObject,
-		string $type = Entities\Devices\Properties\Property::class
-	): ?Entities\Devices\Properties\IProperty {
-		/** @var Entities\Devices\Properties\IProperty|null $property */
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
+	): ?Entities\Channels\Properties\IProperty {
+		/** @var Entities\Channels\Properties\IProperty|null $property */
 		$property = $queryObject->fetchOne($this->getRepository($type));
 
 		return $property;
 	}
 
 	/**
-	 * @param Queries\FindDevicePropertiesQuery $queryObject
+	 * @param Queries\FindChannelPropertiesQuery $queryObject
 	 * @param string $type
 	 *
-	 * @return Entities\Devices\Properties\IProperty[]
+	 * @return Entities\Channels\Properties\IProperty[]
 	 *
 	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
-		Queries\FindDevicePropertiesQuery $queryObject,
-		string $type = Entities\Devices\Properties\Property::class
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
 	): array {
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -88,8 +88,8 @@ final class PropertyRepository implements IPropertyRepository
 	 * @throws Throwable
 	 */
 	public function getResultSet(
-		Queries\FindDevicePropertiesQuery $queryObject,
-		string $type = Entities\Devices\Properties\Property::class
+		Queries\FindChannelPropertiesQuery $queryObject,
+		string $type = Entities\Channels\Properties\Property::class
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -107,7 +107,7 @@ final class PropertyRepository implements IPropertyRepository
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Devices\Properties\IProperty>
+	 * @phpstan-return ORM\EntityRepository<Entities\Channels\Properties\IProperty>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{

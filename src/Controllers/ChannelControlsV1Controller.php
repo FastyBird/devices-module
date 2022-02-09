@@ -42,19 +42,19 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 	use Controllers\Finders\TChannelFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $devicesRepository;
+	/** @var Models\Devices\IDevicesRepository */
+	protected Models\Devices\IDevicesRepository $devicesRepository;
 
-	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelsRepository;
+	/** @var Models\Channels\IChannelsRepository */
+	protected Models\Channels\IChannelsRepository $channelsRepository;
 
-	/** @var Models\Channels\Controls\IControlRepository */
-	protected Models\Channels\Controls\IControlRepository $channelControlsRepository;
+	/** @var Models\Channels\Controls\IControlsRepository */
+	protected Models\Channels\Controls\IControlsRepository $channelControlsRepository;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository,
-		Models\Channels\IChannelRepository $channelsRepository,
-		Models\Channels\Controls\IControlRepository $channelControlsRepository
+		Models\Devices\IDevicesRepository $devicesRepository,
+		Models\Channels\IChannelsRepository $channelsRepository,
+		Models\Channels\Controls\IControlsRepository $channelControlsRepository
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->channelsRepository = $channelsRepository;

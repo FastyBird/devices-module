@@ -44,12 +44,12 @@ class ConnectorsV1Controller extends BaseV1Controller
 	/** @var Models\Connectors\IConnectorsManager */
 	private Models\Connectors\IConnectorsManager $connectorsManager;
 
-	/** @var Models\Connectors\IConnectorRepository */
-	private Models\Connectors\IConnectorRepository $connectorsRepository;
+	/** @var Models\Connectors\IConnectorsRepository */
+	private Models\Connectors\IConnectorsRepository $connectorsRepository;
 
 	public function __construct(
-		Models\Connectors\IConnectorRepository $connectorsRepository,
-		Models\Connectors\IConnectorsManager $connectorsManager
+		Models\Connectors\IConnectorsRepository $connectorsRepository,
+		Models\Connectors\IConnectorsManager    $connectorsManager
 	) {
 		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorsManager = $connectorsManager;

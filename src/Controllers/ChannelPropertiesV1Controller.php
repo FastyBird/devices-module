@@ -47,23 +47,23 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TChannelFinder;
 	use Controllers\Finders\TChannelPropertyFinder;
 
-	/** @var Models\Devices\IDeviceRepository */
-	protected Models\Devices\IDeviceRepository $devicesRepository;
+	/** @var Models\Devices\IDevicesRepository */
+	protected Models\Devices\IDevicesRepository $devicesRepository;
 
-	/** @var Models\Channels\IChannelRepository */
-	protected Models\Channels\IChannelRepository $channelsRepository;
+	/** @var Models\Channels\IChannelsRepository */
+	protected Models\Channels\IChannelsRepository $channelsRepository;
 
-	/** @var Models\Channels\Properties\IPropertyRepository */
-	protected Models\Channels\Properties\IPropertyRepository $channelPropertiesRepository;
+	/** @var Models\Channels\Properties\IPropertiesRepository */
+	protected Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository;
 
 	/** @var Models\Channels\Properties\IPropertiesManager */
 	protected Models\Channels\Properties\IPropertiesManager $channelPropertiesManager;
 
 	public function __construct(
-		Models\Devices\IDeviceRepository $devicesRepository,
-		Models\Channels\IChannelRepository $channelsRepository,
-		Models\Channels\Properties\IPropertyRepository $channelPropertiesRepository,
-		Models\Channels\Properties\IPropertiesManager $channelPropertiesManager
+		Models\Devices\IDevicesRepository               $devicesRepository,
+		Models\Channels\IChannelsRepository            $channelsRepository,
+		Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository,
+		Models\Channels\Properties\IPropertiesManager  $channelPropertiesManager
 	) {
 		$this->devicesRepository = $devicesRepository;
 		$this->channelsRepository = $channelsRepository;

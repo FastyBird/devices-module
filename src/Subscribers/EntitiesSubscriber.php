@@ -46,14 +46,14 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
-	/** @var Models\States\IDevicePropertyRepository|null */
-	private ?Models\States\IDevicePropertyRepository $devicePropertiesStatesRepository;
+	/** @var Models\States\IDevicePropertiesRepository|null */
+	private ?Models\States\IDevicePropertiesRepository $devicePropertiesStatesRepository;
 
-	/** @var Models\States\IChannelPropertyRepository|null */
-	private ?Models\States\IChannelPropertyRepository $channelPropertiesStatesRepository;
+	/** @var Models\States\IChannelPropertiesRepository|null */
+	private ?Models\States\IChannelPropertiesRepository $channelPropertiesStatesRepository;
 
-	/** @var Models\States\IConnectorPropertyRepository|null */
-	private ?Models\States\IConnectorPropertyRepository $connectorPropertiesStatesRepository;
+	/** @var Models\States\IConnectorPropertiesRepository|null */
+	private ?Models\States\IConnectorPropertiesRepository $connectorPropertiesStatesRepository;
 
 	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
@@ -64,9 +64,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	public function __construct(
 		ORM\EntityManagerInterface $entityManager,
 		?ExchangePublisher\Publisher $publisher = null,
-		?Models\States\IDevicePropertyRepository $devicePropertiesStatesRepository = null,
-		?Models\States\IChannelPropertyRepository $channelPropertiesStatesRepository = null,
-		?Models\States\IConnectorPropertyRepository $connectorPropertiesStatesRepository = null
+		?Models\States\IDevicePropertiesRepository $devicePropertiesStatesRepository = null,
+		?Models\States\IChannelPropertiesRepository $channelPropertiesStatesRepository = null,
+		?Models\States\IConnectorPropertiesRepository $connectorPropertiesStatesRepository = null
 	) {
 		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
 		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;

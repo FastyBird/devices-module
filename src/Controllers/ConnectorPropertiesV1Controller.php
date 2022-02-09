@@ -47,19 +47,19 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	use Controllers\Finders\TDeviceFinder;
 	use Controllers\Finders\TConnectorFinder;
 
-	/** @var Models\Connectors\IConnectorRepository */
-	protected Models\Connectors\IConnectorRepository $connectorsRepository;
+	/** @var Models\Connectors\IConnectorsRepository */
+	protected Models\Connectors\IConnectorsRepository $connectorsRepository;
 
-	/** @var Models\Connectors\Properties\IPropertyRepository */
-	protected Models\Connectors\Properties\IPropertyRepository $connectorPropertiesRepository;
+	/** @var Models\Connectors\Properties\IPropertiesRepository */
+	protected Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository;
 
 	/** @var Models\Connectors\Properties\IPropertiesManager */
 	protected Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager;
 
 	public function __construct(
-		Models\Connectors\IConnectorRepository $connectorsRepository,
-		Models\Connectors\Properties\IPropertyRepository $connectorPropertiesRepository,
-		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager
+		Models\Connectors\IConnectorsRepository          $connectorsRepository,
+		Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository,
+		Models\Connectors\Properties\IPropertiesManager  $connectorPropertiesManager
 	) {
 		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;

@@ -1,19 +1,19 @@
 <?php declare(strict_types = 1);
 
 /**
- * DeviceRepository.php
+ * PropertiesRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- * @since          0.1.0
+ * @since          0.31.0
  *
- * @date           28.07.18
+ * @date           08.02.22
  */
 
-namespace FastyBird\DevicesModule\Models\Devices;
+namespace FastyBird\DevicesModule\Models\Connectors\Properties;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
@@ -25,14 +25,14 @@ use Nette;
 use Throwable;
 
 /**
- * Device repository
+ * Connector channel property structure repository
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class DeviceRepository implements IDeviceRepository
+final class PropertiesRepository implements IPropertiesRepository
 {
 
 	use Nette\SmartObject;
@@ -40,7 +40,7 @@ final class DeviceRepository implements IDeviceRepository
 	/**
 	 * @var ORM\EntityRepository[]
 	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\IDevice>[]
+	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\Properties\IProperty>[]
 	 */
 	private array $repository = [];
 
@@ -56,27 +56,13 @@ final class DeviceRepository implements IDeviceRepository
 	 * {@inheritDoc}
 	 */
 	public function findOneBy(
-		Queries\FindDevicesQuery $queryObject,
-		string $type = Entities\Devices\Device::class
-	): ?Entities\Devices\IDevice {
-		/** @var Entities\Devices\IDevice|null $device */
-		$device = $queryObject->fetchOne($this->getRepository($type));
+		Queries\FindConnectorPropertiesQuery $queryObject,
+		string $type = Entities\Connectors\Properties\Property::class
+	): ?Entities\Connectors\Properties\IProperty {
+		/** @var Entities\Connectors\Properties\IProperty|null $property */
+		$property = $queryObject->fetchOne($this->getRepository($type));
 
-		return $device;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function findAllBy(
-		Queries\FindDevicesQuery $queryObject,
-		string $type = Entities\Devices\Device::class
-	): array {
-		$result = $queryObject->fetch($this->getRepository($type));
-
-		return is_array($result) ? $result : $result->toArray();
+		return $property;
 	}
 
 	/**
@@ -85,8 +71,8 @@ final class DeviceRepository implements IDeviceRepository
 	 * @throws Throwable
 	 */
 	public function getResultSet(
-		Queries\FindDevicesQuery $queryObject,
-		string $type = Entities\Devices\Device::class
+		Queries\FindConnectorPropertiesQuery $queryObject,
+		string $type = Entities\Connectors\Properties\Property::class
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -104,7 +90,7 @@ final class DeviceRepository implements IDeviceRepository
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Devices\IDevice>
+	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\Properties\IProperty>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{

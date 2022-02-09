@@ -43,12 +43,12 @@ final class DynamicPropertySchema extends PropertySchema
 	 */
 	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/property/connector/' . MetadataTypes\PropertyTypeType::TYPE_DYNAMIC;
 
-	/** @var Models\States\IConnectorPropertyRepository|null */
-	private ?Models\States\IConnectorPropertyRepository $propertiesStatesRepository;
+	/** @var Models\States\IConnectorPropertiesRepository|null */
+	private ?Models\States\IConnectorPropertiesRepository $propertiesStatesRepository;
 
 	public function __construct(
 		Routing\IRouter $router,
-		?Models\States\IConnectorPropertyRepository $propertiesStatesRepository
+		?Models\States\IConnectorPropertiesRepository $propertiesStatesRepository
 	) {
 		parent::__construct($router);
 

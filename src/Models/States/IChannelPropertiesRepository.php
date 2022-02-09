@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
 /**
- * IDevicePropertyRepository.php
+ * IDevicePropertiesRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- * @since          0.31.0
+ * @since          0.9.0
  *
- * @date           08.02.22
+ * @date           09.01.22
  */
 
 namespace FastyBird\DevicesModule\Models\States;
@@ -19,23 +19,23 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\States;
 
 /**
- * Connector property repository interface
+ * Channel property repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IConnectorPropertyRepository extends IPropertyRepository
+interface IChannelPropertiesRepository extends IPropertiesRepository
 {
 
 	/**
-	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Entities\Channels\Properties\IProperty $property
 	 *
-	 * @return States\IConnectorProperty|null
+	 * @return States\IChannelProperty|null
 	 */
 	public function findOne(
-		Entities\Connectors\Properties\IProperty $property
-	): ?States\IConnectorProperty;
+		Entities\Channels\Properties\IProperty $property
+	): ?States\IChannelProperty;
 
 }

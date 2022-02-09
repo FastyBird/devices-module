@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * IConnectorRepository.php
+ * IPropertiesRepository.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,65 +10,65 @@
  * @subpackage     Models
  * @since          0.1.0
  *
- * @date           16.04.21
+ * @date           21.11.18
  */
 
-namespace FastyBird\DevicesModule\Models\Connectors;
+namespace FastyBird\DevicesModule\Models\Devices\Properties;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 
 /**
- * Connector repository interface
+ * Device property repository interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IConnectorRepository
+interface IPropertiesRepository
 {
 
 	/**
-	 * @param Queries\FindConnectorsQuery $queryObject
+	 * @param Queries\FindDevicePropertiesQuery $queryObject
 	 * @param string $type
 	 *
-	 * @return Entities\Connectors\IConnector|null
+	 * @return Entities\Devices\Properties\IProperty|null
 	 *
 	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
-		Queries\FindConnectorsQuery $queryObject,
-		string $type = Entities\Connectors\Connector::class
-	): ?Entities\Connectors\IConnector;
+		Queries\FindDevicePropertiesQuery $queryObject,
+		string $type = Entities\Devices\Properties\Property::class
+	): ?Entities\Devices\Properties\IProperty;
 
 	/**
-	 * @param Queries\FindConnectorsQuery $queryObject
+	 * @param Queries\FindDevicePropertiesQuery $queryObject
 	 * @param string $type
 	 *
-	 * @return Entities\Connectors\IConnector[]
+	 * @return Entities\Devices\Properties\IProperty[]
 	 *
 	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
-		Queries\FindConnectorsQuery $queryObject,
-		string $type = Entities\Connectors\Connector::class
+		Queries\FindDevicePropertiesQuery $queryObject,
+		string $type = Entities\Devices\Properties\Property::class
 	): array;
 
 	/**
-	 * @param Queries\FindConnectorsQuery $queryObject
+	 * @param Queries\FindDevicePropertiesQuery $queryObject
 	 * @param string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-param class-string $type
 	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\IConnector>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\IProperty>
 	 */
 	public function getResultSet(
-		Queries\FindConnectorsQuery $queryObject,
-		string $type = Entities\Connectors\Connector::class
+		Queries\FindDevicePropertiesQuery $queryObject,
+		string $type = Entities\Devices\Properties\Property::class
 	): DoctrineOrmQuery\ResultSet;
 
 }

@@ -31,14 +31,14 @@ final class ServicesTest extends BaseTestCase
 
 		Assert::notNull($container->getByType(Middleware\AccessMiddleware::class));
 
-		Assert::notNull($container->getByType(Models\Devices\DeviceRepository::class));
-		Assert::notNull($container->getByType(Models\Devices\Properties\PropertyRepository::class));
-		Assert::notNull($container->getByType(Models\Devices\Controls\ControlRepository::class));
-		Assert::notNull($container->getByType(Models\Channels\ChannelRepository::class));
-		Assert::notNull($container->getByType(Models\Channels\Properties\PropertyRepository::class));
-		Assert::notNull($container->getByType(Models\Channels\Controls\ControlRepository::class));
-		Assert::notNull($container->getByType(Models\Connectors\ConnectorRepository::class));
-		Assert::notNull($container->getByType(Models\Connectors\Controls\ControlRepository::class));
+		Assert::notNull($container->getByType(Models\Devices\DevicesRepository::class));
+		Assert::notNull($container->getByType(Models\Devices\Properties\PropertiesRepository::class));
+		Assert::notNull($container->getByType(Models\Devices\Controls\ControlsRepository::class));
+		Assert::notNull($container->getByType(Models\Channels\ChannelsRepository::class));
+		Assert::notNull($container->getByType(Models\Channels\Properties\PropertiesRepository::class));
+		Assert::notNull($container->getByType(Models\Channels\Controls\ControlsRepository::class));
+		Assert::notNull($container->getByType(Models\Connectors\ConnectorsRepository::class));
+		Assert::notNull($container->getByType(Models\Connectors\Controls\ControlsRepository::class));
 
 		Assert::notNull($container->getByType(Models\Devices\DevicesManager::class));
 		Assert::notNull($container->getByType(Models\Devices\Properties\PropertiesManager::class));

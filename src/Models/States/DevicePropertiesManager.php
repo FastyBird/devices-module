@@ -63,7 +63,7 @@ final class DevicePropertiesManager
 		Utils\ArrayHash $values
 	): States\IDeviceProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Device properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
 		}
 
 		/** @var States\IDeviceProperty $createdState */
@@ -87,7 +87,7 @@ final class DevicePropertiesManager
 		Utils\ArrayHash $values
 	): States\IDeviceProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Device properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
 		}
 
 		/** @var States\IDeviceProperty $updatedState */
@@ -109,7 +109,7 @@ final class DevicePropertiesManager
 		States\IDeviceProperty $state
 	): bool {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Device properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
 		}
 
 		$result = $this->manager->delete($property, $state);

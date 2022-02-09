@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Schemas\Channels\Properties;
 use Consistence;
 use DateTime;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\Metadata\Helpers as MetadataHelpers;
@@ -43,13 +44,13 @@ final class DynamicPropertySchema extends PropertySchema
 	 */
 	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/property/channel/' . MetadataTypes\PropertyTypeType::TYPE_DYNAMIC;
 
-	/** @var Models\States\IChannelPropertiesRepository|null */
-	private ?Models\States\IChannelPropertiesRepository $propertiesStatesRepository;
+	/** @var Models\States\ChannelPropertiesRepository */
+	private Models\States\ChannelPropertiesRepository $propertiesStatesRepository;
 
 	public function __construct(
 		Routing\IRouter $router,
 		Models\Channels\Properties\IPropertiesRepository $propertiesRepository,
-		?Models\States\IChannelPropertiesRepository $propertiesStatesRepository
+		Models\States\ChannelPropertiesRepository $propertiesStatesRepository
 	) {
 		parent::__construct($router, $propertiesRepository);
 
@@ -82,7 +83,12 @@ final class DynamicPropertySchema extends PropertySchema
 	 */
 	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		$state = $this->propertiesStatesRepository === null ? null : $this->propertiesStatesRepository->findOne($property);
+		try {
+			$state = $this->propertiesStatesRepository->findOne($property);
+
+		} catch (Exceptions\NotImplementedException $ex) {
+			$state = null;
+		}
 
 		$actualValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()) : null;
 		$expectedValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat()) : null;

@@ -63,7 +63,7 @@ final class ConnectorPropertiesManager
 		Utils\ArrayHash $values
 	): States\IConnectorProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Connector properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Connector properties state manager is not registered');
 		}
 
 		/** @var States\IConnectorProperty $createdState */
@@ -87,7 +87,7 @@ final class ConnectorPropertiesManager
 		Utils\ArrayHash $values
 	): States\IConnectorProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Connector properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Connector properties state manager is not registered');
 		}
 
 		/** @var States\IConnectorProperty $updatedState */
@@ -109,7 +109,7 @@ final class ConnectorPropertiesManager
 		States\IConnectorProperty $state
 	): bool {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Connector properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Connector properties state manager is not registered');
 		}
 
 		$result = $this->manager->delete($property, $state);

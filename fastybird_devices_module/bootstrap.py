@@ -68,6 +68,11 @@ from fastybird_devices_module.repositories.device import (
     DevicePropertiesRepository,
     DevicesRepository,
 )
+from fastybird_devices_module.repositories.state import (
+    ChannelPropertiesStatesRepository,
+    ConnectorPropertiesStatesRepository,
+    DevicePropertiesStatesRepository,
+)
 from fastybird_devices_module.subscriber import (
     EntitiesSubscriber,
     EntityCreatedSubscriber,
@@ -106,6 +111,15 @@ def register_services(  # pylint: disable=too-many-statements
     di["fb-devices-module_channel-properties-repository"] = di[ChannelPropertiesRepository]
     di[ChannelControlsRepository] = ChannelControlsRepository(session=di[OrmSession])
     di["fb-devices-module_channel-controls-repository"] = di[ChannelControlsRepository]
+
+    # States repositories
+
+    di[ConnectorPropertiesStatesRepository] = ConnectorPropertiesStatesRepository()
+    di["fb-devices-module_connector-properties-states-repository"] = di[ConnectorPropertiesStatesRepository]
+    di[DevicePropertiesStatesRepository] = DevicePropertiesStatesRepository()
+    di["fb-devices-module_device-properties-states-repository"] = di[DevicePropertiesStatesRepository]
+    di[ChannelPropertiesStatesRepository] = ChannelPropertiesStatesRepository()
+    di["fb-devices-module_channel-properties-states-repository"] = di[ChannelPropertiesStatesRepository]
 
     # Entities managers
 

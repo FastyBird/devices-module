@@ -63,7 +63,7 @@ final class ChannelPropertiesManager
 		Utils\ArrayHash $values
 	): States\IChannelProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Channel properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
 		}
 
 		/** @var States\IChannelProperty $createdState */
@@ -87,7 +87,7 @@ final class ChannelPropertiesManager
 		Utils\ArrayHash $values
 	): States\IChannelProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Channel properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
 		}
 
 		/** @var States\IChannelProperty $updatedState */
@@ -109,7 +109,7 @@ final class ChannelPropertiesManager
 		States\IChannelProperty $state
 	): bool {
 		if ($this->manager === null) {
-			throw new Exceptions\InvalidStateException('Channel properties state manager is not registered');
+			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
 		}
 
 		$result = $this->manager->delete($property, $state);

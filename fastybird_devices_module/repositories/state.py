@@ -23,6 +23,9 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Optional
 
+# Library dependencies
+from kink import inject
+
 # Library libs
 from fastybird_devices_module.state.property import (
     IChannelPropertyState,
@@ -74,3 +77,105 @@ class IChannelPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public
     @abstractmethod
     def get_by_id(self, property_id: uuid.UUID) -> Optional[IChannelPropertyState]:
         """Find channel property state record by provided database identifier"""
+
+
+@inject(
+    bind={
+        "repository": IConnectorPropertiesStatesRepository,
+    }
+)
+class ConnectorPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-methods
+    """
+    State repository for connector property
+
+    @package        FastyBird:ConnectorsModule!
+    @module         repositories/state
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __repository: Optional[IConnectorPropertiesStatesRepository]
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        repository: Optional[IConnectorPropertiesStatesRepository] = None,
+    ) -> None:
+        self.__repository = repository
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, property_id: uuid.UUID) -> Optional[IConnectorPropertyState]:
+        """Find connector property state record by provided database identifier"""
+        if self.__repository is None:
+            raise NotImplementedError("Connector properties states repository is not implemented")
+
+        return self.__repository.get_by_id(property_id=property_id)
+
+
+@inject(
+    bind={
+        "repository": IDevicePropertiesStatesRepository,
+    }
+)
+class DevicePropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-methods
+    """
+    State repository for device property
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories/state
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __repository: Optional[IDevicePropertiesStatesRepository]
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        repository: Optional[IDevicePropertiesStatesRepository] = None,
+    ) -> None:
+        self.__repository = repository
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, property_id: uuid.UUID) -> Optional[IDevicePropertyState]:
+        """Find device property state record by provided database identifier"""
+        if self.__repository is None:
+            raise NotImplementedError("Device properties states repository is not implemented")
+
+        return self.__repository.get_by_id(property_id=property_id)
+
+
+@inject(
+    bind={
+        "repository": IChannelPropertiesStatesRepository,
+    }
+)
+class ChannelPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-methods
+    """
+    State repository for channel property
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories/state
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __repository: Optional[IChannelPropertiesStatesRepository]
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        repository: Optional[IChannelPropertiesStatesRepository] = None,
+    ) -> None:
+        self.__repository = repository
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, property_id: uuid.UUID) -> Optional[IChannelPropertyState]:
+        """Find channel property state record by provided database identifier"""
+        if self.__repository is None:
+            raise NotImplementedError("Channel properties states repository is not implemented")
+
+        return self.__repository.get_by_id(property_id=property_id)

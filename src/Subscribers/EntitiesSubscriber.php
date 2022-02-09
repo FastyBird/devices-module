@@ -246,7 +246,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			} elseif (
 				$entity instanceof Entities\Channels\Properties\IProperty
 				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->channelPropertiesStatesRepository !== null
 			) {
 				try {
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
@@ -267,7 +266,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			} elseif (
 				$entity instanceof Entities\Connectors\Properties\IProperty
 				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-				&& $this->connectorPropertiesStatesRepository !== null
 			) {
 				try {
 					$state = $this->connectorPropertiesStatesRepository->findOne($entity);

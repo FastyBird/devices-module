@@ -259,7 +259,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
     # -----------------------------------------------------------------------------
 
-    def __get_entity_extended_data(self, entity: Base) -> Dict:
+    def __get_entity_extended_data(self, entity: Base) -> Dict:  # pylint: disable=too-many-return-statements
         if isinstance(entity, ConnectorDynamicPropertyEntity):
             try:
                 connector_property_state = self.__connector_properties_states_repository.get_by_id(

@@ -153,7 +153,12 @@ def register_services(  # pylint: disable=too-many-statements
 
     # Entities subscribers
 
-    di[EntitiesSubscriber] = EntitiesSubscriber(session=di[OrmSession])
+    di[EntitiesSubscriber] = EntitiesSubscriber(
+        connector_properties_states_repository=di[ConnectorPropertiesStatesRepository],
+        device_properties_states_repository=di[DevicePropertiesStatesRepository],
+        channel_properties_states_repository=di[ChannelPropertiesStatesRepository],
+        session=di[OrmSession],
+    )
     di["fb-devices-module_entities-subscriber"] = di[EntitiesSubscriber]
     di[EntityCreatedSubscriber] = EntityCreatedSubscriber()
     di["fb-devices-module_entity-created-subscriber"] = di[EntityCreatedSubscriber]

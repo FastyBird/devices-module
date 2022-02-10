@@ -34,7 +34,7 @@ final class ChannelPropertiesRepository
 	use Nette\SmartObject;
 
 	/** @var IChannelPropertiesRepository|null */
-	protected ?IChannelPropertiesRepository $repository;
+	private ?IChannelPropertiesRepository $repository;
 
 	public function __construct(
 		?IChannelPropertiesRepository $repository
@@ -52,6 +52,10 @@ final class ChannelPropertiesRepository
 	): ?States\IChannelProperty {
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Channel properties state repository is not registered');
+		}
+
+		if ($property->getParent() !== null) {
+			return $this->repository->findOne($property->getParent());
 		}
 
 		return $this->repository->findOne($property);

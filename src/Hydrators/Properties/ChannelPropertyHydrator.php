@@ -35,6 +35,7 @@ abstract class ChannelPropertyHydrator extends PropertyHydrator
 	/** @var string[] */
 	protected array $relationships = [
 		Schemas\Channels\Properties\PropertySchema::RELATIONSHIPS_CHANNEL,
+		Schemas\Channels\Properties\PropertySchema::RELATIONSHIPS_PARENT,
 	];
 
 }

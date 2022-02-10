@@ -54,6 +54,10 @@ final class DevicePropertiesRepository
 			throw new Exceptions\NotImplementedException('Device properties state repository is not registered');
 		}
 
+		if ($property->getParent() !== null) {
+			return $this->repository->findOne($property->getParent());
+		}
+
 		return $this->repository->findOne($property);
 	}
 

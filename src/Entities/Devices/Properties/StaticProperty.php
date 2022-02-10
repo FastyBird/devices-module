@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Entities\Devices\Properties;
 
 use Doctrine\ORM\Mapping as ORM;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
@@ -30,6 +31,30 @@ class StaticProperty extends Property implements IStaticProperty
 	public function getType(): MetadataTypes\PropertyTypeType
 	{
 		return MetadataTypes\PropertyTypeType::get(MetadataTypes\PropertyTypeType::TYPE_STATIC);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getValue()
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->getValue();
+		}
+
+		return parent::getValue();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setValue(?string $value): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Value setter is allowed only for parent');
+		}
+
+		parent::setValue($value);
 	}
 
 }

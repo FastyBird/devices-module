@@ -18,6 +18,8 @@ namespace FastyBird\DevicesModule\Entities\Devices\Properties;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Exceptions;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
@@ -176,6 +178,198 @@ abstract class Property extends Entities\Property implements IProperty
 	public function getDevice(): Entities\Devices\IDevice
 	{
 		return $this->device;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isSettable(): bool
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->isSettable();
+		}
+
+		return parent::isSettable();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setSettable(bool $settable): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Settable setter is allowed only for parent');
+		}
+
+		parent::setSettable($settable);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isQueryable(): bool
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->isQueryable();
+		}
+
+		return parent::isQueryable();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setQueryable(bool $queryable): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Queryable setter is allowed only for parent');
+		}
+
+		parent::setQueryable($queryable);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDataType(): MetadataTypes\DataTypeType
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->getDataType();
+		}
+
+		return parent::getDataType();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDataType(MetadataTypes\DataTypeType $dataType): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Data type setter is allowed only for parent');
+		}
+
+		parent::setDataType($dataType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getUnit(): ?string
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->getUnit();
+		}
+
+		return parent::getUnit();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setUnit(?string $unit): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Value unit setter is allowed only for parent');
+		}
+
+		parent::setUnit($unit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getFormat(): ?array
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->getFormat();
+		}
+
+		return parent::getFormat();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setFormat($format): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Value format setter is allowed only for parent');
+		}
+
+		parent::setFormat($format);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getInvalid()
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->getInvalid();
+		}
+
+		return parent::getInvalid();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setInvalid(?string $invalid): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Invalid value setter is allowed only for parent');
+		}
+
+		parent::setInvalid($invalid);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getNumberOfDecimals(): ?int
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->getNumberOfDecimals();
+		}
+
+		return parent::getNumberOfDecimals();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setNumberOfDecimals(?int $numberOfDecimals): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Number of decimals setter is allowed only for parent');
+		}
+
+		parent::setNumberOfDecimals($numberOfDecimals);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDefault()
+	{
+		if ($this->getParent() !== null) {
+			return $this->getParent()->getDefault();
+		}
+
+		return parent::getDefault();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDefault(?string $default): void
+	{
+		if ($this->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Default value setter is allowed only for parent');
+		}
+
+		parent::setDefault($default);
 	}
 
 	/**

@@ -162,36 +162,6 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray(): array
-	{
-		$data = [
-			'id'                 => $this->getPlainId(),
-			'type'               => $this->getType()->getValue(),
-			'identifier'         => $this->getIdentifier(),
-			'name'               => $this->getName(),
-			'settable'           => $this->isSettable(),
-			'queryable'          => $this->isQueryable(),
-			'data_type'          => $this->getDataType()->getValue(),
-			'unit'               => $this->getUnit(),
-			'format'             => $this->getFormat(),
-			'invalid'            => $this->getInvalid(),
-			'number_of_decimals' => $this->getNumberOfDecimals(),
-
-		];
-
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			return $data;
-		}
-
-		return array_merge($data, [
-			'value'   => $this->getValue(),
-			'default' => $this->getDefault(),
-		]);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
@@ -529,6 +499,36 @@ abstract class Property implements IProperty
 		}
 
 		$this->default = $default;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		$data = [
+			'id'                 => $this->getPlainId(),
+			'type'               => $this->getType()->getValue(),
+			'identifier'         => $this->getIdentifier(),
+			'name'               => $this->getName(),
+			'settable'           => $this->isSettable(),
+			'queryable'          => $this->isQueryable(),
+			'data_type'          => $this->getDataType()->getValue(),
+			'unit'               => $this->getUnit(),
+			'format'             => $this->getFormat(),
+			'invalid'            => $this->getInvalid(),
+			'number_of_decimals' => $this->getNumberOfDecimals(),
+
+		];
+
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			return $data;
+		}
+
+		return array_merge($data, [
+			'value'   => $this->getValue(),
+			'default' => $this->getDefault(),
+		]);
 	}
 
 }

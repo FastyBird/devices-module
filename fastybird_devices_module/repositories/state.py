@@ -171,7 +171,7 @@ class DevicePropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-m
             raise AttributeError("Device property was not found in registry")
 
         if device_property.parent is not None:
-            raise AttributeError("Child property can't have state")
+            return self.__state_repository.get_by_id(property_id=device_property.parent.id)
 
         return self.__state_repository.get_by_id(property_id=property_id)
 
@@ -217,6 +217,6 @@ class ChannelPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-
             raise AttributeError("Channel property was not found in registry")
 
         if channel_property.parent is not None:
-            raise AttributeError("Child property can't have state")
+            return self.__state_repository.get_by_id(property_id=channel_property.parent.id)
 
         return self.__state_repository.get_by_id(property_id=property_id)

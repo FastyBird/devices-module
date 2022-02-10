@@ -35,6 +35,7 @@ abstract class DevicePropertyHydrator extends PropertyHydrator
 	/** @var string[] */
 	protected array $relationships = [
 		Schemas\Devices\Properties\PropertySchema::RELATIONSHIPS_DEVICE,
+		Schemas\Devices\Properties\PropertySchema::RELATIONSHIPS_PARENT,
 	];
 
 }

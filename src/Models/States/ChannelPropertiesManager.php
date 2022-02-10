@@ -66,6 +66,10 @@ final class ChannelPropertiesManager
 			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
 		}
 
+		if ($property->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+		}
+
 		/** @var States\IChannelProperty $createdState */
 		$createdState = $this->manager->create($property, $values);
 
@@ -90,6 +94,10 @@ final class ChannelPropertiesManager
 			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
 		}
 
+		if ($property->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+		}
+
 		/** @var States\IChannelProperty $updatedState */
 		$updatedState = $this->manager->update($property, $state, $values);
 
@@ -110,6 +118,10 @@ final class ChannelPropertiesManager
 	): bool {
 		if ($this->manager === null) {
 			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
+		}
+
+		if ($property->getParent() !== null) {
+			throw new Exceptions\InvalidStateException('Child property can\'t have state');
 		}
 
 		$result = $this->manager->delete($property, $state);

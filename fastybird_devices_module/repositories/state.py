@@ -100,23 +100,23 @@ class ConnectorPropertiesStatesRepository(ABC):  # pylint: disable=too-few-publi
     """
 
     __properties_repository: ConnectorPropertiesRepository
-    __state_repository: Optional[IConnectorPropertiesStatesRepository]
+    __repository: Optional[IConnectorPropertiesStatesRepository]
 
     # -----------------------------------------------------------------------------
 
     def __init__(
         self,
         properties_repository: ConnectorPropertiesRepository,
-        state_repository: Optional[IConnectorPropertiesStatesRepository] = None,
+        repository: Optional[IConnectorPropertiesStatesRepository] = None,
     ) -> None:
         self.__properties_repository = properties_repository
-        self.__state_repository = state_repository
+        self.__repository = repository
 
     # -----------------------------------------------------------------------------
 
     def get_by_id(self, property_id: uuid.UUID) -> Optional[IConnectorPropertyState]:
         """Find connector property state record by provided database identifier"""
-        if self.__state_repository is None:
+        if self.__repository is None:
             raise NotImplementedError("Connector properties states repository is not implemented")
 
         connector_property = self.__properties_repository.get_by_id(property_id=property_id)
@@ -127,7 +127,7 @@ class ConnectorPropertiesStatesRepository(ABC):  # pylint: disable=too-few-publi
         if connector_property.parent is not None:
             raise AttributeError("Child property can't have state")
 
-        return self.__state_repository.get_by_id(property_id=property_id)
+        return self.__repository.get_by_id(property_id=property_id)
 
 
 @inject(
@@ -146,23 +146,23 @@ class DevicePropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-m
     """
 
     __properties_repository: DevicePropertiesRepository
-    __state_repository: Optional[IDevicePropertiesStatesRepository]
+    __repository: Optional[IDevicePropertiesStatesRepository]
 
     # -----------------------------------------------------------------------------
 
     def __init__(
         self,
         properties_repository: DevicePropertiesRepository,
-        state_repository: Optional[IDevicePropertiesStatesRepository] = None,
+        repository: Optional[IDevicePropertiesStatesRepository] = None,
     ) -> None:
         self.__properties_repository = properties_repository
-        self.__state_repository = state_repository
+        self.__repository = repository
 
     # -----------------------------------------------------------------------------
 
     def get_by_id(self, property_id: uuid.UUID) -> Optional[IDevicePropertyState]:
         """Find device property state record by provided database identifier"""
-        if self.__state_repository is None:
+        if self.__repository is None:
             raise NotImplementedError("Device properties states repository is not implemented")
 
         device_property = self.__properties_repository.get_by_id(property_id=property_id)
@@ -171,9 +171,9 @@ class DevicePropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-m
             raise AttributeError("Device property was not found in registry")
 
         if device_property.parent is not None:
-            return self.__state_repository.get_by_id(property_id=device_property.parent.id)
+            return self.__repository.get_by_id(property_id=device_property.parent.id)
 
-        return self.__state_repository.get_by_id(property_id=property_id)
+        return self.__repository.get_by_id(property_id=property_id)
 
 
 @inject(
@@ -192,23 +192,23 @@ class ChannelPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-
     """
 
     __properties_repository: ChannelPropertiesRepository
-    __state_repository: Optional[IChannelPropertiesStatesRepository]
+    __repository: Optional[IChannelPropertiesStatesRepository]
 
     # -----------------------------------------------------------------------------
 
     def __init__(
         self,
         properties_repository: ChannelPropertiesRepository,
-        state_repository: Optional[IChannelPropertiesStatesRepository] = None,
+        repository: Optional[IChannelPropertiesStatesRepository] = None,
     ) -> None:
         self.__properties_repository = properties_repository
-        self.__state_repository = state_repository
+        self.__repository = repository
 
     # -----------------------------------------------------------------------------
 
     def get_by_id(self, property_id: uuid.UUID) -> Optional[IChannelPropertyState]:
         """Find channel property state record by provided database identifier"""
-        if self.__state_repository is None:
+        if self.__repository is None:
             raise NotImplementedError("Channel properties states repository is not implemented")
 
         channel_property = self.__properties_repository.get_by_id(property_id=property_id)
@@ -217,6 +217,6 @@ class ChannelPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-
             raise AttributeError("Channel property was not found in registry")
 
         if channel_property.parent is not None:
-            return self.__state_repository.get_by_id(property_id=channel_property.parent.id)
+            return self.__repository.get_by_id(property_id=channel_property.parent.id)
 
-        return self.__state_repository.get_by_id(property_id=property_id)
+        return self.__repository.get_by_id(property_id=property_id)

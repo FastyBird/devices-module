@@ -119,6 +119,12 @@ class ChannelPropertiesManager(BaseManager[ChannelPropertyEntity]):
             if isinstance(channel_id, uuid.UUID):
                 data["channel"] = self._session.query(ChannelEntity).get(channel_id.bytes)
 
+        if "parent_id" in data and "parent" not in data:
+            parent_id = data.get("parent_id")
+
+            if isinstance(parent_id, uuid.UUID):
+                data["parent"] = self._session.query(ChannelPropertyEntity).get(parent_id.bytes)
+
         return super().create_entity(
             data={**data, **{"property_id": data.get("id", None)}},
             entity_type=property_type,

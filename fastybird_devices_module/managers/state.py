@@ -202,6 +202,9 @@ class ConnectorPropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Connector properties states manager is not implemented")
 
+        if connector_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
         created_state = self.__manager.create(connector_property=connector_property, data=data)
 
         self.__publish_entity(
@@ -223,6 +226,9 @@ class ConnectorPropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Connector properties states manager is not implemented")
 
+        if connector_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
         updated_state = self.__manager.update(connector_property=connector_property, state=state, data=data)
 
         self.__publish_entity(
@@ -242,6 +248,9 @@ class ConnectorPropertiesStatesManager:
         """Delete existing connector property state"""
         if self.__manager is None:
             raise NotImplementedError("Connector properties states manager is not implemented")
+
+        if connector_property.parent is not None:
+            raise AttributeError("Child property can't have state")
 
         result = self.__manager.delete(connector_property=connector_property, state=state)
 
@@ -341,6 +350,9 @@ class DevicePropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Device properties states manager is not implemented")
 
+        if device_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
         created_state = self.__manager.create(device_property=device_property, data=data)
 
         self.__publish_entity(
@@ -362,6 +374,9 @@ class DevicePropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Device properties states manager is not implemented")
 
+        if device_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
         updated_state = self.__manager.update(device_property=device_property, state=state, data=data)
 
         self.__publish_entity(
@@ -381,6 +396,9 @@ class DevicePropertiesStatesManager:
         """Delete existing device property state"""
         if self.__manager is None:
             raise NotImplementedError("Device properties states manager is not implemented")
+
+        if device_property.parent is not None:
+            raise AttributeError("Child property can't have state")
 
         result = self.__manager.delete(device_property=device_property, state=state)
 
@@ -480,6 +498,9 @@ class ChannelPropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Channel properties states manager is not implemented")
 
+        if channel_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
         created_state = self.__manager.create(channel_property=channel_property, data=data)
 
         self.__publish_entity(
@@ -501,6 +522,9 @@ class ChannelPropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Channel properties states manager is not implemented")
 
+        if channel_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
         updated_state = self.__manager.update(channel_property=channel_property, state=state, data=data)
 
         self.__publish_entity(
@@ -520,6 +544,9 @@ class ChannelPropertiesStatesManager:
         """Delete existing channel property state"""
         if self.__manager is None:
             raise NotImplementedError("Channel properties states manager is not implemented")
+
+        if channel_property.parent is not None:
+            raise AttributeError("Child property can't have state")
 
         result = self.__manager.delete(channel_property=channel_property, state=state)
 

@@ -114,11 +114,17 @@ def register_services(  # pylint: disable=too-many-statements
 
     # States repositories
 
-    di[ConnectorPropertiesStatesRepository] = ConnectorPropertiesStatesRepository()
+    di[ConnectorPropertiesStatesRepository] = ConnectorPropertiesStatesRepository(
+        properties_repository=di[ConnectorPropertiesRepository],
+    )
     di["fb-devices-module_connector-properties-states-repository"] = di[ConnectorPropertiesStatesRepository]
-    di[DevicePropertiesStatesRepository] = DevicePropertiesStatesRepository()
+    di[DevicePropertiesStatesRepository] = DevicePropertiesStatesRepository(
+        properties_repository=di[DevicePropertiesRepository],
+    )
     di["fb-devices-module_device-properties-states-repository"] = di[DevicePropertiesStatesRepository]
-    di[ChannelPropertiesStatesRepository] = ChannelPropertiesStatesRepository()
+    di[ChannelPropertiesStatesRepository] = ChannelPropertiesStatesRepository(
+        properties_repository=di[ChannelPropertiesRepository],
+    )
     di["fb-devices-module_channel-properties-states-repository"] = di[ChannelPropertiesStatesRepository]
 
     # Entities managers

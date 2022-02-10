@@ -176,6 +176,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
 
     @data_type.setter
     def data_type(self, data_type: DataType) -> None:
+        """Data type setter"""
         self.col_data_type = data_type.value
 
     # -----------------------------------------------------------------------------
@@ -344,7 +345,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
 
     @default.setter
     def default(self, default: Optional[str]) -> None:
-        """Property default number of decimals setter"""
+        """Property default value setter"""
         if not self.type == PropertyType.STATIC:
             raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
 

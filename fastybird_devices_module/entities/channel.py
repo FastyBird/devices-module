@@ -26,7 +26,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
 from fastybird_metadata.devices_module import PropertyType
-from fastybird_metadata.types import ButtonPayload, SwitchPayload
+from fastybird_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import (
     BINARY,
     JSON,
@@ -268,6 +268,184 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
 
     # -----------------------------------------------------------------------------
 
+    @property
+    def settable(self) -> bool:
+        """Property settable status"""
+        if self.parent is not None:
+            return self.parent.settable  # type: ignore[no-any-return]
+
+        return super().settable
+
+    # -----------------------------------------------------------------------------
+
+    @settable.setter
+    def settable(self, settable: bool) -> None:
+        """Property settable setter"""
+        if self.parent is not None:
+            raise AttributeError("Settable setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).settable.fset(self, settable)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def queryable(self) -> bool:
+        """Property queryable status"""
+        if self.parent is not None:
+            return self.parent.queryable  # type: ignore[no-any-return]
+
+        return super().queryable
+
+    # -----------------------------------------------------------------------------
+
+    @queryable.setter
+    def queryable(self, queryable: bool) -> None:
+        """Property queryable setter"""
+        if self.parent is not None:
+            raise AttributeError("Queryable setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).queryable.fset(self, queryable)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def data_type(self) -> DataType:
+        """Transform data type to enum value"""
+        if self.parent is not None:
+            return self.parent.data_type  # type: ignore[no-any-return]
+
+        return super().data_type
+
+    # -----------------------------------------------------------------------------
+
+    @data_type.setter
+    def data_type(self, data_type: DataType) -> None:
+        """Data type setter"""
+        if self.parent is not None:
+            raise AttributeError("Data type setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).data_type.fset(self, data_type)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def unit(self) -> Optional[str]:
+        """Property unit"""
+        if self.parent is not None:
+            return self.parent.unit  # type: ignore[no-any-return]
+
+        return super().unit
+
+    # -----------------------------------------------------------------------------
+
+    @unit.setter
+    def unit(self, unit: Optional[str]) -> None:
+        """Property unit setter"""
+        if self.parent is not None:
+            raise AttributeError("Unit setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).unit.fset(self, unit)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def format(
+        self,
+    ) -> Union[
+        Tuple[Optional[int], Optional[int]],
+        Tuple[Optional[float], Optional[float]],
+        List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+        None,
+    ]:
+        """Property format"""
+        if self.parent is not None:
+            return self.parent.format  # type: ignore[no-any-return]
+
+        return super().format
+
+    # -----------------------------------------------------------------------------
+
+    @format.setter
+    def format(
+        self,
+        value_format: Union[
+            str,
+            Tuple[Optional[int], Optional[int]],
+            Tuple[Optional[float], Optional[float]],
+            List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+            None,
+        ],
+    ) -> None:
+        """Property format setter"""
+        if self.parent is not None:
+            raise AttributeError("Value format setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).format.fset(self, value_format)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def invalid(self) -> Union[str, int, float, None]:
+        """Property invalid value"""
+        if self.parent is not None:
+            return self.parent.invalid  # type: ignore[no-any-return]
+
+        return super().invalid
+
+    # -----------------------------------------------------------------------------
+
+    @invalid.setter
+    def invalid(self, invalid: str) -> None:
+        """Property invalid value setter"""
+        if self.parent is not None:
+            raise AttributeError("Invalid value setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).invalid.fset(self, invalid)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def number_of_decimals(self) -> Optional[int]:
+        """Property value number of decimals"""
+        if self.parent is not None:
+            return self.parent.number_of_decimals  # type: ignore[no-any-return]
+
+        return super().number_of_decimals
+
+    # -----------------------------------------------------------------------------
+
+    @number_of_decimals.setter
+    def number_of_decimals(self, number_of_decimals: Optional[int]) -> None:
+        """Property value number of decimals setter"""
+        if self.parent is not None:
+            raise AttributeError("Number of decimals setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).number_of_decimals.fset(  # type: ignore[attr-defined]
+            self, number_of_decimals
+        )
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def default(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
+        """Property default"""
+        if self.parent is not None:
+            return self.parent.default  # type: ignore[no-any-return]
+
+        return super().default
+
+    # -----------------------------------------------------------------------------
+
+    @default.setter
+    def default(self, default: Optional[str]) -> None:
+        """Property default value setter"""
+        if self.parent is not None:
+            raise AttributeError("Default value setter is allowed only for parent")
+
+        super(ChannelPropertyEntity, type(self)).default.fset(self, default)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
     def to_dict(
         self,
     ) -> Dict[
@@ -335,6 +513,26 @@ class ChannelStaticPropertyEntity(ChannelPropertyEntity):
     def type(self) -> PropertyType:
         """Property type"""
         return PropertyType.STATIC
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def value(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
+        """Property value"""
+        if self.parent is not None:
+            return self.parent.value  # type: ignore[no-any-return]
+
+        return super().value
+
+    # -----------------------------------------------------------------------------
+
+    @value.setter
+    def value(self, value: Optional[str]) -> None:
+        """Property value number of decimals setter"""
+        if self.parent is not None:
+            raise AttributeError("Value setter is allowed only for parent")
+
+        super(ChannelStaticPropertyEntity, type(self)).value.fset(self, value)  # type: ignore[attr-defined]
 
 
 class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

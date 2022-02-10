@@ -27,6 +27,11 @@ from typing import Optional
 from kink import inject
 
 # Library libs
+from fastybird_devices_module.repositories.channel import ChannelPropertiesRepository
+from fastybird_devices_module.repositories.connector import (
+    ConnectorPropertiesRepository,
+)
+from fastybird_devices_module.repositories.device import DevicePropertiesRepository
 from fastybird_devices_module.state.property import (
     IChannelPropertyState,
     IConnectorPropertyState,
@@ -94,23 +99,35 @@ class ConnectorPropertiesStatesRepository(ABC):  # pylint: disable=too-few-publi
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __repository: Optional[IConnectorPropertiesStatesRepository]
+    __properties_repository: ConnectorPropertiesRepository
+    __state_repository: Optional[IConnectorPropertiesStatesRepository]
+
     # -----------------------------------------------------------------------------
 
     def __init__(
         self,
-        repository: Optional[IConnectorPropertiesStatesRepository] = None,
+        properties_repository: ConnectorPropertiesRepository,
+        state_repository: Optional[IConnectorPropertiesStatesRepository] = None,
     ) -> None:
-        self.__repository = repository
+        self.__properties_repository = properties_repository
+        self.__state_repository = state_repository
 
     # -----------------------------------------------------------------------------
 
     def get_by_id(self, property_id: uuid.UUID) -> Optional[IConnectorPropertyState]:
         """Find connector property state record by provided database identifier"""
-        if self.__repository is None:
+        if self.__state_repository is None:
             raise NotImplementedError("Connector properties states repository is not implemented")
 
-        return self.__repository.get_by_id(property_id=property_id)
+        connector_property = self.__properties_repository.get_by_id(property_id=property_id)
+
+        if connector_property is None:
+            raise AttributeError("Connector property was not found in registry")
+
+        if connector_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
+        return self.__state_repository.get_by_id(property_id=property_id)
 
 
 @inject(
@@ -128,23 +145,35 @@ class DevicePropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-m
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __repository: Optional[IDevicePropertiesStatesRepository]
+    __properties_repository: DevicePropertiesRepository
+    __state_repository: Optional[IDevicePropertiesStatesRepository]
+
     # -----------------------------------------------------------------------------
 
     def __init__(
         self,
-        repository: Optional[IDevicePropertiesStatesRepository] = None,
+        properties_repository: DevicePropertiesRepository,
+        state_repository: Optional[IDevicePropertiesStatesRepository] = None,
     ) -> None:
-        self.__repository = repository
+        self.__properties_repository = properties_repository
+        self.__state_repository = state_repository
 
     # -----------------------------------------------------------------------------
 
     def get_by_id(self, property_id: uuid.UUID) -> Optional[IDevicePropertyState]:
         """Find device property state record by provided database identifier"""
-        if self.__repository is None:
+        if self.__state_repository is None:
             raise NotImplementedError("Device properties states repository is not implemented")
 
-        return self.__repository.get_by_id(property_id=property_id)
+        device_property = self.__properties_repository.get_by_id(property_id=property_id)
+
+        if device_property is None:
+            raise AttributeError("Device property was not found in registry")
+
+        if device_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
+        return self.__state_repository.get_by_id(property_id=property_id)
 
 
 @inject(
@@ -162,20 +191,32 @@ class ChannelPropertiesStatesRepository(ABC):  # pylint: disable=too-few-public-
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __repository: Optional[IChannelPropertiesStatesRepository]
+    __properties_repository: ChannelPropertiesRepository
+    __state_repository: Optional[IChannelPropertiesStatesRepository]
+
     # -----------------------------------------------------------------------------
 
     def __init__(
         self,
-        repository: Optional[IChannelPropertiesStatesRepository] = None,
+        properties_repository: ChannelPropertiesRepository,
+        state_repository: Optional[IChannelPropertiesStatesRepository] = None,
     ) -> None:
-        self.__repository = repository
+        self.__properties_repository = properties_repository
+        self.__state_repository = state_repository
 
     # -----------------------------------------------------------------------------
 
     def get_by_id(self, property_id: uuid.UUID) -> Optional[IChannelPropertyState]:
         """Find channel property state record by provided database identifier"""
-        if self.__repository is None:
+        if self.__state_repository is None:
             raise NotImplementedError("Channel properties states repository is not implemented")
 
-        return self.__repository.get_by_id(property_id=property_id)
+        channel_property = self.__properties_repository.get_by_id(property_id=property_id)
+
+        if channel_property is None:
+            raise AttributeError("Channel property was not found in registry")
+
+        if channel_property.parent is not None:
+            raise AttributeError("Child property can't have state")
+
+        return self.__state_repository.get_by_id(property_id=property_id)

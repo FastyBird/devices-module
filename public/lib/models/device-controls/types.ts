@@ -20,9 +20,11 @@ export interface DeviceControlInterface {
 
   name: string
 
+  // Relations
+  relationshipNames: string[]
+
   device: DeviceInterface | null
   deviceBackward: DeviceInterface | null
-
   deviceId: string
 }
 

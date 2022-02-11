@@ -20,9 +20,11 @@ export interface ChannelControlInterface {
 
   name: string
 
+  // Relations
+  relationshipNames: string[]
+
   channel: ChannelInterface | null
   channelBackward: ChannelInterface | null
-
   channelId: string
 }
 

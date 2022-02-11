@@ -15,6 +15,8 @@ import {
 } from '@/lib/models/channels/types'
 import ChannelProperty from '@/lib/models/channel-properties/ChannelProperty'
 import { ChannelPropertyInterface } from '@/lib/models/channel-properties/types'
+import { ChannelControlInterface } from '@/lib/models/channel-controls/types'
+import ChannelControl from '@/lib/models/channel-controls/ChannelControl'
 
 // ENTITY MODEL
 // ============
@@ -22,12 +24,19 @@ import { ChannelPropertyInterface } from '@/lib/models/channel-properties/types'
 export default class Channel extends Model implements ChannelInterface {
   id!: string
   type!: string
+
   draft!: boolean
+
   identifier!: string
   name!: string | null
   comment!: string | null
+
+  // Relations
   relationshipNames!: string[]
+
+  controls!: ChannelControlInterface[]
   properties!: ChannelPropertyInterface[]
+
   device!: DeviceInterface | null
   deviceBackward!: DeviceInterface | null
   deviceId!: string
@@ -100,11 +109,11 @@ export default class Channel extends Model implements ChannelInterface {
       // Relations
       relationshipNames: this.attr([]),
 
+      controls: this.hasMany(ChannelControl, 'channelId'),
       properties: this.hasMany(ChannelProperty, 'channelId'),
 
       device: this.belongsTo(Device, 'id'),
       deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
-
       deviceId: this.string(''),
     }
   }

@@ -14,6 +14,7 @@ import {
   CHANNEL_ENTITY_REG_EXP,
   CHANNEL_PROPERTY_ENTITY_REG_EXP,
   CONNECTOR_CONTROL_ENTITY_REG_EXP,
+  CONNECTOR_ENTITY_REG_EXP,
   CONNECTOR_PROPERTY_ENTITY_REG_EXP,
   DEVICE_CONTROL_ENTITY_REG_EXP,
   DEVICE_ENTITY_REG_EXP,
@@ -26,6 +27,7 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
   getAttributes(model: TJsonaModel): { [index: string]: any } {
     const exceptProps = ['id', '$id', 'type', 'draft', RELATIONSHIP_NAMES_PROP]
 
+    const connectorEntityRegex = new RegExp(CONNECTOR_ENTITY_REG_EXP)
     const connectorPropertyEntityRegex = new RegExp(CONNECTOR_PROPERTY_ENTITY_REG_EXP)
     const connectorControlEntityRegex = new RegExp(CONNECTOR_CONTROL_ENTITY_REG_EXP)
     const deviceEntityRegex = new RegExp(DEVICE_ENTITY_REG_EXP)
@@ -43,6 +45,7 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
       exceptProps.push('deviceId')
       exceptProps.push('device')
       exceptProps.push('deviceBackward')
+      exceptProps.push('property')
     } else if (
       channelPropertyEntityRegex.test(model.type)
       || channelControlEntityRegex.test(model.type)
@@ -50,6 +53,7 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
       exceptProps.push('channelId')
       exceptProps.push('channel')
       exceptProps.push('channelBackward')
+      exceptProps.push('property')
     } else if (
       deviceEntityRegex.test(model.type)
       || connectorPropertyEntityRegex.test(model.type)
@@ -58,6 +62,10 @@ class JsonApiModelPropertiesMapper extends ModelPropertiesMapper implements IMod
       exceptProps.push('connectorId')
       exceptProps.push('connector')
       exceptProps.push('connectorBackward')
+      exceptProps.push('device')
+      exceptProps.push('property')
+    } else if (connectorEntityRegex.test(model.type)) {
+      exceptProps.push('connector')
     }
 
     if (Array.isArray(model[RELATIONSHIP_NAMES_PROP])) {

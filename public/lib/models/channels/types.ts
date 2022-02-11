@@ -14,7 +14,7 @@ import {
   ChannelPropertyInterface,
   ChannelPropertyDataResponseInterface,
 } from '@/lib/models/channel-properties/types'
-import { ChannelControlDataResponseInterface } from '@/lib/models/channel-controls/types'
+import { ChannelControlDataResponseInterface, ChannelControlInterface } from '@/lib/models/channel-controls/types'
 
 // ENTITY INTERFACE
 // ================
@@ -29,15 +29,17 @@ export interface ChannelInterface {
   name: string | null
   comment: string | null
 
+  // Relations
   relationshipNames: string[]
 
+  controls: ChannelControlInterface[]
   properties: ChannelPropertyInterface[]
 
   device: DeviceInterface | null
   deviceBackward: DeviceInterface | null
-
   deviceId: string
 
+  // Entity transformers
   title: string
 }
 

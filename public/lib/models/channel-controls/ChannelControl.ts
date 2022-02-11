@@ -16,7 +16,12 @@ import { DeviceInterface } from '@/lib/models/devices/types'
 export default class ChannelControl extends Model implements ChannelControlInterface {
   id!: string
   type!: string
+
   name!: string
+
+  // Relations
+  relationshipNames!: string[]
+
   channel!: ChannelInterface | null
   channelBackward!: ChannelInterface | null
   channelId!: string
@@ -55,9 +60,11 @@ export default class ChannelControl extends Model implements ChannelControlInter
 
       name: this.string(''),
 
+      // Relations
+      relationshipNames: this.attr([]),
+
       channel: this.belongsTo(Channel, 'id'),
       channelBackward: this.hasOne(Channel, 'id', 'channelId'),
-
       channelId: this.string(''),
     }
   }

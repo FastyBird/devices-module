@@ -25,6 +25,8 @@ import { ChannelInterface } from '@/lib/models/channels/types'
 import Connector from '@/lib/models/connectors/Connector'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
 import { DEVICE_ENTITY_REG_EXP } from '@/lib/helpers'
+import { DeviceControlInterface } from '@/lib/models/device-controls/types'
+import DeviceControl from '@/lib/models/device-controls/DeviceControl'
 
 // ENTITY MODEL
 // ============
@@ -58,6 +60,7 @@ export default class Device extends Model implements DeviceInterface {
   children!: DeviceInterface[]
 
   channels!: ChannelInterface[]
+  controls!: DeviceControlInterface[]
   properties!: DevicePropertyInterface[]
 
   connector!: ConnectorInterface
@@ -166,6 +169,7 @@ export default class Device extends Model implements DeviceInterface {
       children: this.hasMany(Device, 'parentId'),
 
       channels: this.hasMany(Channel, 'deviceId'),
+      controls: this.hasMany(DeviceControl, 'deviceId'),
       properties: this.hasMany(DeviceProperty, 'deviceId'),
 
       connector: this.belongsTo(Connector, 'id'),

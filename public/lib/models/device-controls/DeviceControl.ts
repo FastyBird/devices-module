@@ -12,7 +12,12 @@ import { DeviceControlInterface } from '@/lib/models/device-controls/types'
 export default class DeviceControl extends Model implements DeviceControlInterface {
   id!: string
   type!: string
+
   name!: string
+
+  // Relations
+  relationshipNames!: string[]
+
   device!: DeviceInterface | null
   deviceBackward!: DeviceInterface | null
   deviceId!: string
@@ -32,9 +37,11 @@ export default class DeviceControl extends Model implements DeviceControlInterfa
 
       name: this.string(''),
 
+      // Relations
+      relationshipNames: this.attr([]),
+
       device: this.belongsTo(Device, 'id'),
       deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
-
       deviceId: this.string(''),
     }
   }

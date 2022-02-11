@@ -14,7 +14,7 @@ import {
   ChannelInterface,
   ChannelDataResponseInterface,
 } from '@/lib/models/channels/types'
-import { DeviceControlDataResponseInterface } from '@/lib/models/device-controls/types'
+import { DeviceControlDataResponseInterface, DeviceControlInterface } from '@/lib/models/device-controls/types'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
 
 // ENTITY INTERFACE
@@ -51,6 +51,7 @@ export interface DeviceInterface {
   children: DeviceInterface[]
 
   channels: ChannelInterface[]
+  controls: DeviceControlInterface[]
   properties: DevicePropertyInterface[]
 
   connectorId: string

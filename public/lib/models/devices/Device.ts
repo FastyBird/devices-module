@@ -24,31 +24,47 @@ import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
 import Connector from '@/lib/models/connectors/Connector'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
+import { DEVICE_ENTITY_REG_EXP } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============
 export default class Device extends Model implements DeviceInterface {
   id!: string
   type!: string
+  device!: { source: string, type: string }
+
   draft!: boolean
-  parentId!: string | null
+
   identifier!: string
   name!: string | null
   comment!: string | null
   enabled!: boolean
+
   hardwareModel!: string
   hardwareManufacturer!: string
   hardwareVersion!: string | null
   macAddress!: string | null
+
   firmwareManufacturer!: string
   firmwareVersion!: string | null
-  owner!: string | null
+
+  // Relations
   relationshipNames!: string[]
+
+  parent!: DeviceInterface | null
+  parentBackward!: DeviceInterface | null
+  parentId!: string | null
+
   children!: DeviceInterface[]
+
   channels!: ChannelInterface[]
   properties!: DevicePropertyInterface[]
+
   connector!: ConnectorInterface
+  connectorBackward!: ConnectorInterface
   connectorId!: string
+
+  owner!: string | null
 
   static get entity(): string {
     return 'devices_module_device'
@@ -123,10 +139,9 @@ export default class Device extends Model implements DeviceInterface {
     return {
       id: this.string(''),
       type: this.string(''),
+      device: this.attr({ source: 'N/A', type: 'N/A' }),
 
       draft: this.boolean(false),
-
-      parentId: this.string(null).nullable(),
 
       identifier: this.string(''),
       name: this.string(null).nullable(),
@@ -141,12 +156,15 @@ export default class Device extends Model implements DeviceInterface {
       firmwareManufacturer: this.string(FirmwareManufacturer.GENERIC),
       firmwareVersion: this.string(null).nullable(),
 
-      owner: this.string(null).nullable(),
-
       // Relations
       relationshipNames: this.attr([]),
 
+      parentId: this.string(null).nullable(),
+      parent: this.belongsTo(Device, 'id'),
+      parentBackward: this.hasOne(Device, 'id', 'parentId'),
+
       children: this.hasMany(Device, 'parentId'),
+
       channels: this.hasMany(Channel, 'deviceId'),
       properties: this.hasMany(DeviceProperty, 'deviceId'),
 
@@ -154,6 +172,8 @@ export default class Device extends Model implements DeviceInterface {
       connectorBackward: this.hasOne(Connector, 'id', 'connectorId'),
 
       connectorId: this.string(''),
+
+      owner: this.string(null).nullable(),
     }
   }
 
@@ -201,4 +221,47 @@ export default class Device extends Model implements DeviceInterface {
   static reset(): Promise<void> {
     return Device.dispatch('reset')
   }
+
+  static beforeCreate(items: DeviceInterface[] | DeviceInterface): DeviceInterface[] | DeviceInterface {
+    if (Array.isArray(items)) {
+      return items.map((item: DeviceInterface) => {
+        return Object.assign(item, clearDeviceAttributes(item))
+      })
+    } else {
+      return Object.assign(items, clearDeviceAttributes(items))
+    }
+  }
+
+  static beforeUpdate(items: DeviceInterface[] | DeviceInterface): DeviceInterface[] | DeviceInterface {
+    if (Array.isArray(items)) {
+      return items.map((item: DeviceInterface) => {
+        return Object.assign(item, clearDeviceAttributes(item))
+      })
+    } else {
+      return Object.assign(items, clearDeviceAttributes(items))
+    }
+  }
+}
+
+const clearDeviceAttributes = (item: {[key: string]: any}): {[key: string]: any} => {
+  const typeRegex = new RegExp(DEVICE_ENTITY_REG_EXP)
+
+  const parsedTypes = typeRegex.exec(`${item.type}`)
+
+  item.device = { source: 'N/A', type: 'N/A' }
+
+  if (
+    parsedTypes !== null
+    && 'groups' in parsedTypes
+    && typeof parsedTypes.groups !== 'undefined'
+    && 'source' in parsedTypes.groups
+    && 'type' in parsedTypes.groups
+  ) {
+    item.device = {
+      source: parsedTypes.groups.source,
+      type: parsedTypes.groups.type,
+    }
+  }
+
+  return item
 }

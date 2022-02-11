@@ -15,24 +15,22 @@ import {
 } from '@/lib/models/connectors/types'
 import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
+import { CONNECTOR_ENTITY_REG_EXP } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============
 export default class Connector extends Model implements ConnectorInterface {
   id!: string
   type!: string
+  connector!: { source: string, type: string }
+
   name!: string
   enabled!: boolean
+
+  // Relations
   relationshipNames!: string[]
+
   devices!: DeviceInterface[]
-  address!: number
-  serialInterface!: string
-  baudRate!: number
-  server!: string
-  port!: number
-  securedPort!: number
-  username!: string
-  password!: string
 
   static get entity(): string {
     return 'devices_module_connector'
@@ -50,6 +48,7 @@ export default class Connector extends Model implements ConnectorInterface {
     return {
       id: this.string(''),
       type: this.string(''),
+      connector: this.attr({ source: 'N/A', type: 'N/A' }),
 
       name: this.string(''),
       enabled: this.boolean(true),
@@ -58,18 +57,6 @@ export default class Connector extends Model implements ConnectorInterface {
       relationshipNames: this.attr([]),
 
       devices: this.hasMany(Device, 'connectorId'),
-
-      // FB bus
-      address: this.number(null).nullable(),
-      serialInterface: this.string(null).nullable(),
-      baudRate: this.number(null).nullable(),
-
-      // FB MQTT v1
-      server: this.string(null).nullable(),
-      port: this.number(null).nullable(),
-      securedPort: this.number(null).nullable(),
-      username: this.string(null).nullable(),
-      password: this.string(null).nullable(),
     }
   }
 
@@ -93,4 +80,47 @@ export default class Connector extends Model implements ConnectorInterface {
   static reset(): Promise<void> {
     return Connector.dispatch('reset')
   }
+
+  static beforeCreate(items: ConnectorInterface[] | ConnectorInterface): ConnectorInterface[] | ConnectorInterface {
+    if (Array.isArray(items)) {
+      return items.map((item: ConnectorInterface) => {
+        return Object.assign(item, clearConnectorAttributes(item))
+      })
+    } else {
+      return Object.assign(items, clearConnectorAttributes(items))
+    }
+  }
+
+  static beforeUpdate(items: ConnectorInterface[] | ConnectorInterface): ConnectorInterface[] | ConnectorInterface {
+    if (Array.isArray(items)) {
+      return items.map((item: ConnectorInterface) => {
+        return Object.assign(item, clearConnectorAttributes(item))
+      })
+    } else {
+      return Object.assign(items, clearConnectorAttributes(items))
+    }
+  }
+}
+
+const clearConnectorAttributes = (item: {[key: string]: any}): {[key: string]: any} => {
+  const typeRegex = new RegExp(CONNECTOR_ENTITY_REG_EXP)
+
+  const parsedTypes = typeRegex.exec(`${item.type}`)
+
+  item.connector = { source: 'N/A', type: 'N/A' }
+
+  if (
+    parsedTypes !== null
+    && 'groups' in parsedTypes
+    && typeof parsedTypes.groups !== 'undefined'
+    && 'source' in parsedTypes.groups
+    && 'type' in parsedTypes.groups
+  ) {
+    item.connector = {
+      source: parsedTypes.groups.source,
+      type: parsedTypes.groups.type,
+    }
+  }
+
+  return item
 }

@@ -20,7 +20,11 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
   device!: DeviceInterface | null
   deviceBackward!: DeviceInterface | null
   deviceId!: string
+
+  parent!: DevicePropertyInterface | null
+  parentBackward!: DevicePropertyInterface | null
   parentId!: string | null
+
   children!: DevicePropertyInterface[]
 
   static get entity(): string {
@@ -58,9 +62,10 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
 
       device: this.belongsTo(Device, 'id'),
       deviceBackward: this.hasOne(Device, 'id', 'deviceId'),
-
       deviceId: this.string(''),
 
+      parent: this.belongsTo(DeviceProperty, 'id'),
+      parentBackward: this.hasOne(DeviceProperty, 'id', 'parentId'),
       parentId: this.string(null).nullable(),
 
       children: this.hasMany(DeviceProperty, 'parentId'),

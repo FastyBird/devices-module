@@ -55,6 +55,7 @@ export enum ActorNameTypes {
 export interface PropertyInterface {
   id: string
   type: string
+  property: { source: string, parent: string, type: string }
 
   draft: boolean
 
@@ -78,8 +79,10 @@ export interface PropertyInterface {
   lastResult: PropertyCommandResult | null
   backup: string | null
 
+  // Relations
   relationshipNames: string[]
 
+  // Entity transformers
   isAnalogSensor: boolean
   isBinarySensor: boolean
   isAnalogActor: boolean

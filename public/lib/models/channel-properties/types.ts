@@ -20,11 +20,12 @@ import { PropertyInterface } from '@/lib/models/properties/types'
 export interface ChannelPropertyInterface extends PropertyInterface {
   channel: ChannelInterface | null
   channelBackward: ChannelInterface | null
-
   channelId: string
 
   title: string
 
+  parent: ChannelPropertyInterface | null
+  parentBackward: ChannelPropertyInterface | null
   parentId: string | null
 
   children: ChannelPropertyInterface[]

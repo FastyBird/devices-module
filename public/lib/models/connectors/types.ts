@@ -15,21 +15,10 @@ import { ConnectorControlDataResponseInterface } from '@/lib/models/connector-co
 export interface ConnectorInterface {
   id: string
   type: string
+  connector: { source: string, type: string }
 
   name: string
   enabled: boolean
-
-  // FB bus
-  address: number | null
-  serialInterface: string | null
-  baudRate: number | null
-
-  // FB MQTT v1
-  server: string | null
-  port: number | null
-  securedPort: number | null
-  username: string | null
-  password: string | null
 
   // Relations
   relationshipNames: string[]
@@ -47,20 +36,6 @@ export interface ConnectorInterface {
 interface ConnectorAttributesResponseInterface {
   name: string
   enabled: boolean
-}
-
-interface FbBusConnectorAttributesResponseInterface extends ConnectorAttributesResponseInterface {
-  address: number | null
-  serial_interface: string | null
-  baud_rate: number | null
-}
-
-interface FbMqttConnectorAttributesResponseInterface extends ConnectorAttributesResponseInterface {
-  server: string | null
-  port: number | null
-  secured_port: number | null
-  username: string | null
-  password: string | null
 }
 
 interface ConnectorDeviceRelationshipResponseInterface extends TJsonApiRelationshipData {
@@ -89,7 +64,7 @@ interface ConnectorRelationshipsResponseInterface extends TJsonApiRelationships 
 export interface ConnectorDataResponseInterface extends TJsonApiData {
   id: string
   type: string
-  attributes: FbBusConnectorAttributesResponseInterface | FbMqttConnectorAttributesResponseInterface
+  attributes: ConnectorAttributesResponseInterface
   relationships: ConnectorRelationshipsResponseInterface
 }
 

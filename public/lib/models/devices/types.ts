@@ -23,10 +23,9 @@ import { ConnectorInterface } from '@/lib/models/connectors/types'
 export interface DeviceInterface {
   id: string
   type: string
+  device: { source: string, type: string }
 
   draft: boolean
-
-  parentId: string | null
 
   identifier: string
   name: string | null
@@ -42,23 +41,31 @@ export interface DeviceInterface {
   firmwareManufacturer: string
   firmwareVersion: string | null
 
-  owner: string | null
-
+  // Relations
   relationshipNames: string[]
 
+  parent: DeviceInterface | null
+  parentBackward: DeviceInterface | null
+  parentId: string | null
+
   children: DeviceInterface[]
+
   channels: ChannelInterface[]
   properties: DevicePropertyInterface[]
-  connector: ConnectorInterface
 
+  connectorId: string
+  connector: ConnectorInterface
+  connectorBackward: ConnectorInterface
+
+  owner: string | null
+
+  // Entity transformers
   isEnabled: boolean
   isReady: boolean
   icon: string
   title: string
   hasComment: boolean
   isCustomModel: boolean
-
-  connectorId: string
 }
 
 // API RESPONSES

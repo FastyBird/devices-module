@@ -10,14 +10,17 @@ import {
   SensorNameTypes,
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
-import { cleanInvalid } from '@/lib/helpers'
+import { ANY_PROPERTY_ENTITY_REG_EXP, cleanInvalid } from '@/lib/helpers'
 
 // ENTITY MODEL
 // ============
 export default class Property extends Model implements PropertyInterface {
   id!: string
   type!: string
+  property!: { source: string, parent: string, type: string }
+
   draft!: boolean
+
   identifier!: string
   name!: string | null
   settable!: boolean
@@ -27,13 +30,18 @@ export default class Property extends Model implements PropertyInterface {
   format!: string[] | ((string | null)[])[] | (number | null)[] | null
   invalid!: string | number | null
   numberOfDecimals!: number | null
+
   value!: string | number | boolean | Date | null
+
   actualValue!: string | number | boolean | Date | null
   expectedValue!: string | number | boolean | Date | null
   pending!: boolean
+
   command!: PropertyCommandState | null
   lastResult!: PropertyCommandResult | null
   backup!: string | null
+
+  // Relations
   relationshipNames!: string[]
 
   get deviceInstance(): DeviceInterface | null {
@@ -101,7 +109,7 @@ export default class Property extends Model implements PropertyInterface {
   }
 
   get formattedActualValue(): string | null {
-    if (!this.type.endsWith(PropertyType.DYNAMIC)) {
+    if (this.property.type !== PropertyType.DYNAMIC) {
       return null
     }
 
@@ -160,7 +168,7 @@ export default class Property extends Model implements PropertyInterface {
       return null
     }
 
-    if (!this.type.endsWith(PropertyType.DYNAMIC)) {
+    if (this.property.type !== PropertyType.DYNAMIC) {
       return null
     }
 
@@ -248,6 +256,7 @@ export default class Property extends Model implements PropertyInterface {
   static fields(): Fields {
     return {
       id: this.string(''),
+      property: this.attr({ source: 'N/A', parent: 'N/A', type: 'N/A' }),
 
       draft: this.boolean(false),
 
@@ -276,67 +285,62 @@ export default class Property extends Model implements PropertyInterface {
     }
   }
 
-  static beforeCreate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
-    if (Array.isArray(properties)) {
-      return properties.map((property: PropertyInterface) => {
-        property.invalid = cleanInvalid(property.dataType, property.invalid)
-
-        if (property.type.endsWith(PropertyType.DYNAMIC)) {
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
-        }
-
-        if (property.type.endsWith(PropertyType.STATIC)) {
-          property.value = normalizeValue(property.dataType, String(property.value), property.format)
-        }
-
-        return property
+  static beforeCreate(items: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
+    if (Array.isArray(items)) {
+      return items.map((item: PropertyInterface) => {
+        return Object.assign(item, clearPropertyAttributes(item))
       })
     } else {
-      properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
-
-      if (properties.type.endsWith(PropertyType.DYNAMIC)) {
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
-      }
-
-      if (properties.type.endsWith(PropertyType.STATIC)) {
-        properties.value = normalizeValue(properties.dataType, String(properties.value), properties.format)
-      }
-
-      return properties
+      return Object.assign(items, clearPropertyAttributes(items))
     }
   }
 
-  static beforeUpdate(properties: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
-    if (Array.isArray(properties)) {
-      return properties.map((property: PropertyInterface) => {
-        property.invalid = cleanInvalid(property.dataType, property.invalid)
-
-        if (property.type.endsWith(PropertyType.DYNAMIC)) {
-          property.actualValue = normalizeValue(property.dataType, String(property.actualValue), property.format)
-          property.expectedValue = normalizeValue(property.dataType, String(property.expectedValue), property.format)
-        }
-
-        if (property.type.endsWith(PropertyType.STATIC)) {
-          property.value = normalizeValue(property.dataType, String(property.value), property.format)
-        }
-
-        return property
+  static beforeUpdate(items: PropertyInterface[] | PropertyInterface): PropertyInterface[] | PropertyInterface {
+    if (Array.isArray(items)) {
+      return items.map((item: PropertyInterface) => {
+        return Object.assign(item, clearPropertyAttributes(item))
       })
     } else {
-      properties.invalid = cleanInvalid(properties.dataType, properties.invalid)
-
-      if (properties.type.endsWith(PropertyType.DYNAMIC)) {
-        properties.actualValue = normalizeValue(properties.dataType, String(properties.actualValue), properties.format)
-        properties.expectedValue = normalizeValue(properties.dataType, String(properties.expectedValue), properties.format)
-      }
-
-      if (properties.type.endsWith(PropertyType.STATIC)) {
-        properties.value = normalizeValue(properties.dataType, String(properties.value), properties.format)
-      }
-
-      return properties
+      return Object.assign(items, clearPropertyAttributes(items))
     }
   }
+}
+
+const clearPropertyAttributes = (item: {[key: string]: any}): {[key: string]: any} => {
+  const typeRegex = new RegExp(ANY_PROPERTY_ENTITY_REG_EXP)
+
+  const parsedTypes = typeRegex.exec(`${item.type}`)
+
+  item.property = { source: 'N/A', parent: 'N/A', type: 'N/A' }
+
+  if (
+    parsedTypes !== null
+    && 'groups' in parsedTypes
+    && typeof parsedTypes.groups !== 'undefined'
+    && 'source' in parsedTypes.groups
+    && 'parent' in parsedTypes.groups
+    && 'type' in parsedTypes.groups
+  ) {
+    item.property = {
+      source: parsedTypes.groups.source,
+      parent: parsedTypes.groups.parent,
+      type: parsedTypes.groups.type,
+    }
+  }
+
+  if (item.format !== null && typeof item.format === 'object') {
+    item.format = Object.values(item.format)
+  }
+  item.invalid = cleanInvalid(item.dataType, item.invalid)
+
+  if (item.property.type === PropertyType.DYNAMIC) {
+    item.actualValue = normalizeValue(item.dataType, String(item.actualValue), item.format)
+    item.expectedValue = normalizeValue(item.dataType, String(item.expectedValue), item.format)
+  }
+
+  if (item.property.type === PropertyType.STATIC) {
+    item.value = normalizeValue(item.dataType, String(item.value), item.format)
+  }
+
+  return item
 }

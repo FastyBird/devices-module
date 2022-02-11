@@ -22,7 +22,11 @@ export default class ChannelProperty extends Property implements ChannelProperty
   channel!: ChannelInterface | null
   channelBackward!: ChannelInterface | null
   channelId!: string
+
+  parent!: ChannelPropertyInterface | null
+  parentBackward!: ChannelPropertyInterface | null
   parentId!: string | null
+
   children!: ChannelPropertyInterface[]
 
   static get entity(): string {
@@ -103,9 +107,10 @@ export default class ChannelProperty extends Property implements ChannelProperty
 
       channel: this.belongsTo(Channel, 'id'),
       channelBackward: this.hasOne(Channel, 'id', 'channelId'),
-
       channelId: this.string(''),
 
+      parent: this.belongsTo(ChannelProperty, 'id'),
+      parentBackward: this.hasOne(ChannelProperty, 'id', 'parentId'),
       parentId: this.string(null).nullable(),
 
       children: this.hasMany(ChannelProperty, 'parentId'),

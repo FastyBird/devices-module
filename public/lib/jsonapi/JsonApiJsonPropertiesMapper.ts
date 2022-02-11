@@ -9,12 +9,10 @@ import {
 import { defineRelationGetter } from 'jsona/lib/simplePropertyMappers'
 import clone from 'lodash/clone'
 import get from 'lodash/get'
+import { CHANNEL_ENTITY_REG_EXP, CONNECTOR_ENTITY_REG_EXP, DEVICE_ENTITY_REG_EXP } from '@/lib/helpers'
 
 const RELATIONSHIP_NAMES_PROP = 'relationshipNames'
 const CASE_REG_EXP = '_([a-z0-9])'
-const CONNECTOR_ENTITY_REG_EXP = '^([a-z0-9.-]+)/connector/([a-z0-9.]+)$'
-const DEVICE_ENTITY_REG_EXP = '^([a-z0-9.-]+)/device/([a-z0-9.]+)$'
-const CHANNEL_ENTITY_REG_EXP = '^([a-z0-9.-]+)/channel$'
 
 class JsonApiJsonPropertiesMapper extends JsonPropertiesMapper implements IJsonPropertiesMapper {
 

@@ -20,11 +20,12 @@ import { PropertyInterface } from '@/lib/models/properties/types'
 export interface DevicePropertyInterface extends PropertyInterface {
   device: DeviceInterface | null
   deviceBackward: DeviceInterface | null
-
   deviceId: string
 
   title: string
 
+  parent: DevicePropertyInterface | null
+  parentBackward: DevicePropertyInterface | null
   parentId: string | null
 
   children: DevicePropertyInterface[]

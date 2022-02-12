@@ -16,14 +16,14 @@ const extendRoutes = (routes: NuxtRouteConfig[]): void => {
   })
 }
 
-export default <Module> function nuxtUserAgent() {
+export default (function nuxtUserAgent() {
   this.extendRoutes(extendRoutes)
 
   this.addPlugin({
     src: path.resolve(__dirname, 'plugin.ts'),
     fileName: 'devices-module.js',
   })
-}
+}) as Module
 
 import meta from '../../package.json'
 

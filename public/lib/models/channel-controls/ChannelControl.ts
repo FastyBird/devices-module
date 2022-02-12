@@ -5,11 +5,7 @@ import {
 
 import Channel from '@/lib/models/channels/Channel'
 import { ChannelInterface } from '@/lib/models/channels/types'
-import {
-  ChannelControlInterface,
-} from '@/lib/models/channel-controls/types'
-import Device from '@/lib/models/devices/Device'
-import { DeviceInterface } from '@/lib/models/devices/types'
+import { ChannelControlInterface } from '@/lib/models/channel-controls/types'
 
 // ENTITY MODEL
 // ============
@@ -28,29 +24,6 @@ export default class ChannelControl extends Model implements ChannelControlInter
 
   static get entity(): string {
     return 'devices_module_channel_control'
-  }
-
-  get deviceInstance(): DeviceInterface | null {
-    if (this.channel === null) {
-      const channel = Channel
-        .query()
-        .where('id', this.channelId)
-        .first()
-
-      if (channel !== null) {
-        return Device
-          .query()
-          .where('id', channel.deviceId)
-          .first()
-      }
-
-      return null
-    }
-
-    return Device
-      .query()
-      .where('id', this.channel.deviceId)
-      .first()
   }
 
   static fields(): Fields {

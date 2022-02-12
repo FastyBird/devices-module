@@ -7,14 +7,17 @@ import {
 } from 'jsona/lib/JsonaTypes'
 
 import {
-  DeviceInterface,
-  DeviceDataResponseInterface,
-} from '@/lib/models/devices/types'
-import {
   ChannelPropertyInterface,
   ChannelPropertyDataResponseInterface,
 } from '@/lib/models/channel-properties/types'
-import { ChannelControlDataResponseInterface, ChannelControlInterface } from '@/lib/models/channel-controls/types'
+import {
+  ChannelControlDataResponseInterface,
+  ChannelControlInterface,
+} from '@/lib/models/channel-controls/types'
+import {
+  DeviceInterface,
+  DeviceDataResponseInterface,
+} from '@/lib/models/devices/types'
 
 // ENTITY INTERFACE
 // ================
@@ -41,6 +44,7 @@ export interface ChannelInterface {
 
   // Entity transformers
   title: string
+  hasComment: boolean
 }
 
 // API RESPONSES

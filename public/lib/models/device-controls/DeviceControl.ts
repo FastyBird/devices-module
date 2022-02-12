@@ -3,9 +3,9 @@ import {
   Model,
 } from '@vuex-orm/core'
 
+import { DeviceControlInterface } from '@/lib/models/device-controls/types'
 import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
-import { DeviceControlInterface } from '@/lib/models/device-controls/types'
 
 // ENTITY MODEL
 // ============
@@ -24,10 +24,6 @@ export default class DeviceControl extends Model implements DeviceControlInterfa
 
   static get entity(): string {
     return 'devices_module_device_control'
-  }
-
-  get deviceInstance(): DeviceInterface | null {
-    return this.device
   }
 
   static fields(): Fields {

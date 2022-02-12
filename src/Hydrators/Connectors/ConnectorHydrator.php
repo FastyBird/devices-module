@@ -35,7 +35,9 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 
 	/** @var string[] */
 	protected array $attributes = [
+		'identifier',
 		'name',
+		'comment',
 		'enabled',
 	];
 
@@ -62,6 +64,23 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 		}
 
 		return (string) $attributes->get('name');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
+	 *
+	 * @return string|null
+	 */
+	protected function hydrateCommentAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	{
+		if (
+			!is_scalar($attributes->get('comment'))
+			|| (string) $attributes->get('comment') === ''
+		) {
+			return null;
+		}
+
+		return (string) $attributes->get('comment');
 	}
 
 	/**

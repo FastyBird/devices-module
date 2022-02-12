@@ -31,7 +31,7 @@ from fastybird_devices_module.repositories.connector import ConnectorsRepository
 from tests.pytests.tests import DbTestCase
 
 
-class TestDevicesManager(DbTestCase):
+class TestConnectorsManager(DbTestCase):
     @inject
     def test_create_entity(
         self,
@@ -41,6 +41,7 @@ class TestDevicesManager(DbTestCase):
         with patch.object(Publisher, "publish") as MockPublisher:
             connector_entity = connectors_manager.create(
                 data={
+                    "identifier": "virtual-02",
                     "name": "Other virtual connector",
                     "enabled": False,
                     "id": uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),

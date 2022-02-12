@@ -31,26 +31,9 @@ export default class DeviceProperty extends Property implements DevicePropertyIn
     return 'devices_module_device_property'
   }
 
-  get deviceInstance(): DeviceInterface | null {
-    return this.device
-  }
-
   get title(): string {
     if (this.name !== null) {
       return this.name
-    }
-
-    const storeInstance = DeviceProperty.store()
-
-    if (
-      this.device !== null &&
-      !this.device.isCustomModel &&
-      Object.prototype.hasOwnProperty.call(storeInstance, '$i18n') &&
-      // @ts-ignore
-      storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devicesModule.vendors.')
-    ) {
-      // @ts-ignore
-      return storeInstance.$i18n.t(`devicesModule.vendors.${this.device.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
     }
 
     return capitalize(this.identifier)

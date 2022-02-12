@@ -41,14 +41,31 @@ interface IConnector extends Entities\IEntity,
 	/**
 	 * @return string
 	 */
-	public function getName(): string;
+	public function getIdentifier(): string;
 
 	/**
-	 * @param string $name
+	 * @return string|null
+	 */
+	public function getName(): ?string;
+
+	/**
+	 * @param string|null $name
 	 *
 	 * @return void
 	 */
-	public function setName(string $name): void;
+	public function setName(?string $name): void;
+
+	/**
+	 * @return string|null
+	 */
+	public function getComment(): ?string;
+
+	/**
+	 * @param string|null $comment
+	 *
+	 * @return void
+	 */
+	public function setComment(?string $comment = null): void;
 
 	/**
 	 * @return bool

@@ -4,9 +4,7 @@ import { DataType, HardwareManufacturer, normalizeValue, PropertyType } from '@f
 import {
   PropertyCommandResult,
   PropertyCommandState,
-  PropertyIntegerDatatypeTypes,
   PropertyInterface,
-  PropertyNumberDatatypeTypes,
   SensorNameTypes,
 } from '@/lib/models/properties/types'
 import { DeviceInterface } from '@/lib/models/devices/types'
@@ -46,66 +44,6 @@ export default class Property extends Model implements PropertyInterface {
 
   get deviceInstance(): DeviceInterface | null {
     return null
-  }
-
-  get isAnalogSensor(): boolean {
-    return !this.isSettable && this.dataType !== DataType.BOOLEAN
-  }
-
-  get isBinarySensor(): boolean {
-    return !this.isSettable && this.dataType === DataType.BOOLEAN
-  }
-
-  get isAnalogActor(): boolean {
-    return this.isSettable && this.dataType !== DataType.BOOLEAN
-  }
-
-  get isBinaryActor(): boolean {
-    return this.isSettable && this.dataType === DataType.BOOLEAN
-  }
-
-  get isInteger(): boolean {
-    return Object.values(PropertyIntegerDatatypeTypes).includes(this.dataType)
-  }
-
-  get isFloat(): boolean {
-    return this.dataType === DataType.FLOAT
-  }
-
-  get isNumber(): boolean {
-    return Object.values(PropertyNumberDatatypeTypes).includes(this.dataType)
-  }
-
-  get isBoolean(): boolean {
-    return this.dataType === DataType.BOOLEAN
-  }
-
-  get isString(): boolean {
-    return this.dataType === DataType.STRING
-  }
-
-  get isEnum(): boolean {
-    return this.dataType === DataType.ENUM
-  }
-
-  get isColor(): boolean {
-    return this.dataType === DataType.COLOR
-  }
-
-  get isButton(): boolean {
-    return this.dataType === DataType.BUTTON
-  }
-
-  get isSwitch(): boolean {
-    return this.dataType === DataType.SWITCH
-  }
-
-  get isSettable(): boolean {
-    return this.settable
-  }
-
-  get isQueryable(): boolean {
-    return this.queryable
   }
 
   get formattedActualValue(): string | null {

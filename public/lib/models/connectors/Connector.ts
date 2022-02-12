@@ -3,16 +3,16 @@ import {
   Item,
   Model,
 } from '@vuex-orm/core'
+import { ConnectorPropertyName } from '@fastybird/metadata'
+
+import capitalize from 'lodash/capitalize'
 
 import {
   ConnectorInterface,
-  FbBusConnectorUpdateInterface,
-  FbMqttConnectorUpdateInterface,
-  ModbusConnectorUpdateInterface,
-  ShellyConnectorUpdateInterface,
-  SonoffConnectorUpdateInterface,
-  TuyaConnectorUpdateInterface,
+  ConnectorUpdateInterface,
 } from '@/lib/models/connectors/types'
+import ConnectorProperty from '@/lib/models/connector-properties/ConnectorProperty'
+import { ConnectorPropertyInterface } from '@/lib/models/connector-properties/types'
 import Device from '@/lib/models/devices/Device'
 import { DeviceInterface } from '@/lib/models/devices/types'
 import { CONNECTOR_ENTITY_REG_EXP } from '@/lib/helpers'
@@ -24,13 +24,17 @@ export default class Connector extends Model implements ConnectorInterface {
   type!: string
   connector!: { source: string, type: string }
 
+  identifier!: string
   name!: string
+  comment!: string | null
   enabled!: boolean
 
   // Relations
   relationshipNames!: string[]
 
   devices!: DeviceInterface[]
+
+  owner!: string | null
 
   static get entity(): string {
     return 'devices_module_connector'
@@ -40,8 +44,24 @@ export default class Connector extends Model implements ConnectorInterface {
     return this.enabled
   }
 
-  get icon(): string {
-    return 'magic'
+  get stateProperty(): ConnectorPropertyInterface | null {
+    return ConnectorProperty
+      .query()
+      .where('identifier', ConnectorPropertyName.STATE)
+      .where('deviceId', this.id)
+      .first()
+  }
+
+  get title(): string {
+    if (this.name !== null) {
+      return this.name
+    }
+
+    return capitalize(this.identifier)
+  }
+
+  get hasComment(): boolean {
+    return this.comment !== null && this.comment !== ''
   }
 
   static fields(): Fields {
@@ -50,7 +70,9 @@ export default class Connector extends Model implements ConnectorInterface {
       type: this.string(''),
       connector: this.attr({ source: 'N/A', type: 'N/A' }),
 
+      identifier: this.string(''),
       name: this.string(''),
+      comment: this.string(null).nullable(),
       enabled: this.boolean(true),
 
       // Relations
@@ -70,7 +92,7 @@ export default class Connector extends Model implements ConnectorInterface {
     return await Connector.dispatch('fetch')
   }
 
-  static async edit(connector: ConnectorInterface, data: FbMqttConnectorUpdateInterface | FbBusConnectorUpdateInterface | ShellyConnectorUpdateInterface | TuyaConnectorUpdateInterface | SonoffConnectorUpdateInterface | ModbusConnectorUpdateInterface): Promise<Item<Connector>> {
+  static async edit(connector: ConnectorInterface, data: ConnectorUpdateInterface): Promise<Item<Connector>> {
     return await Connector.dispatch('edit', {
       connector,
       data,

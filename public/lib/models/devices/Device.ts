@@ -7,26 +7,25 @@ import {
   DeviceModel,
   FirmwareManufacturer,
   HardwareManufacturer,
-  ConnectionState,
   DevicePropertyName,
 } from '@fastybird/metadata'
 
 import capitalize from 'lodash/capitalize'
 
+import Channel from '@/lib/models/channels/Channel'
+import { ChannelInterface } from '@/lib/models/channels/types'
+import Connector from '@/lib/models/connectors/Connector'
+import { ConnectorInterface } from '@/lib/models/connectors/types'
+import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
+import { DevicePropertyInterface } from '@/lib/models/device-properties/types'
+import { DeviceControlInterface } from '@/lib/models/device-controls/types'
+import DeviceControl from '@/lib/models/device-controls/DeviceControl'
 import {
   DeviceCreateInterface,
   DeviceInterface,
   DeviceUpdateInterface,
 } from '@/lib/models/devices/types'
-import DeviceProperty from '@/lib/models/device-properties/DeviceProperty'
-import { DevicePropertyInterface } from '@/lib/models/device-properties/types'
-import Channel from '@/lib/models/channels/Channel'
-import { ChannelInterface } from '@/lib/models/channels/types'
-import Connector from '@/lib/models/connectors/Connector'
-import { ConnectorInterface } from '@/lib/models/connectors/types'
 import { DEVICE_ENTITY_REG_EXP } from '@/lib/helpers'
-import { DeviceControlInterface } from '@/lib/models/device-controls/types'
-import DeviceControl from '@/lib/models/device-controls/DeviceControl'
 
 // ENTITY MODEL
 // ============
@@ -77,33 +76,12 @@ export default class Device extends Model implements DeviceInterface {
     return this.enabled
   }
 
-  get isReady(): boolean {
-    const property = DeviceProperty
+  get stateProperty(): DevicePropertyInterface | null {
+    return DeviceProperty
       .query()
       .where('identifier', DevicePropertyName.STATE)
       .where('deviceId', this.id)
       .first()
-
-    return property !== null && (
-      property.value === ConnectionState.READY
-      || property.value === ConnectionState.RUNNING
-      || property.value === ConnectionState.CONNECTED
-    )
-  }
-
-  get icon(): string {
-    if (this.hardwareManufacturer === HardwareManufacturer.ITEAD) {
-      switch (this.hardwareModel) {
-        case DeviceModel.SONOFF_SC:
-          return 'thermometer-half'
-
-        case DeviceModel.SONOFF_POW:
-        case DeviceModel.SONOFF_POW_R2:
-          return 'calculator'
-      }
-    }
-
-    return 'plug'
   }
 
   get title(): string {
@@ -111,31 +89,11 @@ export default class Device extends Model implements DeviceInterface {
       return this.name
     }
 
-    const storeInstance = Device.store()
-
-    if (
-      Object.prototype.hasOwnProperty.call(storeInstance, '$i18n')
-    ) {
-      if (this.isCustomModel) {
-        return capitalize(this.identifier)
-      }
-
-      // @ts-ignore
-      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString().includes('devicesModule.vendors.')) {
-        // @ts-ignore
-        return storeInstance.$i18n.t(`devicesModule.vendors.${this.hardwareManufacturer}.devices.${this.hardwareModel}.title`).toString()
-      }
-    }
-
     return capitalize(this.identifier)
   }
 
   get hasComment(): boolean {
     return this.comment !== null && this.comment !== ''
-  }
-
-  get isCustomModel(): boolean {
-    return this.hardwareModel === DeviceModel.CUSTOM
   }
 
   static fields(): Fields {

@@ -65,7 +65,10 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	public function getAttributes($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			'name'    => $connector->getName(),
+			'identifier' => $connector->getIdentifier(),
+			'name'       => $connector->getName(),
+			'comment'    => $connector->getComment(),
+
 			'enabled' => $connector->isEnabled(),
 		];
 	}
@@ -106,17 +109,17 @@ abstract class ConnectorSchema extends JsonApiSchemas\JsonApiSchema
 	public function getRelationships($connector, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			self::RELATIONSHIPS_DEVICES  => [
+			self::RELATIONSHIPS_DEVICES    => [
 				self::RELATIONSHIP_DATA          => $connector->getDevices(),
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => false,
 			],
-			self::RELATIONSHIPS_PROPERTIES    => [
+			self::RELATIONSHIPS_PROPERTIES => [
 				self::RELATIONSHIP_DATA          => $connector->getProperties(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONTROLS => [
+			self::RELATIONSHIPS_CONTROLS   => [
 				self::RELATIONSHIP_DATA          => $connector->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,

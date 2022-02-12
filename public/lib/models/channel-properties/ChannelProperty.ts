@@ -13,8 +13,6 @@ import {
   ChannelPropertyUpdateInterface,
 } from '@/lib/models/channel-properties/types'
 import Property from '@/lib/models/properties/Property'
-import Device from '@/lib/models/devices/Device'
-import { DeviceInterface } from '@/lib/models/devices/types'
 
 // ENTITY MODEL
 // ============
@@ -33,69 +31,9 @@ export default class ChannelProperty extends Property implements ChannelProperty
     return 'devices_module_channel_property'
   }
 
-  get deviceInstance(): DeviceInterface | null {
-    if (this.channel === null) {
-      const channel = Channel
-        .query()
-        .where('id', this.channelId)
-        .first()
-
-      if (channel !== null) {
-        return Device
-          .query()
-          .where('id', channel.deviceId)
-          .first()
-      }
-
-      return null
-    }
-
-    return Device
-      .query()
-      .where('id', this.channel.deviceId)
-      .first()
-  }
-
   get title(): string {
     if (this.name !== null) {
       return this.name
-    }
-
-    const storeInstance = ChannelProperty.store()
-
-    if (
-      this.deviceInstance !== null &&
-      !this.deviceInstance.isCustomModel &&
-      Object.prototype.hasOwnProperty.call(storeInstance, '$i18n')
-    ) {
-      if (this.identifier.includes('_')) {
-        const propertyPart = this.identifier.substring(0, (this.identifier.indexOf('_')))
-        const propertyNum = parseInt(this.identifier.substring(this.identifier.indexOf('_') + 1), 10)
-
-        // @ts-ignore
-        if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${propertyPart}.title`).toString().includes('devicesModule.vendors.')) {
-          // @ts-ignore
-          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${propertyPart}.title`, { number: propertyNum }).toString()
-        }
-
-        // @ts-ignore
-        if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${propertyPart}.title`).toString().includes('devicesModule.vendors.')) {
-          // @ts-ignore
-          return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${propertyPart}.title`, { number: propertyNum }).toString()
-        }
-      }
-
-      // @ts-ignore
-      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${this.identifier}.title`).toString().includes('devicesModule.vendors.')) {
-        // @ts-ignore
-        return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.devices.${this.deviceInstance.hardwareModel}.properties.${this.identifier}.title`).toString()
-      }
-
-      // @ts-ignore
-      if (!storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.title`).toString().includes('devicesModule.vendors.')) {
-        // @ts-ignore
-        return storeInstance.$i18n.t(`devicesModule.vendors.${this.deviceInstance.hardwareManufacturer}.properties.${this.identifier}.title`).toString()
-      }
     }
 
     return capitalize(this.identifier)

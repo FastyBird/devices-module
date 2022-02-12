@@ -3,25 +3,6 @@ import { DataType } from '@fastybird/metadata'
 // ENTITY TYPES
 // ============
 
-export enum PropertyIntegerDatatypeTypes {
-  CHAR = DataType.CHAR,
-  UNSIGNED_CHAR = DataType.UCHAR,
-  SHORT = DataType.SHORT,
-  UNSIGNED_SHORT = DataType.USHORT,
-  INT = DataType.INT,
-  UNSIGNED_INT = DataType.UINT,
-}
-
-export enum PropertyNumberDatatypeTypes {
-  CHAR = DataType.CHAR,
-  UNSIGNED_CHAR = DataType.UCHAR,
-  SHORT = DataType.SHORT,
-  UNSIGNED_SHORT = DataType.USHORT,
-  INT = DataType.INT,
-  UNSIGNED_INT = DataType.UINT,
-  FLOAT = DataType.FLOAT,
-}
-
 export enum PropertyCommandState {
   SENDING = 'sending',
   COMPLETED = 'completed',
@@ -83,25 +64,5 @@ export interface PropertyInterface {
   relationshipNames: string[]
 
   // Entity transformers
-  isAnalogSensor: boolean
-  isBinarySensor: boolean
-  isAnalogActor: boolean
-  isBinaryActor: boolean
-  isSwitch: boolean
-
-  isInteger: boolean
-  isFloat: boolean
-  isNumber: boolean
-  isBoolean: boolean
-  isString: boolean
-  isEnum: boolean
-  isColor: boolean
-
-  isSettable: boolean
-  isQueryable: boolean
-
-  formattedActualValue: string | null
-  formattedExpectedValue: string | null
-
   icon: string
 }

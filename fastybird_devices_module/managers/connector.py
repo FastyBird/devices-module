@@ -43,18 +43,12 @@ class ConnectorsManager(BaseManager[ConnectorEntity]):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __REQUIRED_FIELDS: List[str] = ["name"]
+    __REQUIRED_FIELDS: List[str] = ["identifier"]
     __WRITABLE_FIELDS: List[str] = [
         "name",
+        "comment",
         "enabled",
-        "address",
-        "serial_interface",
-        "baud_rate",
-        "server",
-        "port",
-        "secured_port",
-        "username",
-        "password",
+        "owner",
     ]
 
     # -----------------------------------------------------------------------------

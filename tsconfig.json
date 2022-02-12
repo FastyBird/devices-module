@@ -21,6 +21,7 @@
       "@fastybird/metadata",
       "@fastybird/vue-wamp-v1",
       "@fastybird/vuex-orm-wamp",
+      "@fastybird/web-ui-theme",
       "@types/lodash",
       "@types/uuid",
       "@vuex-orm/core",

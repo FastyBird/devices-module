@@ -33,6 +33,14 @@ use Throwable;
  *       "collate"="utf8mb4_general_ci",
  *       "charset"="utf8mb4",
  *       "comment"="Communication connectors"
+ *     },
+ *     uniqueConstraints={
+ *       @ORM\UniqueConstraint(name="connector_identifier_unique", columns={"connector_identifier"})
+ *     },
+ *     indexes={
+ *       @ORM\Index(name="connector_identifier_idx", columns={"connector_identifier"}),
+ *       @ORM\Index(name="connector_name_idx", columns={"connector_name"}),
+ *       @ORM\Index(name="connector_enabled_idx", columns={"connector_enabled"})
  *     }
  * )
  * @ORM\InheritanceType("SINGLE_TABLE")
@@ -63,10 +71,26 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * @var string
 	 *
-	 * @IPubDoctrine\Crud(is={"required", "writable"})
-	 * @ORM\Column(type="string", name="connector_name", length=40, nullable=false)
+	 * @IPubDoctrine\Crud(is="required")
+	 * @ORM\Column(type="string", name="connector_identifier", length=50, nullable=false)
 	 */
-	protected string $name;
+	protected string $identifier;
+
+	/**
+	 * @var string|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="string", name="connector_name", nullable=true, options={"default": null})
+	 */
+	protected ?string $name;
+
+	/**
+	 * @var string|null
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="text", name="connector_comment", nullable=true, options={"default": null})
+	 */
+	protected ?string $comment = null;
 
 	/**
 	 * @var bool
@@ -101,18 +125,18 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	protected Common\Collections\Collection $controls;
 
 	/**
-	 * @param string $name
+	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
-		string $name,
+		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
-		$this->name = $name;
+		$this->identifier = $identifier;
 
 		$this->devices = new Common\Collections\ArrayCollection();
 		$this->properties = new Common\Collections\ArrayCollection();
@@ -297,10 +321,12 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	public function toArray(): array
 	{
 		return [
-			'id'      => $this->getPlainId(),
-			'type'    => $this->getType(),
-			'name'    => $this->getName(),
-			'enabled' => $this->isEnabled(),
+			'id'         => $this->getPlainId(),
+			'type'       => $this->getType(),
+			'identifier' => $this->getIdentifier(),
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+			'enabled'    => $this->isEnabled(),
 
 			'owner' => $this->getOwnerId(),
 		];
@@ -314,7 +340,15 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getName(): string
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getName(): ?string
 	{
 		return $this->name;
 	}
@@ -322,9 +356,25 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setName(string $name): void
+	public function setName(?string $name): void
 	{
 		$this->name = $name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setComment(?string $comment = null): void
+	{
+		$this->comment = $comment;
 	}
 
 	/**

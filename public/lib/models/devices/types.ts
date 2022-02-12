@@ -7,14 +7,17 @@ import {
 } from 'jsona/lib/JsonaTypes'
 
 import {
-  DevicePropertyInterface,
-  DevicePropertyDataResponseInterface,
-} from '@/lib/models/device-properties/types'
-import {
   ChannelInterface,
   ChannelDataResponseInterface,
 } from '@/lib/models/channels/types'
-import { DeviceControlDataResponseInterface, DeviceControlInterface } from '@/lib/models/device-controls/types'
+import {
+  DeviceControlDataResponseInterface,
+  DeviceControlInterface,
+} from '@/lib/models/device-controls/types'
+import {
+  DevicePropertyInterface,
+  DevicePropertyDataResponseInterface,
+} from '@/lib/models/device-properties/types'
 import { ConnectorInterface } from '@/lib/models/connectors/types'
 
 // ENTITY INTERFACE
@@ -62,11 +65,9 @@ export interface DeviceInterface {
 
   // Entity transformers
   isEnabled: boolean
-  isReady: boolean
-  icon: string
+  stateProperty: DevicePropertyInterface | null
   title: string
   hasComment: boolean
-  isCustomModel: boolean
 }
 
 // API RESPONSES

@@ -31,6 +31,7 @@ from sqlalchemy import (
     BINARY,
     BOOLEAN,
     JSON,
+    TEXT,
     VARCHAR,
     Column,
     ForeignKey,
@@ -61,10 +62,29 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __tablename__: str = "fb_devices_module_connectors"
 
+    __table_args__ = (
+        Index("connector_identifier_idx", "connector_identifier"),
+        Index("connector_name_idx", "connector_name"),
+        Index("connector_enabled_idx", "connector_enabled"),
+        UniqueConstraint("connector_identifier", name="connector_identifier_connector_unique"),
+        {
+            "mysql_engine": "InnoDB",
+            "mysql_collate": "utf8mb4_general_ci",
+            "mysql_charset": "utf8mb4",
+            "mysql_comment": "Connectors",
+        },
+    )
+
     col_type: str = Column(VARCHAR(40), name="connector_type", nullable=False)  # type: ignore[assignment]
 
     col_connector_id: bytes = Column(BINARY(16), primary_key=True, name="connector_id")  # type: ignore[assignment]
-    col_name: str = Column(VARCHAR(40), name="connector_name", nullable=False)  # type: ignore[assignment]
+    col_identifier: str = Column(VARCHAR(50), name="connector_identifier", nullable=False)  # type: ignore[assignment]
+    col_name: Optional[str] = Column(  # type: ignore[assignment]
+        VARCHAR(255), name="connector_name", nullable=True, default=None
+    )
+    col_comment: Optional[str] = Column(  # type: ignore[assignment]
+        TEXT, name="connector_comment", nullable=True, default=None
+    )
     col_enabled: bool = Column(  # type: ignore[assignment]
         BOOLEAN, name="connector_enabled", nullable=False, default=True
     )
@@ -97,11 +117,12 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     # -----------------------------------------------------------------------------
 
-    def __init__(self, name: str, connector_id: Optional[uuid.UUID] = None) -> None:
+    def __init__(self, identifier: str, name: Optional[str] = None, connector_id: Optional[uuid.UUID] = None) -> None:
         super().__init__()
 
         self.col_connector_id = connector_id.bytes if connector_id is not None else uuid.uuid4().bytes
 
+        self.col_identifier = identifier
         self.col_name = name
 
     # -----------------------------------------------------------------------------
@@ -121,16 +142,37 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     # -----------------------------------------------------------------------------
 
     @property
-    def name(self) -> str:
-        """Connector name"""
+    def identifier(self) -> str:
+        """Device unique key"""
+        return self.col_identifier
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def name(self) -> Optional[str]:
+        """Device name"""
         return self.col_name
 
     # -----------------------------------------------------------------------------
 
     @name.setter
-    def name(self, name: str) -> None:
-        """Connector name setter"""
+    def name(self, name: Optional[str]) -> None:
+        """Device name setter"""
         self.col_name = name
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def comment(self) -> Optional[str]:
+        """Device comment"""
+        return self.col_comment
+
+    # -----------------------------------------------------------------------------
+
+    @comment.setter
+    def comment(self, comment: Optional[str]) -> None:
+        """Device comment setter"""
+        self.col_comment = comment
 
     # -----------------------------------------------------------------------------
 
@@ -181,7 +223,9 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         return {
             "id": self.id.__str__(),
             "type": self.type,
+            "identifier": self.identifier,
             "name": self.name,
+            "comment": self.comment,
             "enabled": self.enabled,
             "owner": self.owner,
         }
@@ -344,6 +388,17 @@ class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     """
 
     __tablename__: str = "fb_devices_module_connectors_controls"
+
+    __table_args__ = (
+        Index("control_name_idx", "control_name"),
+        UniqueConstraint("control_name", "connector_id", name="control_name_unique"),
+        {
+            "mysql_engine": "InnoDB",
+            "mysql_collate": "utf8mb4_general_ci",
+            "mysql_charset": "utf8mb4",
+            "mysql_comment": "Connectors controls",
+        },
+    )
 
     col_control_id: bytes = Column(BINARY(16), primary_key=True, name="control_id")  # type: ignore[assignment]
     col_name: str = Column(VARCHAR(100), name="control_name", nullable=False)  # type: ignore[assignment]

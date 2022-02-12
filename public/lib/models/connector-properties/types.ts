@@ -1,5 +1,3 @@
-import { DataType } from '@fastybird/metadata'
-
 import {
   TJsonApiBody,
   TJsonApiData,
@@ -7,6 +5,7 @@ import {
   TJsonApiRelationshipData,
   TJsonApiRelationships,
 } from 'jsona/lib/JsonaTypes'
+import { DataType } from '@fastybird/metadata'
 
 import {
   ConnectorDataResponseInterface,

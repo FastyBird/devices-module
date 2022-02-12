@@ -6,8 +6,9 @@ import {
   TJsonApiRelationshipData,
 } from 'jsona/lib/JsonaTypes'
 
-import { DeviceInterface } from '@/lib/models/devices/types'
 import { ConnectorControlDataResponseInterface } from '@/lib/models/connector-controls/types'
+import { ConnectorPropertyInterface } from '@/lib/models/connector-properties/types'
+import { DeviceInterface } from '@/lib/models/devices/types'
 
 // ENTITY INTERFACE
 // ================
@@ -17,7 +18,9 @@ export interface ConnectorInterface {
   type: string
   connector: { source: string, type: string }
 
+  identifier: string
   name: string
+  comment: string | null
   enabled: boolean
 
   // Relations
@@ -25,9 +28,13 @@ export interface ConnectorInterface {
 
   devices: DeviceInterface[]
 
+  owner: string | null
+
   // Entity transformers
   isEnabled: boolean
-  icon: string
+  stateProperty: ConnectorPropertyInterface | null
+  title: string
+  hasComment: boolean
 }
 
 // API RESPONSES

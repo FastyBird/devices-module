@@ -21,10 +21,6 @@ export default class ConnectorControl extends Model implements ConnectorControlI
     return 'devices_module_connector_control'
   }
 
-  get connectorInstance(): ConnectorInterface | null {
-    return this.connector
-  }
-
   static fields(): Fields {
     return {
       id: this.string(''),

@@ -21,8 +21,12 @@ export default <Module> function nuxtUserAgent() {
 
   this.addPlugin({
     src: path.resolve(__dirname, 'plugin.ts'),
-    fileName: 'devices-module.js'
+    fileName: 'devices-module.js',
   })
 }
 
-export const meta = require('../../package.json')
+import meta from '../../package.json'
+
+export {
+  meta
+}

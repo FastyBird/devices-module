@@ -185,6 +185,8 @@ def register_services(  # pylint: disable=too-many-statements
         channels_properties_repository=di[ChannelPropertiesRepository],
         channels_control_repository=di[ChannelControlsRepository],
         connectors_repository=di[ConnectorsRepository],
+        connectors_properties_repository=di[ConnectorPropertiesRepository],
+        connectors_properties_manager=di[ConnectorPropertiesManager],
         connectors_control_repository=di[ConnectorControlsRepository],
         logger=di[Logger],
     )

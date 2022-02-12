@@ -28,9 +28,11 @@ from abc import ABC, abstractmethod
 from importlib import util as import_util
 from typing import Dict, Optional, Union
 
+from fastybird_metadata.devices_module import ConnectionState, ConnectorPropertyName
+
 # Library libs
 from fastybird_metadata.routing import RoutingKey
-from fastybird_metadata.types import ControlAction
+from fastybird_metadata.types import ControlAction, DataType
 from inflection import dasherize
 from kink import di
 from sqlalchemy.orm import close_all_sessions
@@ -47,7 +49,10 @@ from fastybird_devices_module.entities.channel import (
     ChannelEntity,
     ChannelPropertyEntity,
 )
-from fastybird_devices_module.entities.connector import ConnectorControlEntity
+from fastybird_devices_module.entities.connector import (
+    ConnectorControlEntity,
+    ConnectorStaticPropertyEntity,
+)
 from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
     DeviceEntity,
@@ -58,6 +63,7 @@ from fastybird_devices_module.exceptions import (
     TerminateConnectorException,
 )
 from fastybird_devices_module.logger import Logger
+from fastybird_devices_module.managers.connector import ConnectorPropertiesManager
 from fastybird_devices_module.repositories.channel import (
     ChannelControlsRepository,
     ChannelPropertiesRepository,
@@ -65,6 +71,7 @@ from fastybird_devices_module.repositories.channel import (
 )
 from fastybird_devices_module.repositories.connector import (
     ConnectorControlsRepository,
+    ConnectorPropertiesRepository,
     ConnectorsRepository,
 )
 from fastybird_devices_module.repositories.device import (
@@ -83,6 +90,13 @@ class IConnector(ABC):
 
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    @property
+    def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
+        """Connector identifier"""
 
     # -----------------------------------------------------------------------------
 
@@ -218,7 +232,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     __queue: ConnectorQueue
 
-    __connector: IConnector
+    __connector: Optional[IConnector] = None
 
     __devices_repository: DevicesRepository
     __devices_properties_repository: DevicePropertiesRepository
@@ -229,6 +243,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     __channels_control_repository: ChannelControlsRepository
 
     __connectors_repository: ConnectorsRepository
+    __connectors_properties_repository: ConnectorPropertiesRepository
+    __connectors_properties_manager: ConnectorPropertiesManager
     __connectors_control_repository: ConnectorControlsRepository
 
     __logger: Logger
@@ -247,6 +263,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         channels_properties_repository: ChannelPropertiesRepository,
         channels_control_repository: ChannelControlsRepository,
         connectors_repository: ConnectorsRepository,
+        connectors_properties_repository: ConnectorPropertiesRepository,
+        connectors_properties_manager: ConnectorPropertiesManager,
         connectors_control_repository: ConnectorControlsRepository,
         logger: Logger,
     ) -> None:
@@ -261,6 +279,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self.__connectors_control_repository = connectors_control_repository
 
         self.__connectors_repository = connectors_repository
+        self.__connectors_properties_repository = connectors_properties_repository
+        self.__connectors_properties_manager = connectors_properties_manager
         self.__channels_control_repository = channels_control_repository
 
         self.__logger = logger
@@ -272,7 +292,10 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self.__stopped = False
 
         try:
-            self.__connector.start()
+            if self.__connector is not None:
+                self.__set_state(state=ConnectionState.RUNNING)
+
+                self.__connector.start()
 
         except Exception as ex:  # pylint: disable=broad-except
             self.__logger.error(
@@ -299,18 +322,21 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             # Send terminate command to...
 
             # ...connector
-            self.__connector.stop()
+            if self.__connector is not None:
+                self.__connector.stop()
 
-            now = time.time()
+                now = time.time()
 
-            waiting_for_closing = True
+                waiting_for_closing = True
 
-            # Wait until thread is fully terminated
-            while waiting_for_closing and time.time() - now < self.__SHUTDOWN_WAITING_DELAY:
-                if self.__connector.has_unfinished_tasks():
-                    self.__connector.handle()
-                else:
-                    waiting_for_closing = False
+                # Wait until thread is fully terminated
+                while waiting_for_closing and time.time() - now < self.__SHUTDOWN_WAITING_DELAY:
+                    if self.__connector.has_unfinished_tasks():
+                        self.__connector.handle()
+                    else:
+                        waiting_for_closing = False
+
+                self.__set_state(state=ConnectionState.STOPPED)
 
         except Exception as ex:  # pylint: disable=broad-except
             self.__logger.error(
@@ -334,7 +360,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             return
 
         try:
-            self.__connector.handle()
+            if self.__connector is not None:
+                self.__connector.handle()
 
         except Exception as ex:  # pylint: disable=broad-except
             self.__logger.error(
@@ -430,6 +457,9 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     # -----------------------------------------------------------------------------
 
     def __write_property_command(self, item: ConsumePropertyActionMessageQueueItem) -> None:
+        if self.__connector is None:
+            return
+
         if item.routing_key == RoutingKey.DEVICE_PROPERTY_ACTION:
             try:
                 device_property = self.__devices_properties_repository.get_by_id(
@@ -460,7 +490,13 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    def __write_control_command(self, item: ConsumeControlActionMessageQueueItem) -> None:
+    def __write_control_command(  # pylint: disable=too-many-return-statements
+        self,
+        item: ConsumeControlActionMessageQueueItem,
+    ) -> None:
+        if self.__connector is None:
+            return
+
         if item.routing_key == RoutingKey.DEVICE_ACTION and ControlAction.has_value(str(item.data.get("name"))):
             try:
                 connector_control = self.__connectors_control_repository.get_by_name(
@@ -522,6 +558,9 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self,
         item: ConsumeEntityMessageQueueItem,
     ) -> None:
+        if self.__connector is None:
+            return
+
         if item.routing_key == RoutingKey.CONNECTORS_ENTITY_UPDATED:
             close_all_sessions()
 
@@ -671,3 +710,45 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             except ValueError:
                 return
+
+    # -----------------------------------------------------------------------------
+
+    def __set_state(self, state: ConnectionState) -> None:
+        if self.__connector is not None:
+            state_property = self.__connectors_properties_repository.get_by_identifier(
+                connector_id=self.__connector.id,
+                property_identifier=ConnectorPropertyName.STATE.value,
+            )
+
+            if state_property is None:
+                property_data = {
+                    "connector_id": self.__connector.id,
+                    "identifier": ConnectorPropertyName.STATE.value,
+                    "data_type": DataType.ENUM,
+                    "unit": None,
+                    "format": [
+                        ConnectionState.RUNNING.value,
+                        ConnectionState.STOPPED.value,
+                        ConnectionState.UNKNOWN.value,
+                        ConnectionState.SLEEPING.value,
+                        ConnectionState.ALERT.value,
+                    ],
+                    "settable": False,
+                    "queryable": False,
+                    "value": state.value,
+                }
+
+                self.__connectors_properties_manager.create(
+                    data=property_data,
+                    property_type=ConnectorStaticPropertyEntity,
+                )
+
+            else:
+                property_data = {
+                    "value": state.value,
+                }
+
+                self.__connectors_properties_manager.update(
+                    data=property_data,
+                    connector_property=state_property,
+                )

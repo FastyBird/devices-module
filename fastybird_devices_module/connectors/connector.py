@@ -93,8 +93,8 @@ class IConnector(ABC):
 
     # -----------------------------------------------------------------------------
 
-    @abstractmethod
     @property
+    @abstractmethod
     def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
         """Connector identifier"""
 

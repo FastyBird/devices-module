@@ -28,5 +28,5 @@ export default <Module> function nuxtUserAgent() {
 import meta from '../../package.json'
 
 export {
-  meta
+  meta,
 }

@@ -131,7 +131,7 @@ class DevicePropertiesRepository:
             self.__session.query(DevicePropertyEntity)
             .filter(
                 DevicePropertyEntity.device_id == device_id.bytes,
-                DevicePropertyEntity.identifier == property_identifier,
+                DevicePropertyEntity.col_identifier == property_identifier,
             )
             .first()
         )

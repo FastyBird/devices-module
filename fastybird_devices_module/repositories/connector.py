@@ -158,7 +158,7 @@ class ConnectorPropertiesRepository:
             self.__session.query(ConnectorPropertyEntity)
             .filter(
                 ConnectorPropertyEntity.connector_id == connector_id.bytes,
-                ConnectorPropertyEntity.identifier == property_identifier,
+                ConnectorPropertyEntity.col_identifier == property_identifier,
             )
             .first()
         )
@@ -176,15 +176,5 @@ class ConnectorPropertiesRepository:
         return (
             self.__session.query(ConnectorPropertyEntity)
             .filter(ConnectorPropertyEntity.connector_id == connector_id.bytes)
-            .all()
-        )
-
-    # -----------------------------------------------------------------------------
-
-    def get_all_by_parent(self, property_id: uuid.UUID) -> List[ConnectorPropertyEntity]:
-        """Find all child properties"""
-        return (
-            self.__session.query(ConnectorPropertyEntity)
-            .filter(ConnectorPropertyEntity.parent_id == property_id.bytes)
             .all()
         )

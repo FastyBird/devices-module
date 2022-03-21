@@ -462,11 +462,14 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    def __write_property_command(self, item: ConsumePropertyActionMessageQueueItem) -> None:
+    def __write_property_command(  # pylint: disable=too-many-return-statements
+        self,
+        item: ConsumePropertyActionMessageQueueItem,
+    ) -> None:
         if self.__connector is None:
             return
 
-        if item.routing_key == RoutingKey.DEVICE_PROPERTIES_ACTION:
+        if item.routing_key == RoutingKey.DEVICE_PROPERTY_ACTION:
             try:
                 device_property = self.__devices_properties_repository.get_by_id(
                     property_id=uuid.UUID(item.data.get("property"), version=4),
@@ -488,7 +491,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             self.__connector.write_property(device_property, item.data)
 
-        if item.routing_key == RoutingKey.CHANNEL_PROPERTIES_ACTION:
+        if item.routing_key == RoutingKey.CHANNEL_PROPERTY_ACTION:
             try:
                 channel_property = self.__channels_properties_repository.get_by_id(
                     property_id=uuid.UUID(item.data.get("property"), version=4),
@@ -583,7 +586,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         if self.__connector is None:
             return
 
-        if item.routing_key == RoutingKey.CONNECTORS_ENTITY_UPDATED:
+        if item.routing_key == RoutingKey.CONNECTOR_ENTITY_UPDATED:
             close_all_sessions()
 
             try:
@@ -606,7 +609,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 "Connector was updated in database, terminating connector service in favor of restarting service"
             )
 
-        if item.routing_key == RoutingKey.CONNECTORS_ENTITY_DELETED:
+        if item.routing_key == RoutingKey.CONNECTOR_ENTITY_DELETED:
             close_all_sessions()
 
             try:
@@ -618,7 +621,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             except ValueError:
                 return
 
-        if item.routing_key in (RoutingKey.DEVICES_ENTITY_CREATED, RoutingKey.DEVICES_ENTITY_UPDATED):
+        if item.routing_key in (RoutingKey.DEVICE_ENTITY_CREATED, RoutingKey.DEVICE_ENTITY_UPDATED):
             close_all_sessions()
 
             try:
@@ -636,7 +639,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             self.__connector.initialize_device(device=device_entity)
 
-        if item.routing_key == RoutingKey.DEVICES_ENTITY_DELETED:
+        if item.routing_key == RoutingKey.DEVICE_ENTITY_DELETED:
             close_all_sessions()
 
             try:
@@ -646,8 +649,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 return
 
         if item.routing_key in (
-            RoutingKey.DEVICES_PROPERTIES_ENTITY_CREATED,
-            RoutingKey.DEVICES_PROPERTIES_ENTITY_UPDATED
+            RoutingKey.DEVICE_PROPERTY_ENTITY_CREATED,
+            RoutingKey.DEVICE_PROPERTY_ENTITY_UPDATED
         ):
             close_all_sessions()
 
@@ -677,7 +680,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             self.__connector.initialize_device_property(device=device_entity, device_property=device_property_entity)
 
-        if item.routing_key == RoutingKey.DEVICES_PROPERTIES_ENTITY_DELETED:
+        if item.routing_key == RoutingKey.DEVICE_PROPERTY_ENTITY_DELETED:
             close_all_sessions()
 
             try:
@@ -700,7 +703,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             except ValueError:
                 return
 
-        if item.routing_key in (RoutingKey.CHANNELS_ENTITY_CREATED, RoutingKey.CHANNELS_ENTITY_UPDATED):
+        if item.routing_key in (RoutingKey.CHANNEL_ENTITY_CREATED, RoutingKey.CHANNEL_ENTITY_UPDATED):
             close_all_sessions()
 
             try:
@@ -731,7 +734,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             self.__connector.initialize_device_channel(device=device_entity, channel=channel_entity)
 
-        if item.routing_key == RoutingKey.CHANNELS_ENTITY_DELETED:
+        if item.routing_key == RoutingKey.CHANNEL_ENTITY_DELETED:
             close_all_sessions()
 
             try:
@@ -755,8 +758,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 return
 
         if item.routing_key in (
-            RoutingKey.CHANNELS_PROPERTIES_ENTITY_CREATED,
-            RoutingKey.CHANNELS_PROPERTIES_ENTITY_UPDATED,
+            RoutingKey.CHANNEL_PROPERTY_ENTITY_CREATED,
+            RoutingKey.CHANNEL_PROPERTY_ENTITY_UPDATED,
         ):
             close_all_sessions()
 
@@ -789,7 +792,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 channel_property=channel_property_entity
             )
 
-        if item.routing_key == RoutingKey.CHANNELS_PROPERTIES_ENTITY_DELETED:
+        if item.routing_key == RoutingKey.CHANNEL_PROPERTY_ENTITY_DELETED:
             close_all_sessions()
 
             try:

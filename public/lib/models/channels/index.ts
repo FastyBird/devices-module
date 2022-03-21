@@ -458,10 +458,10 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
   async socketData({ state, commit }, payload: { source: string, routingKey: string, data: string }): Promise<boolean> {
     if (
       ![
-        RoutingKeys.CHANNELS_ENTITY_REPORTED,
-        RoutingKeys.CHANNELS_ENTITY_CREATED,
-        RoutingKeys.CHANNELS_ENTITY_UPDATED,
-        RoutingKeys.CHANNELS_ENTITY_DELETED,
+        RoutingKeys.CHANNEL_ENTITY_REPORTED,
+        RoutingKeys.CHANNEL_ENTITY_CREATED,
+        RoutingKeys.CHANNEL_ENTITY_UPDATED,
+        RoutingKeys.CHANNEL_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -474,12 +474,12 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
     if (validate(body)) {
       if (
         !Channel.query().where('id', body.id).exists() &&
-        payload.routingKey === RoutingKeys.CHANNELS_ENTITY_DELETED
+        payload.routingKey === RoutingKeys.CHANNEL_ENTITY_DELETED
       ) {
         return true
       }
 
-      if (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_DELETED) {
+      if (payload.routingKey === RoutingKeys.CHANNEL_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -500,12 +500,12 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.CHANNEL_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.CHANNELS_ENTITY_REPORTED ? SemaphoreTypes.GETTING : (payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING),
+          type: payload.routingKey === RoutingKeys.CHANNEL_ENTITY_REPORTED ? SemaphoreTypes.GETTING : (payload.routingKey === RoutingKeys.CHANNEL_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING),
           id: body.id,
         })
 
@@ -552,7 +552,7 @@ const moduleActions: ActionTree<ChannelState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.CHANNELS_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.CHANNEL_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }

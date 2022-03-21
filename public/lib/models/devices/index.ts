@@ -473,10 +473,10 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
   async socketData({ state, commit }, payload: { source: string, routingKey: string, data: string }): Promise<boolean> {
     if (
       ![
-        RoutingKeys.DEVICES_ENTITY_REPORTED,
-        RoutingKeys.DEVICES_ENTITY_CREATED,
-        RoutingKeys.DEVICES_ENTITY_UPDATED,
-        RoutingKeys.DEVICES_ENTITY_DELETED,
+        RoutingKeys.DEVICE_ENTITY_REPORTED,
+        RoutingKeys.DEVICE_ENTITY_CREATED,
+        RoutingKeys.DEVICE_ENTITY_UPDATED,
+        RoutingKeys.DEVICE_ENTITY_DELETED,
       ].includes(payload.routingKey as RoutingKeys)
     ) {
       return false
@@ -489,12 +489,12 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
     if (validate(body)) {
       if (
         !Device.query().where('id', body.id).exists() &&
-        payload.routingKey === RoutingKeys.DEVICES_ENTITY_DELETED
+        payload.routingKey === RoutingKeys.DEVICE_ENTITY_DELETED
       ) {
         return true
       }
 
-      if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_DELETED) {
+      if (payload.routingKey === RoutingKeys.DEVICE_ENTITY_DELETED) {
         commit('SET_SEMAPHORE', {
           type: SemaphoreTypes.DELETING,
           id: body.id,
@@ -515,12 +515,12 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           })
         }
       } else {
-        if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
+        if (payload.routingKey === RoutingKeys.DEVICE_ENTITY_UPDATED && state.semaphore.updating.includes(body.id)) {
           return true
         }
 
         commit('SET_SEMAPHORE', {
-          type: payload.routingKey === RoutingKeys.DEVICES_ENTITY_REPORTED ? SemaphoreTypes.GETTING : (payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING),
+          type: payload.routingKey === RoutingKeys.DEVICE_ENTITY_REPORTED ? SemaphoreTypes.GETTING : (payload.routingKey === RoutingKeys.DEVICE_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING),
           id: body.id,
         })
 
@@ -533,7 +533,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
             const camelName = attrName.replace(camelRegex, g => g[1].toUpperCase())
 
             if (camelName === 'type') {
-              if (payload.routingKey === RoutingKeys.DEVICES_ENTITY_CREATED) {
+              if (payload.routingKey === RoutingKeys.DEVICE_ENTITY_CREATED) {
                 entityData[camelName] = `${payload.source}/device/${body[attrName]}`
               }
             } else {
@@ -559,7 +559,7 @@ const moduleActions: ActionTree<DeviceState, unknown> = {
           )
         } finally {
           commit('CLEAR_SEMAPHORE', {
-            type: payload.routingKey === RoutingKeys.DEVICES_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
+            type: payload.routingKey === RoutingKeys.DEVICE_ENTITY_UPDATED ? SemaphoreTypes.UPDATING : SemaphoreTypes.CREATING,
             id: body.id,
           })
         }

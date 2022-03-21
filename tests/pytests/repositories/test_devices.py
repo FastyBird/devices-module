@@ -71,7 +71,7 @@ class TestDevicesRepository(DbTestCase):
         )
         self.assertIsInstance(
             self.validate_exchange_data(
-                routing_key=RoutingKey.DEVICES_ENTITY_REPORTED,
+                routing_key=RoutingKey.DEVICE_ENTITY_REPORTED,
                 data=entity.to_dict(),
             ),
             dict,

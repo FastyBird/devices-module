@@ -38,7 +38,7 @@
     "lint:ts": "tslint -c tslint.json 'public/**/*.ts'"
   },
   "dependencies": {
-    "@fastybird/metadata": "^0.46",
+    "@fastybird/metadata": "^0.47",
     "@fastybird/vue-wamp-v1": "^0.1",
     "@fastybird/vuex-orm-wamp": "^0.1",
     "@fastybird/web-ui-theme": "^0.2.9",

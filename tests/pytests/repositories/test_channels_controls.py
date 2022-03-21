@@ -61,7 +61,7 @@ class TestChannelControlsRepository(DbTestCase):
         )
         self.assertIsInstance(
             self.validate_exchange_data(
-                routing_key=RoutingKey.CHANNELS_CONTROL_ENTITY_REPORTED,
+                routing_key=RoutingKey.CHANNEL_CONTROL_ENTITY_REPORTED,
                 data=entity.to_dict(),
             ),
             dict,

@@ -69,7 +69,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				unset($data['id']);
 
 				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
-				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_CREATED_ENTITY_ROUTING_KEY, $key);
+				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_CREATED_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'virtual',
@@ -140,7 +140,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				unset($data['id']);
 
 				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
-				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_UPDATED_ENTITY_ROUTING_KEY, $key);
+				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_UPDATED_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'virtual',
@@ -210,7 +210,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				unset($data['id']);
 
 				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
-				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICES_DELETED_ENTITY_ROUTING_KEY, $key);
+				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_DELETED_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
 					'type'                  => 'virtual',

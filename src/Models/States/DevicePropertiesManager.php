@@ -143,7 +143,7 @@ final class DevicePropertiesManager
 
 		$this->publisher->publish(
 			$property->getSource(),
-			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_DEVICES_PROPERTY_ENTITY_UPDATED),
+			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_DEVICES_PROPERTIES_ENTITY_UPDATED),
 			Utils\ArrayHash::from(array_merge($property->toArray(), [
 				'actual_value'   => $state === null ? null : MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()),
 				'expected_value' => $state === null ? null : MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat()),

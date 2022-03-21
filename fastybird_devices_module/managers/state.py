@@ -294,7 +294,7 @@ class ConnectorPropertiesStatesManager:
 
         self.__publisher.publish(
             source=connector_property.source,
-            routing_key=RoutingKey.CONNECTORS_PROPERTY_ENTITY_UPDATED,
+            routing_key=RoutingKey.CONNECTORS_PROPERTIES_ENTITY_UPDATED,
             data={
                 **connector_property.to_dict(),
                 **{
@@ -454,7 +454,7 @@ class DevicePropertiesStatesManager:
 
         self.__publisher.publish(
             source=device_property.source,
-            routing_key=RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED,
+            routing_key=RoutingKey.DEVICES_PROPERTIES_ENTITY_UPDATED,
             data={
                 **device_property.to_dict(),
                 **{
@@ -617,7 +617,7 @@ class ChannelPropertiesStatesManager:
 
         self.__publisher.publish(
             source=channel_property.source,
-            routing_key=RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED,
+            routing_key=RoutingKey.CHANNELS_PROPERTIES_ENTITY_UPDATED,
             data={
                 **channel_property.to_dict(),
                 **{

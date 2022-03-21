@@ -53,8 +53,8 @@ class ConnectorConsumer(IConsumer):  # pylint: disable=too-few-public-methods
     __ENTITY_DELETED_KEY: str = "deleted"
 
     __PROPERTIES_ACTIONS_ROUTING_KEYS: List[RoutingKey] = [
-        RoutingKey.DEVICE_PROPERTY_ACTION,
-        RoutingKey.CHANNEL_PROPERTY_ACTION,
+        RoutingKey.DEVICE_PROPERTIES_ACTION,
+        RoutingKey.CHANNEL_PROPERTIES_ACTION,
     ]
 
     __CONTROLS_ACTIONS_ROUTING_KEYS: List[RoutingKey] = [

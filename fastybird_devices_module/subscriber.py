@@ -125,38 +125,38 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
     CREATED_ENTITIES_ROUTING_KEYS_MAPPING: Dict[Type[Base], RoutingKey] = {
         ConnectorEntity: RoutingKey.CONNECTORS_ENTITY_CREATED,
-        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTY_ENTITY_CREATED,
-        ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_CREATED,
+        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTIES_ENTITY_CREATED,
+        ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROLS_ENTITY_CREATED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_CREATED,
-        DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_CREATED,
-        DeviceControlEntity: RoutingKey.DEVICES_CONTROL_ENTITY_CREATED,
+        DevicePropertyEntity: RoutingKey.DEVICES_PROPERTIES_ENTITY_CREATED,
+        DeviceControlEntity: RoutingKey.DEVICES_CONTROLS_ENTITY_CREATED,
         ChannelEntity: RoutingKey.CHANNELS_ENTITY_CREATED,
-        ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTY_ENTITY_CREATED,
-        ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_CREATED,
+        ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTIES_ENTITY_CREATED,
+        ChannelControlEntity: RoutingKey.CHANNELS_CONTROLS_ENTITY_CREATED,
     }
 
     UPDATED_ENTITIES_ROUTING_KEYS_MAPPING: Dict[Type[Base], RoutingKey] = {
         ConnectorEntity: RoutingKey.CONNECTORS_ENTITY_UPDATED,
-        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTY_ENTITY_UPDATED,
-        ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_UPDATED,
+        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTIES_ENTITY_UPDATED,
+        ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROLS_ENTITY_UPDATED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_UPDATED,
-        DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_UPDATED,
-        DeviceControlEntity: RoutingKey.DEVICES_CONTROL_ENTITY_UPDATED,
+        DevicePropertyEntity: RoutingKey.DEVICES_PROPERTIES_ENTITY_UPDATED,
+        DeviceControlEntity: RoutingKey.DEVICES_CONTROLS_ENTITY_UPDATED,
         ChannelEntity: RoutingKey.CHANNELS_ENTITY_UPDATED,
-        ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTY_ENTITY_UPDATED,
-        ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_UPDATED,
+        ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTIES_ENTITY_UPDATED,
+        ChannelControlEntity: RoutingKey.CHANNELS_CONTROLS_ENTITY_UPDATED,
     }
 
     DELETED_ENTITIES_ROUTING_KEYS_MAPPING: Dict[Type[Base], RoutingKey] = {
         ConnectorEntity: RoutingKey.CONNECTORS_ENTITY_DELETED,
-        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTY_ENTITY_DELETED,
-        ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROL_ENTITY_DELETED,
+        ConnectorPropertyEntity: RoutingKey.CONNECTORS_PROPERTIES_ENTITY_DELETED,
+        ConnectorControlEntity: RoutingKey.CONNECTORS_CONTROLS_ENTITY_DELETED,
         DeviceEntity: RoutingKey.DEVICES_ENTITY_DELETED,
-        DevicePropertyEntity: RoutingKey.DEVICES_PROPERTY_ENTITY_DELETED,
-        DeviceControlEntity: RoutingKey.DEVICES_CONTROL_ENTITY_DELETED,
+        DevicePropertyEntity: RoutingKey.DEVICES_PROPERTIES_ENTITY_DELETED,
+        DeviceControlEntity: RoutingKey.DEVICES_CONTROLS_ENTITY_DELETED,
         ChannelEntity: RoutingKey.CHANNELS_ENTITY_DELETED,
-        ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTY_ENTITY_DELETED,
-        ChannelControlEntity: RoutingKey.CHANNELS_CONTROL_ENTITY_DELETED,
+        ChannelPropertyEntity: RoutingKey.CHANNELS_PROPERTIES_ENTITY_DELETED,
+        ChannelControlEntity: RoutingKey.CHANNELS_CONTROLS_ENTITY_DELETED,
     }
 
     __publisher: Optional[Publisher] = None

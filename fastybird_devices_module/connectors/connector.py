@@ -648,10 +648,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             except ValueError:
                 return
 
-        if item.routing_key in (
-            RoutingKey.DEVICE_PROPERTY_ENTITY_CREATED,
-            RoutingKey.DEVICE_PROPERTY_ENTITY_UPDATED
-        ):
+        if item.routing_key in (RoutingKey.DEVICE_PROPERTY_ENTITY_CREATED, RoutingKey.DEVICE_PROPERTY_ENTITY_UPDATED):
             close_all_sessions()
 
             try:
@@ -788,8 +785,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 return
 
             self.__connector.initialize_device_channel_property(
-                channel=channel_entity,
-                channel_property=channel_property_entity
+                channel=channel_entity, channel_property=channel_property_entity
             )
 
         if item.routing_key == RoutingKey.CHANNEL_PROPERTY_ENTITY_DELETED:

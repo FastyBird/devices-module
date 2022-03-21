@@ -125,13 +125,13 @@ class IConnector(ABC):
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def initialize_device_property(self, device_property: DevicePropertyEntity) -> None:
+    def initialize_device_property(self, device: DeviceEntity, device_property: DevicePropertyEntity) -> None:
         """Initialize device property in connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def remove_device_property(self, property_id: uuid.UUID) -> None:
+    def remove_device_property(self, device: DeviceEntity, property_id: uuid.UUID) -> None:
         """Remove device from connector"""
 
     # -----------------------------------------------------------------------------
@@ -143,13 +143,13 @@ class IConnector(ABC):
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def initialize_device_channel(self, channel: ChannelEntity) -> None:
+    def initialize_device_channel(self, device: DeviceEntity, channel: ChannelEntity) -> None:
         """Initialize device channel in connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def remove_device_channel(self, channel_id: uuid.UUID) -> None:
+    def remove_device_channel(self, device: DeviceEntity, channel_id: uuid.UUID) -> None:
         """Remove device channel from connector"""
 
     # -----------------------------------------------------------------------------
@@ -161,13 +161,17 @@ class IConnector(ABC):
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def initialize_device_channel_property(self, channel_property: ChannelPropertyEntity) -> None:
+    def initialize_device_channel_property(
+        self,
+        channel: ChannelEntity,
+        channel_property: ChannelPropertyEntity,
+    ) -> None:
         """Initialize device channel property in connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def remove_device_channel_property(self, property_id: uuid.UUID) -> None:
+    def remove_device_channel_property(self, channel: ChannelEntity, property_id: uuid.UUID) -> None:
         """Remove device channel property from connector"""
 
     # -----------------------------------------------------------------------------
@@ -390,6 +394,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                     self.__handle_entity_event(item=queue_item)
 
             except Exception as ex:  # pylint: disable=broad-except
+                self.__logger.exception(ex)
                 self.__logger.error(
                     "An unexpected error occurred during processing queue item",
                     extra={
@@ -430,6 +435,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.initialize(settings=connector.params)
 
         except Exception as ex:  # pylint: disable=broad-except
+            print(ex)
             raise Exception("Connector could not be loaded") from ex
 
     # -----------------------------------------------------------------------------
@@ -472,6 +478,11 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if device_property is None:
                 return
 
+            if device_property.parent_id is not None:
+                device_property = self.__devices_properties_repository.get_by_id(
+                    property_id=uuid.UUID(bytes=device_property.parent_id, version=4),
+                )
+
             self.__connector.write_property(device_property, item.data)
 
         if item.routing_key == RoutingKey.CHANNEL_PROPERTY_ACTION:
@@ -485,6 +496,11 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             if channel_property is None:
                 return
+
+            if channel_property.parent_id is not None:
+                channel_property = self.__channels_properties_repository.get_by_id(
+                    property_id=uuid.UUID(bytes=channel_property.parent_id, version=4),
+                )
 
             self.__connector.write_property(channel_property, item.data)
 
@@ -566,7 +582,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             try:
                 connector_entity = self.__connectors_repository.get_by_id(
-                    connector_id=uuid.UUID(item.data.get("connector"), version=4),
+                    connector_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
                 if connector_entity is None or not connector_entity.id.__eq__(di["connector"].id):
@@ -588,7 +604,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             close_all_sessions()
 
             try:
-                if not di["connector"].id.__eq__(uuid.UUID(item.data.get("connector"), version=4)):
+                if not di["connector"].id.__eq__(uuid.UUID(item.data.get("id"), version=4)):
                     return
 
                 raise TerminateConnectorException("Connector was removed from database, terminating connector service")
@@ -601,7 +617,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             try:
                 device_entity = self.__devices_repository.get_by_id(
-                    device_id=uuid.UUID(item.data.get("device"), version=4),
+                    device_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
             except ValueError:
@@ -618,7 +634,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             close_all_sessions()
 
             try:
-                self.__connector.remove_device(uuid.UUID(item.data.get("device"), version=4))
+                self.__connector.remove_device(uuid.UUID(item.data.get("id"), version=4))
 
             except ValueError:
                 return
@@ -627,8 +643,19 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             close_all_sessions()
 
             try:
+                device_entity = self.__devices_repository.get_by_id(
+                    device_id=uuid.UUID(item.data.get("device"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if device_entity is None:
+                return
+
+            try:
                 device_property_entity = self.__devices_properties_repository.get_by_id(
-                    property_id=uuid.UUID(item.data.get("property"), version=4),
+                    property_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
             except ValueError:
@@ -639,14 +666,26 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.initialize_device_property(device_property=device_property_entity)
+            self.__connector.initialize_device_property(device=device_entity, device_property=device_property_entity)
 
         if item.routing_key == RoutingKey.DEVICES_PROPERTY_ENTITY_DELETED:
             close_all_sessions()
 
             try:
-                self.__connector.remove_device_channel_property(
-                    property_id=uuid.UUID(item.data.get("property"), version=4),
+                device_entity = self.__devices_repository.get_by_id(
+                    device_id=uuid.UUID(item.data.get("device"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if device_entity is None:
+                return
+
+            try:
+                self.__connector.remove_device_property(
+                    device=device_entity,
+                    property_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
             except ValueError:
@@ -657,7 +696,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             try:
                 channel_entity = self.__channels_repository.get_by_id(
-                    channel_id=uuid.UUID(item.data.get("channel"), version=4),
+                    channel_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
             except ValueError:
@@ -668,13 +707,40 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.initialize_device_channel(channel=channel_entity)
+            try:
+                device_entity = self.__devices_repository.get_by_id(
+                    device_id=uuid.UUID(item.data.get("device"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if device_entity is None:
+                self.__logger.warning("Device was not found in database")
+
+                return
+
+            self.__connector.initialize_device_channel(device=device_entity, channel=channel_entity)
 
         if item.routing_key == RoutingKey.CHANNELS_ENTITY_DELETED:
             close_all_sessions()
 
             try:
-                self.__connector.remove_device_channel(channel_id=uuid.UUID(item.data.get("channel"), version=4))
+                device_entity = self.__devices_repository.get_by_id(
+                    device_id=uuid.UUID(item.data.get("device"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if device_entity is None:
+                return
+
+            try:
+                self.__connector.remove_device_channel(
+                    device=device_entity,
+                    channel_id=uuid.UUID(item.data.get("id"), version=4),
+                )
 
             except ValueError:
                 return
@@ -687,7 +753,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
             try:
                 channel_property_entity = self.__channels_properties_repository.get_by_id(
-                    property_id=uuid.UUID(item.data.get("property"), version=4),
+                    property_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
             except ValueError:
@@ -698,14 +764,40 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.initialize_device_channel_property(channel_property=channel_property_entity)
+            try:
+                channel_entity = self.__channels_repository.get_by_id(
+                    channel_id=uuid.UUID(item.data.get("channel"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if channel_entity is None:
+                return
+
+            self.__connector.initialize_device_channel_property(
+                channel=channel_entity,
+                channel_property=channel_property_entity
+            )
 
         if item.routing_key == RoutingKey.CHANNELS_PROPERTY_ENTITY_DELETED:
             close_all_sessions()
 
             try:
+                channel_entity = self.__channels_repository.get_by_id(
+                    channel_id=uuid.UUID(item.data.get("channel"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if channel_entity is None:
+                return
+
+            try:
                 self.__connector.remove_device_channel_property(
-                    property_id=uuid.UUID(item.data.get("property"), version=4),
+                    channel=channel_entity,
+                    property_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
             except ValueError:

@@ -240,12 +240,15 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					return;
 				}
 
+				$actualValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()) : null;
+				$expectedValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()) : null;
+
 				$this->publisher->publish(
 					$entity->getSource(),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()),
-						'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()),
+						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
+						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);
@@ -266,12 +269,15 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					return;
 				}
 
+				$actualValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()) : null;
+				$expectedValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()) : null;
+
 				$this->publisher->publish(
 					$entity->getSource(),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()),
-						'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()),
+						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
+						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);
@@ -292,12 +298,15 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					return;
 				}
 
+				$actualValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()) : null;
+				$expectedValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()) : null;
+
 				$this->publisher->publish(
 					$entity->getSource(),
 					$publishRoutingKey,
 					Utils\ArrayHash::from(array_merge($state !== null ? [
-						'actual_value'   => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()),
-						'expected_value' => MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()),
+						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
+						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
 					] : [], $entity->toArray()))
 				);

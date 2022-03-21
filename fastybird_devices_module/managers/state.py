@@ -34,6 +34,7 @@ from kink import inject
 from fastybird_devices_module.entities.channel import ChannelPropertyEntity
 from fastybird_devices_module.entities.connector import ConnectorPropertyEntity
 from fastybird_devices_module.entities.device import DevicePropertyEntity
+from fastybird_devices_module.repositories.channel import ChannelPropertiesRepository
 from fastybird_devices_module.state.property import (
     IChannelPropertyState,
     IConnectorPropertyState,
@@ -384,6 +385,12 @@ class DevicePropertiesStatesManager:
             state=updated_state,
         )
 
+        for child in device_property.children:
+            self.__publish_entity(
+                device_property=child,
+                state=updated_state,
+            )
+
         return updated_state
 
     # -----------------------------------------------------------------------------
@@ -407,6 +414,12 @@ class DevicePropertiesStatesManager:
                 device_property=device_property,
                 state=None,
             )
+
+            for child in device_property.children:
+                self.__publish_entity(
+                    device_property=child,
+                    state=None,
+                )
 
         return result
 
@@ -473,6 +486,7 @@ class ChannelPropertiesStatesManager:
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
+    __repository: ChannelPropertiesRepository
     __manager: Optional[IChannelPropertiesStatesManager] = None
 
     __publisher: Optional[Publisher] = None
@@ -481,9 +495,11 @@ class ChannelPropertiesStatesManager:
 
     def __init__(
         self,
+        repository: ChannelPropertiesRepository,
         manager: Optional[IChannelPropertiesStatesManager] = None,
         publisher: Optional[Publisher] = None,
     ) -> None:
+        self.__repository = repository
         self.__manager = manager
         self.__publisher = publisher
 
@@ -532,6 +548,12 @@ class ChannelPropertiesStatesManager:
             state=updated_state,
         )
 
+        for child in self.__repository.get_all_by_parent(property_id=channel_property.id):
+            self.__publish_entity(
+                channel_property=child,
+                state=updated_state,
+            )
+
         return updated_state
 
     # -----------------------------------------------------------------------------
@@ -553,6 +575,12 @@ class ChannelPropertiesStatesManager:
         if result is True:
             self.__publish_entity(
                 channel_property=channel_property,
+                state=None,
+            )
+
+        for child in self.__repository.get_all_by_parent(property_id=channel_property.id):
+            self.__publish_entity(
+                channel_property=child,
                 state=None,
             )
 

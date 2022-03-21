@@ -140,7 +140,11 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 			) {
 				$dataType = MetadataTypes\DataTypeType::get((string) $rawDataType);
 
-				if ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+				if (
+					$dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
+					|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
+					|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
+				) {
 					return implode(',', array_map(function ($item): string {
 						return is_array($item) ? implode(':', $item) : $item;
 					}, $rawFormat));

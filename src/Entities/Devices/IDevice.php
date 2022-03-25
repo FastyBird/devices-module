@@ -40,21 +40,30 @@ interface IDevice extends Entities\IEntity,
 	public function getType(): string;
 
 	/**
-	 * @return IDevice|null
+	 * @return IDevice[]
 	 */
-	public function getParent(): ?IDevice;
+	public function getParents(): array;
+
+	/**
+	 * @param IDevice[] $parents
+	 *
+	 * @return void
+	 */
+	public function setParents(array $parents): void;
 
 	/**
 	 * @param IDevice $device
 	 *
 	 * @return void
 	 */
-	public function setParent(IDevice $device): void;
+	public function addParent(IDevice $device): void;
 
 	/**
+	 * @param IDevice $parent
+	 *
 	 * @return void
 	 */
-	public function removeParent(): void;
+	public function removeParent(IDevice $parent): void;
 
 	/**
 	 * @return IDevice[]

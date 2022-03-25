@@ -26,7 +26,7 @@
             "related" : "/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa"
           },
           "data" : {
-            "type" : "com.fastybird.devices-module/device/virtual",
+            "type" : "com.fastybird.devices-module/device/blank",
             "id" : "69786d15-fd0c-4d9f-9378-33287c2009fa"
           }
         }

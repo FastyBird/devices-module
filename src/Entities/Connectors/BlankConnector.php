@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * VirtualConnector.php
+ * BlankConnector.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -21,10 +21,10 @@ use FastyBird\DevicesModule\Entities;
 /**
  * @ORM\Entity
  */
-class VirtualConnector extends Entities\Connectors\Connector implements IVirtualConnector
+class BlankConnector extends Entities\Connectors\Connector implements IBlankConnector
 {
 
-	public const CONNECTOR_TYPE = 'virtual';
+	public const CONNECTOR_TYPE = 'blank';
 
 	/**
 	 * {@inheritDoc}

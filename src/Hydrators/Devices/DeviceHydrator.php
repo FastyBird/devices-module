@@ -46,6 +46,7 @@ abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 	/** @var string[] */
 	protected array $relationships = [
 		Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONNECTOR,
+		Schemas\Devices\DeviceSchema::RELATIONSHIPS_PARENTS,
 	];
 
 	/**

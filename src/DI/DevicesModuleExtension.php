@@ -173,6 +173,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Controllers\DeviceChildrenV1Controller::class)
 			->addTag('nette.inject');
 
+		$builder->addDefinition($this->prefix('controllers.deviceParents'), new DI\Definitions\ServiceDefinition())
+			->setType(Controllers\DeviceParentsV1Controller::class)
+			->addTag('nette.inject');
+
 		$builder->addDefinition($this->prefix('controllers.deviceProperties'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DevicePropertiesV1Controller::class)
 			->addTag('nette.inject');
@@ -214,8 +218,8 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->addTag('nette.inject');
 
 		// API schemas
-		$builder->addDefinition($this->prefix('schemas.device.virtual'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\VirtualDeviceSchema::class);
+		$builder->addDefinition($this->prefix('schemas.device.blank'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\BlankDeviceSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Properties\DynamicPropertySchema::class);
@@ -238,8 +242,8 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('schemas.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Controls\ControlSchema::class);
 
-		$builder->addDefinition($this->prefix('schemas.connector.virtual'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\VirtualConnectorSchema::class);
+		$builder->addDefinition($this->prefix('schemas.connector.blank'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Connectors\BlankConnectorSchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Connectors\Properties\DynamicPropertySchema::class);
@@ -251,8 +255,8 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Schemas\Connectors\Controls\ControlSchema::class);
 
 		// API hydrators
-		$builder->addDefinition($this->prefix('hydrators.device.virtual'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Devices\VirtualDeviceHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.device.blank'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Devices\BlankDeviceHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\DeviceDynamicPropertyHydrator::class);
@@ -269,8 +273,8 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('hydrators.channel.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\ChannelStaticPropertyHydrator::class);
 
-		$builder->addDefinition($this->prefix('hydrators.connectors.virtual'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Connectors\VirtualConnectorHydrator::class);
+		$builder->addDefinition($this->prefix('hydrators.connectors.blank'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Connectors\BlankConnectorHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.connector.property.dynamic'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\ConnectorDynamicPropertyHydrator::class);

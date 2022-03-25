@@ -23,7 +23,7 @@ from fastybird_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from fastybird_devices_module.entities.connector import ConnectorEntity, VirtualConnectorEntity
+from fastybird_devices_module.entities.connector import ConnectorEntity, BlankConnectorEntity
 from fastybird_devices_module.managers.connector import ConnectorsManager
 from fastybird_devices_module.repositories.connector import ConnectorsRepository
 
@@ -41,19 +41,19 @@ class TestConnectorsManager(DbTestCase):
         with patch.object(Publisher, "publish") as MockPublisher:
             connector_entity = connectors_manager.create(
                 data={
-                    "identifier": "virtual-02",
-                    "name": "Other virtual connector",
+                    "identifier": "blank-02",
+                    "name": "Other blank connector",
                     "enabled": False,
                     "id": uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),
                 },
-                connector_type=VirtualConnectorEntity,
+                connector_type=BlankConnectorEntity,
             )
 
         MockPublisher.assert_called_once()
 
-        self.assertIsInstance(connector_entity, VirtualConnectorEntity)
+        self.assertIsInstance(connector_entity, BlankConnectorEntity)
         self.assertEqual("26d7a945-ba29-471e-9e3c-304ef0acb199", connector_entity.id.__str__())
-        self.assertEqual("Other virtual connector", connector_entity.name)
+        self.assertEqual("Other blank connector", connector_entity.name)
         self.assertFalse(connector_entity.enabled)
         self.assertIsNotNone(connector_entity.created_at)
 
@@ -86,13 +86,13 @@ class TestConnectorsManager(DbTestCase):
 
         MockPublisher.assert_called_once()
 
-        self.assertIsInstance(connector_entity, VirtualConnectorEntity)
+        self.assertIsInstance(connector_entity, BlankConnectorEntity)
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", connector_entity.id.__str__())
-        self.assertEqual("Virtual", connector_entity.name)
+        self.assertEqual("Blank", connector_entity.name)
         self.assertFalse(connector_entity.enabled)
 
         entity = connector_repository.get_by_id(
             connector_id=uuid.UUID("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", version=4),
         )
 
-        self.assertIsInstance(entity, VirtualConnectorEntity)
+        self.assertIsInstance(entity, BlankConnectorEntity)

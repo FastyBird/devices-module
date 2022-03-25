@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * VirtualDevice.php
+ * BlankDevice.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -21,10 +21,10 @@ use FastyBird\DevicesModule\Entities;
 /**
  * @ORM\Entity
  */
-class VirtualDevice extends Entities\Devices\Device implements IVirtualDevice
+class BlankDevice extends Entities\Devices\Device implements IBlankDevice
 {
 
-	public const DEVICE_TYPE = 'virtual';
+	public const DEVICE_TYPE = 'blank';
 
 	/**
 	 * {@inheritDoc}

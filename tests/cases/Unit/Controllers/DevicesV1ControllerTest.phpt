@@ -59,11 +59,24 @@ final class DevicesV1ControllerTest extends DbTestCase
 	 * @param string $body
 	 * @param int $statusCode
 	 * @param string $fixture
+	 * @param string|null $secondUrl
+	 * @param string|null $secondToken
+	 * @param int|null $secondStatusCode
+	 * @param string|null $secondFixture
 	 *
 	 * @dataProvider ./../../../fixtures/Controllers/devicesCreate.php
 	 */
-	public function testCreate(string $url, ?string $token, string $body, int $statusCode, string $fixture): void
-	{
+	public function testCreate(
+		string $url,
+		?string $token,
+		string $body,
+		int $statusCode,
+		string $fixture,
+		?string $secondUrl = null,
+		?string $secondToken = null,
+		?int $secondStatusCode = null,
+		?string $secondFixture = null
+	): void {
 		/** @var SlimRouter\Routing\IRouter $router */
 		$router = $this->getContainer()->getByType(SlimRouter\Routing\IRouter::class);
 
@@ -88,6 +101,29 @@ final class DevicesV1ControllerTest extends DbTestCase
 		);
 		Assert::same($statusCode, $response->getStatusCode());
 		Assert::type(Http\Response::class, $response);
+
+		if ($secondUrl !== null && $secondStatusCode !== null && $secondFixture !== null) {
+			$headers = [];
+
+			if ($secondToken !== null) {
+				$headers['authorization'] = $secondToken;
+			}
+
+			$request = new ServerRequest(
+				RequestMethodInterface::METHOD_GET,
+				$secondUrl,
+				$headers
+			);
+
+			$response = $router->handle($request);
+
+			Tools\JsonAssert::assertFixtureMatch(
+				$secondFixture,
+				(string) $response->getBody()
+			);
+			Assert::same($secondStatusCode, $response->getStatusCode());
+			Assert::type(Http\Response::class, $response);
+		}
 	}
 
 	/**

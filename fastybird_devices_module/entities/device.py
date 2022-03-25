@@ -57,6 +57,32 @@ from fastybird_devices_module.entities.property import PropertyMixin
 from fastybird_devices_module.exceptions import InvalidArgumentException
 
 
+class DevicesChildrenEntity(Base):
+    """
+    Device parent child relation entity
+
+    @package        FastyBird:DevicesModule!
+    @module         entities/device
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __tablename__: str = "fb_devices_module_devices_children"
+
+    col_parent_device: bytes = Column(  # type: ignore[assignment]
+        BINARY(16),
+        ForeignKey("fb_devices_module_devices.device_id"),
+        name="parent_device",
+        primary_key=True,
+    )
+    col_child_device: bytes = Column(  # type: ignore[assignment]
+        BINARY(16),
+        ForeignKey("fb_devices_module_devices.device_id"),
+        name="child_device",
+        primary_key=True,
+    )
+
+
 class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: disable=too-many-instance-attributes
     """
     Device entity
@@ -122,12 +148,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
 
     col_params: Optional[Dict] = Column(JSON, name="params", nullable=True)  # type: ignore[assignment]
 
-    parent_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
-        BINARY(16),
-        ForeignKey("fb_devices_module_devices.device_id", ondelete="SET NULL"),
-        name="parent_id",
-        nullable=True,
-    )
     connector_id: Optional[bytes] = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
         BINARY(16),
         ForeignKey("fb_devices_module_connectors.connector_id", ondelete="CASCADE"),
@@ -135,8 +155,19 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
         nullable=False,
     )
 
+    parents: List["DeviceEntity"] = relationship(  # type: ignore[assignment]
+        "DeviceEntity",
+        secondary="fb_devices_module_devices_children",
+        primaryjoin=col_device_id == DevicesChildrenEntity.col_child_device,
+        secondaryjoin=col_device_id == DevicesChildrenEntity.col_parent_device,
+        back_populates="children",
+    )
     children: List["DeviceEntity"] = relationship(  # type: ignore[assignment]
-        "DeviceEntity", backref=backref("parent", remote_side=[col_device_id])
+        "DeviceEntity",
+        secondary="fb_devices_module_devices_children",
+        primaryjoin=col_device_id == DevicesChildrenEntity.col_parent_device,
+        secondaryjoin=col_device_id == DevicesChildrenEntity.col_child_device,
+        back_populates="parents",
     )
 
     properties: List["DevicePropertyEntity"] = relationship(  # type: ignore[assignment]
@@ -398,11 +429,20 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
 
     def to_dict(self) -> Dict[str, Union[str, int, bool, List[str], Dict, None]]:
         """Transform entity to dictionary"""
+        parents: List[str] = []
+
+        for parent in self.parents:
+            parents.append(parent.id.__str__())
+
+        children: List[str] = []
+
+        for child in self.children:
+            children.append(child.id.__str__())
+
         return {
             "id": self.id.__str__(),
             "type": self.type,
             "identifier": self.identifier,
-            "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
             "name": self.name,
             "comment": self.comment,
             "enabled": self.enabled,
@@ -419,13 +459,15 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
             else self.firmware_manufacturer,
             "firmware_version": self.firmware_version,
             "connector": uuid.UUID(bytes=self.connector_id).__str__(),
+            "parents": parents,
+            "children": children,
             "owner": self.owner,
         }
 
 
-class VirtualDeviceEntity(DeviceEntity):
+class BlankDeviceEntity(DeviceEntity):
     """
-    Virtual device entity
+    Blank device entity
 
     @package        FastyBird:DevicesModule!
     @module         entities/device
@@ -433,14 +475,14 @@ class VirtualDeviceEntity(DeviceEntity):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __mapper_args__ = {"polymorphic_identity": "virtual"}
+    __mapper_args__ = {"polymorphic_identity": "blank"}
 
     # -----------------------------------------------------------------------------
 
     @property
     def type(self) -> str:
         """Device type"""
-        return "virtual"
+        return "blank"
 
 
 class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin, Base):
@@ -703,17 +745,24 @@ class DevicePropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin
             ButtonPayload,
             SwitchPayload,
             List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+            List[str],
             Tuple[Optional[int], Optional[int]],
             Tuple[Optional[float], Optional[float]],
             None,
         ],
     ]:
         """Transform entity to dictionary"""
+        children: List[str] = []
+
+        for child in self.children:
+            children.append(child.id.__str__())
+
         return {
             **super().to_dict(),
             **{
                 "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
+                "children": children,
                 "owner": self.device.owner,
             },
         }

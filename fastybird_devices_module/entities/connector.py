@@ -231,9 +231,9 @@ class ConnectorEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         }
 
 
-class VirtualConnectorEntity(ConnectorEntity):
+class BlankConnectorEntity(ConnectorEntity):
     """
-    Virtual connector entity
+    Blank connector entity
 
     @package        FastyBird:DevicesModule!
     @module         entities/connector
@@ -241,14 +241,14 @@ class VirtualConnectorEntity(ConnectorEntity):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __mapper_args__ = {"polymorphic_identity": "virtual"}
+    __mapper_args__ = {"polymorphic_identity": "blank"}
 
     # -----------------------------------------------------------------------------
 
     @property
     def type(self) -> str:
         """Connector type"""
-        return "virtual"
+        return "blank"
 
 
 class ConnectorPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixin, Base):
@@ -322,6 +322,7 @@ class ConnectorPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMi
             ButtonPayload,
             SwitchPayload,
             List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+            List[str],
             Tuple[Optional[int], Optional[int]],
             Tuple[Optional[float], Optional[float]],
             None,

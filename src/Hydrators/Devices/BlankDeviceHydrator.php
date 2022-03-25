@@ -1,33 +1,33 @@
 <?php declare(strict_types = 1);
 
 /**
- * VirtualConnectorHydrator.php
+ * BlankDeviceHydrator.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
- * @since          0.6.0
+ * @since          0.9.0
  *
- * @date           07.12.21
+ * @date           07.02.22
  */
 
-namespace FastyBird\DevicesModule\Hydrators\Connectors;
+namespace FastyBird\DevicesModule\Hydrators\Devices;
 
 use FastyBird\DevicesModule\Entities;
 
 /**
- * Virtual connector entity hydrator
+ * Blank device entity hydrator
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends ConnectorHydrator<Entities\Connectors\IVirtualConnector>
+ * @phpstan-extends DeviceHydrator<Entities\Devices\IBlankDevice>
  */
-final class VirtualConnectorHydrator extends ConnectorHydrator
+final class BlankDeviceHydrator extends DeviceHydrator
 {
 
 	/**
@@ -35,7 +35,7 @@ final class VirtualConnectorHydrator extends ConnectorHydrator
 	 */
 	public function getEntityName(): string
 	{
-		return Entities\Connectors\VirtualConnector::class;
+		return Entities\Devices\BlankDevice::class;
 	}
 
 }

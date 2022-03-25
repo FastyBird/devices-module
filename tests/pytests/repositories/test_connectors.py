@@ -56,9 +56,9 @@ class TestConnectorsRepository(DbTestCase):
         self.assertEqual(
             {
                 "id": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
-                "type": "virtual",
-                'identifier': 'virtual',
-                "name": "Virtual",
+                "type": "blank",
+                'identifier': 'blank',
+                "name": "Blank",
                 "comment": None,
                 "enabled": True,
                 "owner": None,

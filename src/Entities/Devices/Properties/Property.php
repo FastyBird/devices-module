@@ -67,14 +67,14 @@ abstract class Property extends Entities\Property implements IProperty
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Properties\Property", inversedBy="children")
-	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="property_id", nullable=true, onDelete="SET NULL")
+	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="property_id", nullable=true, onDelete="CASCADE")
 	 */
 	protected ?IProperty $parent = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, IProperty>
 	 *
-	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Properties\Property", mappedBy="parent")
+	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Properties\Property", mappedBy="parent", cascade={"remove"}, orphanRemoval=true)
 	 */
 	protected Common\Collections\Collection $children;
 
@@ -377,9 +377,16 @@ abstract class Property extends Entities\Property implements IProperty
 	 */
 	public function toArray(): array
 	{
+		$children = [];
+
+		foreach ($this->getChildren() as $child) {
+			$children[] = $child->getPlainId();
+		}
+
 		return array_merge(parent::toArray(), [
-			'device' => $this->getDevice()->getPlainId(),
-			'parent' => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
+			'device'   => $this->getDevice()->getPlainId(),
+			'parent'   => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
+			'children' => $children,
 
 			'owner' => $this->getDevice()->getOwnerId(),
 		]);

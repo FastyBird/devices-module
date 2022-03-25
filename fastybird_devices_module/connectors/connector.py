@@ -368,6 +368,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 self.__connector.handle()
 
         except Exception as ex:  # pylint: disable=broad-except
+            self.__logger.exception(ex)
             self.__logger.error(
                 "An unexpected error occurred during connector handling process",
                 extra={

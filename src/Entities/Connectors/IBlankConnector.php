@@ -1,29 +1,29 @@
 <?php declare(strict_types = 1);
 
 /**
- * IVirtualDevice.php
+ * IBlankConnector.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Entities
- * @since          0.9.0
+ * @since          0.6.0
  *
- * @date           07.01.22
+ * @date           07.12.21
  */
 
-namespace FastyBird\DevicesModule\Entities\Devices;
+namespace FastyBird\DevicesModule\Entities\Connectors;
 
 /**
- * Virtual device entity interface
+ * Blank connector entity interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Entities
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IVirtualDevice extends IDevice
+interface IBlankConnector extends IConnector
 {
 
 }

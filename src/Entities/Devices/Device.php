@@ -48,7 +48,7 @@ use Throwable;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="device_type", type="string", length=40)
  * @ORM\DiscriminatorMap({
- *    "virtual" = "FastyBird\DevicesModule\Entities\Devices\VirtualDevice"
+ *    "device" = "FastyBird\DevicesModule\Entities\Devices\Device"
  * })
  * @ORM\MappedSuperclass
  */
@@ -79,18 +79,22 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected string $identifier;
 
 	/**
-	 * @var Entities\Devices\IDevice|null
+	 * @var Common\Collections\Collection<int, IDevice>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="children")
-	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="device_id", nullable=true, onDelete="SET NULL")
+	 * @ORM\ManyToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="children")
+	 * @ORM\JoinTable(
+	 *     name="fb_devices_module_devices_children",
+	 *     joinColumns={@ORM\JoinColumn(name="child_device", referencedColumnName="device_id", onDelete="CASCADE")},
+	 *     inverseJoinColumns={@ORM\JoinColumn(name="parent_device", referencedColumnName="device_id", onDelete="CASCADE")}
+	 * )
 	 */
-	protected ?Entities\Devices\IDevice $parent = null;
+	protected Common\Collections\Collection $parents;
 
 	/**
 	 * @var Common\Collections\Collection<int, IDevice>
 	 *
-	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="parent")
+	 * @ORM\ManyToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="parents", cascade={"remove"}, orphanRemoval=true)
 	 */
 	protected Common\Collections\Collection $children;
 
@@ -210,7 +214,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	public function __construct(
 		string $identifier,
 		Entities\Connectors\IConnector $connector,
-		?string $name,
+		?string $name = null,
 		?Uuid\UuidInterface $id = null
 	) {
 		$this->id = $id ?? Uuid\Uuid::uuid4();
@@ -225,6 +229,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 
 		$this->connector = $connector;
 
+		$this->parents = new Common\Collections\ArrayCollection();
 		$this->children = new Common\Collections\ArrayCollection();
 		$this->channels = new Common\Collections\ArrayCollection();
 		$this->controls = new Common\Collections\ArrayCollection();
@@ -234,9 +239,46 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeParent(): void
+	public function getParents(): array
 	{
-		$this->parent = null;
+		return $this->parents->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setParents(array $parents): void
+	{
+		$this->parents = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		/** @var IDevice $entity */
+		foreach ($parents as $entity) {
+			if (!$this->parents->contains($entity)) {
+				// ...and assign them to collection
+				$this->parents->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addParent(IDevice $device): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->parents->contains($device)) {
+			// ...and assign it to collection
+			$this->parents->add($device);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeParent(IDevice $parent): void
+	{
+		$this->parents->removeElement($parent);
 	}
 
 	/**
@@ -525,22 +567,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getParent(): ?IDevice
-	{
-		return $this->parent;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setParent(IDevice $device): void
-	{
-		$this->parent = $device;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getName(): ?string
 	{
 		return $this->name;
@@ -741,10 +767,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 */
 	public function getOwnerId(): ?string
 	{
-		if ($this->parent !== null) {
-			return $this->parent->getOwnerId();
-		}
-
 		return $this->owner;
 	}
 
@@ -753,11 +775,22 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 */
 	public function toArray(): array
 	{
+		$children = [];
+
+		foreach ($this->getChildren() as $child) {
+			$children[] = $child->getPlainId();
+		}
+
+		$parents = [];
+
+		foreach ($this->getParents() as $parent) {
+			$parents[] = $parent->getPlainId();
+		}
+
 		return [
 			'id'         => $this->getPlainId(),
 			'type'       => $this->getType(),
 			'identifier' => $this->getIdentifier(),
-			'parent'     => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),
 			'enabled'    => $this->isEnabled(),
@@ -774,6 +807,9 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 			'firmware_version'      => $this->getFirmwareVersion(),
 
 			'connector' => $this->getConnector()->getPlainId(),
+
+			'parents'  => $parents,
+			'children' => $children,
 
 			'owner' => $this->getOwnerId(),
 		];

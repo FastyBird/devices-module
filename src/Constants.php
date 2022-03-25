@@ -36,6 +36,7 @@ final class Constants
 	public const ROUTE_NAME_DEVICES = 'devices';
 	public const ROUTE_NAME_DEVICE = 'device';
 	public const ROUTE_NAME_DEVICE_RELATIONSHIP = 'device.relationship';
+	public const ROUTE_NAME_DEVICE_PARENTS = 'device.parents';
 	public const ROUTE_NAME_DEVICE_CHILDREN = 'device.children';
 	public const ROUTE_NAME_DEVICE_PROPERTIES = 'device.properties';
 	public const ROUTE_NAME_DEVICE_PROPERTY = 'device.property';

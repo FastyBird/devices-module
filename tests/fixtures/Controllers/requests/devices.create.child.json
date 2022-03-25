@@ -17,6 +17,14 @@
           "type" : "com.fastybird.devices-module/connector/blank",
           "id" : "17c59dfa-2edd-438e-8c49-faa4e38e5a5e"
         }
+      },
+      "parents": {
+        "data": [
+          {
+            "type": "com.fastybird.devices-module/device/blank",
+            "id": "69786d15-fd0c-4d9f-9378-33287c2009fa"
+          }
+        ]
       }
     }
   }

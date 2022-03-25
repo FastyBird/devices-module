@@ -1,48 +1,48 @@
 <?php declare(strict_types = 1);
 
 /**
- * VirtualConnectorSchema.php
+ * BlankDeviceSchema.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Schemas
- * @since          0.6.0
+ * @since          0.9.0
  *
- * @date           07.12.21
+ * @date           07.01.22
  */
 
-namespace FastyBird\DevicesModule\Schemas\Connectors;
+namespace FastyBird\DevicesModule\Schemas\Devices;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
- * Modbus connector entity schema
+ * Blank device entity schema
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @phpstan-extends ConnectorSchema<Entities\Connectors\IVirtualConnector>
+ * @phpstan-extends DeviceSchema<Entities\Devices\IBlankDevice>
  */
-final class VirtualConnectorSchema extends ConnectorSchema
+final class BlankDeviceSchema extends DeviceSchema
 {
 
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/connector/' . Entities\Connectors\VirtualConnector::CONNECTOR_TYPE;
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/device/' . Entities\Devices\BlankDevice::DEVICE_TYPE;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function getEntityClass(): string
 	{
-		return Entities\Connectors\VirtualConnector::class;
+		return Entities\Devices\BlankDevice::class;
 	}
 
 	/**

@@ -25,12 +25,12 @@ from typing import Dict, List, Type, Union
 # Library libs
 from fastybird_devices_module.entities.connector import ConnectorEntity
 from fastybird_devices_module.entities.device import (
+    BlankDeviceEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
     DevicePropertyEntity,
     DeviceStaticPropertyEntity,
-    VirtualDeviceEntity,
 )
 from fastybird_devices_module.managers.base import BaseManager
 
@@ -62,7 +62,7 @@ class DevicesManager(BaseManager[DeviceEntity]):
 
     # -----------------------------------------------------------------------------
 
-    def create(self, data: Dict, device_type: Type[DeviceEntity] = VirtualDeviceEntity) -> DeviceEntity:
+    def create(self, data: Dict, device_type: Type[DeviceEntity] = BlankDeviceEntity) -> DeviceEntity:
         """Create new device entity"""
         if "connector_id" in data and "connector" not in data:
             connector_id = data.get("connector_id")

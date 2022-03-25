@@ -50,11 +50,20 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository;
 
+	/** @var Models\States\DevicePropertiesManager */
+	private Models\States\DevicePropertiesManager $devicePropertiesStatesManager;
+
 	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository;
 
+	/** @var Models\States\ChannelPropertiesManager */
+	private Models\States\ChannelPropertiesManager $channelPropertiesStatesManager;
+
 	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository;
+
+	/** @var Models\States\ConnectorPropertiesManager */
+	private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager;
 
 	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
@@ -65,13 +74,19 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	public function __construct(
 		ORM\EntityManagerInterface $entityManager,
 		Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
+		Models\States\DevicePropertiesManager $devicePropertiesStatesManager,
 		Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
+		Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
+		Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
 		?ExchangePublisher\Publisher $publisher = null
 	) {
 		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
+		$this->devicePropertiesStatesManager = $devicePropertiesStatesManager;
 		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;
+		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
 		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
+		$this->connectorPropertiesStatesManager = $connectorPropertiesStatesManager;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
 	}
@@ -143,6 +158,35 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			}
 
 			$this->publishEntity($entity, self::ACTION_DELETED);
+
+			// Property states cleanup
+			if ($entity instanceof DevicesModule\Entities\Connectors\Properties\IProperty) {
+				try {
+					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
+
+					$this->connectorPropertiesStatesManager->delete($entity, $state);
+				} catch (Exceptions\NotImplementedException $ex) {
+					return;
+				}
+
+			} else if ($entity instanceof DevicesModule\Entities\Devices\Properties\IProperty) {
+				try {
+					$state = $this->devicePropertiesStatesRepository->findOne($entity);
+
+					$this->devicePropertiesStatesManager->delete($entity, $state);
+				} catch (Exceptions\NotImplementedException $ex) {
+					return;
+				}
+
+			} else if ($entity instanceof DevicesModule\Entities\Channels\Properties\IProperty) {
+				try {
+					$state = $this->channelPropertiesStatesRepository->findOne($entity);
+
+					$this->channelPropertiesStatesManager->delete($entity, $state);
+				} catch (Exceptions\NotImplementedException $ex) {
+					return;
+				}
+			}
 		}
 	}
 

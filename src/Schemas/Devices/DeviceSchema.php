@@ -50,7 +50,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
-	public const RELATIONSHIPS_PARENT = 'parent';
+	public const RELATIONSHIPS_PARENTS = 'parents';
 	public const RELATIONSHIPS_CHILDREN = 'children';
 
 	/** @var Models\Devices\IDevicesRepository */
@@ -163,10 +163,10 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => $device->getConnector() !== null,
 			],
-			self::RELATIONSHIPS_PARENT     => [
-				self::RELATIONSHIP_DATA          => $device->getParent(),
+			self::RELATIONSHIPS_PARENTS => [
+				self::RELATIONSHIP_DATA          => $this->getParents($device),
 				self::RELATIONSHIP_LINKS_SELF    => true,
-				self::RELATIONSHIP_LINKS_RELATED => $device->getParent() !== null,
+				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_CHILDREN   => [
 				self::RELATIONSHIP_DATA          => $this->getChildren($device),
@@ -187,19 +187,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		$findQuery->forDevice($device);
 
 		return $this->channelsRepository->findAllBy($findQuery);
-	}
-
-	/**
-	 * @param Entities\Devices\IDevice $device
-	 *
-	 * @return Entities\Devices\IDevice[]
-	 */
-	private function getChildren(Entities\Devices\IDevice $device): array
-	{
-		$findQuery = new Queries\FindDevicesQuery();
-		$findQuery->forParent($device);
-
-		return $this->devicesRepository->findAllBy($findQuery);
 	}
 
 	/**
@@ -259,16 +246,19 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				]
 			);
 
-		} elseif ($name === self::RELATIONSHIPS_PARENT && $device->getParent() !== null) {
+		} elseif ($name === self::RELATIONSHIPS_PARENTS) {
 			return new JsonApi\Schema\Link(
 				false,
 				$this->router->urlFor(
-					DevicesModule\Constants::ROUTE_NAME_DEVICE,
+					DevicesModule\Constants::ROUTE_NAME_DEVICE_PARENTS,
 					[
-						Router\Routes::URL_ITEM_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
 					]
 				),
-				false
+				true,
+				[
+					'count' => count($this->getParents($device)),
+				]
 			);
 
 		} elseif ($name === self::RELATIONSHIPS_CHILDREN) {
@@ -282,7 +272,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				),
 				true,
 				[
-					'count' => count($device->getChildren()),
+					'count' => count($this->getChildren($device)),
 				]
 			);
 
@@ -319,7 +309,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			|| $name === self::RELATIONSHIPS_CONTROLS
 			|| $name === self::RELATIONSHIPS_CHANNELS
 			|| $name === self::RELATIONSHIPS_CHILDREN
-			|| $name === self::RELATIONSHIPS_PARENT
+			|| $name === self::RELATIONSHIPS_PARENTS
 			|| $name === self::RELATIONSHIPS_CONNECTOR
 		) {
 			return new JsonApi\Schema\Link(
@@ -337,6 +327,32 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		}
 
 		return parent::getRelationshipSelfLink($device, $name);
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Devices\IDevice[]
+	 */
+	private function getParents(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery->forChild($device);
+
+		return $this->devicesRepository->findAllBy($findQuery);
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return Entities\Devices\IDevice[]
+	 */
+	private function getChildren(Entities\Devices\IDevice $device): array
+	{
+		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery->forParent($device);
+
+		return $this->devicesRepository->findAllBy($findQuery);
 	}
 
 }

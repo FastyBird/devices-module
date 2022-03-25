@@ -409,11 +409,8 @@ class DevicesV1Controller extends BaseV1Controller
 		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONTROLS) {
 			return $this->buildResponse($request, $response, $device->getControls());
 
-		} elseif (
-			$relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PARENT
-			&& $device->getParent() !== null
-		) {
-			return $this->buildResponse($request, $response, $device->getParent());
+		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_PARENTS) {
+			return $this->buildResponse($request, $response, $device->getParents());
 
 		} elseif ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CHILDREN) {
 			return $this->buildResponse($request, $response, $device->getChildren());

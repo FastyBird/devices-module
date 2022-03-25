@@ -52,7 +52,7 @@ class TestDevicesRepository(DbTestCase):
         self.assertEqual(
             {
                 "id": "69786d15-fd0c-4d9f-9378-33287c2009fa",
-                "type": "virtual",
+                "type": "blank",
                 "identifier": "first-device",
                 "name": "First device",
                 "comment": None,
@@ -63,7 +63,8 @@ class TestDevicesRepository(DbTestCase):
                 "hardware_mac_address": "80:7d:3a:3d:be:6d",
                 "firmware_manufacturer": "fastybird",
                 "firmware_version": None,
-                "parent": None,
+                "parents": [],
+                "children": ["a1036ff8-6ee8-4405-aaed-58bae0814596"],
                 "connector": "17c59dfa-2edd-438e-8c49-faa4e38e5a5e",
                 "owner": "455354e8-96bd-4c29-84e7-9f10e1d4db4b",
             },

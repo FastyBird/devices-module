@@ -72,8 +72,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_CREATED_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
-					'type'                  => 'virtual',
-					'parent'                => null,
+					'type'                  => 'blank',
 					'owner'                 => null,
 					'name'                  => 'Device custom name',
 					'comment'               => null,
@@ -85,6 +84,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
 					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
+					'parents'               => [],
+					'children'              => [],
 				]), $data);
 
 				return true;
@@ -116,9 +117,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+		$connectorEntity = new Entities\Connectors\BlankConnector('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
-		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
+		$entity = new Entities\Devices\BlankDevice('device-name', $connectorEntity, 'device-name');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -143,8 +144,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_UPDATED_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
-					'type'                  => 'virtual',
-					'parent'                => null,
+					'type'                  => 'blank',
 					'owner'                 => null,
 					'name'                  => 'Device custom name',
 					'comment'               => null,
@@ -156,6 +156,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
 					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
+					'parents'               => [],
+					'children'              => [],
 				]), $data);
 
 				return true;
@@ -187,9 +189,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+		$connectorEntity = new Entities\Connectors\BlankConnector('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
-		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
+		$entity = new Entities\Devices\BlankDevice('device-name', $connectorEntity, 'device-name');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -213,8 +215,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_DELETED_ROUTING_KEY, $key);
 				Assert::equal(Utils\ArrayHash::from([
 					'identifier'            => 'device-name',
-					'type'                  => 'virtual',
-					'parent'                => null,
+					'type'                  => 'blank',
 					'owner'                 => null,
 					'name'                  => 'Device custom name',
 					'comment'               => null,
@@ -226,15 +227,17 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'firmware_manufacturer' => 'generic',
 					'firmware_version'      => null,
 					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
+					'parents'               => [],
+					'children'              => [],
 				]), $data);
 
 				return true;
 			})
 			->times(1);
 
-		$connectorEntity = new Entities\Connectors\VirtualConnector('virtual-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+		$connectorEntity = new Entities\Connectors\BlankConnector('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
-		$entity = new Entities\Devices\VirtualDevice('device-name', $connectorEntity, 'device-name');
+		$entity = new Entities\Devices\BlankDevice('device-name', $connectorEntity, 'device-name');
 		$entity->setName('Device custom name');
 
 		$uow = Mockery::mock(ORM\UnitOfWork::class);

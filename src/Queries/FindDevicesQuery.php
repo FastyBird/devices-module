@@ -73,9 +73,30 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	 */
 	public function forParent(Entities\Devices\IDevice $device): void
 	{
+		$this->select[] = function (ORM\QueryBuilder $qb): void {
+			$qb->innerJoin('d.parents', 'dp');
+		};
+
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device): void {
-			$qb->andWhere('d.parent = :parent')
-				->setParameter('parent', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+			$qb->andWhere('dp.id = :parentDevice')
+				->setParameter('parentDevice', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+		};
+	}
+
+	/**
+	 * @param Entities\Devices\IDevice $device
+	 *
+	 * @return void
+	 */
+	public function forChild(Entities\Devices\IDevice $device): void
+	{
+		$this->select[] = function (ORM\QueryBuilder $qb): void {
+			$qb->innerJoin('d.children', 'dch');
+		};
+
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device): void {
+			$qb->andWhere('dch.id = :childDevice')
+				->setParameter('childDevice', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 

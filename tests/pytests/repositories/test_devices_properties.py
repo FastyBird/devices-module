@@ -68,6 +68,7 @@ class TestDevicePropertiesRepository(DbTestCase):
                 "value": "device-password",
                 "default": None,
                 "parent": None,
+                "children": [],
             },
             entity.to_dict(),
         )

@@ -17,6 +17,17 @@ return [
 		StatusCodeInterface::STATUS_CREATED,
 		__DIR__ . '/responses/devices.create.json',
 	],
+	'createChild'     => [
+		'/v1/devices',
+		'Bearer ' . VALID_TOKEN,
+		file_get_contents(__DIR__ . '/requests/devices.create.child.json'),
+		StatusCodeInterface::STATUS_CREATED,
+		__DIR__ . '/responses/devices.create.child.json',
+		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa',
+		'Bearer ' . VALID_TOKEN,
+		StatusCodeInterface::STATUS_OK,
+		__DIR__ . '/responses/devices.read.child.created.json',
+	],
 
 	// Invalid responses
 	////////////////////

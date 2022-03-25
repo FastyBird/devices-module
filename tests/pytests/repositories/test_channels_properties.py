@@ -66,6 +66,7 @@ class TestChannelPropertiesRepository(DbTestCase):
                 "number_of_decimals": None,
                 "owner": "455354e8-96bd-4c29-84e7-9f10e1d4db4b",
                 "parent": None,
+                "children": [],
             },
             entity.to_dict(),
         )

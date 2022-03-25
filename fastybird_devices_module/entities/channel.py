@@ -459,17 +459,24 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
             ButtonPayload,
             SwitchPayload,
             List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+            List[str],
             Tuple[Optional[int], Optional[int]],
             Tuple[Optional[float], Optional[float]],
             None,
         ],
     ]:
         """Transform entity to dictionary"""
+        children: List[str] = []
+
+        for child in self.children:
+            children.append(child.id.__str__())
+
         return {
             **super().to_dict(),
             **{
                 "channel": uuid.UUID(bytes=self.channel_id).__str__(),
                 "parent": uuid.UUID(bytes=self.parent_id).__str__() if self.parent_id is not None else None,
+                "children": children,
                 "owner": self.channel.device.owner,
             },
         }

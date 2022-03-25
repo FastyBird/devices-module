@@ -49,6 +49,9 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\DevicesV1Controller */
 	private Controllers\DevicesV1Controller $devicesV1Controller;
 
+	/** @var Controllers\DeviceParentsV1Controller */
+	private Controllers\DeviceParentsV1Controller $deviceParentsV1Controller;
+
 	/** @var Controllers\DeviceChildrenV1Controller */
 	private Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller;
 
@@ -94,6 +97,7 @@ class Routes implements WebServerRouter\IRoutes
 	public function __construct(
 		bool $usePrefix,
 		Controllers\DevicesV1Controller $devicesV1Controller,
+		Controllers\DeviceParentsV1Controller $deviceParentsV1Controller,
 		Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller,
 		Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller,
 		Controllers\DevicePropertyChildrenV1Controller $devicePropertyChildrenV1Controller,
@@ -112,6 +116,7 @@ class Routes implements WebServerRouter\IRoutes
 		$this->usePrefix = $usePrefix;
 
 		$this->devicesV1Controller = $devicesV1Controller;
+		$this->deviceParentsV1Controller = $deviceParentsV1Controller;
 		$this->deviceChildrenV1Controller = $deviceChildrenV1Controller;
 		$this->devicePropertiesV1Controller = $devicePropertiesV1Controller;
 		$this->devicePropertyChildrenV1Controller = $devicePropertyChildrenV1Controller;
@@ -183,6 +188,12 @@ class Routes implements WebServerRouter\IRoutes
 				$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_RELATIONSHIP);
 
 				$group->group('/{' . self::URL_DEVICE_ID . '}', function (Routing\RouteCollector $group): void {
+					/**
+					 * PARENTS
+					 */
+					$route = $group->get('/parents', [$this->deviceParentsV1Controller, 'index']);
+					$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_PARENTS);
+
 					/**
 					 * CHILDREN
 					 */

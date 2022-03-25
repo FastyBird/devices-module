@@ -23,7 +23,7 @@ from fastybird_exchange.publisher import Publisher
 from kink import inject
 
 # Library libs
-from fastybird_devices_module.entities.device import DeviceEntity, VirtualDeviceEntity
+from fastybird_devices_module.entities.device import DeviceEntity, BlankDeviceEntity
 from fastybird_devices_module.managers.device import DevicesManager
 from fastybird_devices_module.repositories.connector import ConnectorsRepository
 from fastybird_devices_module.repositories.device import DevicesRepository
@@ -54,12 +54,12 @@ class TestDeviceEntity(DbTestCase):
                     "connector": connector,
                     "id": uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),
                 },
-                device_type=VirtualDeviceEntity,
+                device_type=BlankDeviceEntity,
             )
 
         MockPublisher.assert_called_once()
 
-        self.assertIsInstance(device_entity, VirtualDeviceEntity)
+        self.assertIsInstance(device_entity, BlankDeviceEntity)
         self.assertEqual("26d7a945-ba29-471e-9e3c-304ef0acb199", device_entity.id.__str__())
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", device_entity.connector.id.__str__())
         self.assertEqual("device-identifier", device_entity.identifier)

@@ -164,25 +164,29 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				try {
 					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
 
-					$this->connectorPropertiesStatesManager->delete($entity, $state);
+					if ($state !== null) {
+						$this->connectorPropertiesStatesManager->delete($entity, $state);
+					}
 				} catch (Exceptions\NotImplementedException $ex) {
 					return;
 				}
-
-			} else if ($entity instanceof DevicesModule\Entities\Devices\Properties\IProperty) {
+			} elseif ($entity instanceof DevicesModule\Entities\Devices\Properties\IProperty) {
 				try {
 					$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
-					$this->devicePropertiesStatesManager->delete($entity, $state);
+					if ($state !== null) {
+						$this->devicePropertiesStatesManager->delete($entity, $state);
+					}
 				} catch (Exceptions\NotImplementedException $ex) {
 					return;
 				}
-
-			} else if ($entity instanceof DevicesModule\Entities\Channels\Properties\IProperty) {
+			} elseif ($entity instanceof DevicesModule\Entities\Channels\Properties\IProperty) {
 				try {
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
 
-					$this->channelPropertiesStatesManager->delete($entity, $state);
+					if ($state !== null) {
+						$this->channelPropertiesStatesManager->delete($entity, $state);
+					}
 				} catch (Exceptions\NotImplementedException $ex) {
 					return;
 				}

@@ -35,21 +35,30 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
+
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
+			$devicePropertiesStateManager,
 			$channelPropertiesStateRepository,
+			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
+			$connectorPropertiesStateManager,
 			$publisher
 		);
 
@@ -99,21 +108,30 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
+
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
+			$devicePropertiesStateManager,
 			$channelPropertiesStateRepository,
+			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
+			$connectorPropertiesStateManager,
 			$publisher
 		);
 
@@ -171,21 +189,30 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
+
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
+			$devicePropertiesStateManager,
 			$channelPropertiesStateRepository,
+			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
+			$connectorPropertiesStateManager,
 			$publisher
 		);
 
@@ -265,21 +292,30 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
+
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
+
+		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
 			->andThrow(Exceptions\NotImplementedException::class);
 
+		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
+			$devicePropertiesStateManager,
 			$channelPropertiesStateRepository,
+			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
+			$connectorPropertiesStateManager,
 			$publisher
 		);
 

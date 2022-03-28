@@ -51,7 +51,7 @@ from fastybird_devices_module.entities.channel import (
 )
 from fastybird_devices_module.entities.connector import (
     ConnectorControlEntity,
-    ConnectorStaticPropertyEntity,
+    ConnectorDynamicPropertyEntity,
 )
 from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
@@ -64,6 +64,7 @@ from fastybird_devices_module.exceptions import (
 )
 from fastybird_devices_module.logger import Logger
 from fastybird_devices_module.managers.connector import ConnectorPropertiesManager
+from fastybird_devices_module.managers.state import ConnectorPropertiesStatesManager
 from fastybird_devices_module.repositories.channel import (
     ChannelControlsRepository,
     ChannelPropertiesRepository,
@@ -78,6 +79,9 @@ from fastybird_devices_module.repositories.device import (
     DeviceControlsRepository,
     DevicePropertiesRepository,
     DevicesRepository,
+)
+from fastybird_devices_module.repositories.state import (
+    ConnectorPropertiesStatesRepository,
 )
 
 
@@ -250,6 +254,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     __connectors_properties_repository: ConnectorPropertiesRepository
     __connectors_properties_manager: ConnectorPropertiesManager
     __connectors_control_repository: ConnectorControlsRepository
+    __connectors_properties_states_repository: ConnectorPropertiesStatesRepository
+    __connectors_properties_states_manager: ConnectorPropertiesStatesManager
 
     __logger: Logger
 
@@ -270,6 +276,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         connectors_properties_repository: ConnectorPropertiesRepository,
         connectors_properties_manager: ConnectorPropertiesManager,
         connectors_control_repository: ConnectorControlsRepository,
+        connectors_properties_states_repository: ConnectorPropertiesStatesRepository,
+        connectors_properties_states_manager: ConnectorPropertiesStatesManager,
         logger: Logger,
     ) -> None:
         self.__queue = queue
@@ -286,6 +294,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self.__connectors_properties_repository = connectors_properties_repository
         self.__connectors_properties_manager = connectors_properties_manager
         self.__channels_control_repository = channels_control_repository
+        self.__connectors_properties_states_repository = connectors_properties_states_repository
+        self.__connectors_properties_states_manager = connectors_properties_states_manager
 
         self.__logger = logger
 
@@ -837,20 +847,34 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                     ],
                     "settable": False,
                     "queryable": False,
-                    "value": state.value,
                 }
 
                 self.__connectors_properties_manager.create(
                     data=property_data,
-                    property_type=ConnectorStaticPropertyEntity,
+                    property_type=ConnectorDynamicPropertyEntity,
+                )
+
+            state_property_state = self.__connectors_properties_states_repository.get_by_id(
+                property_id=state_property.id,
+            )
+
+            if state_property_state is None:
+                self.__connectors_properties_states_manager.create(
+                    connector_property=state_property,
+                    data={
+                        "actual_value": state.value,
+                        "expected_value": None,
+                        "pending": False,
+                    },
                 )
 
             else:
-                property_data = {
-                    "value": state.value,
-                }
-
-                self.__connectors_properties_manager.update(
-                    data=property_data,
+                self.__connectors_properties_states_manager.update(
                     connector_property=state_property,
+                    state=state_property_state,
+                    data={
+                        "actual_value": state.value,
+                        "expected_value": None,
+                        "pending": False,
+                    },
                 )

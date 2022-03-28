@@ -53,8 +53,11 @@ from fastybird_devices_module.entities.device import (
     DeviceEntity,
     DevicePropertyEntity,
 )
-from fastybird_devices_module.managers.state import DevicePropertiesStatesManager, ChannelPropertiesStatesManager, \
-    ConnectorPropertiesStatesManager
+from fastybird_devices_module.managers.state import (
+    ChannelPropertiesStatesManager,
+    ConnectorPropertiesStatesManager,
+    DevicePropertiesStatesManager,
+)
 from fastybird_devices_module.repositories.state import (
     ChannelPropertiesStatesRepository,
     ConnectorPropertiesStatesRepository,

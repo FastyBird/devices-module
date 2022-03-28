@@ -53,6 +53,8 @@ from fastybird_devices_module.entities.device import (
     DeviceEntity,
     DevicePropertyEntity,
 )
+from fastybird_devices_module.managers.state import DevicePropertiesStatesManager, ChannelPropertiesStatesManager, \
+    ConnectorPropertiesStatesManager
 from fastybird_devices_module.repositories.state import (
     ChannelPropertiesStatesRepository,
     ConnectorPropertiesStatesRepository,
@@ -162,8 +164,11 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
     __publisher: Optional[Publisher] = None
 
     __connector_properties_states_repository: ConnectorPropertiesStatesRepository
+    __connector_properties_states_manager: ConnectorPropertiesStatesManager
     __device_properties_states_repository: DevicePropertiesStatesRepository
+    __device_properties_states_manager: DevicePropertiesStatesManager
     __channel_properties_states_repository: ChannelPropertiesStatesRepository
+    __channel_properties_states_manager: ChannelPropertiesStatesManager
 
     # -----------------------------------------------------------------------------
 
@@ -171,15 +176,21 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
         self,
         session: OrmSession,
         connector_properties_states_repository: ConnectorPropertiesStatesRepository,
+        connector_properties_states_manager: ConnectorPropertiesStatesManager,
         device_properties_states_repository: DevicePropertiesStatesRepository,
+        device_properties_states_manager: DevicePropertiesStatesManager,
         channel_properties_states_repository: ChannelPropertiesStatesRepository,
+        channel_properties_states_manager: ChannelPropertiesStatesManager,
         publisher: Optional[Publisher] = None,
     ) -> None:
         self.__publisher = publisher
 
         self.__connector_properties_states_repository = connector_properties_states_repository
+        self.__connector_properties_states_manager = connector_properties_states_manager
         self.__device_properties_states_repository = device_properties_states_repository
+        self.__device_properties_states_manager = device_properties_states_manager
         self.__channel_properties_states_repository = channel_properties_states_repository
+        self.__channel_properties_states_manager = channel_properties_states_manager
 
         event.listen(session, "after_flush", lambda active_session, transaction: self.after_flush(active_session))
 
@@ -226,6 +237,43 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                     routing_key=routing_key,
                     data={**entity.to_dict(), **self.__get_entity_extended_data(entity=entity)},
                 )
+
+            if isinstance(entity, ConnectorDynamicPropertyEntity):
+                try:
+                    connector_property_state = self.__connector_properties_states_repository.get_by_id(
+                        property_id=entity.id,
+                    )
+
+                    self.__connector_properties_states_manager.delete(
+                        connector_property=entity,
+                        state=connector_property_state,
+                    )
+
+                except NotImplementedError:
+                    pass
+
+            if isinstance(entity, DeviceDynamicPropertyEntity):
+                try:
+                    device_property_state = self.__device_properties_states_repository.get_by_id(property_id=entity.id)
+
+                    self.__device_properties_states_manager.delete(device_property=entity, state=device_property_state)
+
+                except NotImplementedError:
+                    pass
+
+            if isinstance(entity, ChannelDynamicPropertyEntity):
+                try:
+                    channel_property_state = self.__channel_properties_states_repository.get_by_id(
+                        property_id=entity.id,
+                    )
+
+                    self.__channel_properties_states_manager.delete(
+                        channel_property=entity,
+                        state=channel_property_state,
+                    )
+
+                except NotImplementedError:
+                    pass
 
     # -----------------------------------------------------------------------------
 

@@ -33,7 +33,7 @@ from fastybird_metadata.devices_module import ConnectionState, ConnectorProperty
 # Library libs
 from fastybird_metadata.routing import RoutingKey
 from fastybird_metadata.types import ControlAction, DataType
-from inflection import dasherize
+from inflection import underscore
 from kink import di
 from sqlalchemy.orm import close_all_sessions
 
@@ -302,6 +302,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 self.__connector.start()
 
         except Exception as ex:  # pylint: disable=broad-except
+            self.__logger.exception(ex)
             self.__logger.error(
                 "Connector couldn't be started. An unexpected error occurred",
                 extra={
@@ -420,10 +421,10 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if connector is None:
                 raise AttributeError(f"Connector {connector_id} was not found in database")
 
-            if dasherize(connector.type) not in connectors:
+            if underscore(connector.type) not in connectors:
                 raise AttributeError(f"Connector {connector.type} couldn't be loaded")
 
-            module = connectors[dasherize(connector.type)]
+            module = connectors[underscore(connector.type)]
 
             # Add loaded connector to container to be accessible & autowired
             di["connector"] = connector
@@ -436,7 +437,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             self.__connector.initialize(settings=connector.params)
 
         except Exception as ex:  # pylint: disable=broad-except
-            print(ex)
+            self.__logger.exception(ex)
             raise Exception("Connector could not be loaded") from ex
 
     # -----------------------------------------------------------------------------

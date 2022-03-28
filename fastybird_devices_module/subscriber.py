@@ -199,7 +199,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
     # -----------------------------------------------------------------------------
 
-    def after_flush(self, session: OrmSession) -> None:
+    def after_flush(self, session: OrmSession) -> None:  # pylint: disable=too-many-branches
         """Event"""
         if self.__publisher is None:
             return

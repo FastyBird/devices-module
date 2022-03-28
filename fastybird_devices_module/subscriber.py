@@ -247,10 +247,11 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                         property_id=entity.id,
                     )
 
-                    self.__connector_properties_states_manager.delete(
-                        connector_property=entity,
-                        state=connector_property_state,
-                    )
+                    if connector_property_state is not None:
+                        self.__connector_properties_states_manager.delete(
+                            connector_property=entity,
+                            state=connector_property_state,
+                        )
 
                 except NotImplementedError:
                     pass
@@ -259,7 +260,11 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                 try:
                     device_property_state = self.__device_properties_states_repository.get_by_id(property_id=entity.id)
 
-                    self.__device_properties_states_manager.delete(device_property=entity, state=device_property_state)
+                    if device_property_state is not None:
+                        self.__device_properties_states_manager.delete(
+                            device_property=entity,
+                            state=device_property_state,
+                        )
 
                 except NotImplementedError:
                     pass
@@ -270,10 +275,11 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                         property_id=entity.id,
                     )
 
-                    self.__channel_properties_states_manager.delete(
-                        channel_property=entity,
-                        state=channel_property_state,
-                    )
+                    if channel_property_state is not None:
+                        self.__channel_properties_states_manager.delete(
+                            channel_property=entity,
+                            state=channel_property_state,
+                        )
 
                 except NotImplementedError:
                     pass

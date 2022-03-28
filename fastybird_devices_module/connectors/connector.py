@@ -849,7 +849,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                     "queryable": False,
                 }
 
-                self.__connectors_properties_manager.create(
+                state_property = self.__connectors_properties_manager.create(
                     data=property_data,
                     property_type=ConnectorDynamicPropertyEntity,
                 )

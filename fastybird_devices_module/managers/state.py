@@ -203,9 +203,6 @@ class ConnectorPropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Connector properties states manager is not implemented")
 
-        if connector_property.parent is not None:
-            raise AttributeError("Child property can't have state")
-
         created_state = self.__manager.create(connector_property=connector_property, data=data)
 
         self.__publish_entity(
@@ -227,9 +224,6 @@ class ConnectorPropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Connector properties states manager is not implemented")
 
-        if connector_property.parent is not None:
-            raise AttributeError("Child property can't have state")
-
         updated_state = self.__manager.update(connector_property=connector_property, state=state, data=data)
 
         self.__publish_entity(
@@ -249,9 +243,6 @@ class ConnectorPropertiesStatesManager:
         """Delete existing connector property state"""
         if self.__manager is None:
             raise NotImplementedError("Connector properties states manager is not implemented")
-
-        if connector_property.parent is not None:
-            raise AttributeError("Child property can't have state")
 
         result = self.__manager.delete(connector_property=connector_property, state=state)
 
@@ -294,7 +285,7 @@ class ConnectorPropertiesStatesManager:
 
         self.__publisher.publish(
             source=connector_property.source,
-            routing_key=RoutingKey.CONNECTOR_PROPERTY_ENTITY_UPDATED,
+            routing_key=RoutingKey.CONNECTOR_PROPERTY_ENTITY_REPORTED,
             data={
                 **connector_property.to_dict(),
                 **{
@@ -454,7 +445,7 @@ class DevicePropertiesStatesManager:
 
         self.__publisher.publish(
             source=device_property.source,
-            routing_key=RoutingKey.DEVICE_PROPERTY_ENTITY_UPDATED,
+            routing_key=RoutingKey.DEVICE_PROPERTY_ENTITY_REPORTED,
             data={
                 **device_property.to_dict(),
                 **{
@@ -617,7 +608,7 @@ class ChannelPropertiesStatesManager:
 
         self.__publisher.publish(
             source=channel_property.source,
-            routing_key=RoutingKey.CHANNEL_PROPERTY_ENTITY_UPDATED,
+            routing_key=RoutingKey.CHANNEL_PROPERTY_ENTITY_REPORTED,
             data={
                 **channel_property.to_dict(),
                 **{

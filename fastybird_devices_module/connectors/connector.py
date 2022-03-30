@@ -85,7 +85,7 @@ from fastybird_devices_module.repositories.state import (
 )
 
 
-class IConnector(ABC):
+class IConnector(ABC):  # pylint: disable=too-many-public-methods
     """
     Connector interface
 
@@ -135,6 +135,12 @@ class IConnector(ABC):
     # -----------------------------------------------------------------------------
 
     @abstractmethod
+    def notify_device_property(self, device: DeviceEntity, device_property: DevicePropertyEntity) -> None:
+        """Notify device property was reported to connector"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
     def remove_device_property(self, device: DeviceEntity, property_id: uuid.UUID) -> None:
         """Remove device from connector"""
 
@@ -171,6 +177,16 @@ class IConnector(ABC):
         channel_property: ChannelPropertyEntity,
     ) -> None:
         """Initialize device channel property in connector"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def notify_device_channel_property(
+        self,
+        channel: ChannelEntity,
+        channel_property: ChannelPropertyEntity,
+    ) -> None:
+        """Notify device channel property was reported to connector"""
 
     # -----------------------------------------------------------------------------
 
@@ -660,7 +676,11 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             except ValueError:
                 return
 
-        if item.routing_key in (RoutingKey.DEVICE_PROPERTY_ENTITY_CREATED, RoutingKey.DEVICE_PROPERTY_ENTITY_UPDATED):
+        if item.routing_key in (
+            RoutingKey.DEVICE_PROPERTY_ENTITY_CREATED,
+            RoutingKey.DEVICE_PROPERTY_ENTITY_UPDATED,
+            RoutingKey.DEVICE_PROPERTY_ENTITY_REPORTED,
+        ):
             close_all_sessions()
 
             try:
@@ -687,7 +707,14 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.initialize_device_property(device=device_entity, device_property=device_property_entity)
+            if item.routing_key == RoutingKey.DEVICE_PROPERTY_ENTITY_REPORTED:
+                self.__connector.notify_device_property(device=device_entity, device_property=device_property_entity)
+
+            else:
+                self.__connector.initialize_device_property(
+                    device=device_entity,
+                    device_property=device_property_entity,
+                )
 
         if item.routing_key == RoutingKey.DEVICE_PROPERTY_ENTITY_DELETED:
             close_all_sessions()
@@ -769,6 +796,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         if item.routing_key in (
             RoutingKey.CHANNEL_PROPERTY_ENTITY_CREATED,
             RoutingKey.CHANNEL_PROPERTY_ENTITY_UPDATED,
+            RoutingKey.CHANNEL_PROPERTY_ENTITY_REPORTED,
         ):
             close_all_sessions()
 
@@ -796,9 +824,15 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if channel_entity is None:
                 return
 
-            self.__connector.initialize_device_channel_property(
-                channel=channel_entity, channel_property=channel_property_entity
-            )
+            if item.routing_key == RoutingKey.CHANNEL_PROPERTY_ENTITY_REPORTED:
+                self.__connector.notify_device_channel_property(
+                    channel=channel_entity, channel_property=channel_property_entity
+                )
+
+            else:
+                self.__connector.initialize_device_channel_property(
+                    channel=channel_entity, channel_property=channel_property_entity
+                )
 
         if item.routing_key == RoutingKey.CHANNEL_PROPERTY_ENTITY_DELETED:
             close_all_sessions()

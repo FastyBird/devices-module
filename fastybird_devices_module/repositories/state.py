@@ -124,9 +124,6 @@ class ConnectorPropertiesStatesRepository(ABC):  # pylint: disable=too-few-publi
         if connector_property is None:
             raise AttributeError("Connector property was not found in registry")
 
-        if connector_property.parent is not None:
-            raise AttributeError("Child property can't have state")
-
         return self.__repository.get_by_id(property_id=property_id)
 
 

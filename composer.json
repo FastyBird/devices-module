@@ -41,11 +41,11 @@
     "php": ">=7.4.0|>=8.0.0",
     "ext-bcmath": "*",
     "cweagans/composer-patches": "^1.7",
-    "fastybird/exchange": "^0.27",
-    "fastybird/json-api": "^0.9",
+    "fastybird/exchange": "^0.28",
+    "fastybird/json-api": "^0.10",
     "fastybird/metadata": "^0.49",
     "fastybird/simple-auth": "^0.2",
-    "fastybird/web-server": "^0.7",
+    "fastybird/web-server": "^0.8",
     "ipub/doctrine-dynamic-discriminator-map": "^1.4",
     "ipub/doctrine-timestampable": "^1.5",
     "nettrine/orm": "^0.8"
@@ -86,17 +86,17 @@
   "extra" : {
     "patches" : {
       "doctrine/orm" : {
-        "Bug: Ramsey uuid not working - Part 1" : "patches/doctrine.orm.uuid.1.diff",
-        "Bug: Ramsey uuid not working - Part 2" : "patches/doctrine.orm.uuid.2.diff"
+        "Bug: Ramsey uuid not working - Part 1" : "https://raw.githubusercontent.com/FastyBird/libraries-patches/master/doctrine.orm.uuid.1.diff",
+        "Bug: Ramsey uuid not working - Part 2" : "https://raw.githubusercontent.com/FastyBird/libraries-patches/master/doctrine.orm.uuid.2.diff"
       },
       "ramsey/uuid-doctrine" : {
-        "Bug: Ramsey uuid conversion fallback" : "patches/ramsey.uuid.doctrine.diff"
+        "Bug: Ramsey uuid conversion fallback" : "https://raw.githubusercontent.com/FastyBird/libraries-patches/master/ramsey.uuid.doctrine.diff"
       },
       "nettrine/orm" : {
-        "Enable connection overides" : "patches/nettrine.orm.mangerRegistry.diff"
+        "Enable connection overrides" : "https://raw.githubusercontent.com/FastyBird/libraries-patches/master/nettrine.orm.mangerRegistry.diff"
       },
       "nette/utils" : {
-        "Bug: Offset check with null support" : "patches/nette.array.offsetCheck.diff"
+        "Bug: Offset check with null support" : "https://raw.githubusercontent.com/FastyBird/libraries-patches/master/nette.array.offsetCheck.diff"
       }
     }
   }

@@ -271,7 +271,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @property
     def settable(self) -> bool:
         """Property settable status"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.settable  # type: ignore[no-any-return]
 
         return super().settable
@@ -281,7 +281,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @settable.setter
     def settable(self, settable: bool) -> None:
         """Property settable setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Settable setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).settable.fset(self, settable)  # type: ignore[attr-defined]
@@ -291,7 +291,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @property
     def queryable(self) -> bool:
         """Property queryable status"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.queryable  # type: ignore[no-any-return]
 
         return super().queryable
@@ -301,7 +301,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @queryable.setter
     def queryable(self, queryable: bool) -> None:
         """Property queryable setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Queryable setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).queryable.fset(self, queryable)  # type: ignore[attr-defined]
@@ -311,7 +311,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @property
     def data_type(self) -> DataType:
         """Transform data type to enum value"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.data_type  # type: ignore[no-any-return]
 
         return super().data_type
@@ -321,7 +321,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @data_type.setter
     def data_type(self, data_type: DataType) -> None:
         """Data type setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Data type setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).data_type.fset(self, data_type)  # type: ignore[attr-defined]
@@ -331,7 +331,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @property
     def unit(self) -> Optional[str]:
         """Property unit"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.unit  # type: ignore[no-any-return]
 
         return super().unit
@@ -341,7 +341,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @unit.setter
     def unit(self, unit: Optional[str]) -> None:
         """Property unit setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Unit setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).unit.fset(self, unit)  # type: ignore[attr-defined]
@@ -358,7 +358,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
         None,
     ]:
         """Property format"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.format  # type: ignore[no-any-return]
 
         return super().format
@@ -377,7 +377,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
         ],
     ) -> None:
         """Property format setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Value format setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).format.fset(self, value_format)  # type: ignore[attr-defined]
@@ -387,7 +387,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @property
     def invalid(self) -> Union[str, int, float, None]:
         """Property invalid value"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.invalid  # type: ignore[no-any-return]
 
         return super().invalid
@@ -397,7 +397,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @invalid.setter
     def invalid(self, invalid: str) -> None:
         """Property invalid value setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Invalid value setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).invalid.fset(self, invalid)  # type: ignore[attr-defined]
@@ -407,7 +407,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @property
     def number_of_decimals(self) -> Optional[int]:
         """Property value number of decimals"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.number_of_decimals  # type: ignore[no-any-return]
 
         return super().number_of_decimals
@@ -417,7 +417,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @number_of_decimals.setter
     def number_of_decimals(self, number_of_decimals: Optional[int]) -> None:
         """Property value number of decimals setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Number of decimals setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).number_of_decimals.fset(  # type: ignore[attr-defined]
@@ -429,7 +429,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @property
     def default(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Property default"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             return self.parent.default  # type: ignore[no-any-return]
 
         return super().default
@@ -439,7 +439,7 @@ class ChannelPropertyEntity(EntityCreatedMixin, EntityUpdatedMixin, PropertyMixi
     @default.setter
     def default(self, default: Optional[str]) -> None:
         """Property default value setter"""
-        if self.parent is not None:
+        if self.parent is not None and not self.type.__eq__(PropertyType.MAPPED):
             raise AttributeError("Default value setter is allowed only for parent")
 
         super(ChannelPropertyEntity, type(self)).default.fset(self, default)  # type: ignore[attr-defined]
@@ -540,6 +540,89 @@ class ChannelStaticPropertyEntity(ChannelPropertyEntity):
             raise AttributeError("Value setter is allowed only for parent")
 
         super(ChannelStaticPropertyEntity, type(self)).value.fset(self, value)  # type: ignore[attr-defined]
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(
+        self,
+    ) -> Dict[
+        str,
+        Union[
+            int,
+            float,
+            str,
+            bool,
+            datetime,
+            ButtonPayload,
+            SwitchPayload,
+            List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+            List[str],
+            Tuple[Optional[int], Optional[int]],
+            Tuple[Optional[float], Optional[float]],
+            None,
+        ],
+    ]:
+        """Transform entity to dictionary"""
+        return {
+            **super().to_dict(),
+            **{
+                "value": self.value,
+                "default": self.default,
+            },
+        }
+
+
+class ChannelMappedPropertyEntity(ChannelPropertyEntity):
+    """
+    Channel property entity
+
+    @package        FastyBird:DevicesModule!
+    @module         models
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __mapper_args__ = {"polymorphic_identity": "mapped"}
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def type(self) -> PropertyType:
+        """Property type"""
+        return PropertyType.MAPPED
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(
+        self,
+    ) -> Dict[
+        str,
+        Union[
+            int,
+            float,
+            str,
+            bool,
+            datetime,
+            ButtonPayload,
+            SwitchPayload,
+            List[Union[str, Tuple[str, Optional[str], Optional[str]]]],
+            List[str],
+            Tuple[Optional[int], Optional[int]],
+            Tuple[Optional[float], Optional[float]],
+            None,
+        ],
+    ]:
+        """Transform entity to dictionary"""
+        if isinstance(self.parent, ChannelStaticPropertyEntity):
+            return {
+                **super().to_dict(),
+                **{
+                    "value": self.value,
+                    "default": self.default,
+                },
+            }
+
+        return super().to_dict()
 
 
 class ChannelControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

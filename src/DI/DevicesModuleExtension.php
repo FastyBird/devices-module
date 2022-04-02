@@ -227,6 +227,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('schemas.device.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Properties\StaticPropertySchema::class);
 
+		$builder->addDefinition($this->prefix('schemas.device.property.mapped'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Devices\Properties\MappedPropertySchema::class);
+
 		$builder->addDefinition($this->prefix('schemas.device.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Devices\Controls\ControlSchema::class);
 
@@ -238,6 +241,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('schemas.channel.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Properties\StaticPropertySchema::class);
+
+		$builder->addDefinition($this->prefix('schemas.channel.property.mapped'), new DI\Definitions\ServiceDefinition())
+			->setType(Schemas\Channels\Properties\MappedPropertySchema::class);
 
 		$builder->addDefinition($this->prefix('schemas.control'), new DI\Definitions\ServiceDefinition())
 			->setType(Schemas\Channels\Controls\ControlSchema::class);
@@ -264,6 +270,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('hydrators.device.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\DeviceStaticPropertyHydrator::class);
 
+		$builder->addDefinition($this->prefix('hydrators.device.property.mapped'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\DeviceMappedPropertyHydrator::class);
+
 		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Channels\ChannelHydrator::class);
 
@@ -272,6 +281,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('hydrators.channel.property.static'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Properties\ChannelStaticPropertyHydrator::class);
+
+		$builder->addDefinition($this->prefix('hydrators.channel.property.mapped'), new DI\Definitions\ServiceDefinition())
+			->setType(Hydrators\Properties\ChannelMappedPropertyHydrator::class);
 
 		$builder->addDefinition($this->prefix('hydrators.connectors.blank'), new DI\Definitions\ServiceDefinition())
 			->setType(Hydrators\Connectors\BlankConnectorHydrator::class);

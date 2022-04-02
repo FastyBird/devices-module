@@ -170,7 +170,10 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				} catch (Exceptions\NotImplementedException $ex) {
 					return;
 				}
-			} elseif ($entity instanceof DevicesModule\Entities\Devices\Properties\IProperty) {
+			} elseif (
+				$entity instanceof DevicesModule\Entities\Devices\Properties\IProperty
+				&& $entity->getParent() === null
+			) {
 				try {
 					$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
@@ -180,7 +183,10 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				} catch (Exceptions\NotImplementedException $ex) {
 					return;
 				}
-			} elseif ($entity instanceof DevicesModule\Entities\Channels\Properties\IProperty) {
+			} elseif (
+				$entity instanceof DevicesModule\Entities\Channels\Properties\IProperty
+				&& $entity->getParent() === null
+			) {
 				try {
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
 

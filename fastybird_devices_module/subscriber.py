@@ -40,6 +40,7 @@ from fastybird_devices_module.entities.channel import (
     ChannelDynamicPropertyEntity,
     ChannelEntity,
     ChannelPropertyEntity,
+    ChannelMappedPropertyEntity,
 )
 from fastybird_devices_module.entities.connector import (
     ConnectorControlEntity,
@@ -52,6 +53,7 @@ from fastybird_devices_module.entities.device import (
     DeviceDynamicPropertyEntity,
     DeviceEntity,
     DevicePropertyEntity,
+    DeviceMappedPropertyEntity,
 )
 from fastybird_devices_module.managers.state import (
     ChannelPropertiesStatesManager,
@@ -256,7 +258,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                 except NotImplementedError:
                     pass
 
-            if isinstance(entity, DeviceDynamicPropertyEntity):
+            if isinstance(entity, DeviceDynamicPropertyEntity) and entity.parent is None:
                 try:
                     device_property_state = self.__device_properties_states_repository.get_by_id(property_id=entity.id)
 
@@ -269,7 +271,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
                 except NotImplementedError:
                     pass
 
-            if isinstance(entity, ChannelDynamicPropertyEntity):
+            if isinstance(entity, ChannelDynamicPropertyEntity) and entity.parent is None:
                 try:
                     channel_property_state = self.__channel_properties_states_repository.get_by_id(
                         property_id=entity.id,
@@ -328,7 +330,9 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
             return connector_property_state.to_dict() if connector_property_state is not None else {}
 
-        if isinstance(entity, DeviceDynamicPropertyEntity):
+        if isinstance(entity, DeviceDynamicPropertyEntity) or (
+            isinstance(entity, DeviceMappedPropertyEntity) and isinstance(entity.parent, DeviceDynamicPropertyEntity)
+        ):
             try:
                 device_property_state = self.__device_properties_states_repository.get_by_id(property_id=entity.id)
 
@@ -337,7 +341,9 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
 
             return device_property_state.to_dict() if device_property_state is not None else {}
 
-        if isinstance(entity, ChannelDynamicPropertyEntity):
+        if isinstance(entity, ChannelDynamicPropertyEntity) or (
+            isinstance(entity, ChannelMappedPropertyEntity) and isinstance(entity.parent, ChannelDynamicPropertyEntity)
+        ):
             try:
                 channel_property_state = self.__channel_properties_states_repository.get_by_id(property_id=entity.id)
 

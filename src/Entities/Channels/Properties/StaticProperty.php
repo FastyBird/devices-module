@@ -57,4 +57,15 @@ class StaticProperty extends Property implements IStaticProperty
 		parent::setValue($value);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'value'   => $this->getValue(),
+			'default' => $this->getDefault(),
+		]);
+	}
+
 }

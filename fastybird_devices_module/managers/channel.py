@@ -29,6 +29,7 @@ from fastybird_devices_module.entities.channel import (
     ChannelEntity,
     ChannelPropertyEntity,
     ChannelStaticPropertyEntity,
+    ChannelMappedPropertyEntity,
 )
 from fastybird_devices_module.entities.device import DeviceEntity
 from fastybird_devices_module.managers.base import BaseManager
@@ -110,7 +111,9 @@ class ChannelPropertiesManager(BaseManager[ChannelPropertyEntity]):
     def create(
         self,
         data: Dict,
-        property_type: Type[Union[ChannelDynamicPropertyEntity, ChannelStaticPropertyEntity]],
+        property_type: Type[
+            Union[ChannelDynamicPropertyEntity, ChannelStaticPropertyEntity, ChannelMappedPropertyEntity]
+        ],
     ) -> ChannelPropertyEntity:
         """Create new channel property entity"""
         if "channel_id" in data and "channel" not in data:

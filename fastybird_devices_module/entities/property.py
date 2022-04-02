@@ -417,15 +417,6 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
             "number_of_decimals": self.number_of_decimals,
         }
 
-        if self.type == PropertyType.STATIC:
-            return {
-                **{
-                    "value": self.value,
-                    "default": self.default,
-                },
-                **data,
-            }
-
         return data
 
     # -----------------------------------------------------------------------------

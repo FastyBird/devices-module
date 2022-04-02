@@ -30,7 +30,7 @@ from fastybird_devices_module.entities.device import (
     DeviceDynamicPropertyEntity,
     DeviceEntity,
     DevicePropertyEntity,
-    DeviceStaticPropertyEntity,
+    DeviceStaticPropertyEntity, DeviceMappedPropertyEntity,
 )
 from fastybird_devices_module.managers.base import BaseManager
 
@@ -125,7 +125,7 @@ class DevicePropertiesManager(BaseManager[DevicePropertyEntity]):
     def create(
         self,
         data: Dict,
-        property_type: Type[Union[DeviceDynamicPropertyEntity, DeviceStaticPropertyEntity]],
+        property_type: Type[Union[DeviceDynamicPropertyEntity, DeviceStaticPropertyEntity, DeviceMappedPropertyEntity]],
     ) -> DevicePropertyEntity:
         """Create new device property entity"""
         if "device_id" in data and "device" not in data:

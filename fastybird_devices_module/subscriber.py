@@ -39,8 +39,8 @@ from fastybird_devices_module.entities.channel import (
     ChannelControlEntity,
     ChannelDynamicPropertyEntity,
     ChannelEntity,
-    ChannelPropertyEntity,
     ChannelMappedPropertyEntity,
+    ChannelPropertyEntity,
 )
 from fastybird_devices_module.entities.connector import (
     ConnectorControlEntity,
@@ -52,8 +52,8 @@ from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
-    DevicePropertyEntity,
     DeviceMappedPropertyEntity,
+    DevicePropertyEntity,
 )
 from fastybird_devices_module.managers.state import (
     ChannelPropertiesStatesManager,

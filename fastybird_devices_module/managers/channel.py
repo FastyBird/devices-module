@@ -27,9 +27,9 @@ from fastybird_devices_module.entities.channel import (
     ChannelControlEntity,
     ChannelDynamicPropertyEntity,
     ChannelEntity,
+    ChannelMappedPropertyEntity,
     ChannelPropertyEntity,
     ChannelStaticPropertyEntity,
-    ChannelMappedPropertyEntity,
 )
 from fastybird_devices_module.entities.device import DeviceEntity
 from fastybird_devices_module.managers.base import BaseManager

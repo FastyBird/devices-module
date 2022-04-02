@@ -29,8 +29,9 @@ from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
+    DeviceMappedPropertyEntity,
     DevicePropertyEntity,
-    DeviceStaticPropertyEntity, DeviceMappedPropertyEntity,
+    DeviceStaticPropertyEntity,
 )
 from fastybird_devices_module.managers.base import BaseManager
 

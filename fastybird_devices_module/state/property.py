@@ -93,7 +93,7 @@ class IPropertyState(ABC):
 
     # -----------------------------------------------------------------------------
 
-    @property
+    @property  # type: ignore[misc]
     @abstractmethod
     def valid(self) -> bool:
         """Property value is valid"""

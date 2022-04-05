@@ -136,6 +136,7 @@ final class ConnectorPropertiesManager
 				'actual_value'   => $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat(), $property->getInvalid()),
 				'expected_value' => $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid()),
 				'pending'        => !($state === null) && $state->isPending(),
+				'valid'          => !($state === null) && $state->isValid(),
 			]))
 		);
 	}

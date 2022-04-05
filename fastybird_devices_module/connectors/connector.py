@@ -52,6 +52,7 @@ from fastybird_devices_module.entities.channel import (
 from fastybird_devices_module.entities.connector import (
     ConnectorControlEntity,
     ConnectorDynamicPropertyEntity,
+    ConnectorEntity,
 )
 from fastybird_devices_module.entities.device import (
     DeviceControlEntity,
@@ -105,7 +106,7 @@ class IConnector(ABC):  # pylint: disable=too-many-public-methods
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def initialize(self, settings: Optional[Dict] = None) -> None:
+    def initialize(self, connector: ConnectorEntity) -> None:
         """Set connector to initial state"""
 
     # -----------------------------------------------------------------------------
@@ -460,7 +461,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if not isinstance(self.__connector, IConnector):
                 raise AttributeError(f"Instance of connector {connector.type} couldn't be created")
 
-            self.__connector.initialize(settings=connector.params)
+            self.__connector.initialize(connector=connector)
 
         except Exception as ex:  # pylint: disable=broad-except
             self.__logger.exception(ex)

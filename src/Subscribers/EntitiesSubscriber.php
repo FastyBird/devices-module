@@ -22,8 +22,8 @@ use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
+use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
-use FastyBird\Metadata\Helpers as MetadataHelpers;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -294,8 +294,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					return;
 				}
 
-				$actualValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()) : null;
-				$expectedValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()) : null;
+				$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
 
 				$this->publisher->publish(
 					$entity->getSource(),
@@ -304,6 +304,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
+						'valid'          => $state->isValid(),
 					] : [], $entity->toArray()))
 				);
 			} elseif (
@@ -323,8 +324,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					return;
 				}
 
-				$actualValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()) : null;
-				$expectedValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()) : null;
+				$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
 
 				$this->publisher->publish(
 					$entity->getSource(),
@@ -333,6 +334,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
+						'valid'          => $state->isValid(),
 					] : [], $entity->toArray()))
 				);
 			} elseif (
@@ -352,8 +354,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					return;
 				}
 
-				$actualValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat()) : null;
-				$expectedValue = $state ? MetadataHelpers\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat()) : null;
+				$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
 
 				$this->publisher->publish(
 					$entity->getSource(),
@@ -362,6 +364,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
+						'valid'          => $state->isValid(),
 					] : [], $entity->toArray()))
 				);
 			} else {

@@ -27,7 +27,6 @@ from typing import Dict, List, Optional, Tuple, Union
 # Library dependencies
 from fastnumbers import fast_float, fast_int
 from fastybird_metadata.devices_module import PropertyType
-from fastybird_metadata.helpers import normalize_value
 from fastybird_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import BINARY, BOOLEAN, JSON, VARCHAR, Column, Integer
 
@@ -36,6 +35,7 @@ from fastybird_devices_module.exceptions import (
     InvalidArgumentException,
     InvalidStateException,
 )
+from fastybird_devices_module.utils import normalize_value
 
 
 class PropertyMixin:  # pylint: disable=too-many-instance-attributes
@@ -277,12 +277,20 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
             DataType.INT,
             DataType.UINT,
         ):
-            return fast_int(self.col_invalid)
+            try:
+                return fast_int(self.col_invalid, raise_on_invalid=True)
+
+            except ValueError:
+                return None
 
         if self.data_type == DataType.FLOAT:
-            return fast_float(self.col_invalid)
+            try:
+                return fast_float(self.col_invalid, raise_on_invalid=True)
 
-        return self.col_invalid
+            except ValueError:
+                return None
+
+        return str(self.col_invalid)
 
     # -----------------------------------------------------------------------------
 
@@ -316,7 +324,12 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         if self.col_value is None:
             return None
 
-        return normalize_value(data_type=self.data_type, value=self.col_value, value_format=self.format)
+        return normalize_value(
+            data_type=self.data_type,
+            value=self.col_value,
+            value_format=self.format,
+            value_invalid=self.invalid,
+        )
 
     # -----------------------------------------------------------------------------
 
@@ -339,7 +352,12 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
         if self.col_default is None:
             return None
 
-        return normalize_value(data_type=self.data_type, value=self.col_default, value_format=self.format)
+        return normalize_value(
+            data_type=self.data_type,
+            value=self.col_default,
+            value_format=self.format,
+            value_invalid=self.invalid,
+        )
 
     # -----------------------------------------------------------------------------
 

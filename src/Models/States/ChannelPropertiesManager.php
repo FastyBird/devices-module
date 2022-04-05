@@ -19,8 +19,8 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
+use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
-use FastyBird\Metadata\Helpers as MetadataHelpers;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -145,8 +145,8 @@ final class ChannelPropertiesManager
 			$property->getSource(),
 			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ENTITY_UPDATED),
 			Utils\ArrayHash::from(array_merge($property->toArray(), [
-				'actual_value'   => $state === null ? null : MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()),
-				'expected_value' => $state === null ? null : MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat()),
+				'actual_value'   => $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat(), $property->getInvalid()),
+				'expected_value' => $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid()),
 				'pending'        => !($state === null) && $state->isPending(),
 			]))
 		);

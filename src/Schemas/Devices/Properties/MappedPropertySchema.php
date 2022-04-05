@@ -21,7 +21,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Schemas;
-use FastyBird\Metadata\Helpers as MetadataHelpers;
+use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
@@ -91,8 +91,8 @@ final class MappedPropertySchema extends PropertySchema
 		}
 
 		if ($property->getParent() instanceof Entities\Devices\Properties\IDynamicProperty) {
-			$actualValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat()) : null;
-			$expectedValue = $state !== null ? MetadataHelpers\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat()) : null;
+			$actualValue = $state !== null ? Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat(), $property->getInvalid()) : null;
+			$expectedValue = $state !== null ? Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid()) : null;
 
 			return array_merge((array) parent::getAttributes($property, $context), [
 				'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,

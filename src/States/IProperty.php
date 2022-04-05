@@ -72,6 +72,18 @@ interface IProperty
 	public function isPending(): bool;
 
 	/**
+	 * @param bool $valid
+	 *
+	 * @return void
+	 */
+	public function setValid(bool $valid): void;
+
+	/**
+	 * @return bool
+	 */
+	public function isValid(): bool;
+
+	/**
 	 * @return mixed[]
 	 */
 	public function toArray(): array;

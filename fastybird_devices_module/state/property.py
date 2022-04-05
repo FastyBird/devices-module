@@ -93,6 +93,20 @@ class IPropertyState(ABC):
 
     # -----------------------------------------------------------------------------
 
+    @property
+    @abstractmethod
+    def valid(self) -> bool:
+        """Property value is valid"""
+
+    # -----------------------------------------------------------------------------
+
+    @valid.setter  # type: ignore[misc]
+    @abstractmethod
+    def valid(self, valid: bool) -> None:
+        """Property value is valid setter"""
+
+    # -----------------------------------------------------------------------------
+
     @abstractmethod
     def to_dict(self) -> Dict:
         """Transform state to dictionary"""

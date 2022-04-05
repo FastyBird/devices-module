@@ -18,7 +18,7 @@ namespace FastyBird\DevicesModule\Entities;
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
-use FastyBird\Metadata\Helpers as MetadataHelpers;
+use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -408,13 +408,17 @@ abstract class Property implements IProperty
 			if (is_numeric($this->invalid)) {
 				return intval($this->invalid);
 			}
+
+			return null;
 		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 			if (is_numeric($this->invalid)) {
 				return floatval($this->invalid);
 			}
+
+			return null;
 		}
 
-		return $this->invalid;
+		return strval($this->invalid);
 	}
 
 	/**
@@ -455,7 +459,7 @@ abstract class Property implements IProperty
 			return null;
 		}
 
-		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat());
+		return Utilities\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat(), $this->getInvalid());
 	}
 
 	/**
@@ -485,7 +489,7 @@ abstract class Property implements IProperty
 			return null;
 		}
 
-		return MetadataHelpers\ValueHelper::normalizeValue($this->getDataType(), $this->default, $this->getFormat());
+		return Utilities\ValueHelper::normalizeValue($this->getDataType(), $this->default, $this->getFormat(), $this->getInvalid());
 	}
 
 	/**

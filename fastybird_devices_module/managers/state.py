@@ -25,7 +25,6 @@ from typing import Dict, Optional, Union
 
 # Library dependencies
 from fastybird_exchange.publisher import Publisher
-from fastybird_metadata.helpers import normalize_value
 from fastybird_metadata.routing import RoutingKey
 from fastybird_metadata.types import ButtonPayload, SwitchPayload
 from kink import inject
@@ -40,6 +39,7 @@ from fastybird_devices_module.state.property import (
     IConnectorPropertyState,
     IDevicePropertyState,
 )
+from fastybird_devices_module.utils import normalize_value
 
 
 class IConnectorPropertiesStatesManager:
@@ -269,6 +269,7 @@ class ConnectorPropertiesStatesManager:
                 data_type=connector_property.data_type,
                 value=state.actual_value,
                 value_format=connector_property.format,
+                value_invalid=connector_property.invalid,
             )
             if state is not None
             else None
@@ -278,6 +279,7 @@ class ConnectorPropertiesStatesManager:
                 data_type=connector_property.data_type,
                 value=state.expected_value,
                 value_format=connector_property.format,
+                value_invalid=connector_property.invalid,
             )
             if state is not None
             else None
@@ -296,6 +298,7 @@ class ConnectorPropertiesStatesManager:
                     if isinstance(expected_value, (str, int, float, bool)) or expected_value is None
                     else str(expected_value),
                     "pending": state.pending if state is not None else False,
+                    "valid": state.valid if state is not None else False,
                 },
             },
         )
@@ -429,6 +432,7 @@ class DevicePropertiesStatesManager:
                 data_type=device_property.data_type,
                 value=state.actual_value,
                 value_format=device_property.format,
+                value_invalid=device_property.invalid,
             )
             if state is not None
             else None
@@ -438,6 +442,7 @@ class DevicePropertiesStatesManager:
                 data_type=device_property.data_type,
                 value=state.expected_value,
                 value_format=device_property.format,
+                value_invalid=device_property.invalid,
             )
             if state is not None
             else None
@@ -456,6 +461,7 @@ class DevicePropertiesStatesManager:
                     if isinstance(expected_value, (str, int, float, bool)) or expected_value is None
                     else str(expected_value),
                     "pending": state.pending if state is not None else False,
+                    "valid": state.valid if state is not None else False,
                 },
             },
         )
@@ -592,6 +598,7 @@ class ChannelPropertiesStatesManager:
                 data_type=channel_property.data_type,
                 value=state.actual_value,
                 value_format=channel_property.format,
+                value_invalid=channel_property.invalid,
             )
             if state is not None
             else None
@@ -601,6 +608,7 @@ class ChannelPropertiesStatesManager:
                 data_type=channel_property.data_type,
                 value=state.expected_value,
                 value_format=channel_property.format,
+                value_invalid=channel_property.invalid,
             )
             if state is not None
             else None
@@ -619,6 +627,7 @@ class ChannelPropertiesStatesManager:
                     if isinstance(expected_value, (str, int, float, bool)) or expected_value is None
                     else str(expected_value),
                     "pending": state.pending if state is not None else False,
+                    "valid": state.valid if state is not None else False,
                 },
             },
         )

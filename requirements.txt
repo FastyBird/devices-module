@@ -1,5 +1,5 @@
 fastnumbers>=3.2
-fastybird-exchange>=0.32
+fastybird-exchange>=0.36
 fastybird-metadata>=0.53
 inflection>=0.5
 kink>=0.6

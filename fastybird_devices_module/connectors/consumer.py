@@ -115,5 +115,8 @@ class ConnectorConsumer(IConsumer):  # pylint: disable=too-few-public-methods
                     )
                 )
 
+            else:
+                self.__logger.debug("Received unknown exchange message")
+
         else:
             self.__logger.warning("Received data message without data")

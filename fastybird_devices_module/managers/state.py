@@ -224,12 +224,15 @@ class ConnectorPropertiesStatesManager:
         if self.__manager is None:
             raise NotImplementedError("Connector properties states manager is not implemented")
 
+        stored_data = state.to_dict()
+
         updated_state = self.__manager.update(connector_property=connector_property, state=state, data=data)
 
-        self.__publish_entity(
-            connector_property=connector_property,
-            state=updated_state,
-        )
+        if stored_data != updated_state.to_dict():
+            self.__publish_entity(
+                connector_property=connector_property,
+                state=updated_state,
+            )
 
         return updated_state
 
@@ -372,18 +375,21 @@ class DevicePropertiesStatesManager:
         if device_property.parent is not None:
             raise AttributeError("Child property can't have state")
 
+        stored_data = state.to_dict()
+
         updated_state = self.__manager.update(device_property=device_property, state=state, data=data)
 
-        self.__publish_entity(
-            device_property=device_property,
-            state=updated_state,
-        )
-
-        for child in device_property.children:
+        if stored_data != updated_state.to_dict():
             self.__publish_entity(
-                device_property=child,
+                device_property=device_property,
                 state=updated_state,
             )
+
+            for child in device_property.children:
+                self.__publish_entity(
+                    device_property=child,
+                    state=updated_state,
+                )
 
         return updated_state
 
@@ -538,18 +544,21 @@ class ChannelPropertiesStatesManager:
         if channel_property.parent is not None:
             raise AttributeError("Child property can't have state")
 
+        stored_data = state.to_dict()
+
         updated_state = self.__manager.update(channel_property=channel_property, state=state, data=data)
 
-        self.__publish_entity(
-            channel_property=channel_property,
-            state=updated_state,
-        )
-
-        for child in self.__repository.get_all_by_parent(property_id=channel_property.id):
+        if stored_data != updated_state.to_dict():
             self.__publish_entity(
-                channel_property=child,
+                channel_property=channel_property,
                 state=updated_state,
             )
+
+            for child in self.__repository.get_all_by_parent(property_id=channel_property.id):
+                self.__publish_entity(
+                    channel_property=child,
+                    state=updated_state,
+                )
 
         return updated_state
 

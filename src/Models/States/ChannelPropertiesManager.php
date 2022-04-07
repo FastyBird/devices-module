@@ -103,6 +103,10 @@ final class ChannelPropertiesManager
 
 		$this->publishEntity($property, $updatedState);
 
+		foreach ($property->getChildren() as $child) {
+			$this->publishEntity($child, $updatedState);
+		}
+
 		return $updatedState;
 	}
 
@@ -128,6 +132,10 @@ final class ChannelPropertiesManager
 
 		if ($result) {
 			$this->publishEntity($property, null);
+
+			foreach ($property->getChildren() as $child) {
+				$this->publishEntity($child, null);
+			}
 		}
 
 		return $result;

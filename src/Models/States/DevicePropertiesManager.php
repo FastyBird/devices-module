@@ -103,6 +103,10 @@ final class DevicePropertiesManager
 
 		$this->publishEntity($property, $updatedState);
 
+		foreach ($property->getChildren() as $child) {
+			$this->publishEntity($child, $updatedState);
+		}
+
 		return $updatedState;
 	}
 
@@ -128,6 +132,10 @@ final class DevicePropertiesManager
 
 		if ($result) {
 			$this->publishEntity($property, null);
+
+			foreach ($property->getChildren() as $child) {
+				$this->publishEntity($child, null);
+			}
 		}
 
 		return $result;

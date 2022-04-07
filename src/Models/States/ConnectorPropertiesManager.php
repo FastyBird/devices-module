@@ -129,12 +129,15 @@ final class ConnectorPropertiesManager
 			return;
 		}
 
+		$actualValue = $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat(), $property->getInvalid());
+		$expectedValue = $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid());
+
 		$this->publisher->publish(
 			$property->getSource(),
 			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_UPDATED),
 			Utils\ArrayHash::from(array_merge($property->toArray(), [
-				'actual_value'   => $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat(), $property->getInvalid()),
-				'expected_value' => $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid()),
+				'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
+				'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 				'pending'        => !($state === null) && $state->isPending(),
 				'valid'          => !($state === null) && $state->isValid(),
 			]))

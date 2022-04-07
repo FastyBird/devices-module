@@ -198,6 +198,7 @@ class ConnectorPropertiesStatesManager:
         self,
         connector_property: ConnectorPropertyEntity,
         data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+        publish_state: bool = True,
     ) -> IConnectorPropertyState:
         """Create new connector property state record"""
         if self.__manager is None:
@@ -205,10 +206,11 @@ class ConnectorPropertiesStatesManager:
 
         created_state = self.__manager.create(connector_property=connector_property, data=data)
 
-        self.__publish_entity(
-            connector_property=connector_property,
-            state=created_state,
-        )
+        if publish_state:
+            self.__publish_entity(
+                connector_property=connector_property,
+                state=created_state,
+            )
 
         return created_state
 
@@ -219,6 +221,7 @@ class ConnectorPropertiesStatesManager:
         connector_property: ConnectorPropertyEntity,
         state: IConnectorPropertyState,
         data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+        publish_state: bool = True,
     ) -> IConnectorPropertyState:
         """Update existing connector property state record"""
         if self.__manager is None:
@@ -228,7 +231,7 @@ class ConnectorPropertiesStatesManager:
 
         updated_state = self.__manager.update(connector_property=connector_property, state=state, data=data)
 
-        if stored_data != updated_state.to_dict():
+        if stored_data != updated_state.to_dict() and publish_state:
             self.__publish_entity(
                 connector_property=connector_property,
                 state=updated_state,
@@ -242,6 +245,7 @@ class ConnectorPropertiesStatesManager:
         self,
         connector_property: ConnectorPropertyEntity,
         state: IConnectorPropertyState,
+        publish_state: bool = True,
     ) -> bool:
         """Delete existing connector property state"""
         if self.__manager is None:
@@ -249,7 +253,7 @@ class ConnectorPropertiesStatesManager:
 
         result = self.__manager.delete(connector_property=connector_property, state=state)
 
-        if result is True:
+        if result is True and publish_state:
             self.__publish_entity(
                 connector_property=connector_property,
                 state=None,
@@ -343,6 +347,7 @@ class DevicePropertiesStatesManager:
         self,
         device_property: DevicePropertyEntity,
         data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+        publish_state: bool = True,
     ) -> IDevicePropertyState:
         """Create new device property state record"""
         if self.__manager is None:
@@ -353,10 +358,11 @@ class DevicePropertiesStatesManager:
 
         created_state = self.__manager.create(device_property=device_property, data=data)
 
-        self.__publish_entity(
-            device_property=device_property,
-            state=created_state,
-        )
+        if publish_state:
+            self.__publish_entity(
+                device_property=device_property,
+                state=created_state,
+            )
 
         return created_state
 
@@ -367,6 +373,7 @@ class DevicePropertiesStatesManager:
         device_property: DevicePropertyEntity,
         state: IDevicePropertyState,
         data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+        publish_state: bool = True,
     ) -> IDevicePropertyState:
         """Update existing device property state record"""
         if self.__manager is None:
@@ -379,7 +386,7 @@ class DevicePropertiesStatesManager:
 
         updated_state = self.__manager.update(device_property=device_property, state=state, data=data)
 
-        if stored_data != updated_state.to_dict():
+        if stored_data != updated_state.to_dict() and publish_state:
             self.__publish_entity(
                 device_property=device_property,
                 state=updated_state,
@@ -399,6 +406,7 @@ class DevicePropertiesStatesManager:
         self,
         device_property: DevicePropertyEntity,
         state: IDevicePropertyState,
+        publish_state: bool = True,
     ) -> bool:
         """Delete existing device property state"""
         if self.__manager is None:
@@ -409,7 +417,7 @@ class DevicePropertiesStatesManager:
 
         result = self.__manager.delete(device_property=device_property, state=state)
 
-        if result is True:
+        if result is True and publish_state:
             self.__publish_entity(
                 device_property=device_property,
                 state=None,
@@ -512,6 +520,7 @@ class ChannelPropertiesStatesManager:
         self,
         channel_property: ChannelPropertyEntity,
         data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+        publish_state: bool = True,
     ) -> IChannelPropertyState:
         """Create new channel property state record"""
         if self.__manager is None:
@@ -522,10 +531,11 @@ class ChannelPropertiesStatesManager:
 
         created_state = self.__manager.create(channel_property=channel_property, data=data)
 
-        self.__publish_entity(
-            channel_property=channel_property,
-            state=created_state,
-        )
+        if publish_state:
+            self.__publish_entity(
+                channel_property=channel_property,
+                state=created_state,
+            )
 
         return created_state
 
@@ -536,6 +546,7 @@ class ChannelPropertiesStatesManager:
         channel_property: ChannelPropertyEntity,
         state: IChannelPropertyState,
         data: Dict[str, Union[str, int, float, bool, datetime, ButtonPayload, SwitchPayload, None]],
+        publish_state: bool = True,
     ) -> IChannelPropertyState:
         """Update existing channel property state record"""
         if self.__manager is None:
@@ -548,7 +559,7 @@ class ChannelPropertiesStatesManager:
 
         updated_state = self.__manager.update(channel_property=channel_property, state=state, data=data)
 
-        if stored_data != updated_state.to_dict():
+        if stored_data != updated_state.to_dict() and publish_state:
             self.__publish_entity(
                 channel_property=channel_property,
                 state=updated_state,
@@ -568,6 +579,7 @@ class ChannelPropertiesStatesManager:
         self,
         channel_property: ChannelPropertyEntity,
         state: IChannelPropertyState,
+        publish_state: bool = True,
     ) -> bool:
         """Delete existing channel property state"""
         if self.__manager is None:
@@ -578,7 +590,7 @@ class ChannelPropertiesStatesManager:
 
         result = self.__manager.delete(channel_property=channel_property, state=state)
 
-        if result is True:
+        if result is True and publish_state:
             self.__publish_entity(
                 channel_property=channel_property,
                 state=None,

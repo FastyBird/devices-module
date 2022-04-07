@@ -55,12 +55,14 @@ final class DevicePropertiesManager
 	/**
 	 * @param Entities\Devices\Properties\IProperty $property
 	 * @param Utils\ArrayHash $values
+	 * @param bool $publishState
 	 *
 	 * @return States\IDeviceProperty
 	 */
 	public function create(
 		Entities\Devices\Properties\IProperty $property,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
+		bool $publishState = true
 	): States\IDeviceProperty {
 		if ($this->manager === null) {
 			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
@@ -73,7 +75,9 @@ final class DevicePropertiesManager
 		/** @var States\IDeviceProperty $createdState */
 		$createdState = $this->manager->create($property, $values);
 
-		$this->publishEntity($property, $createdState);
+		if ($publishState) {
+			$this->publishEntity($property, $createdState);
+		}
 
 		return $createdState;
 	}
@@ -82,13 +86,15 @@ final class DevicePropertiesManager
 	 * @param Entities\Devices\Properties\IProperty $property
 	 * @param States\IDeviceProperty $state
 	 * @param Utils\ArrayHash $values
+	 * @param bool $publishState
 	 *
 	 * @return States\IDeviceProperty
 	 */
 	public function update(
 		Entities\Devices\Properties\IProperty $property,
 		States\IDeviceProperty $state,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
+		bool $publishState = true
 	): States\IDeviceProperty {
 		if ($this->manager === null) {
 			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
@@ -98,13 +104,17 @@ final class DevicePropertiesManager
 			throw new Exceptions\InvalidStateException('Child property can\'t have state');
 		}
 
+		$storedState = $state->toArray();
+
 		/** @var States\IDeviceProperty $updatedState */
 		$updatedState = $this->manager->update($property, $state, $values);
 
-		$this->publishEntity($property, $updatedState);
+		if ($storedState !== $updatedState->toArray() && $publishState) {
+			$this->publishEntity($property, $updatedState);
 
-		foreach ($property->getChildren() as $child) {
-			$this->publishEntity($child, $updatedState);
+			foreach ($property->getChildren() as $child) {
+				$this->publishEntity($child, $updatedState);
+			}
 		}
 
 		return $updatedState;
@@ -113,12 +123,14 @@ final class DevicePropertiesManager
 	/**
 	 * @param Entities\Devices\Properties\IProperty $property
 	 * @param States\IDeviceProperty $state
+	 * @param bool $publishState
 	 *
 	 * @return bool
 	 */
 	public function delete(
 		Entities\Devices\Properties\IProperty $property,
-		States\IDeviceProperty $state
+		States\IDeviceProperty $state,
+		bool $publishState = true
 	): bool {
 		if ($this->manager === null) {
 			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
@@ -130,7 +142,7 @@ final class DevicePropertiesManager
 
 		$result = $this->manager->delete($property, $state);
 
-		if ($result) {
+		if ($result && $publishState) {
 			$this->publishEntity($property, null);
 
 			foreach ($property->getChildren() as $child) {
@@ -154,7 +166,7 @@ final class DevicePropertiesManager
 
 		$this->publisher->publish(
 			$property->getSource(),
-			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ENTITY_UPDATED),
+			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ENTITY_REPORTED),
 			Utils\ArrayHash::from(array_merge($property->toArray(), [
 				'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 				'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),

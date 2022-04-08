@@ -19,12 +19,14 @@ Devices module connectors connector worker module
 """
 
 # Python base dependencies
+import asyncio
 import pkgutil
 import re
 import time
 import types
 import uuid
 from abc import ABC, abstractmethod
+from asyncio import AbstractEventLoop
 from importlib import util as import_util
 from typing import Dict, Optional, Union
 
@@ -216,12 +218,6 @@ class IConnector(ABC):  # pylint: disable=too-many-public-methods
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    async def handle(self) -> None:
-        """Process connector actions"""
-
-    # -----------------------------------------------------------------------------
-
-    @abstractmethod
     def has_unfinished_tasks(self) -> bool:
         """Check if connector has some unfinished tasks"""
 
@@ -276,11 +272,13 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     __logger: Logger
 
+    __loop: AbstractEventLoop
+
     __SHUTDOWN_WAITING_DELAY: float = 3.0
 
     # -----------------------------------------------------------------------------
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-locals
         self,
         queue: ConnectorQueue,
         devices_repository: DevicesRepository,
@@ -296,6 +294,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         connectors_properties_states_repository: ConnectorPropertiesStatesRepository,
         connectors_properties_states_manager: ConnectorPropertiesStatesManager,
         logger: Logger,
+        loop: AbstractEventLoop,
     ) -> None:
         self.__queue = queue
 
@@ -316,6 +315,8 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
         self.__logger = logger
 
+        self.__loop = loop
+
     # -----------------------------------------------------------------------------
 
     def start(self) -> None:
@@ -326,6 +327,10 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if self.__connector is not None:
                 self.__set_state(state=ConnectionState.RUNNING)
 
+                # Register queue coroutine
+                asyncio.ensure_future(self.__queue_process())
+
+                # Send start command to loaded connector
                 self.__connector.start()
 
         except Exception as ex:  # pylint: disable=broad-except
@@ -348,7 +353,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         """Stop connector service"""
         self.__stopped = True
 
-        self.__logger.info("Stopping...")
+        self.__logger.info("Stopping connector...")
 
         try:
             # Send terminate command to...
@@ -361,11 +366,9 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 waiting_for_closing = True
 
-                # Wait until thread is fully terminated
+                # Wait until connector is fully terminated
                 while waiting_for_closing and time.time() - now < self.__SHUTDOWN_WAITING_DELAY:
-                    if self.__connector.has_unfinished_tasks():
-                        self.__connector.handle()
-                    else:
+                    if not self.__connector.has_unfinished_tasks():
                         waiting_for_closing = False
 
                 self.__set_state(state=ConnectionState.STOPPED)
@@ -382,59 +385,6 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             )
 
             raise TerminateConnectorException("Connector couldn't be stopped. An unexpected error occurred") from ex
-
-    # -----------------------------------------------------------------------------
-
-    async def handle(self) -> None:
-        """Process connector actions"""
-        # All records have to be processed before thread is closed
-        if self.__stopped:
-            return
-
-        try:
-            if self.__connector is not None:
-                await self.__connector.handle()
-
-        except Exception as ex:  # pylint: disable=broad-except
-            self.__logger.exception(ex)
-            self.__logger.error(
-                "An unexpected error occurred during connector handling process",
-                extra={
-                    "exception": {
-                        "message": str(ex),
-                        "code": type(ex).__name__,
-                    },
-                },
-            )
-
-            raise TerminateConnectorException("An unexpected error occurred during connector handling process") from ex
-
-        queue_item = self.__queue.get()
-
-        if queue_item is not None:
-            try:
-                if isinstance(queue_item, ConsumePropertyActionMessageQueueItem):
-                    self.__write_property_command(item=queue_item)
-
-                if isinstance(queue_item, ConsumeControlActionMessageQueueItem):
-                    self.__write_control_command(item=queue_item)
-
-                if isinstance(queue_item, ConsumeEntityMessageQueueItem):
-                    self.__handle_entity_event(item=queue_item)
-
-            except Exception as ex:  # pylint: disable=broad-except
-                self.__logger.exception(ex)
-                self.__logger.error(
-                    "An unexpected error occurred during processing queue item",
-                    extra={
-                        "exception": {
-                            "message": str(ex),
-                            "code": type(ex).__name__,
-                        },
-                    },
-                )
-
-                raise TerminateConnectorException("An unexpected error occurred during processing queue item") from ex
 
     # -----------------------------------------------------------------------------
 
@@ -488,6 +438,45 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                         connectors[parsed_module_name.group("name")] = loaded_module
 
         return connectors
+
+    # -----------------------------------------------------------------------------
+
+    async def __queue_process(self) -> None:
+        while True:
+            # All records have to be processed before process is closed
+            if self.__stopped and self.__queue.is_empty():
+                return
+
+            queue_item = self.__queue.get()
+
+            if queue_item is not None:
+                try:
+                    if isinstance(queue_item, ConsumePropertyActionMessageQueueItem):
+                        self.__write_property_command(item=queue_item)
+
+                    if isinstance(queue_item, ConsumeControlActionMessageQueueItem):
+                        self.__write_control_command(item=queue_item)
+
+                    if isinstance(queue_item, ConsumeEntityMessageQueueItem):
+                        self.__handle_entity_event(item=queue_item)
+
+                except Exception as ex:  # pylint: disable=broad-except
+                    self.__logger.exception(ex)
+                    self.__logger.error(
+                        "An unexpected error occurred during processing queue item",
+                        extra={
+                            "exception": {
+                                "message": str(ex),
+                                "code": type(ex).__name__,
+                            },
+                        },
+                    )
+
+                    self.__loop.stop()
+
+                    return
+
+            await asyncio.sleep(0.01)
 
     # -----------------------------------------------------------------------------
 

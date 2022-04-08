@@ -24,6 +24,8 @@ Devices module DI container
 import logging
 
 # Library dependencies
+from asyncio import AbstractEventLoop
+
 from fastybird_exchange.consumer import Consumer
 from kink import di
 from sqlalchemy.orm import Session as OrmSession
@@ -80,6 +82,7 @@ from fastybird_devices_module.subscriber import (
 
 
 def register_services(  # pylint: disable=too-many-statements
+    loop: AbstractEventLoop,
     logger: logging.Logger = logging.getLogger("dummy"),
 ) -> None:
     """Register devices module services"""
@@ -196,6 +199,7 @@ def register_services(  # pylint: disable=too-many-statements
         connectors_properties_states_repository=di[ConnectorPropertiesStatesRepository],
         connectors_properties_states_manager=di[ConnectorPropertiesStatesManager],
         logger=di[Logger],
+        loop=loop,
     )
     di["fb-devices-module_connector-handler"] = di[Connector]
 

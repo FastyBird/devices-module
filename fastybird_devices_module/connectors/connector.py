@@ -216,7 +216,7 @@ class IConnector(ABC):  # pylint: disable=too-many-public-methods
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def handle(self) -> None:
+    async def handle(self) -> None:
         """Process connector actions"""
 
     # -----------------------------------------------------------------------------
@@ -385,7 +385,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    def handle(self) -> None:
+    async def handle(self) -> None:
         """Process connector actions"""
         # All records have to be processed before thread is closed
         if self.__stopped:
@@ -393,7 +393,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
         try:
             if self.__connector is not None:
-                self.__connector.handle()
+                await self.__connector.handle()
 
         except Exception as ex:  # pylint: disable=broad-except
             self.__logger.exception(ex)

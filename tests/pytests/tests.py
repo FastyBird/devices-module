@@ -15,6 +15,7 @@
 #     limitations under the License.
 
 # Test dependencies
+import asyncio
 import json
 import os
 import unittest
@@ -68,7 +69,7 @@ class DbTestCase(unittest.TestCase):
         di[Session] = cls.__db_session
 
         register_services_exchange()
-        register_services()
+        register_services(loop=asyncio.get_event_loop())
 
         # Initialize all database models
         Base.metadata.create_all(cls.__db_engine)

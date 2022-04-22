@@ -26,11 +26,10 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from fastybird_metadata.devices_module import DeviceModel, PropertyType
+from fastybird_metadata.devices_module import PropertyType
 from fastybird_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import (
     BINARY,
-    BOOLEAN,
     JSON,
     TEXT,
     VARCHAR,
@@ -150,6 +149,11 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     )
     controls: List["DeviceControlEntity"] = relationship(  # type: ignore[assignment]
         "DeviceControlEntity",
+        back_populates="device",
+        cascade="delete, delete-orphan",
+    )
+    attributes: List["DeviceAttributeEntity"] = relationship(  # type: ignore[assignment]
+        "DeviceAttributeEntity",
         back_populates="device",
         cascade="delete, delete-orphan",
     )

@@ -828,8 +828,8 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     __tablename__: str = "fb_devices_module_devices_attributes"
 
     __table_args__ = (
-        Index("attribute_name_idx", "attribute_name"),
-        UniqueConstraint("attribute_name", "device_id", name="attribute_name_unique"),
+        Index("attribute_identifier_idx", "attribute_identifier"),
+        UniqueConstraint("attribute_identifier", "device_id", name="attribute_identifier_unique"),
         {
             "mysql_engine": "InnoDB",
             "mysql_collate": "utf8mb4_general_ci",

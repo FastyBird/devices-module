@@ -29,6 +29,7 @@ from sqlalchemy.orm import Session as OrmSession
 
 # Library libs
 from fastybird_devices_module.entities.device import (
+    DeviceAttributeEntity,
     DeviceControlEntity,
     DeviceEntity,
     DevicePropertyEntity,
@@ -206,3 +207,57 @@ class DeviceControlsRepository:
     def get_all_by_device(self, device_id: uuid.UUID) -> List[DeviceControlEntity]:
         """Find all devices controls for device"""
         return self.__session.query(DeviceControlEntity).filter(DeviceControlEntity.device_id == device_id.bytes).all()
+
+
+class DeviceAttributesRepository:
+    """
+    Devices attributes repository
+
+    @package        FastyBird:DevicesModule!
+    @module         repositories/device
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __session: OrmSession
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        session: OrmSession,
+    ) -> None:
+        self.__session = session
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_id(self, attribute_id: uuid.UUID) -> Optional[DeviceAttributeEntity]:
+        """Find attribute by provided database identifier"""
+        return self.__session.query(DeviceAttributeEntity).get(attribute_id.bytes)
+
+    # -----------------------------------------------------------------------------
+
+    def get_by_identifier(self, device_id: uuid.UUID, attribute_identifier: str) -> Optional[DeviceAttributeEntity]:
+        """Find attribute by provided name"""
+        return (
+            self.__session.query(DeviceAttributeEntity)
+            .filter(
+                DeviceAttributeEntity.device_id == device_id.bytes,
+                DeviceAttributeEntity.col_identifier == attribute_identifier,
+            )
+            .first()
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def get_all(self) -> List[DeviceAttributeEntity]:
+        """Find all devices attributes"""
+        return self.__session.query(DeviceAttributeEntity).all()
+
+    # -----------------------------------------------------------------------------
+
+    def get_all_by_device(self, device_id: uuid.UUID) -> List[DeviceAttributeEntity]:
+        """Find all devices attributes for device"""
+        return (
+            self.__session.query(DeviceAttributeEntity).filter(DeviceAttributeEntity.device_id == device_id.bytes).all()
+        )

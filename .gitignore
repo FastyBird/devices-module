@@ -9,3 +9,4 @@ tests/tmp
 __pycache__
 composer.lock
 yarn.lock
+.DS_Store

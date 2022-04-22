@@ -26,12 +26,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from fastybird_metadata.devices_module import (
-    DeviceModel,
-    FirmwareManufacturer,
-    HardwareManufacturer,
-    PropertyType,
-)
+from fastybird_metadata.devices_module import DeviceModel, PropertyType
 from fastybird_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import (
     BINARY,
@@ -98,7 +93,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     __table_args__ = (
         Index("device_identifier_idx", "device_identifier"),
         Index("device_name_idx", "device_name"),
-        Index("device_enabled_idx", "device_enabled"),
         UniqueConstraint("device_identifier", "connector_id", name="device_identifier_connector_unique"),
         {
             "mysql_engine": "InnoDB",
@@ -119,27 +113,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     )
     col_comment: Optional[str] = Column(  # type: ignore[assignment]
         TEXT, name="device_comment", nullable=True, default=None
-    )
-    col_enabled: bool = Column(BOOLEAN, name="device_enabled", nullable=False, default=True)  # type: ignore[assignment]
-
-    col_hardware_manufacturer: str = Column(  # type: ignore[assignment]
-        VARCHAR(150), name="device_hardware_manufacturer", nullable=False, default="generic"
-    )
-    col_hardware_model: str = Column(  # type: ignore[assignment]
-        VARCHAR(150), name="device_hardware_model", nullable=False, default="custom"
-    )
-    col_hardware_version: Optional[str] = Column(  # type: ignore[assignment]
-        VARCHAR(150), name="device_hardware_version", nullable=True, default=None
-    )
-    col_hardware_mac_address: Optional[str] = Column(  # type: ignore[assignment]
-        VARCHAR(50), name="device_hardware_mac_address", nullable=True, default=None
-    )
-
-    col_firmware_manufacturer: str = Column(  # type: ignore[assignment]
-        VARCHAR(150), name="device_firmware_manufacturer", nullable=False, default="generic"
-    )
-    col_firmware_version: Optional[str] = Column(  # type: ignore[assignment]
-        VARCHAR(150), name="device_firmware_version", nullable=True, default=None
     )
 
     col_owner: Optional[str] = Column(  # type: ignore[assignment]
@@ -205,11 +178,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
         self.col_identifier = identifier
         self.col_name = name
 
-        self.col_hardware_manufacturer = HardwareManufacturer.GENERIC.value
-        self.col_hardware_model = DeviceModel.CUSTOM.value
-
-        self.col_firmware_manufacturer = FirmwareManufacturer.GENERIC.value
-
     # -----------------------------------------------------------------------------
 
     @property
@@ -262,144 +230,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
     # -----------------------------------------------------------------------------
 
     @property
-    def enabled(self) -> bool:
-        """Device enabled status"""
-        return self.col_enabled
-
-    # -----------------------------------------------------------------------------
-
-    @enabled.setter
-    def enabled(self, enabled: bool) -> None:
-        """Device enabled setter"""
-        self.col_enabled = enabled
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def hardware_manufacturer(self) -> Union[str, HardwareManufacturer]:
-        """Device hardware manufacturer"""
-        if HardwareManufacturer.has_value(self.col_hardware_manufacturer):
-            return HardwareManufacturer(self.col_hardware_manufacturer)
-
-        return self.col_hardware_manufacturer
-
-    # -----------------------------------------------------------------------------
-
-    @hardware_manufacturer.setter
-    def hardware_manufacturer(self, hardware_manufacturer: Union[str, HardwareManufacturer]) -> None:
-        """Device hardware manufacturer setter"""
-        if isinstance(hardware_manufacturer, HardwareManufacturer):
-            self.col_hardware_manufacturer = hardware_manufacturer.value
-
-        else:
-            self.col_hardware_manufacturer = hardware_manufacturer.lower()
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def hardware_model(self) -> Union[str, DeviceModel]:
-        """Device hardware model"""
-        if HardwareManufacturer.has_value(self.col_hardware_model):
-            return DeviceModel(self.col_hardware_model)
-
-        return self.col_hardware_model
-
-    # -----------------------------------------------------------------------------
-
-    @hardware_model.setter
-    def hardware_model(self, hardware_model: Union[str, DeviceModel]) -> None:
-        """Device hardware model setter"""
-        if isinstance(hardware_model, DeviceModel):
-            self.col_hardware_model = hardware_model.value
-
-        else:
-            self.col_hardware_model = hardware_model.lower()
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def hardware_version(self) -> Optional[str]:
-        """Device hardware version"""
-        return self.col_hardware_version
-
-    # -----------------------------------------------------------------------------
-
-    @hardware_version.setter
-    def hardware_version(self, hardware_version: Optional[str]) -> None:
-        """Device hardware version setter"""
-        self.col_hardware_version = hardware_version.lower() if hardware_version is not None else None
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def hardware_mac_address(self) -> Optional[str]:
-        """Device hardware MAC address"""
-        if self.col_hardware_mac_address is None:
-            return None
-
-        return ":".join(
-            [
-                self.col_hardware_mac_address[index : (index + 2)]
-                for index in range(0, len(self.col_hardware_mac_address), 2)
-            ]
-        )
-
-    # -----------------------------------------------------------------------------
-
-    @hardware_mac_address.setter
-    def hardware_mac_address(self, hardware_mac_address: Optional[str]) -> None:
-        """Device hardware MAC address setter"""
-        if (
-            hardware_mac_address is not None
-            and len(re.findall("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", hardware_mac_address)) == 0
-            and len(re.findall("^([0-9A-Fa-f]{12})$", hardware_mac_address)) == 0
-        ):
-            raise InvalidArgumentException("Provided mac address is not in valid format")
-
-        if hardware_mac_address is not None:
-            self.col_hardware_mac_address = hardware_mac_address.replace(":", "").replace("-", "").lower()
-
-        else:
-            self.col_hardware_mac_address = None
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def firmware_manufacturer(self) -> Union[str, FirmwareManufacturer]:
-        """Device firmware manufacturer"""
-        if FirmwareManufacturer.has_value(self.col_firmware_manufacturer):
-            return FirmwareManufacturer(self.col_firmware_manufacturer)
-
-        return self.col_firmware_manufacturer
-
-    # -----------------------------------------------------------------------------
-
-    @firmware_manufacturer.setter
-    def firmware_manufacturer(self, firmware_manufacturer: Union[str, FirmwareManufacturer]) -> None:
-        """Device firmware manufacturer setter"""
-        if isinstance(firmware_manufacturer, FirmwareManufacturer):
-            self.col_firmware_manufacturer = firmware_manufacturer.value
-
-        else:
-            self.col_firmware_manufacturer = firmware_manufacturer.lower()
-
-    # -----------------------------------------------------------------------------
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Device firmware version"""
-        return self.col_firmware_version
-
-    # -----------------------------------------------------------------------------
-
-    @firmware_version.setter
-    def firmware_version(self, firmware_version: Optional[str]) -> None:
-        """Device firmware version setter"""
-        self.col_firmware_version = firmware_version.lower() if firmware_version is not None else None
-
-    # -----------------------------------------------------------------------------
-
-    @property
     def owner(self) -> Optional[str]:
         """Device owner identifier"""
         return self.col_owner
@@ -445,19 +275,6 @@ class DeviceEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):  # pylint: dis
             "identifier": self.identifier,
             "name": self.name,
             "comment": self.comment,
-            "enabled": self.enabled,
-            "hardware_manufacturer": self.hardware_manufacturer.value
-            if isinstance(self.hardware_manufacturer, HardwareManufacturer)
-            else self.hardware_manufacturer,
-            "hardware_model": self.hardware_model.value
-            if isinstance(self.hardware_model, DeviceModel)
-            else self.hardware_model,
-            "hardware_version": self.hardware_version,
-            "hardware_mac_address": self.hardware_mac_address,
-            "firmware_manufacturer": self.firmware_manufacturer.value
-            if isinstance(self.firmware_manufacturer, FirmwareManufacturer)
-            else self.firmware_manufacturer,
-            "firmware_version": self.firmware_version,
             "connector": uuid.UUID(bytes=self.connector_id).__str__(),
             "parents": parents,
             "children": children,
@@ -982,6 +799,105 @@ class DeviceControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             **{
                 "id": self.id.__str__(),
                 "name": self.name,
+                "device": uuid.UUID(bytes=self.device_id).__str__(),
+                "owner": self.device.owner,
+            },
+        }
+
+
+class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
+    """
+    Device attribute entity
+
+    @package        FastyBird:DevicesModule!
+    @module         entities/device
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __tablename__: str = "fb_devices_module_devices_attributes"
+
+    __table_args__ = (
+        Index("attribute_name_idx", "attribute_name"),
+        UniqueConstraint("attribute_name", "device_id", name="attribute_name_unique"),
+        {
+            "mysql_engine": "InnoDB",
+            "mysql_collate": "utf8mb4_general_ci",
+            "mysql_charset": "utf8mb4",
+            "mysql_comment": "Devices attributes",
+        },
+    )
+
+    col_attribute_id: bytes = Column(  # type: ignore[assignment]
+        BINARY(16), primary_key=True, name="attribute_id", default=uuid.uuid4
+    )
+    col_identifier: str = Column(VARCHAR(50), name="attribute_identifier", nullable=False)  # type: ignore[assignment]
+    col_name: Optional[str] = Column(  # type: ignore[assignment]
+        VARCHAR(255), name="attribute_name", nullable=True, default=None
+    )
+    col_content: Optional[str] = Column(  # type: ignore[assignment]
+        VARCHAR(255), name="attribute_content", nullable=True, default=None
+    )
+
+    device_id: bytes = Column(  # type: ignore[assignment]  # pylint: disable=unused-private-member
+        BINARY(16),
+        ForeignKey("fb_devices_module_devices.device_id", ondelete="CASCADE"),
+        name="device_id",
+        nullable=False,
+    )
+
+    device: DeviceEntity = relationship(DeviceEntity, back_populates="attributes")  # type: ignore[assignment]
+
+    # -----------------------------------------------------------------------------
+
+    def __init__(self, identifier: str, device: DeviceEntity, attribute_id: Optional[uuid.UUID] = None) -> None:
+        super().__init__()
+
+        self.col_attribute_id = attribute_id.bytes if attribute_id is not None else uuid.uuid4().bytes
+
+        self.col_identifier = identifier
+
+        self.device = device
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def id(self) -> uuid.UUID:  # pylint: disable=invalid-name
+        """Attribute unique identifier"""
+        return uuid.UUID(bytes=self.col_attribute_id)
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def identifier(self) -> str:
+        """Attribute unique key"""
+        return self.col_identifier
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def name(self) -> Optional[str]:
+        """Attribute name"""
+        return self.col_name
+
+    # -----------------------------------------------------------------------------
+
+    @property
+    def content(self) -> Optional[str]:
+        """Attribute content"""
+        return self.col_content
+
+    # -----------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, Union[str, None]]:
+        """Transform entity to dictionary"""
+        return {
+            **super().to_dict(),
+            **{
+                "id": self.id.__str__(),
+                "identifier": self.identifier,
+                "name": self.name,
+                "content": self.content,
                 "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },

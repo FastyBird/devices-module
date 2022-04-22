@@ -26,6 +26,7 @@ from typing import Dict, List, Type, Union
 from fastybird_devices_module.entities.connector import ConnectorEntity
 from fastybird_devices_module.entities.device import (
     BlankDeviceEntity,
+    DeviceAttributeEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
@@ -200,3 +201,51 @@ class DeviceControlsManager(BaseManager[DeviceControlEntity]):
     def delete(self, device_control: DeviceControlEntity) -> bool:
         """Delete control entity"""
         return super().delete_entity(entity_id=device_control.id, entity_type=DeviceControlEntity)
+
+
+class DeviceAttributesManager(BaseManager[DeviceAttributeEntity]):
+    """
+    Device attributes manager
+
+    @package        FastyBird:DevicesModule!
+    @module         managers/device
+
+    @author         Adam Kadlec <adam.kadlec@fastybird.com>
+    """
+
+    __REQUIRED_FIELDS: List[str] = ["device", "name"]
+    __WRITABLE_FIELDS: List[str] = ["name", "content"]
+
+    # -----------------------------------------------------------------------------
+
+    def create(self, data: Dict) -> DeviceAttributeEntity:
+        """Create new device entity"""
+        if "device_id" in data and "device" not in data:
+            device_id = data.get("device_id")
+
+            if isinstance(device_id, uuid.UUID):
+                data["device"] = self._session.query(DeviceEntity).get(device_id.bytes)
+
+        return super().create_entity(
+            data={**data, **{"attribute_id": data.get("id", None)}},
+            entity_type=DeviceAttributeEntity,
+            required_fields=self.__REQUIRED_FIELDS,
+            writable_fields=[],
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def update(self, data: Dict, device_property: DeviceAttributeEntity) -> DeviceAttributeEntity:
+        """Update device property entity"""
+        return super().update_entity(
+            data=data,
+            entity_id=device_property.id,
+            entity_type=DeviceAttributeEntity,
+            writable_fields=self.__WRITABLE_FIELDS,
+        )
+
+    # -----------------------------------------------------------------------------
+
+    def delete(self, device_attribute: DeviceAttributeEntity) -> bool:
+        """Delete attribute entity"""
+        return super().delete_entity(entity_id=device_attribute.id, entity_type=DeviceAttributeEntity)

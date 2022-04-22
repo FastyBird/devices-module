@@ -46,6 +46,7 @@ from fastybird_devices_module.managers.connector import (
     ConnectorsManager,
 )
 from fastybird_devices_module.managers.device import (
+    DeviceAttributesManager,
     DeviceControlsManager,
     DevicePropertiesManager,
     DevicesManager,
@@ -66,6 +67,7 @@ from fastybird_devices_module.repositories.connector import (
     ConnectorsRepository,
 )
 from fastybird_devices_module.repositories.device import (
+    DeviceAttributesRepository,
     DeviceControlsRepository,
     DevicePropertiesRepository,
     DevicesRepository,
@@ -108,6 +110,8 @@ def register_services(  # pylint: disable=too-many-statements
     di["fb-devices-module_device-properties-repository"] = di[DevicePropertiesRepository]
     di[DeviceControlsRepository] = DeviceControlsRepository(session=di[OrmSession])
     di["fb-devices-module_device-controls-repository"] = di[DeviceControlsRepository]
+    di[DeviceAttributesRepository] = DeviceAttributesRepository(session=di[OrmSession])
+    di["fb-devices-module_device-attributes-repository"] = di[DeviceAttributesRepository]
     di[ChannelsRepository] = ChannelsRepository(session=di[OrmSession])
     di["fb-devices-module_channels-repository"] = di[ChannelsRepository]
     di[ChannelPropertiesRepository] = ChannelPropertiesRepository(session=di[OrmSession])
@@ -144,6 +148,8 @@ def register_services(  # pylint: disable=too-many-statements
     di["fb-devices-module_device-properties-manager"] = di[DevicePropertiesManager]
     di[DeviceControlsManager] = DeviceControlsManager(session=di[OrmSession])
     di["fb-devices-module_device-controls-manager"] = di[DeviceControlsManager]
+    di[DeviceAttributesManager] = DeviceAttributesManager(session=di[OrmSession])
+    di["fb-devices-module_device-attributes-manager"] = di[DeviceAttributesManager]
     di[ChannelsManager] = ChannelsManager(session=di[OrmSession])
     di["fb-devices-module_channels-manager"] = di[ChannelsManager]
     di[ChannelPropertiesManager] = ChannelPropertiesManager(session=di[OrmSession])

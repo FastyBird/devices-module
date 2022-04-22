@@ -49,11 +49,12 @@ from fastybird_devices_module.entities.connector import (
     ConnectorPropertyEntity,
 )
 from fastybird_devices_module.entities.device import (
+    DeviceAttributeEntity,
     DeviceControlEntity,
     DeviceDynamicPropertyEntity,
     DeviceEntity,
     DeviceMappedPropertyEntity,
-    DevicePropertyEntity, DeviceAttributeEntity,
+    DevicePropertyEntity,
 )
 from fastybird_devices_module.managers.state import (
     ChannelPropertiesStatesManager,

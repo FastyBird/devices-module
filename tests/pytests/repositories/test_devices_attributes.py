@@ -33,14 +33,14 @@ from tests.pytests.tests import DbTestCase
 class TestDeviceAttributesRepository(DbTestCase):
     @inject
     def test_repository_iterator(self, attribute_repository: DeviceAttributesRepository) -> None:
-        self.assertEqual(1, len(attribute_repository.get_all()))
+        self.assertEqual(10, len(attribute_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 
     @inject
     def test_get_item(self, attribute_repository: DeviceAttributesRepository) -> None:
         entity = attribute_repository.get_by_id(
-            attribute_id=uuid.UUID("03164A6D-9628-460C-95CC-90E6216332D9", version=4),
+            attribute_id=uuid.UUID("03164a6d-9628-460c-95cc-90e6216332d9", version=4),
         )
 
         self.assertIsInstance(entity, DeviceAttributeEntity)
@@ -51,13 +51,13 @@ class TestDeviceAttributesRepository(DbTestCase):
     @inject
     def test_transform_to_dict(self, attribute_repository: DeviceAttributesRepository) -> None:
         entity = attribute_repository.get_by_id(
-            attribute_id=uuid.UUID("03164A6D-9628-460C-95CC-90E6216332D9", version=4),
+            attribute_id=uuid.UUID("03164a6d-9628-460c-95cc-90e6216332d9", version=4),
         )
 
         self.assertIsInstance(entity, DeviceAttributeEntity)
         self.assertEqual(
             {
-                "id": "03164A6D-9628-460C-95CC-90E6216332D9",
+                "id": "03164a6d-9628-460c-95cc-90e6216332d9",
                 "identifier": DeviceAttributeName.HARDWARE_MANUFACTURER.value,
                 "name": None,
                 "content": "itead",

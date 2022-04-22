@@ -235,11 +235,11 @@ class DeviceAttributesManager(BaseManager[DeviceAttributeEntity]):
 
     # -----------------------------------------------------------------------------
 
-    def update(self, data: Dict, device_property: DeviceAttributeEntity) -> DeviceAttributeEntity:
+    def update(self, data: Dict, device_attribute: DeviceAttributeEntity) -> DeviceAttributeEntity:
         """Update device property entity"""
         return super().update_entity(
             data=data,
-            entity_id=device_property.id,
+            entity_id=device_attribute.id,
             entity_type=DeviceAttributeEntity,
             writable_fields=self.__WRITABLE_FIELDS,
         )

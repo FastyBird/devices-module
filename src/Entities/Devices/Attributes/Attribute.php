@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Devices\Attributes;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -197,9 +198,49 @@ class Attribute implements IAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setContent(?string $content): void
+	public function setContent($content): void
 	{
-		$this->content = $content;
+		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
+			if ($content instanceof MetadataTypes\HardwareManufacturerType) {
+				$this->content = $content->getValue();
+
+			} else {
+				$this->content = $content !== null ? strtolower($content) : null;
+			}
+
+		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MODEL) {
+			if ($content instanceof MetadataTypes\DeviceModelType) {
+				$this->content = $content->getValue();
+
+			} else {
+				$this->content = $content !== null ? strtolower($content) : null;
+			}
+
+		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MAC_ADDRESS) {
+			if (
+				$content !== null
+				&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $content) === 0
+				&& preg_match('/^([0-9A-Fa-f]{12})$/', $content) === 0
+			) {
+				throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
+			}
+
+			$this->content = $content !== null ? strtolower(str_replace([
+				':',
+				'-',
+			], '', $content)) : null;
+
+		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_FIRMWARE_MANUFACTURER) {
+			if ($content instanceof MetadataTypes\FirmwareManufacturerType) {
+				$this->content = $content->getValue();
+
+			} else {
+				$this->content = $content !== null ? strtolower($content) : null;
+			}
+
+		} else {
+			$this->content = $content;
+		}
 	}
 
 	/**

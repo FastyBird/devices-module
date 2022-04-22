@@ -59,10 +59,10 @@ interface IAttribute extends Entities\IEntity,
 	public function getContent();
 
 	/**
-	 * @param string|null $content
+	 * @param string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content
 	 *
 	 * @return void
 	 */
-	public function setContent(?string $content): void;
+	public function setContent($content): void;
 
 }

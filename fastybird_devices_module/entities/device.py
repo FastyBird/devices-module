@@ -933,9 +933,45 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     # -----------------------------------------------------------------------------
 
     @content.setter
-    def content(self, content: Optional[str]) -> None:
+    def content(self, content: Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]) -> None:
         """Attribute content setter"""
-        self.col_content = content
+        if self.identifier == DeviceAttributeName.HARDWARE_MANUFACTURER.value:
+            if isinstance(content, HardwareManufacturer):
+                self.col_content = content.value
+
+            else:
+                self.col_content = content.lower() if content is not None else None
+
+        elif self.identifier == DeviceAttributeName.HARDWARE_MODEL.value:
+            if isinstance(content, DeviceModel):
+                self.col_content = content.value
+
+            else:
+                self.col_content = content.lower() if content is not None else None
+
+        elif self.identifier == DeviceAttributeName.HARDWARE_MAC_ADDRESS.value:
+            if (
+                content is not None
+                and len(re.findall("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", content)) == 0
+                and len(re.findall("^([0-9A-Fa-f]{12})$", content)) == 0
+            ):
+                raise InvalidArgumentException("Provided mac address is not in valid format")
+
+            if content is not None:
+                self.col_content = content.replace(":", "").replace("-", "").lower()
+
+            else:
+                self.col_content = None
+
+        elif self.identifier == DeviceAttributeName.FIRMWARE_MANUFACTURER.value:
+            if isinstance(content, FirmwareManufacturer):
+                self.col_content = content.value
+
+            else:
+                self.col_content = content.lower() if content is not None else None
+
+        else:
+            self.col_content = content
 
     # -----------------------------------------------------------------------------
 

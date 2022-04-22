@@ -195,6 +195,7 @@ def register_services(  # pylint: disable=too-many-statements
         devices_repository=di[DevicesRepository],
         devices_properties_repository=di[DevicePropertiesRepository],
         devices_control_repository=di[DeviceControlsRepository],
+        devices_attributes_repository=di[DeviceAttributesRepository],
         channels_repository=di[ChannelsRepository],
         channels_properties_repository=di[ChannelPropertiesRepository],
         channels_control_repository=di[ChannelControlsRepository],

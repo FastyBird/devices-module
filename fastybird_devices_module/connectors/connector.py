@@ -57,6 +57,7 @@ from fastybird_devices_module.entities.connector import (
     ConnectorEntity,
 )
 from fastybird_devices_module.entities.device import (
+    DeviceAttributeEntity,
     DeviceControlEntity,
     DeviceEntity,
     DevicePropertyEntity,
@@ -79,6 +80,7 @@ from fastybird_devices_module.repositories.connector import (
     ConnectorsRepository,
 )
 from fastybird_devices_module.repositories.device import (
+    DeviceAttributesRepository,
     DeviceControlsRepository,
     DevicePropertiesRepository,
     DevicesRepository,
@@ -145,13 +147,37 @@ class IConnector(ABC):  # pylint: disable=too-many-public-methods
 
     @abstractmethod
     def remove_device_property(self, device: DeviceEntity, property_id: uuid.UUID) -> None:
-        """Remove device from connector"""
+        """Remove device property from connector"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
     def reset_devices_properties(self, device: DeviceEntity) -> None:
         """Reset devices properties to initial state"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def initialize_device_attribute(self, device: DeviceEntity, device_attribute: DeviceAttributeEntity) -> None:
+        """Initialize device attribute in connector"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def notify_device_attribute(self, device: DeviceEntity, device_attribute: DeviceAttributeEntity) -> None:
+        """Notify device attribute was reported to connector"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def remove_device_attribute(self, device: DeviceEntity, attribute_id: uuid.UUID) -> None:
+        """Remove device attribute from connector"""
+
+    # -----------------------------------------------------------------------------
+
+    @abstractmethod
+    def reset_devices_attributes(self, device: DeviceEntity) -> None:
+        """Reset devices attributes to initial state"""
 
     # -----------------------------------------------------------------------------
 
@@ -258,6 +284,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
     __devices_repository: DevicesRepository
     __devices_properties_repository: DevicePropertiesRepository
     __devices_control_repository: DeviceControlsRepository
+    __devices_attributes_repository: DeviceAttributesRepository
 
     __channels_repository: ChannelsRepository
     __channels_properties_repository: ChannelPropertiesRepository
@@ -284,6 +311,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         devices_repository: DevicesRepository,
         devices_properties_repository: DevicePropertiesRepository,
         devices_control_repository: DeviceControlsRepository,
+        devices_attributes_repository: DeviceAttributesRepository,
         channels_repository: ChannelsRepository,
         channels_properties_repository: ChannelPropertiesRepository,
         channels_control_repository: ChannelControlsRepository,
@@ -301,6 +329,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         self.__devices_repository = devices_repository
         self.__devices_properties_repository = devices_properties_repository
         self.__devices_control_repository = devices_control_repository
+        self.__devices_attributes_repository = devices_attributes_repository
 
         self.__channels_repository = channels_repository
         self.__channels_properties_repository = channels_properties_repository
@@ -734,6 +763,69 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 self.__connector.remove_device_property(
                     device=device_entity,
                     property_id=uuid.UUID(item.data.get("id"), version=4),
+                )
+
+            except ValueError:
+                return
+
+        if item.routing_key in (
+            RoutingKey.DEVICE_ATTRIBUTE_ENTITY_CREATED,
+            RoutingKey.DEVICE_ATTRIBUTE_ENTITY_UPDATED,
+            RoutingKey.DEVICE_ATTRIBUTE_ENTITY_REPORTED,
+        ):
+            close_all_sessions()
+
+            try:
+                device_entity = self.__devices_repository.get_by_id(
+                    device_id=uuid.UUID(item.data.get("device"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if device_entity is None:
+                return
+
+            try:
+                device_attribute_entity = self.__devices_attributes_repository.get_by_id(
+                    attribute_id=uuid.UUID(item.data.get("id"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if device_attribute_entity is None:
+                self.__logger.warning("Device attribute was not found in database")
+
+                return
+
+            if item.routing_key == RoutingKey.DEVICE_ATTRIBUTE_ENTITY_REPORTED:
+                self.__connector.notify_device_attribute(device=device_entity, device_attribute=device_attribute_entity)
+
+            else:
+                self.__connector.initialize_device_attribute(
+                    device=device_entity,
+                    device_attribute=device_attribute_entity,
+                )
+
+        if item.routing_key == RoutingKey.DEVICE_ATTRIBUTE_ENTITY_DELETED:
+            close_all_sessions()
+
+            try:
+                device_entity = self.__devices_repository.get_by_id(
+                    device_id=uuid.UUID(item.data.get("device"), version=4),
+                )
+
+            except ValueError:
+                return
+
+            if device_entity is None:
+                return
+
+            try:
+                self.__connector.remove_device_attribute(
+                    device=device_entity,
+                    attribute_id=uuid.UUID(item.data.get("id"), version=4),
                 )
 
             except ValueError:

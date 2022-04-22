@@ -23,6 +23,7 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
 use Throwable;
+use function RingCentral\Psr7\str;
 
 /**
  * @ORM\Entity
@@ -76,12 +77,12 @@ class Attribute implements IAttribute
 	protected ?string $name = null;
 
 	/**
-	 * @var string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
+	 * @var string|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="attribute_content", nullable=true, options={"default": null})
 	 */
-	protected $content = null;
+	protected ?string $content = null;
 
 	/**
 	 * @var Entities\Devices\IDevice
@@ -203,17 +204,15 @@ class Attribute implements IAttribute
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\HardwareManufacturerType) {
 				$this->content = $content->getValue();
-
 			} else {
-				$this->content = $content !== null ? strtolower($content) : null;
+				$this->content = $content !== null ? strtolower((string) $content) : null;
 			}
 
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MODEL) {
 			if ($content instanceof MetadataTypes\DeviceModelType) {
 				$this->content = $content->getValue();
-
 			} else {
-				$this->content = $content !== null ? strtolower($content) : null;
+				$this->content = $content !== null ? strtolower((string) $content) : null;
 			}
 
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MAC_ADDRESS) {
@@ -228,17 +227,16 @@ class Attribute implements IAttribute
 			$this->content = $content !== null ? strtolower(str_replace([
 				':',
 				'-',
-			], '', $content)) : null;
+			], '', (string) $content)) : null;
 
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_FIRMWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\FirmwareManufacturerType) {
 				$this->content = $content->getValue();
-
 			} else {
-				$this->content = $content !== null ? strtolower($content) : null;
+				$this->content = $content !== null ? strtolower((string) $content) : null;
 			}
 
-		} else {
+		} elseif (is_string($content) || $content === null) {
 			$this->content = $content;
 		}
 	}

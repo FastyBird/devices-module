@@ -902,7 +902,9 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     # -----------------------------------------------------------------------------
 
     @property
-    def content(self) -> Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]:
+    def content(  # pylint: disable=too-many-return-statements
+        self
+    ) -> Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]:
         """Attribute content"""
         if self.identifier == DeviceAttributeName.HARDWARE_MANUFACTURER.value:
             if self.col_content is not None and HardwareManufacturer.has_value(self.col_content.lower()):
@@ -933,7 +935,10 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     # -----------------------------------------------------------------------------
 
     @content.setter
-    def content(self, content: Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]) -> None:
+    def content(  # pylint: disable=too-many-branches
+        self,
+        content: Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None],
+    ) -> None:
         """Attribute content setter"""
         if self.identifier == DeviceAttributeName.HARDWARE_MANUFACTURER.value:
             if isinstance(content, HardwareManufacturer):

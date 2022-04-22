@@ -18,6 +18,8 @@
 Devices module connectors connector worker module
 """
 
+# pylint: disable=too-many-lines
+
 # Python base dependencies
 import asyncio
 import pkgutil

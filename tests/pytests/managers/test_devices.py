@@ -64,7 +64,6 @@ class TestDeviceEntity(DbTestCase):
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", device_entity.connector.id.__str__())
         self.assertEqual("device-identifier", device_entity.identifier)
         self.assertEqual("New device name", device_entity.name)
-        self.assertTrue(device_entity.enabled)
         self.assertIsNotNone(device_entity.created_at)
 
         entity = device_repository.get_by_id(
@@ -91,7 +90,6 @@ class TestDeviceEntity(DbTestCase):
                 data={
                     "identifier": "device-identifier",
                     "name": "Edited name",
-                    "enabled": False,
                     "id": uuid.UUID("26d7a945-ba29-471e-9e3c-304ef0acb199", version=4),
                 },
             )
@@ -103,7 +101,6 @@ class TestDeviceEntity(DbTestCase):
         self.assertEqual("17c59dfa-2edd-438e-8c49-faa4e38e5a5e", device_entity.connector.id.__str__())
         self.assertEqual("first-device", device_entity.identifier)
         self.assertEqual("Edited name", device_entity.name)
-        self.assertFalse(device_entity.enabled)
         self.assertIsNotNone(device_entity.created_at)
 
         entity = device_repository.get_by_id(

@@ -56,7 +56,6 @@ class TestDevicesRepository(DbTestCase):
                 "identifier": "first-device",
                 "name": "First device",
                 "comment": None,
-                "enabled": True,
                 "hardware_manufacturer": "itead",
                 "hardware_model": "sonoff_basic",
                 "hardware_version": "rev1",

@@ -39,8 +39,7 @@ use Throwable;
  *     },
  *     indexes={
  *       @ORM\Index(name="device_identifier_idx", columns={"device_identifier"}),
- *       @ORM\Index(name="device_name_idx", columns={"device_name"}),
- *       @ORM\Index(name="device_enabled_idx", columns={"device_enabled"})
+ *       @ORM\Index(name="device_name_idx", columns={"device_name"})
  *     }
  * )
  * @ORM\InheritanceType("SINGLE_TABLE")

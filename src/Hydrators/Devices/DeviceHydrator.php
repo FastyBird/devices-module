@@ -39,7 +39,6 @@ abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 		'identifier',
 		'name',
 		'comment',
-		'enabled',
 		'params',
 	];
 
@@ -81,16 +80,6 @@ abstract class DeviceHydrator extends JsonApiHydrators\Hydrator
 		}
 
 		return (string) $attributes->get('comment');
-	}
-
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return bool
-	 */
-	protected function hydrateEnabledAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
-	{
-		return is_scalar($attributes->get('enabled')) && (bool) $attributes->get('enabled');
 	}
 
 }

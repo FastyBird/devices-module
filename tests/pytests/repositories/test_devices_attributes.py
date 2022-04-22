@@ -39,7 +39,9 @@ class TestDeviceAttributesRepository(DbTestCase):
 
     @inject
     def test_get_item(self, attribute_repository: DeviceAttributesRepository) -> None:
-        entity = attribute_repository.get_by_id(attribute_id=uuid.UUID("03164A6D-9628-460C-95CC-90E6216332D9", version=4))
+        entity = attribute_repository.get_by_id(
+            attribute_id=uuid.UUID("03164A6D-9628-460C-95CC-90E6216332D9", version=4),
+        )
 
         self.assertIsInstance(entity, DeviceAttributeEntity)
         self.assertEqual(DeviceAttributeName.HARDWARE_MANUFACTURER.value, entity.identifier)
@@ -48,7 +50,9 @@ class TestDeviceAttributesRepository(DbTestCase):
 
     @inject
     def test_transform_to_dict(self, attribute_repository: DeviceAttributesRepository) -> None:
-        entity = attribute_repository.get_by_id(attribute_id=uuid.UUID("03164A6D-9628-460C-95CC-90E6216332D9", version=4))
+        entity = attribute_repository.get_by_id(
+            attribute_id=uuid.UUID("03164A6D-9628-460C-95CC-90E6216332D9", version=4),
+        )
 
         self.assertIsInstance(entity, DeviceAttributeEntity)
         self.assertEqual(

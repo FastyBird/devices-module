@@ -26,7 +26,13 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
-from fastybird_metadata.devices_module import PropertyType
+from fastybird_metadata.devices_module import (
+    DeviceAttributeName,
+    DeviceModel,
+    FirmwareManufacturer,
+    HardwareManufacturer,
+    PropertyType,
+)
 from fastybird_metadata.types import ButtonPayload, DataType, SwitchPayload
 from sqlalchemy import (
     BINARY,
@@ -887,8 +893,32 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     # -----------------------------------------------------------------------------
 
     @property
-    def content(self) -> Optional[str]:
+    def content(self) -> Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]:
         """Attribute content"""
+        if self.identifier == DeviceAttributeName.HARDWARE_MANUFACTURER.value:
+            if HardwareManufacturer.has_value(self.col_content.lower()):
+                return HardwareManufacturer(self.col_content.lower())
+
+            return HardwareManufacturer.GENERIC
+
+        if self.identifier == DeviceAttributeName.HARDWARE_MODEL.value:
+            if DeviceModel.has_value(self.col_content.lower()):
+                return DeviceModel(self.col_content.lower())
+
+            return DeviceModel.CUSTOM
+
+        if self.identifier == DeviceAttributeName.HARDWARE_MAC_ADDRESS.value:
+            if self.col_content is None:
+                return None
+
+            return ":".join([self.col_content[index : (index + 2)] for index in range(0, len(self.col_content), 2)])
+
+        if self.identifier == DeviceAttributeName.FIRMWARE_MANUFACTURER.value:
+            if FirmwareManufacturer.has_value(self.col_content.lower()):
+                return FirmwareManufacturer(self.col_content.lower())
+
+            return FirmwareManufacturer.GENERIC
+
         return self.col_content
 
     # -----------------------------------------------------------------------------
@@ -901,7 +931,9 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
                 "id": self.id.__str__(),
                 "identifier": self.identifier,
                 "name": self.name,
-                "content": self.content,
+                "content": self.content
+                if isinstance(self.col_content, str) or self.col_content is None
+                else str(self.col_content),
                 "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },

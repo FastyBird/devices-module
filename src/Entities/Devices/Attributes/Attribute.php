@@ -23,7 +23,6 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
 use Throwable;
-use function RingCentral\Psr7\str;
 
 /**
  * @ORM\Entity
@@ -207,14 +206,12 @@ class Attribute implements IAttribute
 			} else {
 				$this->content = $content !== null ? strtolower((string) $content) : null;
 			}
-
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MODEL) {
 			if ($content instanceof MetadataTypes\DeviceModelType) {
 				$this->content = $content->getValue();
 			} else {
 				$this->content = $content !== null ? strtolower((string) $content) : null;
 			}
-
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MAC_ADDRESS) {
 			if (
 				$content !== null
@@ -228,14 +225,12 @@ class Attribute implements IAttribute
 				':',
 				'-',
 			], '', (string) $content)) : null;
-
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_FIRMWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\FirmwareManufacturerType) {
 				$this->content = $content->getValue();
 			} else {
 				$this->content = $content !== null ? strtolower((string) $content) : null;
 			}
-
 		} elseif (is_string($content) || $content === null) {
 			$this->content = $content;
 		}

@@ -945,14 +945,14 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
                 self.col_content = content.value
 
             else:
-                self.col_content = content.lower() if content is not None else None
+                self.col_content = str(content).lower() if content is not None else None
 
         elif self.identifier == DeviceAttributeName.HARDWARE_MODEL.value:
             if isinstance(content, DeviceModel):
                 self.col_content = content.value
 
             else:
-                self.col_content = content.lower() if content is not None else None
+                self.col_content = str(content).lower() if content is not None else None
 
         elif self.identifier == DeviceAttributeName.HARDWARE_MAC_ADDRESS.value:
             if (
@@ -963,7 +963,7 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
                 raise InvalidArgumentException("Provided mac address is not in valid format")
 
             if content is not None:
-                self.col_content = content.replace(":", "").replace("-", "").lower()
+                self.col_content = str(content).replace(":", "").replace("-", "").lower()
 
             else:
                 self.col_content = None
@@ -973,10 +973,10 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
                 self.col_content = content.value
 
             else:
-                self.col_content = content.lower() if content is not None else None
+                self.col_content = str(content).lower() if content is not None else None
 
         else:
-            self.col_content = content
+            self.col_content = content if isinstance(content, str) else None
 
     # -----------------------------------------------------------------------------
 

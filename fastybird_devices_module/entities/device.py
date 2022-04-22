@@ -931,9 +931,7 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
                 "id": self.id.__str__(),
                 "identifier": self.identifier,
                 "name": self.name,
-                "content": self.content
-                if isinstance(self.col_content, str) or self.col_content is None
-                else str(self.col_content),
+                "content": self.content if isinstance(self.content, str) or self.content is None else str(self.content),
                 "device": uuid.UUID(bytes=self.device_id).__str__(),
                 "owner": self.device.owner,
             },

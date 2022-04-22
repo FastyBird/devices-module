@@ -829,6 +829,8 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     __table_args__ = (
         Index("attribute_identifier_idx", "attribute_identifier"),
+        Index("attribute_name_idx", "attribute_name"),
+        Index("attribute_content_idx", "attribute_content"),
         UniqueConstraint("attribute_identifier", "device_id", name="attribute_identifier_unique"),
         {
             "mysql_engine": "InnoDB",

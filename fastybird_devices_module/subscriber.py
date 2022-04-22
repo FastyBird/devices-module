@@ -53,7 +53,7 @@ from fastybird_devices_module.entities.device import (
     DeviceDynamicPropertyEntity,
     DeviceEntity,
     DeviceMappedPropertyEntity,
-    DevicePropertyEntity,
+    DevicePropertyEntity, DeviceAttributeEntity,
 )
 from fastybird_devices_module.managers.state import (
     ChannelPropertiesStatesManager,
@@ -137,6 +137,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
         DeviceEntity: RoutingKey.DEVICE_ENTITY_CREATED,
         DevicePropertyEntity: RoutingKey.DEVICE_PROPERTY_ENTITY_CREATED,
         DeviceControlEntity: RoutingKey.DEVICE_CONTROL_ENTITY_CREATED,
+        DeviceAttributeEntity: RoutingKey.DEVICE_ATTRIBUTE_ENTITY_CREATED,
         ChannelEntity: RoutingKey.CHANNEL_ENTITY_CREATED,
         ChannelPropertyEntity: RoutingKey.CHANNEL_PROPERTY_ENTITY_CREATED,
         ChannelControlEntity: RoutingKey.CHANNEL_CONTROL_ENTITY_CREATED,
@@ -149,6 +150,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
         DeviceEntity: RoutingKey.DEVICE_ENTITY_UPDATED,
         DevicePropertyEntity: RoutingKey.DEVICE_PROPERTY_ENTITY_UPDATED,
         DeviceControlEntity: RoutingKey.DEVICE_CONTROL_ENTITY_UPDATED,
+        DeviceAttributeEntity: RoutingKey.DEVICE_ATTRIBUTE_ENTITY_UPDATED,
         ChannelEntity: RoutingKey.CHANNEL_ENTITY_UPDATED,
         ChannelPropertyEntity: RoutingKey.CHANNEL_PROPERTY_ENTITY_UPDATED,
         ChannelControlEntity: RoutingKey.CHANNEL_CONTROL_ENTITY_UPDATED,
@@ -161,6 +163,7 @@ class EntitiesSubscriber:  # pylint: disable=too-few-public-methods
         DeviceEntity: RoutingKey.DEVICE_ENTITY_DELETED,
         DevicePropertyEntity: RoutingKey.DEVICE_PROPERTY_ENTITY_DELETED,
         DeviceControlEntity: RoutingKey.DEVICE_CONTROL_ENTITY_DELETED,
+        DeviceAttributeEntity: RoutingKey.DEVICE_ATTRIBUTE_ENTITY_DELETED,
         ChannelEntity: RoutingKey.CHANNEL_ENTITY_DELETED,
         ChannelPropertyEntity: RoutingKey.CHANNEL_PROPERTY_ENTITY_DELETED,
         ChannelControlEntity: RoutingKey.CHANNEL_CONTROL_ENTITY_DELETED,

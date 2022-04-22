@@ -957,8 +957,8 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         elif self.identifier == DeviceAttributeName.HARDWARE_MAC_ADDRESS.value:
             if (
                 content is not None
-                and len(re.findall("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", content)) == 0
-                and len(re.findall("^([0-9A-Fa-f]{12})$", content)) == 0
+                and len(re.findall("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", str(content))) == 0
+                and len(re.findall("^([0-9A-Fa-f]{12})$", str(content))) == 0
             ):
                 raise InvalidArgumentException("Provided mac address is not in valid format")
 

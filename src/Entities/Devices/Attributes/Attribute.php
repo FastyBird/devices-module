@@ -215,8 +215,8 @@ class Attribute implements IAttribute
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MAC_ADDRESS) {
 			if (
 				$content !== null
-				&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $content) === 0
-				&& preg_match('/^([0-9A-Fa-f]{12})$/', $content) === 0
+				&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', (string) $content) === 0
+				&& preg_match('/^([0-9A-Fa-f]{12})$/', (string) $content) === 0
 			) {
 				throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
 			}

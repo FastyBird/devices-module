@@ -896,13 +896,13 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
     def content(self) -> Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]:
         """Attribute content"""
         if self.identifier == DeviceAttributeName.HARDWARE_MANUFACTURER.value:
-            if HardwareManufacturer.has_value(self.col_content.lower()):
+            if self.col_content is not None and HardwareManufacturer.has_value(self.col_content.lower()):
                 return HardwareManufacturer(self.col_content.lower())
 
             return HardwareManufacturer.GENERIC
 
         if self.identifier == DeviceAttributeName.HARDWARE_MODEL.value:
-            if DeviceModel.has_value(self.col_content.lower()):
+            if self.col_content is not None and DeviceModel.has_value(self.col_content.lower()):
                 return DeviceModel(self.col_content.lower())
 
             return DeviceModel.CUSTOM
@@ -914,7 +914,7 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             return ":".join([self.col_content[index : (index + 2)] for index in range(0, len(self.col_content), 2)])
 
         if self.identifier == DeviceAttributeName.FIRMWARE_MANUFACTURER.value:
-            if FirmwareManufacturer.has_value(self.col_content.lower()):
+            if self.col_content is not None and FirmwareManufacturer.has_value(self.col_content.lower()):
                 return FirmwareManufacturer(self.col_content.lower())
 
             return FirmwareManufacturer.GENERIC

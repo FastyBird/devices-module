@@ -43,6 +43,18 @@
         },
         "data" : []
       },
+      "attributes" : {
+        "links" : {
+          "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/attributes",
+          "related" : {
+            "href" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/attributes",
+            "meta" : {
+              "count" : 0
+            }
+          }
+        },
+        "data" : []
+      },
       "channels" : {
         "links" : {
           "self" : "/v1/devices/bbbf5caa-b30e-4558-b83a-699617958cea/relationships/channels",

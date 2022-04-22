@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Schemas\Devices;
 
-use Consistence\Enum\Enum;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
@@ -47,6 +46,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 
 	public const RELATIONSHIPS_PROPERTIES = 'properties';
 	public const RELATIONSHIPS_CONTROLS = 'controls';
+	public const RELATIONSHIPS_ATTRIBUTES = 'attributes';
 
 	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
@@ -89,19 +89,6 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			'identifier' => $device->getIdentifier(),
 			'name'       => $device->getName(),
 			'comment'    => $device->getComment(),
-
-			'enabled' => $device->isEnabled(),
-
-			'hardware_manufacturer' => $device->getHardwareManufacturer() instanceof Enum ? $device->getHardwareManufacturer()
-				->getValue() : $device->getHardwareManufacturer(),
-			'hardware_model'        => $device->getHardwareModel() instanceof Enum ? $device->getHardwareModel()
-				->getValue() : $device->getHardwareModel(),
-			'hardware_version'      => $device->getHardwareVersion(),
-			'hardware_mac_address'  => $device->getHardwareMacAddress(),
-
-			'firmware_manufacturer' => $device->getFirmwareManufacturer() instanceof Enum ? $device->getFirmwareManufacturer()
-				->getValue() : $device->getFirmwareManufacturer(),
-			'firmware_version'      => $device->getFirmwareVersion(),
 
 			'owner' => $device->getOwnerId(),
 		];
@@ -150,6 +137,11 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 			],
 			self::RELATIONSHIPS_CONTROLS   => [
 				self::RELATIONSHIP_DATA          => $device->getControls(),
+				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_LINKS_RELATED => true,
+			],
+			self::RELATIONSHIPS_ATTRIBUTES   => [
+				self::RELATIONSHIP_DATA          => $device->getAttributes(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -231,6 +223,21 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				]
 			);
 
+		} elseif ($name === self::RELATIONSHIPS_ATTRIBUTES) {
+			return new JsonApi\Schema\Link(
+				false,
+				$this->router->urlFor(
+					DevicesModule\Constants::ROUTE_NAME_DEVICE_ATTRIBUTES,
+					[
+						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+					]
+				),
+				true,
+				[
+					'count' => count($device->getAttributes()),
+				]
+			);
+
 		} elseif ($name === self::RELATIONSHIPS_CHANNELS) {
 			return new JsonApi\Schema\Link(
 				false,
@@ -307,6 +314,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 		if (
 			$name === self::RELATIONSHIPS_PROPERTIES
 			|| $name === self::RELATIONSHIPS_CONTROLS
+			|| $name === self::RELATIONSHIPS_ATTRIBUTES
 			|| $name === self::RELATIONSHIPS_CHANNELS
 			|| $name === self::RELATIONSHIPS_CHILDREN
 			|| $name === self::RELATIONSHIPS_PARENTS

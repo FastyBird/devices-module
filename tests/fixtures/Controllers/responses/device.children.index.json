@@ -17,13 +17,6 @@
         "identifier": "child-device",
         "name": "Child device",
         "comment": "This is child",
-        "enabled": true,
-        "hardware_manufacturer": "generic",
-        "hardware_model": "custom",
-        "hardware_version": null,
-        "hardware_mac_address": null,
-        "firmware_manufacturer": "generic",
-        "firmware_version": null,
         "owner": null
       },
       "relationships": {

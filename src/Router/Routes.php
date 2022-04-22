@@ -64,6 +64,9 @@ class Routes implements WebServerRouter\IRoutes
 	/** @var Controllers\DeviceControlsV1Controller */
 	private Controllers\DeviceControlsV1Controller $deviceControlsV1Controller;
 
+	/** @var Controllers\DeviceAttributesV1Controller */
+	private Controllers\DeviceAttributesV1Controller $deviceAttributesV1Controller;
+
 	/** @var Controllers\ChannelsV1Controller */
 	private Controllers\ChannelsV1Controller $channelsV1Controller;
 
@@ -102,6 +105,7 @@ class Routes implements WebServerRouter\IRoutes
 		Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller,
 		Controllers\DevicePropertyChildrenV1Controller $devicePropertyChildrenV1Controller,
 		Controllers\DeviceControlsV1Controller $deviceControlsV1Controller,
+		Controllers\DeviceAttributesV1Controller $deviceAttributesV1Controller,
 		Controllers\ChannelsV1Controller $channelsV1Controller,
 		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
 		Controllers\ChannelPropertyChildrenV1Controller $channelPropertyChildrenV1Controller,
@@ -121,6 +125,7 @@ class Routes implements WebServerRouter\IRoutes
 		$this->devicePropertiesV1Controller = $devicePropertiesV1Controller;
 		$this->devicePropertyChildrenV1Controller = $devicePropertyChildrenV1Controller;
 		$this->deviceControlsV1Controller = $deviceControlsV1Controller;
+		$this->deviceAttributesV1Controller = $deviceAttributesV1Controller;
 		$this->channelsV1Controller = $channelsV1Controller;
 		$this->channelPropertiesV1Controller = $channelPropertiesV1Controller;
 		$this->channelPropertyChildrenV1Controller = $channelPropertyChildrenV1Controller;
@@ -252,6 +257,26 @@ class Routes implements WebServerRouter\IRoutes
 							'readRelationship',
 						]);
 						$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_CONTROL_RELATIONSHIP);
+					});
+
+					/**
+					 * DEVICE ATTRIBUTES
+					 */
+					$group->group('/attributes', function (Routing\RouteCollector $group): void {
+						$route = $group->get('', [$this->deviceAttributesV1Controller, 'index']);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_ATTRIBUTES);
+
+						$route = $group->get('/{' . self::URL_ITEM_ID . '}', [
+							$this->deviceAttributesV1Controller,
+							'read',
+						]);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_ATTRIBUTE);
+
+						$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
+							$this->deviceAttributesV1Controller,
+							'readRelationship',
+						]);
+						$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_ATTRIBUTE_RELATIONSHIP);
 					});
 
 					/**

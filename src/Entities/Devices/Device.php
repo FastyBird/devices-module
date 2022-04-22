@@ -18,8 +18,6 @@ namespace FastyBird\DevicesModule\Entities\Devices;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exceptions;
-use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineDynamicDiscriminatorMap\Entities as DoctrineDynamicDiscriminatorMapEntities;
@@ -115,62 +113,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected ?string $comment = null;
 
 	/**
-	 * @var bool
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="boolean", name="device_enabled", length=1, nullable=false, options={"default": true})
-	 */
-	protected bool $enabled = true;
-
-	/**
-	 * @var string
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_hardware_manufacturer", length=150, nullable=false, options={"default": "generic"})
-	 */
-	protected $hardwareManufacturer;
-
-	/**
-	 * @var string
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_hardware_model", length=150, nullable=false, options={"default": "custom"})
-	 */
-	protected $hardwareModel;
-
-	/**
-	 * @var string|null
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_hardware_version", length=150, nullable=true, options={"default": null})
-	 */
-	protected ?string $hardwareVersion = null;
-
-	/**
-	 * @var string|null
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_hardware_mac_address", length=50, nullable=true, options={"default": null})
-	 */
-	protected ?string $hardwareMacAddress = null;
-
-	/**
-	 * @var string
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_firmware_manufacturer", length=150, nullable=false, options={"default": "generic"})
-	 */
-	protected $firmwareManufacturer;
-
-	/**
-	 * @var string|null
-	 *
-	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\Column(type="string", name="device_firmware_version", length=150, nullable=true, options={"default": null})
-	 */
-	protected ?string $firmwareVersion = null;
-
-	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\IChannel>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
@@ -193,6 +135,14 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Properties\Property", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
 	protected Common\Collections\Collection $properties;
+
+	/**
+	 * @var Common\Collections\Collection<int, Entities\Devices\Attributes\IAttribute>
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Attributes\Attribute", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
+	 */
+	protected Common\Collections\Collection $attributes;
 
 	/**
 	 * @var Entities\Connectors\IConnector
@@ -222,11 +172,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		$this->identifier = $identifier;
 		$this->name = $name;
 
-		$this->hardwareManufacturer = MetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC;
-		$this->hardwareModel = MetadataTypes\DeviceModelType::MODEL_CUSTOM;
-
-		$this->firmwareManufacturer = MetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC;
-
 		$this->connector = $connector;
 
 		$this->parents = new Common\Collections\ArrayCollection();
@@ -234,6 +179,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		$this->channels = new Common\Collections\ArrayCollection();
 		$this->controls = new Common\Collections\ArrayCollection();
 		$this->properties = new Common\Collections\ArrayCollection();
+		$this->attributes = new Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -559,6 +505,88 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getAttributes(): array
+	{
+		return $this->attributes->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setAttributes(array $attributes = []): void
+	{
+		$this->attributes = new Common\Collections\ArrayCollection();
+
+		// Process all passed entities...
+		foreach ($attributes as $entity) {
+			if (!$this->attributes->contains($entity)) {
+				// ...and assign them to collection
+				$this->attributes->add($entity);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addAttribute(Entities\Devices\Attributes\IAttribute $attribute): void
+	{
+		// Check if collection does not contain inserting entity
+		if (!$this->attributes->contains($attribute)) {
+			// ...and assign it to collection
+			$this->attributes->add($attribute);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute
+	{
+		$found = $this->attributes
+			->filter(function (Entities\Devices\Attributes\IAttribute $row) use ($identifier): bool {
+				return $identifier === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removeAttribute(Entities\Devices\Attributes\IAttribute $attribute): void
+	{
+		// Check if collection contain removing entity...
+		if ($this->attributes->contains($attribute)) {
+			// ...and remove it from collection
+			$this->attributes->removeElement($attribute);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasAttribute(string $identifier): bool
+	{
+		return $this->findAttribute($identifier) !== null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute
+	{
+		$found = $this->attributes
+			->filter(function (Entities\Devices\Attributes\IAttribute $row) use ($identifier): bool {
+				return $identifier === $row->getName();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
@@ -594,156 +622,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	public function setComment(?string $comment = null): void
 	{
 		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isEnabled(): bool
-	{
-		return $this->enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setEnabled(bool $enabled): void
-	{
-		$this->enabled = $enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareManufacturer()
-	{
-		if (MetadataTypes\HardwareManufacturerType::isValidValue($this->hardwareManufacturer)) {
-			return MetadataTypes\HardwareManufacturerType::get($this->hardwareManufacturer);
-		}
-
-		return $this->hardwareManufacturer;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareManufacturer($manufacturer): void
-	{
-		if ($manufacturer instanceof MetadataTypes\HardwareManufacturerType) {
-			$this->hardwareManufacturer = $manufacturer->getValue();
-
-		} else {
-			$this->hardwareManufacturer = strtolower($manufacturer);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareModel()
-	{
-		if (MetadataTypes\DeviceModelType::isValidValue($this->hardwareModel)) {
-			return MetadataTypes\DeviceModelType::get($this->hardwareModel);
-		}
-
-		return $this->hardwareModel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareModel($model): void
-	{
-		if ($model instanceof MetadataTypes\DeviceModelType) {
-			$this->hardwareModel = $model->getValue();
-
-		} else {
-			$this->hardwareModel = strtolower($model);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareVersion(): ?string
-	{
-		return $this->hardwareVersion;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareVersion(?string $version): void
-	{
-		$this->hardwareVersion = $version;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getHardwareMacAddress(string $separator = ':'): ?string
-	{
-		return $this->hardwareMacAddress !== null ? implode($separator, str_split($this->hardwareMacAddress, 2)) : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setHardwareMacAddress(?string $hardwareMacAddress): void
-	{
-		if (
-			$hardwareMacAddress !== null
-			&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $hardwareMacAddress) === 0
-			&& preg_match('/^([0-9A-Fa-f]{12})$/', $hardwareMacAddress) === 0
-		) {
-			throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
-		}
-
-		$this->hardwareMacAddress = $hardwareMacAddress !== null ? strtolower(str_replace([
-			':',
-			'-',
-		], '', $hardwareMacAddress)) : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFirmwareManufacturer()
-	{
-		if (MetadataTypes\FirmwareManufacturerType::isValidValue($this->firmwareManufacturer)) {
-			return MetadataTypes\FirmwareManufacturerType::get($this->firmwareManufacturer);
-		}
-
-		return $this->firmwareManufacturer;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setFirmwareManufacturer($manufacturer): void
-	{
-		if ($manufacturer instanceof MetadataTypes\FirmwareManufacturerType) {
-			$this->firmwareManufacturer = $manufacturer->getValue();
-
-		} else {
-			$this->firmwareManufacturer = strtolower($manufacturer);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFirmwareVersion(): ?string
-	{
-		return $this->firmwareVersion;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setFirmwareVersion(?string $version): void
-	{
-		$this->firmwareVersion = $version;
 	}
 
 	/**
@@ -793,18 +671,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 			'identifier' => $this->getIdentifier(),
 			'name'       => $this->getName(),
 			'comment'    => $this->getComment(),
-			'enabled'    => $this->isEnabled(),
-
-			'hardware_manufacturer' => $this->getHardwareManufacturer() instanceof MetadataTypes\HardwareManufacturerType ? $this->getHardwareManufacturer()
-				->getValue() : $this->getHardwareManufacturer(),
-			'hardware_model'        => $this->getHardwareModel() instanceof MetadataTypes\DeviceModelType ? $this->getHardwareModel()
-				->getValue() : $this->getHardwareModel(),
-			'hardware_version'      => $this->getHardwareVersion(),
-			'hardware_mac_address'  => $this->getHardwareMacAddress(),
-
-			'firmware_manufacturer' => $this->getFirmwareManufacturer() instanceof MetadataTypes\FirmwareManufacturerType ? $this->getFirmwareManufacturer()
-				->getValue() : $this->getFirmwareManufacturer(),
-			'firmware_version'      => $this->getFirmwareVersion(),
 
 			'connector' => $this->getConnector()->getPlainId(),
 

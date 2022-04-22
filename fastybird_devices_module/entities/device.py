@@ -894,6 +894,13 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
 
     # -----------------------------------------------------------------------------
 
+    @name.setter
+    def name(self, name: Optional[str]) -> None:
+        """Attribute name setter"""
+        self.col_name = name
+
+    # -----------------------------------------------------------------------------
+
     @property
     def content(self) -> Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]:
         """Attribute content"""
@@ -922,6 +929,13 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             return FirmwareManufacturer.GENERIC
 
         return self.col_content
+
+    # -----------------------------------------------------------------------------
+
+    @content.setter
+    def content(self, content: Optional[str]) -> None:
+        """Attribute content setter"""
+        self.col_content = content
 
     # -----------------------------------------------------------------------------
 

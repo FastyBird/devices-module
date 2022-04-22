@@ -17,13 +17,6 @@
         "identifier" : "first-device",
         "name" : "First device",
         "comment" : null,
-        "enabled" : true,
-        "hardware_manufacturer" : "itead",
-        "hardware_model" : "sonoff_basic",
-        "hardware_version" : "rev1",
-        "hardware_mac_address" : "80:7d:3a:3d:be:6d",
-        "firmware_manufacturer" : "fastybird",
-        "firmware_version" : null,
         "owner" : "455354e8-96bd-4c29-84e7-9f10e1d4db4b"
       },
       "relationships" : {

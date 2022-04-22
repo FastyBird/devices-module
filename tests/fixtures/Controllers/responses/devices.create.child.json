@@ -16,13 +16,6 @@
       "identifier" : "new-device",
       "name" : "Newly created device",
       "comment" : null,
-      "enabled" : true,
-      "hardware_manufacturer" : "generic",
-      "hardware_model" : "custom",
-      "hardware_version" : null,
-      "hardware_mac_address" : null,
-      "firmware_manufacturer" : "generic",
-      "firmware_version" : null,
       "owner" : "5e79efbf-bd0d-5b7c-46ef-bfbdefbfbd34"
     },
     "relationships" : {

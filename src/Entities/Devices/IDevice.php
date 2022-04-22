@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Entities\Devices;
 
 use FastyBird\DevicesModule\Entities;
-use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineTimestampable;
 
@@ -119,92 +118,6 @@ interface IDevice extends Entities\IEntity,
 	 * @return void
 	 */
 	public function setComment(?string $comment = null): void;
-
-	/**
-	 * @return bool
-	 */
-	public function isEnabled(): bool;
-
-	/**
-	 * @param bool $enabled
-	 *
-	 * @return void
-	 */
-	public function setEnabled(bool $enabled): void;
-
-	/**
-	 * @return string|MetadataTypes\HardwareManufacturerType
-	 */
-	public function getHardwareManufacturer();
-
-	/**
-	 * @param string|MetadataTypes\HardwareManufacturerType $manufacturer
-	 *
-	 * @return void
-	 */
-	public function setHardwareManufacturer($manufacturer): void;
-
-	/**
-	 * @return string|MetadataTypes\DeviceModelType
-	 */
-	public function getHardwareModel();
-
-	/**
-	 * @param string|MetadataTypes\DeviceModelType $model
-	 *
-	 * @return void
-	 */
-	public function setHardwareModel($model): void;
-
-	/**
-	 * @return string|null
-	 */
-	public function getHardwareVersion(): ?string;
-
-	/**
-	 * @param string|null $version
-	 *
-	 * @return void
-	 */
-	public function setHardwareVersion(?string $version): void;
-
-	/**
-	 * @param string $separator
-	 *
-	 * @return string|null
-	 */
-	public function getHardwareMacAddress(string $separator = ':'): ?string;
-
-	/**
-	 * @param string|null $macAddress
-	 *
-	 * @return void
-	 */
-	public function setHardwareMacAddress(?string $macAddress): void;
-
-	/**
-	 * @return string|MetadataTypes\FirmwareManufacturerType
-	 */
-	public function getFirmwareManufacturer();
-
-	/**
-	 * @param string|MetadataTypes\FirmwareManufacturerType $manufacturer
-	 *
-	 * @return void
-	 */
-	public function setFirmwareManufacturer($manufacturer): void;
-
-	/**
-	 * @return string|null
-	 */
-	public function getFirmwareVersion(): ?string;
-
-	/**
-	 * @param string|null $version
-	 *
-	 * @return void
-	 */
-	public function setFirmwareVersion(?string $version): void;
 
 	/**
 	 * @return Entities\Channels\IChannel[]
@@ -332,6 +245,53 @@ interface IDevice extends Entities\IEntity,
 	 * @return Properties\IProperty|null
 	 */
 	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty;
+
+	/**
+	 * @return Entities\Devices\Attributes\IAttribute[]
+	 */
+	public function getAttributes(): array;
+
+	/**
+	 * @param Entities\Devices\Attributes\IAttribute[] $control
+	 *
+	 * @return void
+	 */
+	public function setAttributes(array $control): void;
+
+	/**
+	 * @param Entities\Devices\Attributes\IAttribute $control
+	 *
+	 * @return void
+	 */
+	public function addAttribute(Entities\Devices\Attributes\IAttribute $control): void;
+
+	/**
+	 * @param string $identifier
+	 *
+	 * @return Entities\Devices\Attributes\IAttribute|null
+	 */
+	public function getAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute;
+
+	/**
+	 * @param Entities\Devices\Attributes\IAttribute $control
+	 *
+	 * @return void
+	 */
+	public function removeAttribute(Entities\Devices\Attributes\IAttribute $control): void;
+
+	/**
+	 * @param string $identifier
+	 *
+	 * @return bool
+	 */
+	public function hasAttribute(string $identifier): bool;
+
+	/**
+	 * @param string $identifier
+	 *
+	 * @return Entities\Devices\Attributes\IAttribute|null
+	 */
+	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute;
 
 	/**
 	 * @return Entities\Connectors\IConnector

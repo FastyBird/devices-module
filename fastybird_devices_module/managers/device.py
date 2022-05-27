@@ -230,7 +230,7 @@ class DeviceAttributesManager(BaseManager[DeviceAttributeEntity]):
             data={**data, **{"attribute_id": data.get("id", None)}},
             entity_type=DeviceAttributeEntity,
             required_fields=self.__REQUIRED_FIELDS,
-            writable_fields=[],
+            writable_fields=self.__WRITABLE_FIELDS,
         )
 
     # -----------------------------------------------------------------------------

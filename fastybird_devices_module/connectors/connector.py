@@ -234,7 +234,7 @@ class IConnector(ABC):  # pylint: disable=too-many-public-methods
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def start(self) -> None:
+    async def start(self) -> None:
         """Start connector service"""
 
     # -----------------------------------------------------------------------------
@@ -252,13 +252,13 @@ class IConnector(ABC):  # pylint: disable=too-many-public-methods
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def write_property(self, property_item: Union[DevicePropertyEntity, ChannelPropertyEntity], data: Dict) -> None:
+    async def write_property(self, property_item: Union[DevicePropertyEntity, ChannelPropertyEntity], data: Dict) -> None:
         """Write device or channel property value to device"""
 
     # -----------------------------------------------------------------------------
 
     @abstractmethod
-    def write_control(
+    async def write_control(
         self,
         control_item: Union[ConnectorControlEntity, DeviceControlEntity, ChannelControlEntity],
         data: Optional[Dict],
@@ -350,7 +350,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    def start(self) -> None:
+    async def start(self) -> None:
         """Start connector service"""
         self.__stopped = False
 
@@ -362,7 +362,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 asyncio.ensure_future(self.__queue_process())
 
                 # Send start command to loaded connector
-                self.__connector.start()
+                await self.__connector.start()
 
         except Exception as ex:  # pylint: disable=broad-except
             self.__logger.exception(ex)
@@ -483,10 +483,10 @@ class Connector:  # pylint: disable=too-many-instance-attributes
             if queue_item is not None:
                 try:
                     if isinstance(queue_item, ConsumePropertyActionMessageQueueItem):
-                        self.__write_property_command(item=queue_item)
+                        await self.__write_property_command(item=queue_item)
 
                     if isinstance(queue_item, ConsumeControlActionMessageQueueItem):
-                        self.__write_control_command(item=queue_item)
+                        await self.__write_control_command(item=queue_item)
 
                     if isinstance(queue_item, ConsumeEntityMessageQueueItem):
                         self.__handle_entity_event(item=queue_item)
@@ -511,7 +511,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
     # -----------------------------------------------------------------------------
 
-    def __write_property_command(  # pylint: disable=too-many-return-statements
+    async def __write_property_command(  # pylint: disable=too-many-return-statements
         self,
         item: ConsumePropertyActionMessageQueueItem,
     ) -> None:
@@ -540,7 +540,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.write_property(device_property, item.data)
+            await self.__connector.write_property(device_property, item.data)
 
         if item.routing_key == RoutingKey.CHANNEL_PROPERTY_ACTION:
             try:
@@ -564,11 +564,11 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.write_property(channel_property, item.data)
+            await self.__connector.write_property(channel_property, item.data)
 
     # -----------------------------------------------------------------------------
 
-    def __write_control_command(  # pylint: disable=too-many-return-statements
+    async def __write_control_command(  # pylint: disable=too-many-return-statements
         self,
         item: ConsumeControlActionMessageQueueItem,
     ) -> None:
@@ -590,7 +590,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.write_control(
+            await self.__connector.write_control(
                 control_item=device_control,
                 data=item.data,
                 action=ControlAction(item.data.get("name")),
@@ -610,7 +610,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.write_control(
+            await self.__connector.write_control(
                 control_item=channel_control,
                 data=item.data,
                 action=ControlAction(item.data.get("name")),
@@ -630,7 +630,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
 
                 return
 
-            self.__connector.write_control(
+            await self.__connector.write_control(
                 control_item=connector_control,
                 data=item.data,
                 action=ControlAction(item.data.get("name")),

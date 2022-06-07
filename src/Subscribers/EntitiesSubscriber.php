@@ -24,6 +24,7 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -65,6 +66,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager;
 
+	/** @var MetadataEntities\GlobalEntityFactory */
+	private MetadataEntities\GlobalEntityFactory $entityFactory;
+
 	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
 
@@ -79,6 +83,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
+		MetadataEntities\GlobalEntityFactory $entityFactory,
 		?ExchangePublisher\Publisher $publisher = null
 	) {
 		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
@@ -87,6 +92,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
 		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
 		$this->connectorPropertiesStatesManager = $connectorPropertiesStatesManager;
+		$this->entityFactory = $entityFactory;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
 	}
@@ -288,7 +294,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$this->publisher->publish(
 						$entity->getSource(),
 						$publishRoutingKey,
-						Utils\ArrayHash::from($entity->toArray())
+						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
 
 					return;
@@ -300,12 +306,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$this->publisher->publish(
 					$entity->getSource(),
 					$publishRoutingKey,
-					Utils\ArrayHash::from(array_merge($state !== null ? [
+					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
 						'valid'          => $state->isValid(),
-					] : [], $entity->toArray()))
+					] : [], $entity->toArray())), $publishRoutingKey)
 				);
 			} elseif (
 				$entity instanceof Entities\Channels\Properties\IProperty
@@ -318,7 +324,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$this->publisher->publish(
 						$entity->getSource(),
 						$publishRoutingKey,
-						Utils\ArrayHash::from($entity->toArray())
+						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
 
 					return;
@@ -330,12 +336,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$this->publisher->publish(
 					$entity->getSource(),
 					$publishRoutingKey,
-					Utils\ArrayHash::from(array_merge($state !== null ? [
+					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
 						'valid'          => $state->isValid(),
-					] : [], $entity->toArray()))
+					] : [], $entity->toArray())), $publishRoutingKey)
 				);
 			} elseif (
 				$entity instanceof Entities\Connectors\Properties\IProperty
@@ -348,7 +354,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					$this->publisher->publish(
 						$entity->getSource(),
 						$publishRoutingKey,
-						Utils\ArrayHash::from($entity->toArray())
+						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
 
 					return;
@@ -360,18 +366,18 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$this->publisher->publish(
 					$entity->getSource(),
 					$publishRoutingKey,
-					Utils\ArrayHash::from(array_merge($state !== null ? [
+					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 						'pending'        => $state->isPending(),
 						'valid'          => $state->isValid(),
-					] : [], $entity->toArray()))
+					] : [], $entity->toArray())), $publishRoutingKey)
 				);
 			} else {
 				$this->publisher->publish(
 					$entity->getSource(),
 					$publishRoutingKey,
-					Utils\ArrayHash::from($entity->toArray())
+					$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 				);
 			}
 		}

@@ -21,6 +21,7 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -38,6 +39,9 @@ final class ConnectorPropertiesManager
 
 	use Nette\SmartObject;
 
+	/** @var MetadataEntities\GlobalEntityFactory */
+	protected MetadataEntities\GlobalEntityFactory $entityFactory;
+
 	/** @var ExchangePublisher\IPublisher|null */
 	protected ?ExchangePublisher\IPublisher $publisher;
 
@@ -45,9 +49,11 @@ final class ConnectorPropertiesManager
 	protected ?IConnectorPropertiesManager $manager;
 
 	public function __construct(
+		MetadataEntities\GlobalEntityFactory $entityFactory,
 		?IConnectorPropertiesManager $manager,
 		?ExchangePublisher\IPublisher $publisher
 	) {
+		$this->entityFactory = $entityFactory;
 		$this->manager = $manager;
 		$this->publisher = $publisher;
 	}
@@ -147,12 +153,12 @@ final class ConnectorPropertiesManager
 		$this->publisher->publish(
 			$property->getSource(),
 			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED),
-			Utils\ArrayHash::from(array_merge($property->toArray(), [
+			$this->entityFactory->create(Utils\Json::encode(array_merge($property->toArray(), [
 				'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
 				'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
 				'pending'        => !($state === null) && $state->isPending(),
 				'valid'          => !($state === null) && $state->isValid(),
-			]))
+			])), MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED))
 		);
 	}
 

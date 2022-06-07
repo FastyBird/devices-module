@@ -386,7 +386,7 @@ abstract class Property extends Entities\Property implements IProperty
 
 		return array_merge(parent::toArray(), [
 			'device'   => $this->getDevice()->getPlainId(),
-			'parent'   => $this->getParent() !== null ? $this->getParent()->getIdentifier() : null,
+			'parent'   => $this->getParent() !== null ? $this->getParent()->getPlainId() : null,
 			'children' => $children,
 
 			'owner' => $this->getDevice()->getOwnerId(),

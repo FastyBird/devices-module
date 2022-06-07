@@ -9,8 +9,8 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Subscribers;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Mockery;
-use Nette\Utils;
 use Ninjify\Nunjuck\TestCase\BaseMockeryTestCase;
 use Ramsey\Uuid;
 use stdClass;
@@ -51,6 +51,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
+		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -59,6 +61,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$entityFactory,
 			$publisher
 		);
 
@@ -74,12 +77,14 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $source, string $key, Utils\ArrayHash $data): bool {
-				unset($data['id']);
+			->withArgs(function (string $source, string $key, MetadataEntities\IEntity $data): bool {
+				$asArray = $data->toArray();
+
+				unset($asArray['id']);
 
 				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_CREATED_ROUTING_KEY, $key);
-				Assert::equal(Utils\ArrayHash::from([
+				Assert::equal([
 					'identifier'            => 'device-name',
 					'type'                  => 'blank',
 					'owner'                 => null,
@@ -88,7 +93,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
 					'parents'               => [],
 					'children'              => [],
-				]), $data);
+				], $asArray);
 
 				return true;
 			})
@@ -117,6 +122,25 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
+		$entity = Mockery::mock(MetadataEntities\Modules\TriggersModule\ManualTriggerEntity::class);
+		$entity
+			->shouldReceive('toArray')
+			->andReturn([
+				'identifier'            => 'device-name',
+				'type'                  => 'blank',
+				'owner'                 => null,
+				'name'                  => 'Device custom name',
+				'comment'               => null,
+				'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
+				'parents'               => [],
+				'children'              => [],
+			]);
+
+		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+		$entityFactory
+			->shouldReceive('create')
+			->andReturn($entity);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -125,6 +149,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$entityFactory,
 			$publisher
 		);
 
@@ -148,12 +173,14 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $source, string $key, Utils\ArrayHash $data): bool {
-				unset($data['id']);
+			->withArgs(function (string $source, string $key, MetadataEntities\IEntity $data): bool {
+				$asArray = $data->toArray();
+
+				unset($asArray['id']);
 
 				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_UPDATED_ROUTING_KEY, $key);
-				Assert::equal(Utils\ArrayHash::from([
+				Assert::equal([
 					'identifier'            => 'device-name',
 					'type'                  => 'blank',
 					'owner'                 => null,
@@ -162,7 +189,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
 					'parents'               => [],
 					'children'              => [],
-				]), $data);
+				], $asArray);
 
 				return true;
 			})
@@ -191,6 +218,25 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
+		$entity = Mockery::mock(MetadataEntities\Modules\TriggersModule\ManualTriggerEntity::class);
+		$entity
+			->shouldReceive('toArray')
+			->andReturn([
+				'identifier'            => 'device-name',
+				'type'                  => 'blank',
+				'owner'                 => null,
+				'name'                  => 'Device custom name',
+				'comment'               => null,
+				'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
+				'parents'               => [],
+				'children'              => [],
+			]);
+
+		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+		$entityFactory
+			->shouldReceive('create')
+			->andReturn($entity);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -199,6 +245,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$entityFactory,
 			$publisher
 		);
 
@@ -221,12 +268,14 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$publisher = Mockery::mock(ExchangePublisher\Publisher::class);
 		$publisher
 			->shouldReceive('publish')
-			->withArgs(function (string $source, string $key, Utils\ArrayHash $data): bool {
-				unset($data['id']);
+			->withArgs(function (string $source, string $key, MetadataEntities\IEntity $data): bool {
+				$asArray = $data->toArray();
+
+				unset($asArray['id']);
 
 				Assert::same(Metadata\Constants::MODULE_DEVICES_SOURCE, $source);
 				Assert::same(Metadata\Constants::MESSAGE_BUS_DEVICE_ENTITY_DELETED_ROUTING_KEY, $key);
-				Assert::equal(Utils\ArrayHash::from([
+				Assert::equal([
 					'identifier'            => 'device-name',
 					'type'                  => 'blank',
 					'owner'                 => null,
@@ -235,7 +284,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 					'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
 					'parents'               => [],
 					'children'              => [],
-				]), $data);
+				], $asArray);
 
 				return true;
 			})
@@ -287,6 +336,25 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
+		$entity = Mockery::mock(MetadataEntities\Modules\TriggersModule\ManualTriggerEntity::class);
+		$entity
+			->shouldReceive('toArray')
+			->andReturn([
+				'identifier'            => 'device-name',
+				'type'                  => 'blank',
+				'owner'                 => null,
+				'name'                  => 'Device custom name',
+				'comment'               => null,
+				'connector'             => 'dd6aa4bc-2611-40c3-84ef-0a438cf51e67',
+				'parents'               => [],
+				'children'              => [],
+			]);
+
+		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+		$entityFactory
+			->shouldReceive('create')
+			->andReturn($entity);
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -295,6 +363,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$entityFactory,
 			$publisher
 		);
 

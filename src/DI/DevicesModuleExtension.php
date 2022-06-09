@@ -26,6 +26,7 @@ use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\DevicesModule\Subscribers;
 use IPub\DoctrineCrud;
+use IPub\SlimRouter\Routing as SlimRouterRouting;
 use Nette;
 use Nette\DI;
 use Nette\PhpGenerator;
@@ -355,6 +356,16 @@ class DevicesModuleExtension extends DI\CompilerExtension
 				$ormAnnotationDriverService,
 				'FastyBird\DevicesModule\Entities',
 			]);
+		}
+
+		/**
+		 * Routes
+		 */
+
+		$routerService = $builder->getDefinitionByType(SlimRouterRouting\Router::class);
+
+		if ($routerService instanceof DI\Definitions\ServiceDefinition) {
+			$routerService->addSetup('?->registerRoutes(?)', [$builder->getDefinitionByType(Router\Routes::class), $routerService]);
 		}
 	}
 

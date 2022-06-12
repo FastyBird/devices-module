@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Consumers;
 
 use FastyBird\DevicesModule\Connectors;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -74,7 +75,7 @@ final class ConnectorConsumer implements ExchangeConsumer\IConsumer
 	public function consume(
 		$source,
 		MetadataTypes\RoutingKeyType $routingKey,
-		?Utils\ArrayHash $data
+		?MetadataEntities\IEntity $data
 	): void {
 		if ($data !== null) {
 			if (in_array($routingKey->getValue(), self::PROPERTIES_ACTIONS_ROUTING_KEYS, true)) {
@@ -96,7 +97,6 @@ final class ConnectorConsumer implements ExchangeConsumer\IConsumer
 				} elseif (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_DELETED_KEY)) {
 					$this->connector->handleEntityDeleted();
 				}
-
 			} else {
 				$this->logger->debug('Received unknown exchange message');
 			}

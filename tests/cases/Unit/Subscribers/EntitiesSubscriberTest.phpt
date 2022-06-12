@@ -3,6 +3,7 @@
 namespace Tests\Cases;
 
 use Doctrine\ORM;
+use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
@@ -53,6 +54,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
 
+		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
+		$configurationWriter
+			->shouldReceive('write');
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -61,6 +66,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$configurationWriter,
 			$entityFactory,
 			$publisher
 		);
@@ -69,6 +75,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			'onFlush',
 			'postPersist',
 			'postUpdate',
+			'postFlush',
 		], $subscriber->getSubscribedEvents());
 	}
 
@@ -141,6 +148,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->shouldReceive('create')
 			->andReturn($entity);
 
+		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
+		$configurationWriter
+			->shouldReceive('write');
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -149,6 +160,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$configurationWriter,
 			$entityFactory,
 			$publisher
 		);
@@ -237,6 +249,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->shouldReceive('create')
 			->andReturn($entity);
 
+		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
+		$configurationWriter
+			->shouldReceive('write');
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -245,6 +261,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$configurationWriter,
 			$entityFactory,
 			$publisher
 		);
@@ -355,6 +372,10 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->shouldReceive('create')
 			->andReturn($entity);
 
+		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
+		$configurationWriter
+			->shouldReceive('write');
+
 		$subscriber = new Subscribers\EntitiesSubscriber(
 			$entityManager,
 			$devicePropertiesStateRepository,
@@ -363,6 +384,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$channelPropertiesStateManager,
 			$connectorPropertiesStateRepository,
 			$connectorPropertiesStateManager,
+			$configurationWriter,
 			$entityFactory,
 			$publisher
 		);

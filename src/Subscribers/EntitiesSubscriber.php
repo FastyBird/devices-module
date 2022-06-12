@@ -21,11 +21,13 @@ use Doctrine\Persistence;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
+use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use ReflectionClass;
@@ -66,6 +68,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager;
 
+	/** @var DataStorage\Writer */
+	private DataStorage\Writer $configurationDataWriter;
+
 	/** @var MetadataEntities\GlobalEntityFactory */
 	private MetadataEntities\GlobalEntityFactory $entityFactory;
 
@@ -83,6 +88,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
+		DataStorage\Writer $configurationDataWriter,
 		MetadataEntities\GlobalEntityFactory $entityFactory,
 		?ExchangePublisher\Publisher $publisher = null
 	) {
@@ -92,6 +98,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
 		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
 		$this->connectorPropertiesStatesManager = $connectorPropertiesStatesManager;
+		$this->configurationDataWriter = $configurationDataWriter;
 		$this->entityFactory = $entityFactory;
 		$this->publisher = $publisher;
 		$this->entityManager = $entityManager;
@@ -108,28 +115,14 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			ORM\Events::onFlush,
 			ORM\Events::postPersist,
 			ORM\Events::postUpdate,
+			ORM\Events::postFlush,
 		];
 	}
 
 	/**
-	 * @param object $entity
-	 *
-	 * @return bool
-	 */
-	private function validateNamespace(object $entity): bool
-	{
-		try {
-			$rc = new ReflectionClass($entity);
-
-		} catch (ReflectionException $ex) {
-			return false;
-		}
-
-		return str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule');
-	}
-
-	/**
 	 * @return void
+	 *
+	 * @throws ORM\EntityNotFoundException
 	 */
 	public function onFlush(): void
 	{
@@ -204,6 +197,69 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param ORM\Event\LifecycleEventArgs $eventArgs
+	 *
+	 * @return void
+	 */
+	public function postPersist(ORM\Event\LifecycleEventArgs $eventArgs): void
+	{
+		// onFlush was executed before, everything already initialized
+		$entity = $eventArgs->getObject();
+
+		// Check for valid entity
+		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
+			return;
+		}
+
+		$this->publishEntity($entity, self::ACTION_CREATED);
+	}
+
+	/**
+	 * @param ORM\Event\LifecycleEventArgs $eventArgs
+	 *
+	 * @return void
+	 */
+	public function postUpdate(ORM\Event\LifecycleEventArgs $eventArgs): void
+	{
+		$uow = $this->entityManager->getUnitOfWork();
+
+		// onFlush was executed before, everything already initialized
+		$entity = $eventArgs->getObject();
+
+		// Get changes => should be already computed here (is a listener)
+		$changeset = $uow->getEntityChangeSet($entity);
+
+		// If we have no changes left => don't create revision log
+		if (count($changeset) === 0) {
+			return;
+		}
+
+		// Check for valid entity
+		if (
+			!$entity instanceof Entities\IEntity
+			|| !$this->validateNamespace($entity)
+			|| $uow->isScheduledForDelete($entity)
+		) {
+			return;
+		}
+
+		$this->publishEntity($entity, self::ACTION_UPDATED);
+	}
+
+	/**
+	 * @param ORM\Event\PostFlushEventArgs $args
+	 *
+	 * @return void
+	 *
+	 * @throws Utils\JsonException
+	 * @throws Flysystem\FilesystemException
+	 */
+	public function postFlush(ORM\Event\PostFlushEventArgs $args): void
+	{
+		$this->configurationDataWriter->write();
 	}
 
 	/**
@@ -405,53 +461,20 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
+	 * @param object $entity
 	 *
-	 * @return void
+	 * @return bool
 	 */
-	public function postPersist(ORM\Event\LifecycleEventArgs $eventArgs): void
+	private function validateNamespace(object $entity): bool
 	{
-		// onFlush was executed before, everything already initialized
-		$entity = $eventArgs->getObject();
+		try {
+			$rc = new ReflectionClass($entity);
 
-		// Check for valid entity
-		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
-			return;
+		} catch (ReflectionException $ex) {
+			return false;
 		}
 
-		$this->publishEntity($entity, self::ACTION_CREATED);
-	}
-
-	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 */
-	public function postUpdate(ORM\Event\LifecycleEventArgs $eventArgs): void
-	{
-		$uow = $this->entityManager->getUnitOfWork();
-
-		// onFlush was executed before, everything already initialized
-		$entity = $eventArgs->getObject();
-
-		// Get changes => should be already computed here (is a listener)
-		$changeset = $uow->getEntityChangeSet($entity);
-
-		// If we have no changes left => don't create revision log
-		if (count($changeset) === 0) {
-			return;
-		}
-
-		// Check for valid entity
-		if (
-			!$entity instanceof Entities\IEntity
-			|| !$this->validateNamespace($entity)
-			|| $uow->isScheduledForDelete($entity)
-		) {
-			return;
-		}
-
-		$this->publishEntity($entity, self::ACTION_UPDATED);
+		return str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule');
 	}
 
 }

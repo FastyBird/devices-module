@@ -110,4 +110,6 @@ final class Constants
 		DevicesModuleEntities\Connectors\Controls\Control::class    => Metadata\Constants::MESSAGE_BUS_CONNECTOR_CONTROL_ENTITY_DELETED_ROUTING_KEY,
 	];
 
+	public const CONFIGURATION_FILE_FILENAME = 'devices-module-data.json';
+
 }

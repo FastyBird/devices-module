@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\DI;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Commands;
 use FastyBird\DevicesModule\Controllers;
+use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Hydrators;
 use FastyBird\DevicesModule\Middleware;
@@ -328,6 +329,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('states.managers.channels.properties'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\States\ChannelPropertiesManager::class);
+
+		// Data storage
+		$builder->addDefinition($this->prefix('dataStorage.writer'), new DI\Definitions\ServiceDefinition())
+			->setType(DataStorage\Writer::class);
 	}
 
 	/**

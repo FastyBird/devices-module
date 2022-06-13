@@ -41,7 +41,6 @@ final class Connector
 
 	public function execute() : void
 	{
-
 	}
 
 	/**

@@ -39,7 +39,7 @@ final class Connector
 	/** @var SplObjectStorage<IConnector, null> */
 	private SplObjectStorage $connectors;
 
-	public function execute() : void
+	public function execute(): void
 	{
 	}
 
@@ -49,8 +49,10 @@ final class Connector
 	 *
 	 * @return void
 	 */
-	public function handlePropertyCommand(MetadataTypes\RoutingKeyType $routingKey, MetadataEntities\IEntity $entity): void
-	{
+	public function handlePropertyCommand(
+		MetadataTypes\RoutingKeyType $routingKey,
+		MetadataEntities\IEntity $entity
+	): void {
 		if ($this->connector === null) {
 			return;
 		}
@@ -93,8 +95,10 @@ final class Connector
 	 *
 	 * @return void
 	 */
-	public function handleControlCommand(MetadataTypes\RoutingKeyType $routingKey, MetadataEntities\IEntity $entity): void
-	{
+	public function handleControlCommand(
+		MetadataTypes\RoutingKeyType $routingKey,
+		MetadataEntities\IEntity $entity
+	): void {
 		if ($this->connector === null) {
 			return;
 		}

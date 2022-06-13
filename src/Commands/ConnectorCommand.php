@@ -18,13 +18,11 @@ namespace FastyBird\DevicesModule\Commands;
 use Nette\Localization;
 use Psr\Log;
 use Ramsey\Uuid;
-use RuntimeException;
 use React\EventLoop;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Style;
-use Throwable;
 
 /**
  * Module connector command

@@ -79,28 +79,27 @@ final class ConnectorConsumer implements ExchangeConsumer\IConsumer
 	): void {
 		if ($data !== null) {
 			if (in_array($routingKey->getValue(), self::PROPERTIES_ACTIONS_ROUTING_KEYS, true)) {
-				$this->connector->handlePropertyCommand();
+				$this->connector->handlePropertyCommand($routingKey, $data);
 
 			} elseif (in_array($routingKey->getValue(), self::CONTROLS_ACTIONS_ROUTING_KEYS, true)) {
-				$this->connector->handleControlCommand();
+				$this->connector->handleControlCommand($routingKey, $data);
 
 			} elseif (Utils\Strings::startsWith($routingKey->getValue(), self::ENTITY_PREFIX_KEY)) {
 				if (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_REPORTED_KEY)) {
-					$this->connector->handleEntityReported();
+					$this->connector->handleEntityReported($data);
 
 				} elseif (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_CREATED_KEY)) {
-					$this->connector->handleEntityCreated();
+					$this->connector->handleEntityCreated($data);
 
 				} elseif (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_UPDATED_KEY)) {
-					$this->connector->handleEntityUpdated();
+					$this->connector->handleEntityUpdated($data);
 
 				} elseif (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_DELETED_KEY)) {
-					$this->connector->handleEntityDeleted();
+					$this->connector->handleEntityDeleted($data);
 				}
 			} else {
 				$this->logger->debug('Received unknown exchange message');
 			}
-
 		} else {
 			$this->logger->warning('Received data message without data');
 		}

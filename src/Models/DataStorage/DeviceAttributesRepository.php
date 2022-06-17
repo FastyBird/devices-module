@@ -49,7 +49,7 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity
 	{
 		$this->attributes->rewind();
 
@@ -81,7 +81,7 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByDevice(Uuid\UuidInterface$device): array
+	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
 		$attributes = [];
 

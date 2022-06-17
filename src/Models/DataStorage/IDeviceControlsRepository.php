@@ -30,18 +30,18 @@ interface IDeviceControlsRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface$id
+	 * @param Uuid\UuidInterface $id
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceControlEntity|null
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IDeviceControlEntity;
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceControlEntity;
 
 	/**
-	 * @param Uuid\UuidInterface$device
+	 * @param Uuid\UuidInterface $device
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceControlEntity[]
 	 */
-	public function findAllByDevice(Uuid\UuidInterface$device): array;
+	public function findAllByDevice(Uuid\UuidInterface $device): array;
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IDeviceControlEntity $entity

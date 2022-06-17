@@ -35,17 +35,24 @@ final class ReaderTest extends DbTestCase
 		$reader = $this->getContainer()->getByType(DataStorage\Reader::class);
 
 		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\IConnectorsRepository::class);
-		$connectorPropertiesRepository = $this->getContainer()->getByType(Models\DataStorage\IConnectorPropertiesRepository::class);
-		$connectorControlsRepository = $this->getContainer()->getByType(Models\DataStorage\IConnectorControlsRepository::class);
+		$connectorPropertiesRepository = $this->getContainer()
+			->getByType(Models\DataStorage\IConnectorPropertiesRepository::class);
+		$connectorControlsRepository = $this->getContainer()
+			->getByType(Models\DataStorage\IConnectorControlsRepository::class);
 
 		$devicesRepository = $this->getContainer()->getByType(Models\DataStorage\IDevicesRepository::class);
-		$devicePropertiesRepository = $this->getContainer()->getByType(Models\DataStorage\IDevicePropertiesRepository::class);
-		$deviceControlsRepository = $this->getContainer()->getByType(Models\DataStorage\IDeviceControlsRepository::class);
-		$deviceAttributesRepository = $this->getContainer()->getByType(Models\DataStorage\IDeviceAttributesRepository::class);
+		$devicePropertiesRepository = $this->getContainer()
+			->getByType(Models\DataStorage\IDevicePropertiesRepository::class);
+		$deviceControlsRepository = $this->getContainer()
+			->getByType(Models\DataStorage\IDeviceControlsRepository::class);
+		$deviceAttributesRepository = $this->getContainer()
+			->getByType(Models\DataStorage\IDeviceAttributesRepository::class);
 
 		$channelsRepository = $this->getContainer()->getByType(Models\DataStorage\IChannelsRepository::class);
-		$channelPropertiesRepository = $this->getContainer()->getByType(Models\DataStorage\IChannelPropertiesRepository::class);
-		$channelControlsRepository = $this->getContainer()->getByType(Models\DataStorage\IChannelControlsRepository::class);
+		$channelPropertiesRepository = $this->getContainer()
+			->getByType(Models\DataStorage\IChannelPropertiesRepository::class);
+		$channelControlsRepository = $this->getContainer()
+			->getByType(Models\DataStorage\IChannelControlsRepository::class);
 
 		$reader->read();
 

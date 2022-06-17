@@ -30,18 +30,18 @@ interface IChannelControlsRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface$id
+	 * @param Uuid\UuidInterface $id
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IChannelControlEntity|null
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IChannelControlEntity;
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelControlEntity;
 
 	/**
-	 * @param Uuid\UuidInterface$channel
+	 * @param Uuid\UuidInterface $channel
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IChannelControlEntity[]
 	 */
-	public function findAllByChannel(Uuid\UuidInterface$channel): array;
+	public function findAllByChannel(Uuid\UuidInterface $channel): array;
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IChannelControlEntity $entity

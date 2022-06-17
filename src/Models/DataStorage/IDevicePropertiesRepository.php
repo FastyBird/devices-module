@@ -30,11 +30,11 @@ interface IDevicePropertiesRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface$id
+	 * @param Uuid\UuidInterface $id
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
 	 */
-	public function findById(Uuid\UuidInterface$id);
+	public function findById(Uuid\UuidInterface $id);
 
 	/**
 	 * @param string $identifier
@@ -44,11 +44,11 @@ interface IDevicePropertiesRepository
 	public function findByIdentifier(string $identifier);
 
 	/**
-	 * @param Uuid\UuidInterface$device
+	 * @param Uuid\UuidInterface $device
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity[]
 	 */
-	public function findAllByDevice(Uuid\UuidInterface$device): array;
+	public function findAllByDevice(Uuid\UuidInterface $device): array;
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $entity

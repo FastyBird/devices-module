@@ -49,7 +49,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity
 	{
 		$this->devices->rewind();
 
@@ -81,7 +81,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByConnector(Uuid\UuidInterface$connector): array
+	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
 		$devices = [];
 

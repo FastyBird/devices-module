@@ -49,7 +49,7 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity
 	{
 		$this->connectors->rewind();
 

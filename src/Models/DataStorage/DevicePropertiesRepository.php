@@ -50,7 +50,7 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id)
+	public function findById(Uuid\UuidInterface $id)
 	{
 		$this->properties->rewind();
 
@@ -82,7 +82,7 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByDevice(Uuid\UuidInterface$device): array
+	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
 		$properties = [];
 

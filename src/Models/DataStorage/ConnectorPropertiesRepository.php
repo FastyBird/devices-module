@@ -50,7 +50,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id)
+	public function findById(Uuid\UuidInterface $id)
 	{
 		$this->properties->rewind();
 
@@ -82,7 +82,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByConnector(Uuid\UuidInterface$connector): array
+	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
 		$properties = [];
 

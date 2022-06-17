@@ -30,11 +30,11 @@ interface IChannelPropertiesRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface$id
+	 * @param Uuid\UuidInterface $id
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null
 	 */
-	public function findById(Uuid\UuidInterface$id);
+	public function findById(Uuid\UuidInterface $id);
 
 	/**
 	 * @param string $identifier
@@ -44,11 +44,11 @@ interface IChannelPropertiesRepository
 	public function findByIdentifier(string $identifier);
 
 	/**
-	 * @param Uuid\UuidInterface$channel
+	 * @param Uuid\UuidInterface $channel
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity[]
 	 */
-	public function findAllByChannel(Uuid\UuidInterface$channel): array;
+	public function findAllByChannel(Uuid\UuidInterface $channel): array;
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $entity

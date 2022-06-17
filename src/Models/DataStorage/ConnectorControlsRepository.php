@@ -49,7 +49,7 @@ final class ConnectorControlsRepository implements IConnectorControlsRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IConnectorControlEntity
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IConnectorControlEntity
 	{
 		$this->controls->rewind();
 
@@ -65,7 +65,7 @@ final class ConnectorControlsRepository implements IConnectorControlsRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByConnector(Uuid\UuidInterface$connector): array
+	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
 		$controls = [];
 

@@ -49,7 +49,7 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
 	{
 		$this->controls->rewind();
 
@@ -65,7 +65,7 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByDevice(Uuid\UuidInterface$device): array
+	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
 		$controls = [];
 

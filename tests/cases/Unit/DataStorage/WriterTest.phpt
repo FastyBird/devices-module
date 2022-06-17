@@ -24,7 +24,7 @@ final class WriterTest extends DbTestCase
 		$filesystem = Mockery::mock(Flysystem\Filesystem::class);
 		$filesystem
 			->shouldReceive('write')
-			->withArgs(function(string $filename, string $data): bool {
+			->withArgs(function (string $filename, string $data): bool {
 				Assert::same(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME, $filename);
 				Tools\JsonAssert::assertFixtureMatch(
 					'./../../../fixtures/DataStorage/devices-module-data.json',

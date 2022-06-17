@@ -30,11 +30,11 @@ interface IConnectorPropertiesRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface$id
+	 * @param Uuid\UuidInterface $id
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null
 	 */
-	public function findById(Uuid\UuidInterface$id);
+	public function findById(Uuid\UuidInterface $id);
 
 	/**
 	 * @param string $identifier
@@ -44,11 +44,11 @@ interface IConnectorPropertiesRepository
 	public function findByIdentifier(string $identifier);
 
 	/**
-	 * @param Uuid\UuidInterface$connector
+	 * @param Uuid\UuidInterface $connector
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity[]
 	 */
-	public function findAllByConnector(Uuid\UuidInterface$connector): array;
+	public function findAllByConnector(Uuid\UuidInterface $connector): array;
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $entity

@@ -30,18 +30,18 @@ interface IConnectorControlsRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface$id
+	 * @param Uuid\UuidInterface $id
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IConnectorControlEntity|null
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IConnectorControlEntity;
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IConnectorControlEntity;
 
 	/**
-	 * @param Uuid\UuidInterface$connector
+	 * @param Uuid\UuidInterface $connector
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IConnectorControlEntity[]
 	 */
-	public function findAllByConnector(Uuid\UuidInterface$connector): array;
+	public function findAllByConnector(Uuid\UuidInterface $connector): array;
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IConnectorControlEntity $entity

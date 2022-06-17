@@ -49,7 +49,7 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IChannelControlEntity
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelControlEntity
 	{
 		$this->controls->rewind();
 
@@ -65,7 +65,7 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByChannel(Uuid\UuidInterface$channel): array
+	public function findAllByChannel(Uuid\UuidInterface $channel): array
 	{
 		$controls = [];
 

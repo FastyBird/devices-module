@@ -50,7 +50,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id)
+	public function findById(Uuid\UuidInterface $id)
 	{
 		$this->properties->rewind();
 
@@ -82,7 +82,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByChannel(Uuid\UuidInterface$channel): array
+	public function findAllByChannel(Uuid\UuidInterface $channel): array
 	{
 		$properties = [];
 

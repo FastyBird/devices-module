@@ -49,7 +49,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IChannelEntity
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelEntity
 	{
 		$this->channels->rewind();
 
@@ -81,7 +81,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAllByDevice(Uuid\UuidInterface$device): array
+	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
 		$channels = [];
 

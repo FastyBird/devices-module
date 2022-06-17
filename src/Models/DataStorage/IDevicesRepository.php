@@ -30,11 +30,11 @@ interface IDevicesRepository
 {
 
 	/**
-	 * @param Uuid\UuidInterface$id
+	 * @param Uuid\UuidInterface $id
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceEntity|null
 	 */
-	public function findById(Uuid\UuidInterface$id): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity;
+	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity;
 
 	/**
 	 * @param string $identifier
@@ -44,11 +44,11 @@ interface IDevicesRepository
 	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity;
 
 	/**
-	 * @param Uuid\UuidInterface$connector
+	 * @param Uuid\UuidInterface $connector
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceEntity[]
 	 */
-	public function findAllByConnector(Uuid\UuidInterface$connector): array;
+	public function findAllByConnector(Uuid\UuidInterface $connector): array;
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IDeviceEntity $entity

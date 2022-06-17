@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use Countable;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use IteratorAggregate;
 use Nette;
@@ -102,14 +101,6 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	 */
 	public function append($entity): void
 	{
-		if (
-			!$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-			&& !$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			&& !$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-		) {
-			throw new Exceptions\InvalidArgumentException('Provided entity is not valid instance');
-		}
-
 		if (!$this->properties->contains($entity)) {
 			$this->properties->attach($entity, $entity->getId()->toString());
 		}

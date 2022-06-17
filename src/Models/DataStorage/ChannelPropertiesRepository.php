@@ -16,7 +16,6 @@
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use Countable;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use IteratorAggregate;
 use Nette;
@@ -102,14 +101,6 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function append($entity): void
 	{
-		if (
-			!$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-			&& !$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			&& !$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			throw new Exceptions\InvalidArgumentException('Provided entity is not valid instance');
-		}
-
 		if (!$this->properties->contains($entity)) {
 			$this->properties->attach($entity, $entity->getId()->toString());
 		}

@@ -4,7 +4,6 @@ namespace Tests\Cases;
 
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\DataStorage;
-use FastyBird\DevicesModule\Models;
 use League\Flysystem;
 use Mockery;
 use Tester\Assert;

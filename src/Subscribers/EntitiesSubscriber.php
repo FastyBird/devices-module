@@ -24,8 +24,8 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Utilities;
+use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
-use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use League\Flysystem;
 use Nette;
@@ -71,8 +71,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/** @var DataStorage\Writer */
 	private DataStorage\Writer $configurationDataWriter;
 
-	/** @var MetadataEntities\GlobalEntityFactory */
-	private MetadataEntities\GlobalEntityFactory $entityFactory;
+	/** @var ExchangeEntities\EntityFactory */
+	private ExchangeEntities\EntityFactory $entityFactory;
 
 	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
@@ -89,7 +89,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
 		DataStorage\Writer $configurationDataWriter,
-		MetadataEntities\GlobalEntityFactory $entityFactory,
+		ExchangeEntities\EntityFactory $entityFactory,
 		?ExchangePublisher\Publisher $publisher = null
 	) {
 		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;

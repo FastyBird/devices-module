@@ -112,4 +112,13 @@ final class Constants
 
 	public const CONFIGURATION_FILE_FILENAME = 'devices-module-data.json';
 
+	public const DATA_STORAGE_PROPERTIES_KEY = 'properties';
+	public const DATA_STORAGE_CONTROLS_KEY = 'controls';
+	public const DATA_STORAGE_ATTRIBUTES_KEY = 'attributes';
+	public const DATA_STORAGE_CONNECTOR_KEY = 'connector';
+	public const DATA_STORAGE_DEVICES_KEY = 'devices';
+	public const DATA_STORAGE_DEVICE_KEY = 'device';
+	public const DATA_STORAGE_CHANNELS_KEY = 'channels';
+	public const DATA_STORAGE_CHANNEL_KEY = 'channel';
+
 }

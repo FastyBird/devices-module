@@ -8,6 +8,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Subscribers;
+use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
@@ -52,7 +53,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
-		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+		$entityFactory = Mockery::mock(ExchangeEntities\EntityFactory::class);
 
 		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
 		$configurationWriter
@@ -143,7 +144,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				'children'              => [],
 			]);
 
-		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+		$entityFactory = Mockery::mock(ExchangeEntities\EntityFactory::class);
 		$entityFactory
 			->shouldReceive('create')
 			->andReturn($entity);
@@ -244,7 +245,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				'children'              => [],
 			]);
 
-		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+		$entityFactory = Mockery::mock(ExchangeEntities\EntityFactory::class);
 		$entityFactory
 			->shouldReceive('create')
 			->andReturn($entity);
@@ -367,7 +368,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 				'children'              => [],
 			]);
 
-		$entityFactory = Mockery::mock(MetadataEntities\GlobalEntityFactory::class);
+		$entityFactory = Mockery::mock(ExchangeEntities\EntityFactory::class);
 		$entityFactory
 			->shouldReceive('create')
 			->andReturn($entity);

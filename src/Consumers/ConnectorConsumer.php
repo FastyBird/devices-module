@@ -75,27 +75,27 @@ final class ConnectorConsumer implements ExchangeConsumer\IConsumer
 	public function consume(
 		$source,
 		MetadataTypes\RoutingKeyType $routingKey,
-		?MetadataEntities\IEntity $data
+		?MetadataEntities\IEntity $entity
 	): void {
-		if ($data !== null) {
+		if ($entity !== null) {
 			if (in_array($routingKey->getValue(), self::PROPERTIES_ACTIONS_ROUTING_KEYS, true)) {
-				$this->connector->handlePropertyCommand($routingKey, $data);
+				$this->connector->handlePropertyCommand($entity);
 
 			} elseif (in_array($routingKey->getValue(), self::CONTROLS_ACTIONS_ROUTING_KEYS, true)) {
-				$this->connector->handleControlCommand($routingKey, $data);
+				$this->connector->handleControlCommand($entity);
 
 			} elseif (Utils\Strings::startsWith($routingKey->getValue(), self::ENTITY_PREFIX_KEY)) {
 				if (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_REPORTED_KEY)) {
-					$this->connector->handleEntityReported($data);
+					$this->connector->handleEntityReported($entity);
 
 				} elseif (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_CREATED_KEY)) {
-					$this->connector->handleEntityCreated($data);
+					$this->connector->handleEntityCreated($entity);
 
 				} elseif (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_UPDATED_KEY)) {
-					$this->connector->handleEntityUpdated($data);
+					$this->connector->handleEntityUpdated($entity);
 
 				} elseif (Utils\Strings::contains($routingKey->getValue(), self::ENTITY_DELETED_KEY)) {
-					$this->connector->handleEntityDeleted($data);
+					$this->connector->handleEntityDeleted($entity);
 				}
 			} else {
 				$this->logger->debug('Received unknown exchange message');

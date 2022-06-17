@@ -20,8 +20,8 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
 use FastyBird\DevicesModule\Utilities;
+use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
-use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -39,8 +39,8 @@ final class ConnectorPropertiesManager
 
 	use Nette\SmartObject;
 
-	/** @var MetadataEntities\GlobalEntityFactory */
-	protected MetadataEntities\GlobalEntityFactory $entityFactory;
+	/** @var ExchangeEntities\EntityFactory */
+	protected ExchangeEntities\EntityFactory $entityFactory;
 
 	/** @var ExchangePublisher\IPublisher|null */
 	protected ?ExchangePublisher\IPublisher $publisher;
@@ -49,7 +49,7 @@ final class ConnectorPropertiesManager
 	protected ?IConnectorPropertiesManager $manager;
 
 	public function __construct(
-		MetadataEntities\GlobalEntityFactory $entityFactory,
+		ExchangeEntities\EntityFactory $entityFactory,
 		?IConnectorPropertiesManager $manager,
 		?ExchangePublisher\IPublisher $publisher
 	) {

@@ -7,7 +7,7 @@
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
- * @subpackage     Controllers
+ * @subpackage     DataStorage
  * @since          0.1.0
  *
  * @date           13.04.19
@@ -21,6 +21,14 @@ use FastyBird\DevicesModule\Queries;
 use League\Flysystem;
 use Nette\Utils;
 
+/**
+ * Data storage configuration writer
+ *
+ * @package        FastyBird:DevicesModule!
+ * @subpackage     DataStorage
+ *
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ */
 final class Writer
 {
 
@@ -72,8 +80,8 @@ final class Writer
 					}
 
 					$channels[$channel->getPlainId()] = array_merge($channel->toArray(), [
-						'properties' => $properties,
-						'controls'   => $controls,
+						DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY => $properties,
+						DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY   => $controls,
 					]);
 				}
 
@@ -96,10 +104,10 @@ final class Writer
 				}
 
 				$devices[$device->getPlainId()] = array_merge($device->toArray(), [
-					'properties' => $properties,
-					'attributes' => $attributes,
-					'controls'   => $controls,
-					'channels'   => $channels,
+					DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY => $properties,
+					DevicesModule\Constants::DATA_STORAGE_ATTRIBUTES_KEY => $attributes,
+					DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY   => $controls,
+					DevicesModule\Constants::DATA_STORAGE_CHANNELS_KEY   => $channels,
 				]);
 			}
 
@@ -116,9 +124,9 @@ final class Writer
 			}
 
 			$data[$connector->getPlainId()] = array_merge($connector->toArray(), [
-				'properties' => $properties,
-				'controls'   => $controls,
-				'devices'    => $devices,
+				DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY => $properties,
+				DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY   => $controls,
+				DevicesModule\Constants::DATA_STORAGE_DEVICES_KEY    => $devices,
 			]);
 		}
 

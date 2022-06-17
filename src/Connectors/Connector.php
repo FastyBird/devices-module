@@ -15,8 +15,9 @@
 
 namespace FastyBird\DevicesModule\Connectors;
 
+use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Entities as MetadataEntities;
-use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use SplObjectStorage;
 
@@ -39,18 +40,27 @@ final class Connector
 	/** @var SplObjectStorage<IConnector, null> */
 	private SplObjectStorage $connectors;
 
-	public function execute(): void
+	public function execute(Entities\Connectors\IConnector $connector): void
 	{
+		$this->connectors->rewind();
+
+		foreach ($this->connectors as $extension) {
+			if ($connector->getType() === $extension->getType()) {
+				$this->connector = $extension;
+
+				return;
+			}
+		}
+
+		throw new Exceptions\InvalidArgumentException(sprintf('Connector %s is not registered', $connector->getPlainId()));
 	}
 
 	/**
-	 * @param MetadataTypes\RoutingKeyType $routingKey
 	 * @param MetadataEntities\IEntity $entity
 	 *
 	 * @return void
 	 */
 	public function handlePropertyCommand(
-		MetadataTypes\RoutingKeyType $routingKey,
 		MetadataEntities\IEntity $entity
 	): void {
 		if ($this->connector === null) {
@@ -58,45 +68,29 @@ final class Connector
 		}
 
 		if (
-			$routingKey->equalsValue(MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ACTION)
-			&& (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-			)
-		) {
-			$this->connector->writeProperty($entity);
-
-		} elseif (
-			$routingKey->equalsValue(MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ACTION)
-			&& (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-			)
-		) {
-			$this->connector->writeProperty($entity);
-
-		} elseif (
-			$routingKey->equalsValue(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ACTION)
-			&& (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-			)
+			// Connector
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+			// Device
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+			// Channel
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
 		) {
 			$this->connector->writeProperty($entity);
 		}
 	}
 
 	/**
-	 * @param MetadataTypes\RoutingKeyType $routingKey
 	 * @param MetadataEntities\IEntity $entity
 	 *
 	 * @return void
 	 */
 	public function handleControlCommand(
-		MetadataTypes\RoutingKeyType $routingKey,
 		MetadataEntities\IEntity $entity
 	): void {
 		if ($this->connector === null) {
@@ -104,20 +98,9 @@ final class Connector
 		}
 
 		if (
-			$routingKey->equalsValue(MetadataTypes\RoutingKeyType::ROUTE_DEVICE_ACTION)
-			&& $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
-		) {
-			$this->connector->writeControl($entity);
-
-		} elseif (
-			$routingKey->equalsValue(MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_ACTION)
-			&& $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelControlEntity
-		) {
-			$this->connector->writeControl($entity);
-
-		} elseif (
-			$routingKey->equalsValue(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_ACTION)
-			&& $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorControlEntity
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorControlEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelControlEntity
 		) {
 			$this->connector->writeControl($entity);
 		}
@@ -133,6 +116,30 @@ final class Connector
 		if ($this->connector === null) {
 			return;
 		}
+
+		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
+			$this->connector->notifyDevice($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
+			$this->connector->notifyDeviceAttribute($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+		) {
+			$this->connector->notifyDeviceProperty($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
+			$this->connector->notifyChannel($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+		) {
+			$this->connector->notifyChannelProperty($entity);
+		}
 	}
 
 	/**
@@ -144,6 +151,30 @@ final class Connector
 	{
 		if ($this->connector === null) {
 			return;
+		}
+
+		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
+			$this->connector->initializeDevice($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
+			$this->connector->initializeDeviceAttribute($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+		) {
+			$this->connector->initializeDeviceProperty($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
+			$this->connector->initializeChannel($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+		) {
+			$this->connector->initializeChannelProperty($entity);
 		}
 	}
 
@@ -157,6 +188,30 @@ final class Connector
 		if ($this->connector === null) {
 			return;
 		}
+
+		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
+			$this->connector->initializeDevice($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
+			$this->connector->initializeDeviceAttribute($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+		) {
+			$this->connector->initializeDeviceProperty($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
+			$this->connector->initializeChannel($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+		) {
+			$this->connector->initializeChannelProperty($entity);
+		}
 	}
 
 	/**
@@ -168,6 +223,30 @@ final class Connector
 	{
 		if ($this->connector === null) {
 			return;
+		}
+
+		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
+			$this->connector->removeDevice($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
+			$this->connector->removeDeviceAttribute($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+		) {
+			$this->connector->removeDeviceProperty($entity);
+
+		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
+			$this->connector->removeChannel($entity);
+
+		} elseif (
+			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+		) {
+			$this->connector->removeChannelProperty($entity);
 		}
 	}
 

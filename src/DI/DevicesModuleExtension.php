@@ -333,6 +333,39 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		// Data storage
 		$builder->addDefinition($this->prefix('dataStorage.writer'), new DI\Definitions\ServiceDefinition())
 			->setType(DataStorage\Writer::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.reader'), new DI\Definitions\ServiceDefinition())
+			->setType(DataStorage\Reader::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.connectors'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\ConnectorsRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.connector.properties'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\ConnectorPropertiesRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.connector.controls'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\ConnectorControlsRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.devices'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\DevicesRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.device.properties'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\DevicePropertiesRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.device.controls'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\DeviceControlsRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.device.attributes'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\DeviceAttributesRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.channels'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\ChannelsRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.channel.properties'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\ChannelPropertiesRepository::class);
+
+		$builder->addDefinition($this->prefix('dataStorage.repository.channel.controls'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\DataStorage\ChannelControlsRepository::class);
 	}
 
 	/**

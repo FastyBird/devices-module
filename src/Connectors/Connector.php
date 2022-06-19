@@ -173,7 +173,7 @@ final class Connector
 
                 $waitingForClosing = true;
 
-                # Wait until connector is fully terminated
+                // Wait until connector is fully terminated
                 while (
 					$waitingForClosing
 					&& ($this->dateTimeFactory->getNow()->getTimestamp() - $now->getTimestamp()) < self::SHUTDOWN_WAITING_DELAY

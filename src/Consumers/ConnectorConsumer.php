@@ -16,9 +16,11 @@
 namespace FastyBird\DevicesModule\Consumers;
 
 use FastyBird\DevicesModule\Connectors;
+use FastyBird\DevicesModule\DataStorage;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
+use League\Flysystem;
 use Nette;
 use Psr\Log;
 
@@ -38,20 +40,28 @@ final class ConnectorConsumer implements ExchangeConsumer\IConsumer
 	/** @var Connectors\Connector */
 	private Connectors\Connector $connector;
 
+	/** @var DataStorage\Reader */
+	private DataStorage\Reader $dataStorageReader;
+
 	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
 		Connectors\Connector $connector,
+		DataStorage\Reader $dataStorageReader,
 		?Log\LoggerInterface $logger = null
 	) {
 		$this->connector = $connector;
+		$this->dataStorageReader = $dataStorageReader;
 
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws Nette\Utils\JsonException
+	 * @throws Flysystem\FilesystemException
 	 */
 	public function consume(
 		$source,
@@ -59,6 +69,8 @@ final class ConnectorConsumer implements ExchangeConsumer\IConsumer
 		?MetadataEntities\IEntity $entity
 	): void {
 		if ($entity !== null) {
+			$this->dataStorageReader->read();
+
 			$this->connector->handleMessage(new Connectors\Messages\ExchangeMessage($routingKey, $entity));
 
 		} else {

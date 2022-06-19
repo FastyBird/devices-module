@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule;
 
 use FastyBird\DevicesModule\Entities as DevicesModuleEntities;
 use FastyBird\Metadata;
+use FastyBird\Metadata\Types as MetadataTypes;
 
 /**
  * Service constants
@@ -115,10 +116,25 @@ final class Constants
 	public const DATA_STORAGE_PROPERTIES_KEY = 'properties';
 	public const DATA_STORAGE_CONTROLS_KEY = 'controls';
 	public const DATA_STORAGE_ATTRIBUTES_KEY = 'attributes';
-	public const DATA_STORAGE_CONNECTOR_KEY = 'connector';
 	public const DATA_STORAGE_DEVICES_KEY = 'devices';
-	public const DATA_STORAGE_DEVICE_KEY = 'device';
 	public const DATA_STORAGE_CHANNELS_KEY = 'channels';
-	public const DATA_STORAGE_CHANNEL_KEY = 'channel';
+
+	public const ENTITY_PREFIX_KEY = 'fb.exchange.module.entity';
+
+	public const ENTITY_REPORTED_KEY = 'reported';
+	public const ENTITY_CREATED_KEY = 'created';
+	public const ENTITY_UPDATED_KEY = 'updated';
+	public const ENTITY_DELETED_KEY = 'deleted';
+
+	public const PROPERTIES_ACTIONS_ROUTING_KEYS = [
+		MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ACTION,
+		MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ACTION,
+	];
+
+	public const CONTROLS_ACTIONS_ROUTING_KEYS = [
+		MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_ACTION,
+		MetadataTypes\RoutingKeyType::ROUTE_DEVICE_ACTION,
+		MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_ACTION,
+	];
 
 }

@@ -15,6 +15,9 @@
 
 namespace FastyBird\DevicesModule\Commands;
 
+use FastyBird\DevicesModule\Connectors;
+use FastyBird\DevicesModule\Exceptions\TerminateException;
+use FastyBird\DevicesModule\Models;
 use Nette\Localization;
 use Psr\Log;
 use Ramsey\Uuid;
@@ -35,6 +38,12 @@ use Symfony\Component\Console\Style;
 class ConnectorCommand extends Console\Command\Command
 {
 
+	/** @var Connectors\Connector */
+	private Connectors\Connector $connector;
+
+	/** @var Models\DataStorage\IConnectorsRepository */
+	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
+
 	/** @var Localization\Translator */
 	private Localization\Translator $translator;
 
@@ -45,12 +54,17 @@ class ConnectorCommand extends Console\Command\Command
 	private EventLoop\LoopInterface $eventLoop;
 
 	public function __construct(
+		Connectors\Connector $connector,
+		Models\DataStorage\IConnectorsRepository $connectorsRepository,
 		Localization\Translator $translator,
 		EventLoop\LoopInterface $eventLoop,
 		?Log\LoggerInterface $logger = null,
 		?string $name = null
 	) {
 		parent::__construct($name);
+
+		$this->connector = $connector;
+		$this->connectorsRepository = $connectorsRepository;
 
 		$this->translator = $translator;
 		$this->eventLoop = $eventLoop;
@@ -101,7 +115,30 @@ class ConnectorCommand extends Console\Command\Command
 			return 1;
 		}
 
-		$this->eventLoop->run();
+		$connector = $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId));
+
+		if ($connector === null) {
+			$this->logger->alert('Connector was not found', [
+				'source'    => 'devices-module',
+				'type'      => 'connector',
+			]);
+
+			return 0;
+		}
+
+		try {
+			$this->eventLoop->futureTick(function () use ($connector): void {
+				$this->connector->execute($connector);
+			});
+
+			$this->eventLoop->addSignal(SIGINT, function (int $signal) {
+				$this->connector->terminate();
+			});
+
+			$this->eventLoop->run();
+		} catch (TerminateException $ex) {
+			$this->eventLoop->stop();
+		}
 
 		return 0;
 	}

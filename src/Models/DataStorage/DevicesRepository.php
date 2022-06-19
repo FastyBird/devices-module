@@ -101,9 +101,23 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IDeviceEntity $entity): void
 	{
+		$existing = $this->findById($entity->getId());
+
+		if ($existing !== null) {
+			$this->devices->detach($existing);
+		}
+
 		if (!$this->devices->contains($entity)) {
 			$this->devices->attach($entity, $entity->getId()->toString());
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(): void
+	{
+		$this->devices = new SplObjectStorage();
 	}
 
 	/**

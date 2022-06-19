@@ -101,9 +101,23 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IChannelEntity $entity): void
 	{
+		$existing = $this->findById($entity->getId());
+
+		if ($existing !== null) {
+			$this->channels->detach($existing);
+		}
+
 		if (!$this->channels->contains($entity)) {
 			$this->channels->attach($entity, $entity->getId()->toString());
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(): void
+	{
+		$this->channels = new SplObjectStorage();
 	}
 
 	/**

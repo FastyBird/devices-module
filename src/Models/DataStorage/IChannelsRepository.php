@@ -57,4 +57,9 @@ interface IChannelsRepository
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IChannelEntity $entity): void;
 
+	/**
+	 * @return void
+	 */
+	public function reset(): void;
+
 }

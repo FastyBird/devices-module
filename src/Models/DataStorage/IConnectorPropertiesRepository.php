@@ -57,4 +57,9 @@ interface IConnectorPropertiesRepository
 	 */
 	public function append($entity): void;
 
+	/**
+	 * @return void
+	 */
+	public function reset(): void;
+
 }

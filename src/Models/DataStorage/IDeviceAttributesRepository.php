@@ -57,4 +57,9 @@ interface IDeviceAttributesRepository
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity $entity): void;
 
+	/**
+	 * @return void
+	 */
+	public function reset(): void;
+
 }

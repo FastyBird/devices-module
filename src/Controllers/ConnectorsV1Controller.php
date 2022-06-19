@@ -163,8 +163,8 @@ class ConnectorsV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module-connectors-controller',
-					'type'      => 'update',
+					'source'    => 'devices-module',
+					'type'      => 'connectors-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
 						'code'    => $ex->getCode(),

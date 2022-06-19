@@ -85,9 +85,23 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IChannelControlEntity $entity): void
 	{
+		$existing = $this->findById($entity->getId());
+
+		if ($existing !== null) {
+			$this->controls->detach($existing);
+		}
+
 		if (!$this->controls->contains($entity)) {
 			$this->controls->attach($entity, $entity->getId()->toString());
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(): void
+	{
+		$this->controls = new SplObjectStorage();
 	}
 
 	/**

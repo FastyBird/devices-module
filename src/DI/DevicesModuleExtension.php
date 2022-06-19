@@ -17,6 +17,8 @@ namespace FastyBird\DevicesModule\DI;
 
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Commands;
+use FastyBird\DevicesModule\Connectors;
+use FastyBird\DevicesModule\Consumers;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Entities;
@@ -96,6 +98,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		// Console commands
 		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())
 			->setType(Commands\InitializeCommand::class);
+
+		$builder->addDefinition($this->prefix('commands.connector'), new DI\Definitions\ServiceDefinition())
+			->setType(Commands\ConnectorCommand::class);
 
 		// Database repositories
 		$builder->addDefinition($this->prefix('models.devicesRepository'), new DI\Definitions\ServiceDefinition())
@@ -366,6 +371,13 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('dataStorage.repository.channel.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\DataStorage\ChannelControlsRepository::class);
+
+		// Connector services
+		$builder->addDefinition($this->prefix('connector.service'), new DI\Definitions\ServiceDefinition())
+			->setType(Connectors\Connector::class);
+
+		$builder->addDefinition($this->prefix('connector.consumer'), new DI\Definitions\ServiceDefinition())
+			->setType(Consumers\ConnectorConsumer::class);
 	}
 
 	/**
@@ -404,6 +416,28 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		if ($routerService instanceof DI\Definitions\ServiceDefinition) {
 			$routerService->addSetup('?->registerRoutes(?)', [$builder->getDefinitionByType(Router\Routes::class), $routerService]);
+		}
+
+		/**
+		 * Connectors
+		 */
+
+		$connectorServiceService = $builder->getDefinitionByType(Connectors\Connector::class);
+
+		if ($connectorServiceService instanceof DI\Definitions\ServiceDefinition) {
+			$connectorsServices = $builder->findByType(Connectors\IConnector::class);
+
+			foreach ($connectorsServices as $connectorsService) {
+				if ($connectorsService->getType() !== Connectors\Connector::class) {
+					// Connector is not allowed to be autowired
+					$connectorsService->setAutowired(false);
+
+					$connectorServiceService->addSetup('?->registerConnector(?)', [
+						'@self',
+						$connectorsService,
+					]);
+				}
+			}
 		}
 	}
 

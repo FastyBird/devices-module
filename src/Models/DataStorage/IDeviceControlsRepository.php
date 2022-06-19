@@ -50,4 +50,9 @@ interface IDeviceControlsRepository
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IDeviceControlEntity $entity): void;
 
+	/**
+	 * @return void
+	 */
+	public function reset(): void;
+
 }

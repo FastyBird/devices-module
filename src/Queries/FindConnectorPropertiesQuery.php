@@ -80,6 +80,19 @@ class FindConnectorPropertiesQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
+	 * @param Uuid\UuidInterface $connectorId
+	 *
+	 * @return void
+	 */
+	public function byConnectorId(Uuid\UuidInterface $connectorId): void
+	{
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($connectorId): void {
+			$qb->andWhere('connector.id = :connector')
+				->setParameter('connector', $connectorId, Uuid\Doctrine\UuidBinaryType::NAME);
+		};
+	}
+
+	/**
 	 * @param string $sortBy
 	 * @param string $sortDir
 	 *

@@ -198,8 +198,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module-channels-controller',
-					'type'      => 'create',
+					'source'    => 'devices-module',
+					'type'      => 'channels-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
 						'code'    => $ex->getCode(),
@@ -276,8 +276,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module-channels-controller',
-					'type'      => 'update',
+					'source'    => 'devices-module',
+					'type'      => 'channels-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
 						'code'    => $ex->getCode(),
@@ -344,8 +344,8 @@ final class ChannelsV1Controller extends BaseV1Controller
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => 'devices-module-channels-controller',
-				'type'      => 'delete',
+				'source'    => 'devices-module',
+				'type'      => 'channels-controller',
 				'exception' => [
 					'message' => $ex->getMessage(),
 					'code'    => $ex->getCode(),

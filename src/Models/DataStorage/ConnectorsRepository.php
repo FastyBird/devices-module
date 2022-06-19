@@ -83,9 +83,23 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IConnectorEntity $entity): void
 	{
+		$existing = $this->findById($entity->getId());
+
+		if ($existing !== null) {
+			$this->connectors->detach($existing);
+		}
+
 		if (!$this->connectors->contains($entity)) {
 			$this->connectors->attach($entity, $entity->getId()->toString());
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(): void
+	{
+		$this->connectors = new SplObjectStorage();
 	}
 
 	/**

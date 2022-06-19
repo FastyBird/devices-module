@@ -101,9 +101,23 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	 */
 	public function append($entity): void
 	{
+		$existing = $this->findById($entity->getId());
+
+		if ($existing !== null) {
+			$this->properties->detach($existing);
+		}
+
 		if (!$this->properties->contains($entity)) {
 			$this->properties->attach($entity, $entity->getId()->toString());
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(): void
+	{
+		$this->properties = new SplObjectStorage();
 	}
 
 	/**

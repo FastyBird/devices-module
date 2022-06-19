@@ -123,8 +123,8 @@ class InitializeCommand extends Console\Command\Command
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => 'devices-module-initialize',
-				'type'      => 'run',
+				'source'    => 'devices-module',
+				'type'      => 'initialize-cmd',
 				'exception' => [
 					'message' => $ex->getMessage(),
 					'code'    => $ex->getCode(),

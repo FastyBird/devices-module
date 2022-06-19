@@ -57,4 +57,9 @@ interface IDevicesRepository
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IDeviceEntity $entity): void;
 
+	/**
+	 * @return void
+	 */
+	public function reset(): void;
+
 }

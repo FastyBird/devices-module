@@ -50,4 +50,9 @@ interface IChannelControlsRepository
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IChannelControlEntity $entity): void;
 
+	/**
+	 * @return void
+	 */
+	public function reset(): void;
+
 }

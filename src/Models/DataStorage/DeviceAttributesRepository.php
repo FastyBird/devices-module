@@ -101,9 +101,23 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity $entity): void
 	{
+		$existing = $this->findById($entity->getId());
+
+		if ($existing !== null) {
+			$this->attributes->detach($existing);
+		}
+
 		if (!$this->attributes->contains($entity)) {
 			$this->attributes->attach($entity, $entity->getId()->toString());
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(): void
+	{
+		$this->attributes = new SplObjectStorage();
 	}
 
 	/**

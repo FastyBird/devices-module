@@ -80,6 +80,19 @@ class FindChannelsQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
+	 * @param Uuid\UuidInterface $deviceId
+	 *
+	 * @return void
+	 */
+	public function byDeviceId(Uuid\UuidInterface $deviceId): void
+	{
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($deviceId): void {
+			$qb->andWhere('device.id = :device')
+				->setParameter('device', $deviceId, Uuid\Doctrine\UuidBinaryType::NAME);
+		};
+	}
+
+	/**
 	 * @return void
 	 */
 	public function withProperties(): void

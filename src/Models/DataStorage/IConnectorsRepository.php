@@ -50,4 +50,9 @@ interface IConnectorsRepository
 	 */
 	public function append(MetadataEntities\Modules\DevicesModule\IConnectorEntity $entity): void;
 
+	/**
+	 * @return void
+	 */
+	public function reset(): void;
+
 }

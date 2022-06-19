@@ -192,8 +192,8 @@ class DevicesV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module-devices-controller',
-					'type'      => 'create',
+					'source'    => 'devices-module',
+					'type'      => 'devices-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
 						'code'    => $ex->getCode(),
@@ -290,8 +290,8 @@ class DevicesV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module-devices-controller',
-					'type'      => 'update',
+					'source'    => 'devices-module',
+					'type'      => 'devices-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
 						'code'    => $ex->getCode(),
@@ -360,8 +360,8 @@ class DevicesV1Controller extends BaseV1Controller
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => 'devices-module-devices-controller',
-				'type'      => 'delete',
+				'source'    => 'devices-module',
+				'type'      => 'devices-controller',
 				'exception' => [
 					'message' => $ex->getMessage(),
 					'code'    => $ex->getCode(),

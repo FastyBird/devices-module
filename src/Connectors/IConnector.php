@@ -34,6 +34,16 @@ interface IConnector
 	public function getType(): string;
 
 	/**
+	 * @return void
+	 */
+	public function execute(): void;
+
+	/**
+	 * @return void
+	 */
+	public function terminate(): void;
+
+	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
 	 *
 	 * @return void

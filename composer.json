@@ -40,6 +40,7 @@
   "require" : {
     "php": ">=7.4.0|>=8.0.0",
     "ext-bcmath": "*",
+    "ext-pcntl": "*",
     "contributte/flysystem": "^0.3.0",
     "cweagans/composer-patches": "^1.7",
     "fastybird/exchange": "^0.44",

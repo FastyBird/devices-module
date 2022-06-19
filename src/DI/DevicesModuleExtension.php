@@ -178,6 +178,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('subscribers.entities'), new DI\Definitions\ServiceDefinition())
 			->setType(Subscribers\EntitiesSubscriber::class);
 
+		$builder->addDefinition($this->prefix('subscribers.exchange'), new DI\Definitions\ServiceDefinition())
+			->setType(Subscribers\ExchangeSubscriber::class);
+
 		// API controllers
 		$builder->addDefinition($this->prefix('controllers.devices'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DevicesV1Controller::class)

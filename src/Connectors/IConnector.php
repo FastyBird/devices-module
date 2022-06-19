@@ -44,6 +44,11 @@ interface IConnector
 	public function terminate(): void;
 
 	/**
+	 * @return bool
+	 */
+	public function hasUnfinishedTasks(): bool;
+
+	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
 	 *
 	 * @return void

@@ -131,7 +131,7 @@ class ConnectorCommand extends Console\Command\Command
 				$this->connector->execute($connector);
 			});
 
-			$this->eventLoop->addSignal(SIGINT, function (int $signal) {
+			$this->eventLoop->addSignal(SIGINT, function (int $signal): void {
 				$this->connector->terminate();
 			});
 

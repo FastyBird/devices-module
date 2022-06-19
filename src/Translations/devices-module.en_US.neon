@@ -72,3 +72,12 @@ base:
 		uniqueAttribute:
 			heading	: "Attribute not unique"
 			message	: "Provided attribute is not unique"
+
+commands:
+    connector:
+        inputs:
+            connector:
+                title: "Connector uuid identifier"
+
+        validation:
+            identifierNotValid: "Provided connector uuid identifier is not valid uuid string"

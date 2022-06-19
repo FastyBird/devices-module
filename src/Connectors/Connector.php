@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Connectors;
 
+use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Connectors;
 use FastyBird\DevicesModule\Entities;
@@ -46,6 +47,8 @@ final class Connector
 
 	use Nette\SmartObject;
 
+	private const SHUTDOWN_WAITING_DELAY = 3;
+
 	/** @var bool */
 	private bool $stopped = true;
 
@@ -73,6 +76,9 @@ final class Connector
 	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager;
 
+	/** @var DateTimeFactory\DateTimeFactory */
+	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
+
 	/** @var EventLoop\LoopInterface */
 	private EventLoop\LoopInterface $eventLoop;
 
@@ -84,6 +90,7 @@ final class Connector
 		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository,
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager,
+		DateTimeFactory\DateTimeFactory $dateTimeFactory,
 		EventLoop\LoopInterface $eventLoop,
 		?Log\LoggerInterface $logger = null
 	) {
@@ -92,6 +99,7 @@ final class Connector
 		$this->connectorPropertiesStateRepository = $connectorPropertiesStateRepository;
 		$this->connectorPropertiesStateManager = $connectorPropertiesStateManager;
 
+		$this->dateTimeFactory = $dateTimeFactory;
 		$this->eventLoop = $eventLoop;
 
 		$this->logger = $logger ?? new Log\NullLogger();
@@ -115,7 +123,7 @@ final class Connector
 
 		foreach ($this->connectors as $service) {
 			if ($connector->getType() === $service->getType()) {
-				$this->logger->debug('Preparing connector to start', [
+				$this->logger->debug('Starting connector...', [
 					'source'    => 'devices-module',
 					'type'      => 'connector',
 				]);
@@ -124,6 +132,7 @@ final class Connector
 					$this->service = $service;
 					$this->service->initialize($connector);
 
+					// Start connector service
 					$this->service->execute();
 
 					$this->stopped = false;
@@ -156,11 +165,36 @@ final class Connector
 			'type'      => 'connector',
 		]);
 
-		if ($this->service !== null) {
-			$this->service->terminate();
-		}
+		try {
+			if ($this->service !== null) {
+				$this->service->terminate();
 
-		$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_STOPPED));
+				$now = $this->dateTimeFactory->getNow();
+
+                $waitingForClosing = true;
+
+                # Wait until connector is fully terminated
+                while (
+					$waitingForClosing
+					&& ($this->dateTimeFactory->getNow()->getTimestamp() - $now->getTimestamp()) < self::SHUTDOWN_WAITING_DELAY
+				) {
+					if (!$this->service->hasUnfinishedTasks()) {
+						$waitingForClosing = false;
+					}
+				}
+			}
+
+			$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_STOPPED));
+		} catch (Throwable $ex) {
+			$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
+				'source'    => 'devices-module',
+				'type'      => 'connector',
+				'exception' => [
+					'message' => $ex->getMessage(),
+					'code'    => $ex->getCode(),
+				],
+			]);
+		}
 	}
 
 	/**

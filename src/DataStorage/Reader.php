@@ -156,6 +156,17 @@ final class Reader
 		$dataConfiguration = $this->filesystem->read(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME);
 		$dataConfiguration = Utils\Json::decode($dataConfiguration, Utils\Json::FORCE_ARRAY);
 
+		$this->connectorsRepository->reset();
+		$this->connectorPropertiesRepository->reset();
+		$this->connectorControlsRepository->reset();
+		$this->devicesRepository->reset();
+		$this->devicePropertiesRepository->reset();
+		$this->deviceControlsRepository->reset();
+		$this->deviceAttributesRepository->reset();
+		$this->channelsRepository->reset();
+		$this->channelPropertiesRepository->reset();
+		$this->channelControlsRepository->reset();
+
 		if (!is_array($dataConfiguration)) {
 			return;
 		}

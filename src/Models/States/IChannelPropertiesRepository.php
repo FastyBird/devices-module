@@ -17,6 +17,8 @@ namespace FastyBird\DevicesModule\Models\States;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\States;
+use FastyBird\Metadata\Entities as MetadataEntities;
+use Ramsey\Uuid;
 
 /**
  * Channel property repository interface
@@ -30,12 +32,21 @@ interface IChannelPropertiesRepository extends IPropertiesRepository
 {
 
 	/**
-	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $property
 	 *
 	 * @return States\IChannelProperty|null
 	 */
 	public function findOne(
-		Entities\Channels\Properties\IProperty $property
+		$property
+	): ?States\IChannelProperty;
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return States\IChannelProperty|null
+	 */
+	public function findOneById(
+		Uuid\UuidInterface $id
 	): ?States\IChannelProperty;
 
 }

@@ -22,6 +22,8 @@ use FastyBird\DevicesModule\States;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
+use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
@@ -59,14 +61,17 @@ final class ConnectorPropertiesManager
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 * @param Utils\ArrayHash $values
 	 * @param bool $publishState
 	 *
 	 * @return States\IConnectorProperty
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function create(
-		Entities\Connectors\Properties\IProperty $property,
+		$property,
 		Utils\ArrayHash $values,
 		bool $publishState = true
 	): States\IConnectorProperty {
@@ -74,7 +79,6 @@ final class ConnectorPropertiesManager
 			throw new Exceptions\NotImplementedException('Connector properties state manager is not registered');
 		}
 
-		/** @var States\IConnectorProperty $createdState */
 		$createdState = $this->manager->create($property, $values);
 
 		if ($publishState) {
@@ -85,15 +89,18 @@ final class ConnectorPropertiesManager
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 * @param States\IConnectorProperty $state
 	 * @param Utils\ArrayHash $values
 	 * @param bool $publishState
 	 *
 	 * @return States\IConnectorProperty
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function update(
-		Entities\Connectors\Properties\IProperty $property,
+		$property,
 		States\IConnectorProperty $state,
 		Utils\ArrayHash $values,
 		bool $publishState = true
@@ -104,7 +111,6 @@ final class ConnectorPropertiesManager
 
 		$storedState = $state->toArray();
 
-		/** @var States\IConnectorProperty $updatedState */
 		$updatedState = $this->manager->update($property, $state, $values);
 
 		if ($storedState !== $updatedState->toArray() && $publishState) {
@@ -115,14 +121,17 @@ final class ConnectorPropertiesManager
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 * @param States\IConnectorProperty $state
 	 * @param bool $publishState
 	 *
 	 * @return bool
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function delete(
-		Entities\Connectors\Properties\IProperty $property,
+		$property,
 		States\IConnectorProperty $state,
 		bool $publishState = true
 	): bool {
@@ -139,8 +148,17 @@ final class ConnectorPropertiesManager
 		return $result;
 	}
 
+	/**
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
+	 * @param States\IConnectorProperty|null $state
+	 *
+	 * @return void
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
+	 */
 	private function publishEntity(
-		Entities\Connectors\Properties\IProperty $property,
+		$property,
 		?States\IConnectorProperty $state
 	): void {
 		if ($this->publisher === null) {
@@ -151,7 +169,7 @@ final class ConnectorPropertiesManager
 		$expectedValue = $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid());
 
 		$this->publisher->publish(
-			$property->getSource(),
+			MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED),
 			$this->entityFactory->create(Utils\Json::encode(array_merge($property->toArray(), [
 				'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),

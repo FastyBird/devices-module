@@ -22,9 +22,12 @@ use FastyBird\DevicesModule\States;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
+use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
+use Ramsey\Uuid;
 
 /**
  * Device property states manager
@@ -48,25 +51,33 @@ final class DevicePropertiesManager
 	/** @var IDevicePropertiesManager|null */
 	protected ?IDevicePropertiesManager $manager;
 
+	/** @var Models\DataStorage\IDevicePropertiesRepository */
+	private Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository;
+
 	public function __construct(
+		Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository,
 		ExchangeEntities\EntityFactory $entityFactory,
 		?IDevicePropertiesManager $manager,
 		?ExchangePublisher\IPublisher $publisher
 	) {
+		$this->devicePropertiesRepository = $devicePropertiesRepository;
 		$this->entityFactory = $entityFactory;
 		$this->manager = $manager;
 		$this->publisher = $publisher;
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty $property
+	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
 	 * @param Utils\ArrayHash $values
 	 * @param bool $publishState
 	 *
 	 * @return States\IDeviceProperty
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function create(
-		Entities\Devices\Properties\IProperty $property,
+		$property,
 		Utils\ArrayHash $values,
 		bool $publishState = true
 	): States\IDeviceProperty {
@@ -78,7 +89,6 @@ final class DevicePropertiesManager
 			throw new Exceptions\InvalidStateException('Child property can\'t have state');
 		}
 
-		/** @var States\IDeviceProperty $createdState */
 		$createdState = $this->manager->create($property, $values);
 
 		if ($publishState) {
@@ -89,15 +99,18 @@ final class DevicePropertiesManager
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty $property
+	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
 	 * @param States\IDeviceProperty $state
 	 * @param Utils\ArrayHash $values
 	 * @param bool $publishState
 	 *
 	 * @return States\IDeviceProperty
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function update(
-		Entities\Devices\Properties\IProperty $property,
+		$property,
 		States\IDeviceProperty $state,
 		Utils\ArrayHash $values,
 		bool $publishState = true
@@ -112,14 +125,24 @@ final class DevicePropertiesManager
 
 		$storedState = $state->toArray();
 
-		/** @var States\IDeviceProperty $updatedState */
 		$updatedState = $this->manager->update($property, $state, $values);
 
 		if ($storedState !== $updatedState->toArray() && $publishState) {
 			$this->publishEntity($property, $updatedState);
 
 			foreach ($property->getChildren() as $child) {
-				$this->publishEntity($child, $updatedState);
+				if ($child instanceof Uuid\UuidInterface) {
+					$child = $this->devicePropertiesRepository->findById($child);
+
+					if (
+						$child instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+						|| $child instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+					) {
+						$this->publishEntity($child, $updatedState);
+					}
+				} else {
+					$this->publishEntity($child, $updatedState);
+				}
 			}
 		}
 
@@ -127,14 +150,17 @@ final class DevicePropertiesManager
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty $property
+	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
 	 * @param States\IDeviceProperty $state
 	 * @param bool $publishState
 	 *
 	 * @return bool
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function delete(
-		Entities\Devices\Properties\IProperty $property,
+		$property,
 		States\IDeviceProperty $state,
 		bool $publishState = true
 	): bool {
@@ -152,15 +178,35 @@ final class DevicePropertiesManager
 			$this->publishEntity($property, null);
 
 			foreach ($property->getChildren() as $child) {
-				$this->publishEntity($child, null);
+				if ($child instanceof Uuid\UuidInterface) {
+					$child = $this->devicePropertiesRepository->findById($child);
+
+					if (
+						$child instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+						|| $child instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+					) {
+						$this->publishEntity($child, null);
+					}
+				} else {
+					$this->publishEntity($child, null);
+				}
 			}
 		}
 
 		return $result;
 	}
 
+	/**
+	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
+	 * @param States\IDeviceProperty|null $state
+	 *
+	 * @return void
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
+	 */
 	private function publishEntity(
-		Entities\Devices\Properties\IProperty $property,
+		$property,
 		?States\IDeviceProperty $state
 	): void {
 		if ($this->publisher === null) {
@@ -171,7 +217,7 @@ final class DevicePropertiesManager
 		$expectedValue = $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid());
 
 		$this->publisher->publish(
-			$property->getSource(),
+			MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 			MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ENTITY_REPORTED),
 			$this->entityFactory->create(Utils\Json::encode(array_merge($property->toArray(), [
 				'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),

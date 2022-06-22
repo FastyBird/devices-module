@@ -18,7 +18,9 @@ namespace FastyBird\DevicesModule\Models\States;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\States;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
+use Ramsey\Uuid;
 
 /**
  * Channel property repository
@@ -43,22 +45,42 @@ final class ChannelPropertiesRepository
 	}
 
 	/**
-	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $property
 	 *
 	 * @return States\IChannelProperty|null
 	 */
 	public function findOne(
-		Entities\Channels\Properties\IProperty $property
+		$property
 	): ?States\IChannelProperty {
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Channel properties state repository is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			return $this->repository->findOne($property->getParent());
+			if ($property->getParent() instanceof Entities\Channels\Properties\IProperty) {
+				return $this->repository->findOne($property->getParent());
+
+			} else {
+				return $this->repository->findOneById($property->getParent());
+			}
 		}
 
 		return $this->repository->findOne($property);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return States\IChannelProperty|null
+	 */
+	public function findOneById(
+		Uuid\UuidInterface $id
+	): ?States\IChannelProperty {
+		if ($this->repository === null) {
+			throw new Exceptions\NotImplementedException('Channel properties state repository is not registered');
+		}
+
+		return $this->repository->findOneById($id);
 	}
 
 }

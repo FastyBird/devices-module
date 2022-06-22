@@ -17,6 +17,8 @@ namespace FastyBird\DevicesModule\Models\States;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\States;
+use FastyBird\Metadata\Entities as MetadataEntities;
+use Ramsey\Uuid;
 
 /**
  * Connector property repository interface
@@ -30,12 +32,21 @@ interface IConnectorPropertiesRepository extends IPropertiesRepository
 {
 
 	/**
-	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 *
 	 * @return States\IConnectorProperty|null
 	 */
 	public function findOne(
-		Entities\Connectors\Properties\IProperty $property
+		$property
+	): ?States\IConnectorProperty;
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return States\IConnectorProperty|null
+	 */
+	public function findOneById(
+		Uuid\UuidInterface $id
 	): ?States\IConnectorProperty;
 
 }

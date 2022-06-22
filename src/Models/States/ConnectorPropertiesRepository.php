@@ -18,7 +18,9 @@ namespace FastyBird\DevicesModule\Models\States;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\States;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
+use Ramsey\Uuid;
 
 /**
  * Connector property repository
@@ -43,18 +45,33 @@ final class ConnectorPropertiesRepository
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 *
 	 * @return States\IConnectorProperty|null
 	 */
 	public function findOne(
-		Entities\Connectors\Properties\IProperty $property
+		$property
 	): ?States\IConnectorProperty {
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Connector properties state repository is not registered');
 		}
 
 		return $this->repository->findOne($property);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return States\IConnectorProperty|null
+	 */
+	public function findOneById(
+		Uuid\UuidInterface $id
+	): ?States\IConnectorProperty {
+		if ($this->repository === null) {
+			throw new Exceptions\NotImplementedException('Connector properties state repository is not registered');
+		}
+
+		return $this->repository->findOneById($id);
 	}
 
 }

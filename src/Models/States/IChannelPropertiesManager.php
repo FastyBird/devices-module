@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Models\States;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\States;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette\Utils;
 
 /**
@@ -31,35 +32,37 @@ interface IChannelPropertiesManager extends IPropertiesManager
 {
 
 	/**
-	 * @param Entities\Channels\Properties\IProperty $property
+	 * @param Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $property
 	 * @param Utils\ArrayHash $values
 	 *
 	 * @return States\IChannelProperty
 	 */
 	public function create(
-		Entities\Channels\Properties\IProperty $property,
+		$property,
 		Utils\ArrayHash $values
 	): States\IChannelProperty;
 
 	/**
+	 * @param Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $property
 	 * @param States\IChannelProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
 	 * @return States\IChannelProperty
 	 */
 	public function update(
-		Entities\Channels\Properties\IProperty $property,
+		$property,
 		States\IChannelProperty $state,
 		Utils\ArrayHash $values
 	): States\IChannelProperty;
 
 	/**
+	 * @param Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $property
 	 * @param States\IChannelProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		Entities\Channels\Properties\IProperty $property,
+		$property,
 		States\IChannelProperty $state
 	): bool;
 

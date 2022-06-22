@@ -18,7 +18,9 @@ namespace FastyBird\DevicesModule\Models\States;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\States;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
+use Ramsey\Uuid;
 
 /**
  * Device property repository
@@ -43,22 +45,42 @@ final class DevicePropertiesRepository
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty $property
+	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
 	 *
 	 * @return States\IDeviceProperty|null
 	 */
 	public function findOne(
-		Entities\Devices\Properties\IProperty $property
+		$property
 	): ?States\IDeviceProperty {
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Device properties state repository is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			return $this->repository->findOne($property->getParent());
+			if ($property->getParent() instanceof Entities\Devices\Properties\IProperty) {
+				return $this->repository->findOne($property->getParent());
+
+			} else {
+				return $this->repository->findOneById($property->getParent());
+			}
 		}
 
 		return $this->repository->findOne($property);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return States\IDeviceProperty|null
+	 */
+	public function findOneById(
+		Uuid\UuidInterface $id
+	): ?States\IDeviceProperty {
+		if ($this->repository === null) {
+			throw new Exceptions\NotImplementedException('Device properties state repository is not registered');
+		}
+
+		return $this->repository->findOneById($id);
 	}
 
 }

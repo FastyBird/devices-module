@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Models\States;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\States;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette\Utils;
 
 /**
@@ -31,35 +32,37 @@ interface IConnectorPropertiesManager extends IPropertiesManager
 {
 
 	/**
-	 * @param Entities\Connectors\Properties\IProperty $property
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 * @param Utils\ArrayHash $values
 	 *
 	 * @return States\IConnectorProperty
 	 */
 	public function create(
-		Entities\Connectors\Properties\IProperty $property,
+		$property,
 		Utils\ArrayHash $values
 	): States\IConnectorProperty;
 
 	/**
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 * @param States\IConnectorProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
 	 * @return States\IConnectorProperty
 	 */
 	public function update(
-		Entities\Connectors\Properties\IProperty $property,
+		$property,
 		States\IConnectorProperty $state,
 		Utils\ArrayHash $values
 	): States\IConnectorProperty;
 
 	/**
+	 * @param Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $property
 	 * @param States\IConnectorProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		Entities\Connectors\Properties\IProperty $property,
+		$property,
 		States\IConnectorProperty $state
 	): bool;
 

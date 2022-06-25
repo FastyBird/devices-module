@@ -33,7 +33,7 @@ class StateEntityDeletedEvent extends EventDispatcher\Event
 	private Uuid\UuidInterface $id;
 
 	public function __construct(
-		 Uuid\UuidInterface $id
+		Uuid\UuidInterface $id
 	) {
 		$this->id = $id;
 	}

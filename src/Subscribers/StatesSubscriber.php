@@ -267,4 +267,5 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 			return null;
 		}
 	}
+
 }

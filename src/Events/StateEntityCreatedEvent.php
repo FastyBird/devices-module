@@ -36,7 +36,7 @@ class StateEntityCreatedEvent extends EventDispatcher\Event
 	 * @param States\IChannelProperty|States\IDeviceProperty|States\IConnectorProperty $state
 	 */
 	public function __construct(
-		 $state
+		$state
 	) {
 		$this->state = $state;
 	}

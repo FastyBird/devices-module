@@ -26,6 +26,7 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use League\Flysystem;
 use Nette;
@@ -122,7 +123,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	/**
 	 * @return void
 	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws ORM\EntityNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function onFlush(): void
 	{
@@ -203,6 +206,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 * @param ORM\Event\LifecycleEventArgs $eventArgs
 	 *
 	 * @return void
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function postPersist(ORM\Event\LifecycleEventArgs $eventArgs): void
 	{
@@ -221,6 +227,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 * @param ORM\Event\LifecycleEventArgs $eventArgs
 	 *
 	 * @return void
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
 	public function postUpdate(ORM\Event\LifecycleEventArgs $eventArgs): void
 	{
@@ -230,10 +239,10 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$entity = $eventArgs->getObject();
 
 		// Get changes => should be already computed here (is a listener)
-		$changeset = $uow->getEntityChangeSet($entity);
+		$changeSet = $uow->getEntityChangeSet($entity);
 
 		// If we have no changes left => don't create revision log
-		if (count($changeset) === 0) {
+		if (count($changeSet) === 0) {
 			return;
 		}
 
@@ -300,6 +309,9 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 * @param string $action
 	 *
 	 * @return void
+	 *
+	 * @throws Utils\JsonException
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	private function publishEntity(Entities\IEntity $entity, string $action): void
 	{
@@ -348,7 +360,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 				} catch (Exceptions\NotImplementedException $ex) {
 					$this->publisher->publish(
-						$entity->getSource(),
+						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
@@ -360,7 +372,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
 
 				$this->publisher->publish(
-					$entity->getSource(),
+					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 					$publishRoutingKey,
 					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
@@ -378,7 +390,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 				} catch (Exceptions\NotImplementedException $ex) {
 					$this->publisher->publish(
-						$entity->getSource(),
+						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
@@ -390,7 +402,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
 
 				$this->publisher->publish(
-					$entity->getSource(),
+					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 					$publishRoutingKey,
 					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
@@ -408,7 +420,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 				} catch (Exceptions\NotImplementedException $ex) {
 					$this->publisher->publish(
-						$entity->getSource(),
+						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
@@ -420,7 +432,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
 
 				$this->publisher->publish(
-					$entity->getSource(),
+					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 					$publishRoutingKey,
 					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
 						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
@@ -431,7 +443,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				);
 			} else {
 				$this->publisher->publish(
-					$entity->getSource(),
+					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 					$publishRoutingKey,
 					$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 				);

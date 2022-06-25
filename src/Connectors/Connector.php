@@ -19,6 +19,7 @@ use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Connectors;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -28,6 +29,7 @@ use FastyBird\Metadata\Types\ConnectorPropertyNameType;
 use FastyBird\Metadata\Types\DataTypeType;
 use Nette;
 use Nette\Utils;
+use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
 use React\EventLoop;
 use SplObjectStorage;
@@ -82,6 +84,9 @@ final class Connector
 	/** @var EventLoop\LoopInterface */
 	private EventLoop\LoopInterface $eventLoop;
 
+	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
+	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
+
 	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
@@ -92,6 +97,7 @@ final class Connector
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
 		EventLoop\LoopInterface $eventLoop,
+		?PsrEventDispatcher\EventDispatcherInterface $dispatcher,
 		?Log\LoggerInterface $logger = null
 	) {
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
@@ -101,6 +107,7 @@ final class Connector
 
 		$this->dateTimeFactory = $dateTimeFactory;
 		$this->eventLoop = $eventLoop;
+		$this->dispatcher = $dispatcher;
 
 		$this->logger = $logger ?? new Log\NullLogger();
 
@@ -118,6 +125,10 @@ final class Connector
 	public function execute(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): void
 	{
 		$this->connectors->rewind();
+
+		if ($this->dispatcher !== null) {
+			$this->dispatcher->dispatch(new Events\BeforeConnectorStartEvent($connector));
+		}
 
 		$this->connector = $connector;
 
@@ -146,6 +157,10 @@ final class Connector
 					throw new Exceptions\TerminateException('Connector can\'t be started');
 				}
 
+				if ($this->dispatcher !== null) {
+					$this->dispatcher->dispatch(new Events\AfterConnectorStartEvent($connector));
+				}
+
 				return;
 			}
 		}
@@ -167,6 +182,10 @@ final class Connector
 
 		try {
 			if ($this->service !== null) {
+				if ($this->dispatcher !== null && $this->connector !== null) {
+					$this->dispatcher->dispatch(new Events\BeforeConnectorTerminateEvent($this->connector));
+				}
+
 				$this->service->terminate();
 
 				$now = $this->dateTimeFactory->getNow();
@@ -185,6 +204,10 @@ final class Connector
 			}
 
 			$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_STOPPED));
+
+			if ($this->dispatcher !== null && $this->connector !== null) {
+				$this->dispatcher->dispatch(new Events\AfterConnectorTerminateEvent($this->connector));
+			}
 		} catch (Throwable $ex) {
 			$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
 				'source'    => 'devices-module',

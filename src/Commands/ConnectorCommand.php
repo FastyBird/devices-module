@@ -16,9 +16,12 @@
 namespace FastyBird\DevicesModule\Commands;
 
 use FastyBird\DevicesModule\Connectors;
-use FastyBird\DevicesModule\Exceptions\TerminateException;
+use FastyBird\DevicesModule\DataStorage;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
+use League\Flysystem;
 use Nette\Localization;
+use Nette\Utils;
 use Psr\Log;
 use Ramsey\Uuid;
 use React\EventLoop;
@@ -44,6 +47,9 @@ class ConnectorCommand extends Console\Command\Command
 	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
 
+	/** @var DataStorage\Reader */
+	private DataStorage\Reader $reader;
+
 	/** @var Localization\Translator */
 	private Localization\Translator $translator;
 
@@ -56,6 +62,7 @@ class ConnectorCommand extends Console\Command\Command
 	public function __construct(
 		Connectors\Connector $connector,
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
+		DataStorage\Reader $reader,
 		Localization\Translator $translator,
 		EventLoop\LoopInterface $eventLoop,
 		?Log\LoggerInterface $logger = null,
@@ -65,6 +72,7 @@ class ConnectorCommand extends Console\Command\Command
 
 		$this->connector = $connector;
 		$this->connectorsRepository = $connectorsRepository;
+		$this->reader = $reader;
 
 		$this->translator = $translator;
 		$this->eventLoop = $eventLoop;
@@ -86,6 +94,9 @@ class ConnectorCommand extends Console\Command\Command
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws Flysystem\FilesystemException
+	 * @throws Utils\JsonException
 	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
@@ -115,6 +126,8 @@ class ConnectorCommand extends Console\Command\Command
 			return 1;
 		}
 
+		$this->reader->read();
+
 		$connector = $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId));
 
 		if ($connector === null) {
@@ -136,7 +149,7 @@ class ConnectorCommand extends Console\Command\Command
 			});
 
 			$this->eventLoop->run();
-		} catch (TerminateException $ex) {
+		} catch (Exceptions\TerminateException $ex) {
 			$this->eventLoop->stop();
 		}
 

@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Schemas\Connectors\Properties;
 
-use Consistence;
 use DateTime;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;

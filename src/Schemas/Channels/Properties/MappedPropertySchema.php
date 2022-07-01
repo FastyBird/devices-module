@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Schemas\Channels\Properties;
 
-use Consistence;
 use DateTime;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;

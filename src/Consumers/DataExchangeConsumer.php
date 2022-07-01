@@ -126,7 +126,6 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 								'valid'         => false,
 							]));
 						}
-
 					} elseif ($entity->getAction()->equalsValue(MetadataTypes\PropertyActionType::ACTION_GET)) {
 						if ($this->publisher !== null) {
 							$property = $this->connectorPropertiesRepository->findById($entity->getProperty());
@@ -147,7 +146,6 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 							]);
 						}
 					}
-
 				} elseif ($entity instanceof MetadataEntities\Actions\IActionDevicePropertyEntity) {
 					if ($entity->getAction()->equalsValue(MetadataTypes\PropertyActionType::ACTION_SET)) {
 						$property = $this->devicePropertiesRepository->findById($entity->getProperty());
@@ -179,7 +177,6 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 								'valid'         => false,
 							]));
 						}
-
 					} elseif ($entity->getAction()->equalsValue(MetadataTypes\PropertyActionType::ACTION_GET)) {
 						if ($this->publisher !== null) {
 							$property = $this->devicePropertiesRepository->findById($entity->getProperty());
@@ -200,7 +197,6 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 							]);
 						}
 					}
-
 				} elseif ($entity instanceof MetadataEntities\Actions\IActionChannelPropertyEntity) {
 					if ($entity->getAction()->equalsValue(MetadataTypes\PropertyActionType::ACTION_SET)) {
 						$property = $this->channelPropertiesRepository->findById($entity->getProperty());
@@ -232,7 +228,6 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 								'valid'         => false,
 							]));
 						}
-
 					} elseif ($entity->getAction()->equalsValue(MetadataTypes\PropertyActionType::ACTION_GET)) {
 						if ($this->publisher !== null) {
 							$property = $this->channelPropertiesRepository->findById($entity->getProperty());
@@ -255,7 +250,6 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 					}
 				}
 			}
-
 		} else {
 			$this->logger->warning('Received data message without data', [
 				'source' => 'devices-module',

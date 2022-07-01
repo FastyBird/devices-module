@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Subscribers;
 
-use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\Exchange\Events as ExchangeEvents;
 use FastyBird\Metadata\Constants as MetadataConstants;

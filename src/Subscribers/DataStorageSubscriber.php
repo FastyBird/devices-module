@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Subscribers;
 
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Events;
-use FastyBird\DevicesModule\Models;
 use League\Flysystem;
 use Nette;
 use Nette\Utils;

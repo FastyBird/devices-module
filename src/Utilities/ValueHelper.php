@@ -15,8 +15,10 @@
 
 namespace FastyBird\DevicesModule\Utilities;
 
+use Consistence;
 use DateTime;
-use FastyBird\Metadata\Types;
+use DateTimeInterface;
+use FastyBird\Metadata\Types as MetadataTypes;
 use Nette\Utils;
 
 /**
@@ -31,15 +33,15 @@ final class ValueHelper
 {
 
 	/**
-	 * @param Types\DataTypeType $dataType
-	 * @param bool|float|int|string|DateTime|Types\ButtonPayloadType|Types\SwitchPayloadType|null $value
+	 * @param MetadataTypes\DataTypeType $dataType
+	 * @param bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
 	 * @param Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null $format
 	 * @param float|int|string|null $invalid
 	 *
-	 * @return bool|float|int|string|DateTime|Types\ButtonPayloadType|Types\SwitchPayloadType|null
+	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	 */
 	public static function normalizeValue(
-		Types\DataTypeType $dataType,
+		MetadataTypes\DataTypeType $dataType,
 		$value,
 		?array $format = null,
 		$invalid = null
@@ -49,12 +51,12 @@ final class ValueHelper
 		}
 
 		if (
-			$dataType->equalsValue(Types\DataTypeType::DATA_TYPE_CHAR)
-			|| $dataType->equalsValue(Types\DataTypeType::DATA_TYPE_UCHAR)
-			|| $dataType->equalsValue(Types\DataTypeType::DATA_TYPE_SHORT)
-			|| $dataType->equalsValue(Types\DataTypeType::DATA_TYPE_USHORT)
-			|| $dataType->equalsValue(Types\DataTypeType::DATA_TYPE_INT)
-			|| $dataType->equalsValue(Types\DataTypeType::DATA_TYPE_UINT)
+			$dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
+			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
+			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
+			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
+			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
+			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
 			if ($invalid !== null && $invalid === intval($value)) {
 				return $invalid;
@@ -72,7 +74,7 @@ final class ValueHelper
 
 			return intval($value);
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_FLOAT)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
 			if ($invalid !== null && $invalid === floatval($value)) {
 				return $invalid;
 			}
@@ -89,13 +91,13 @@ final class ValueHelper
 
 			return floatval($value);
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_STRING)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_STRING)) {
 			return $value;
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_BOOLEAN)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
 			return in_array(strtolower(strval($value)), ['true', 't', 'yes', 'y', '1', 'on'], true);
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_DATE)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_DATE)) {
 			if ($value instanceof DateTime) {
 				return $value;
 			}
@@ -104,7 +106,7 @@ final class ValueHelper
 
 			return $value === false ? null : $value;
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_TIME)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_TIME)) {
 			if ($value instanceof DateTime) {
 				return $value;
 			}
@@ -113,7 +115,7 @@ final class ValueHelper
 
 			return $value === false ? null : $value;
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_DATETIME)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_DATETIME)) {
 			if ($value instanceof DateTime) {
 				return $value;
 			}
@@ -122,29 +124,29 @@ final class ValueHelper
 
 			return $value === false ? null : $value;
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_BUTTON)) {
-			if ($value instanceof Types\ButtonPayloadType) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)) {
+			if ($value instanceof MetadataTypes\ButtonPayloadType) {
 				return $value;
 			}
 
-			if (Types\ButtonPayloadType::isValidValue(strval($value))) {
-				return Types\ButtonPayloadType::get($value);
+			if (MetadataTypes\ButtonPayloadType::isValidValue(strval($value))) {
+				return MetadataTypes\ButtonPayloadType::get($value);
 			}
 
 			return null;
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_SWITCH)) {
-			if ($value instanceof Types\SwitchPayloadType) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)) {
+			if ($value instanceof MetadataTypes\SwitchPayloadType) {
 				return $value;
 			}
 
-			if (Types\SwitchPayloadType::isValidValue(strval($value))) {
-				return Types\SwitchPayloadType::get($value);
+			if (MetadataTypes\SwitchPayloadType::isValidValue(strval($value))) {
+				return MetadataTypes\SwitchPayloadType::get($value);
 			}
 
 			return null;
 
-		} elseif ($dataType->equalsValue(Types\DataTypeType::DATA_TYPE_ENUM)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
 			if (is_array($format) && count($format) > 0) {
 				$filtered = array_filter($format, function ($item) use ($value): bool {
 					if (is_array($item)) {
@@ -170,6 +172,23 @@ final class ValueHelper
 			}
 
 			return null;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * @param bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
+	 *
+	 * @return bool|float|int|string|null
+	 */
+	public static function flattenValue($value)
+	{
+		if ($value instanceof DateTimeInterface) {
+			return $value->format(DATE_ATOM);
+
+		} elseif ($value instanceof Consistence\Enum\Enum) {
+			return $value->getValue();
 		}
 
 		return $value;

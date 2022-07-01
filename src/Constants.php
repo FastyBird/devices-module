@@ -119,14 +119,8 @@ final class Constants
 	public const DATA_STORAGE_DEVICES_KEY = 'devices';
 	public const DATA_STORAGE_CHANNELS_KEY = 'channels';
 
-	public const ENTITY_PREFIX_KEY = 'fb.exchange.module.entity';
-
-	public const ENTITY_REPORTED_KEY = 'reported';
-	public const ENTITY_CREATED_KEY = 'created';
-	public const ENTITY_UPDATED_KEY = 'updated';
-	public const ENTITY_DELETED_KEY = 'deleted';
-
 	public const PROPERTIES_ACTIONS_ROUTING_KEYS = [
+		MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ACTION,
 		MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ACTION,
 		MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ACTION,
 	];

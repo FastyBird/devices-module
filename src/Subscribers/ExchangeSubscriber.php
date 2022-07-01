@@ -15,8 +15,10 @@
 
 namespace FastyBird\DevicesModule\Subscribers;
 
+use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\Exchange\Events as ExchangeEvents;
+use FastyBird\Metadata\Constants as MetadataConstants;
 use League\Flysystem;
 use Nette;
 use Nette\Utils;
@@ -64,7 +66,16 @@ final class ExchangeSubscriber implements EventDispatcher\EventSubscriberInterfa
 	 */
 	public function messageConsumed(ExchangeEvents\BeforeMessageConsumedEvent $event): void
 	{
-		$this->reader->read();
+		if (
+			Utils\Strings::startsWith($event->getRoutingKey()->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_PREFIX_KEY)
+			&& (
+				Utils\Strings::contains($event->getRoutingKey()->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_CREATED_KEY)
+				|| Utils\Strings::contains($event->getRoutingKey()->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_UPDATED_KEY)
+				|| Utils\Strings::contains($event->getRoutingKey()->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_DELETED_KEY)
+			)
+		) {
+			$this->reader->read();
+		}
 	}
 
 }

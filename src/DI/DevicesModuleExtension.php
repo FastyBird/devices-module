@@ -184,6 +184,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('subscribers.exchange'), new DI\Definitions\ServiceDefinition())
 			->setType(Subscribers\ExchangeSubscriber::class);
 
+		$builder->addDefinition($this->prefix('subscribers.dataStorage'), new DI\Definitions\ServiceDefinition())
+			->setType(Subscribers\DataStorageSubscriber::class);
+
 		// API controllers
 		$builder->addDefinition($this->prefix('controllers.devices'), new DI\Definitions\ServiceDefinition())
 			->setType(Controllers\DevicesV1Controller::class)
@@ -382,8 +385,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('connector.service'), new DI\Definitions\ServiceDefinition())
 			->setType(Connectors\Connector::class);
 
-		$builder->addDefinition($this->prefix('connector.consumer'), new DI\Definitions\ServiceDefinition())
-			->setType(Consumers\ConnectorConsumer::class);
+		// Consumers
+		$builder->addDefinition($this->prefix('consumer.exchange'), new DI\Definitions\ServiceDefinition())
+			->setType(Consumers\DataExchangeConsumer::class);
 	}
 
 	/**

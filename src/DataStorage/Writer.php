@@ -16,10 +16,12 @@
 namespace FastyBird\DevicesModule\DataStorage;
 
 use FastyBird\DevicesModule;
+use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use League\Flysystem;
 use Nette\Utils;
+use Psr\EventDispatcher;
 
 /**
  * Data storage configuration writer
@@ -38,12 +40,17 @@ final class Writer
 	/** @var Flysystem\Filesystem */
 	private Flysystem\Filesystem $filesystem;
 
+	/** @var EventDispatcher\EventDispatcherInterface|null */
+	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
+
 	public function __construct(
 		Models\Connectors\IConnectorsRepository $connectorsRepository,
-		Flysystem\Filesystem $filesystem
+		Flysystem\Filesystem $filesystem,
+		?EventDispatcher\EventDispatcherInterface $dispatcher
 	) {
 		$this->connectorsRepository = $connectorsRepository;
 		$this->filesystem = $filesystem;
+		$this->dispatcher = $dispatcher;
 	}
 
 	/**
@@ -131,6 +138,10 @@ final class Writer
 		}
 
 		$this->filesystem->write(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME, Utils\Json::encode($data));
+
+		if ($this->dispatcher !== null) {
+			$this->dispatcher->dispatch(new Events\DataStorageWrittenEvent());
+		}
 	}
 
 }

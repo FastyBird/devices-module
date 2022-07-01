@@ -94,8 +94,8 @@ final class DynamicPropertySchema extends PropertySchema
 		$expectedValue = $state !== null ? Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid()) : null;
 
 		return array_merge((array) parent::getAttributes($property, $context), [
-			'actual_value'   => $actualValue instanceof Consistence\Enum\Enum ? (string) $actualValue : $actualValue,
-			'expected_value' => $expectedValue instanceof Consistence\Enum\Enum ? (string) $expectedValue : $expectedValue,
+			'actual_value'   => Utilities\ValueHelper::flattenValue($actualValue),
+			'expected_value' => Utilities\ValueHelper::flattenValue($expectedValue),
 			'pending'        => $state !== null && $state->isPending(),
 		]);
 	}

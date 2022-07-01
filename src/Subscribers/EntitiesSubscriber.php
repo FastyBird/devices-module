@@ -99,9 +99,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
 		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
 		$this->connectorPropertiesStatesManager = $connectorPropertiesStatesManager;
+
 		$this->configurationDataWriter = $configurationDataWriter;
+
 		$this->entityFactory = $entityFactory;
 		$this->publisher = $publisher;
+
 		$this->entityManager = $entityManager;
 	}
 
@@ -358,29 +361,27 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				try {
 					$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
+					$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+					$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+
+					$this->publisher->publish(
+						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						$publishRoutingKey,
+						$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
+							'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
+							'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
+							'pending'       => $state->isPending(),
+							'valid'         => $state->isValid(),
+						] : [], $entity->toArray())), $publishRoutingKey)
+					);
+
 				} catch (Exceptions\NotImplementedException $ex) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
-
-					return;
 				}
-
-				$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-
-				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
-					$publishRoutingKey,
-					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
-						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
-						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
-						'pending'        => $state->isPending(),
-						'valid'          => $state->isValid(),
-					] : [], $entity->toArray())), $publishRoutingKey)
-				);
 			} elseif (
 				$entity instanceof Entities\Channels\Properties\IProperty
 				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
@@ -388,29 +389,27 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				try {
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
 
+					$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+					$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+
+					$this->publisher->publish(
+						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						$publishRoutingKey,
+						$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
+							'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
+							'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
+							'pending'       => $state->isPending(),
+							'valid'         => $state->isValid(),
+						] : [], $entity->toArray())), $publishRoutingKey)
+					);
+
 				} catch (Exceptions\NotImplementedException $ex) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
-
-					return;
 				}
-
-				$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-
-				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
-					$publishRoutingKey,
-					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
-						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
-						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
-						'pending'        => $state->isPending(),
-						'valid'          => $state->isValid(),
-					] : [], $entity->toArray())), $publishRoutingKey)
-				);
 			} elseif (
 				$entity instanceof Entities\Connectors\Properties\IProperty
 				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
@@ -418,29 +417,27 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				try {
 					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
 
+					$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+					$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
+
+					$this->publisher->publish(
+						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						$publishRoutingKey,
+						$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
+							'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
+							'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
+							'pending'       => $state->isPending(),
+							'valid'         => $state->isValid(),
+						] : [], $entity->toArray())), $publishRoutingKey)
+					);
+
 				} catch (Exceptions\NotImplementedException $ex) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
-
-					return;
 				}
-
-				$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-				$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-
-				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
-					$publishRoutingKey,
-					$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
-						'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
-						'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
-						'pending'        => $state->isPending(),
-						'valid'          => $state->isValid(),
-					] : [], $entity->toArray())), $publishRoutingKey)
-				);
 			} else {
 				$this->publisher->publish(
 					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),

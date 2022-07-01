@@ -238,10 +238,10 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 			MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 			$routingKey,
 			$this->entityFactory->create(Utils\Json::encode(array_merge($property->toArray(), [
-				'actual_value'   => is_scalar($actualValue) || $actualValue === null ? $actualValue : strval($actualValue),
-				'expected_value' => is_scalar($expectedValue) || $expectedValue === null ? $expectedValue : strval($expectedValue),
-				'pending'        => !($state === null) && $state->isPending(),
-				'valid'          => !($state === null) && $state->isValid(),
+				'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
+				'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
+				'pending'       => !($state === null) && $state->isPending(),
+				'valid'         => !($state === null) && $state->isValid(),
 			])), $routingKey)
 		);
 	}

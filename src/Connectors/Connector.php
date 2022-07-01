@@ -16,8 +16,6 @@
 namespace FastyBird\DevicesModule\Connectors;
 
 use FastyBird\DateTimeFactory;
-use FastyBird\DevicesModule;
-use FastyBird\DevicesModule\Connectors;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Exceptions;
@@ -31,9 +29,7 @@ use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
-use React\EventLoop;
 use SplObjectStorage;
-use SplQueue;
 use Throwable;
 
 /**
@@ -63,9 +59,6 @@ final class Connector
 	/** @var SplObjectStorage<IConnector, null> */
 	private SplObjectStorage $connectors;
 
-	/** @var SplQueue<Connectors\Messages\IMessage> */
-	private SplQueue $queue;
-
 	/** @var Models\Connectors\Properties\IPropertiesRepository */
 	private Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository;
 
@@ -81,9 +74,6 @@ final class Connector
 	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 
-	/** @var EventLoop\LoopInterface */
-	private EventLoop\LoopInterface $eventLoop;
-
 	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
 	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
 
@@ -96,7 +86,6 @@ final class Connector
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository,
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
-		EventLoop\LoopInterface $eventLoop,
 		?PsrEventDispatcher\EventDispatcherInterface $dispatcher,
 		?Log\LoggerInterface $logger = null
 	) {
@@ -106,13 +95,11 @@ final class Connector
 		$this->connectorPropertiesStateManager = $connectorPropertiesStateManager;
 
 		$this->dateTimeFactory = $dateTimeFactory;
-		$this->eventLoop = $eventLoop;
 		$this->dispatcher = $dispatcher;
 
 		$this->logger = $logger ?? new Log\NullLogger();
 
 		$this->connectors = new SplObjectStorage();
-		$this->queue = new SplQueue();
 	}
 
 	/**
@@ -135,8 +122,8 @@ final class Connector
 		foreach ($this->connectors as $service) {
 			if ($connector->getType() === $service->getType()) {
 				$this->logger->debug('Starting connector...', [
-					'source'    => 'devices-module',
-					'type'      => 'connector',
+					'source' => 'devices-module',
+					'type'   => 'connector',
 				]);
 
 				try {
@@ -149,10 +136,6 @@ final class Connector
 					$this->stopped = false;
 
 					$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_RUNNING));
-
-					$this->eventLoop->addPeriodicTimer(0.01, function (): void {
-						$this->processQueue();
-					});
 				} catch (Throwable $ex) {
 					throw new Exceptions\TerminateException('Connector can\'t be started');
 				}
@@ -165,7 +148,8 @@ final class Connector
 			}
 		}
 
-		throw new Exceptions\InvalidArgumentException(sprintf('Connector %s is not registered', $connector->getId()->toString()));
+		throw new Exceptions\InvalidArgumentException(sprintf('Connector %s is not registered', $connector->getId()
+			->toString()));
 	}
 
 	/**
@@ -176,8 +160,8 @@ final class Connector
 		$this->stopped = true;
 
 		$this->logger->debug('Stopping connector...', [
-			'source'    => 'devices-module',
-			'type'      => 'connector',
+			'source' => 'devices-module',
+			'type'   => 'connector',
 		]);
 
 		try {
@@ -190,12 +174,14 @@ final class Connector
 
 				$now = $this->dateTimeFactory->getNow();
 
-                $waitingForClosing = true;
+				$waitingForClosing = true;
 
-                // Wait until connector is fully terminated
-                while (
+				// Wait until connector is fully terminated
+				while (
 					$waitingForClosing
-					&& ($this->dateTimeFactory->getNow()->getTimestamp() - $now->getTimestamp()) < self::SHUTDOWN_WAITING_DELAY
+					&& (
+						$this->dateTimeFactory->getNow()->getTimestamp() - $now->getTimestamp()
+					) < self::SHUTDOWN_WAITING_DELAY
 				) {
 					if (!$this->service->hasUnfinishedTasks()) {
 						$waitingForClosing = false;
@@ -230,16 +216,6 @@ final class Connector
 		if ($this->connectors->contains($connector) === false) {
 			$this->connectors->attach($connector);
 		}
-	}
-
-	/**
-	 * @param Messages\IMessage $message
-	 *
-	 * @return void
-	 */
-	public function handleMessage(Connectors\Messages\IMessage $message): void
-	{
-		$this->queue->enqueue($message);
 	}
 
 	/**
@@ -285,6 +261,7 @@ final class Connector
 				'actualValue'   => $state->getValue(),
 				'expectedValue' => null,
 				'pending'       => false,
+				'valid'         => true,
 			]));
 
 		} else {
@@ -292,260 +269,8 @@ final class Connector
 				'actualValue'   => $state->getValue(),
 				'expectedValue' => null,
 				'pending'       => false,
+				'valid'         => true,
 			]));
-		}
-	}
-
-	/**
-	 * @return void
-	 */
-	private function processQueue(): void
-	{
-		if ($this->queue->isEmpty()) {
-			return;
-		}
-
-		$message = $this->queue->dequeue();
-
-		if ($message instanceof Connectors\Messages\ExchangeMessage) {
-			try {
-				if (in_array($message->getRoutingKey()
-					->getValue(), DevicesModule\Constants::PROPERTIES_ACTIONS_ROUTING_KEYS, true)) {
-					$this->handlePropertyCommand($message->getEntity());
-
-				} elseif (in_array($message->getRoutingKey()
-					->getValue(), DevicesModule\Constants::CONTROLS_ACTIONS_ROUTING_KEYS, true)) {
-					$this->handleControlCommand($message->getEntity());
-
-				} elseif (Utils\Strings::startsWith($message->getRoutingKey()
-					->getValue(), DevicesModule\Constants::ENTITY_PREFIX_KEY)) {
-					if (Utils\Strings::contains($message->getRoutingKey()
-						->getValue(), DevicesModule\Constants::ENTITY_REPORTED_KEY)) {
-						$this->handleEntityReported($message->getEntity());
-
-					} elseif (Utils\Strings::contains($message->getRoutingKey()
-						->getValue(), DevicesModule\Constants::ENTITY_CREATED_KEY)) {
-						$this->handleEntityCreated($message->getEntity());
-
-					} elseif (Utils\Strings::contains($message->getRoutingKey()
-						->getValue(), DevicesModule\Constants::ENTITY_UPDATED_KEY)) {
-						$this->handleEntityUpdated($message->getEntity());
-
-					} elseif (Utils\Strings::contains($message->getRoutingKey()
-						->getValue(), DevicesModule\Constants::ENTITY_DELETED_KEY)) {
-						$this->handleEntityDeleted($message->getEntity());
-					}
-				} else {
-					$this->logger->debug('Received unknown exchange message', [
-						'source' => 'devices-module',
-						'type'   => 'connector',
-					]);
-				}
-			} catch (Throwable $ex) {
-				$this->logger->error('An unexpected error occurred during processing queue item', [
-					'source'    => 'devices-module',
-					'type'      => 'connector',
-					'exception' => [
-						'message' => $ex->getMessage(),
-						'code'    => $ex->getCode(),
-					],
-				]);
-			}
-		}
-	}
-
-	/**
-	 * @param MetadataEntities\IEntity $entity
-	 *
-	 * @return void
-	 */
-	private function handlePropertyCommand(
-		MetadataEntities\IEntity $entity
-	): void {
-		if ($this->service === null) {
-			return;
-		}
-
-		if (
-			// Connector
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-			// Device
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-			// Channel
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			$this->service->writeProperty($entity);
-		}
-	}
-
-	/**
-	 * @param MetadataEntities\IEntity $entity
-	 *
-	 * @return void
-	 */
-	private function handleControlCommand(
-		MetadataEntities\IEntity $entity
-	): void {
-		if ($this->service === null) {
-			return;
-		}
-
-		if (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorControlEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelControlEntity
-		) {
-			$this->service->writeControl($entity);
-		}
-	}
-
-	/**
-	 * @param MetadataEntities\IEntity $entity
-	 *
-	 * @return void
-	 */
-	private function handleEntityReported(MetadataEntities\IEntity $entity): void
-	{
-		if ($this->service === null) {
-			return;
-		}
-
-		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
-			$this->service->notifyDevice($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
-			$this->service->notifyDeviceAttribute($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-		) {
-			$this->service->notifyDeviceProperty($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
-			$this->service->notifyChannel($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			$this->service->notifyChannelProperty($entity);
-		}
-	}
-
-	/**
-	 * @param MetadataEntities\IEntity $entity
-	 *
-	 * @return void
-	 */
-	private function handleEntityCreated(MetadataEntities\IEntity $entity): void
-	{
-		if ($this->service === null) {
-			return;
-		}
-
-		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
-			$this->service->initializeDevice($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
-			$this->service->initializeDeviceAttribute($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-		) {
-			$this->service->initializeDeviceProperty($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
-			$this->service->initializeChannel($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			$this->service->initializeChannelProperty($entity);
-		}
-	}
-
-	/**
-	 * @param MetadataEntities\IEntity $entity
-	 *
-	 * @return void
-	 */
-	private function handleEntityUpdated(MetadataEntities\IEntity $entity): void
-	{
-		if ($this->service === null) {
-			return;
-		}
-
-		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
-			$this->service->initializeDevice($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
-			$this->service->initializeDeviceAttribute($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-		) {
-			$this->service->initializeDeviceProperty($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
-			$this->service->initializeChannel($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			$this->service->initializeChannelProperty($entity);
-		}
-	}
-
-	/**
-	 * @param MetadataEntities\IEntity $entity
-	 *
-	 * @return void
-	 */
-	private function handleEntityDeleted(MetadataEntities\IEntity $entity): void
-	{
-		if ($this->service === null) {
-			return;
-		}
-
-		if ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceEntity) {
-			$this->service->removeDevice($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity) {
-			$this->service->removeDeviceAttribute($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-		) {
-			$this->service->removeDeviceProperty($entity);
-
-		} elseif ($entity instanceof MetadataEntities\Modules\DevicesModule\IChannelEntity) {
-			$this->service->removeChannel($entity);
-
-		} elseif (
-			$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			$this->service->removeChannelProperty($entity);
 		}
 	}
 

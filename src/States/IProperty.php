@@ -15,8 +15,6 @@
 
 namespace FastyBird\DevicesModule\States;
 
-use DateTime;
-use FastyBird\Metadata\Types as MetadataTypes;
 use Ramsey\Uuid;
 
 /**
@@ -36,28 +34,28 @@ interface IProperty
 	public function getId(): Uuid\UuidInterface;
 
 	/**
-	 * @param string|null $actual
+	 * @param bool|float|int|string|null $actual
 	 *
 	 * @return void
 	 */
-	public function setActualValue(?string $actual): void;
+	public function setActualValue($actual): void;
 
 	/**
-	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	 * @return bool|float|int|string|null
 	 */
 	public function getActualValue();
 
 	/**
-	 * @param string|null $expected
+	 * @param bool|float|int|string|null $expected
 	 *
 	 * @return void
 	 */
-	public function setExpectedValue(?string $expected): void;
+	public function setExpectedValue($expected): void;
 
 	/**
-	 * @return string|null
+	 * @return bool|float|int|string|null
 	 */
-	public function getExpectedValue(): ?string;
+	public function getExpectedValue();
 
 	/**
 	 * @param bool $pending

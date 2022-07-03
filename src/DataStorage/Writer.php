@@ -66,8 +66,10 @@ final class Writer
 		$findConnectors = new Queries\FindConnectorsQuery();
 
 		$connectors = $this->connectorsRepository->findAllBy($findConnectors);
+		var_dump(count($connectors));
 
 		foreach ($connectors as $connector) {
+			var_dump($connector->getIdentifier());
 			$devices = [];
 
 			foreach ($connector->getDevices() as $device) {

@@ -56,7 +56,7 @@ final class ReaderTest extends DbTestCase
 
 		$reader->read();
 
-		Assert::count(1, $connectorsRepository);
+		Assert::count(2, $connectorsRepository);
 		Assert::count(0, $connectorPropertiesRepository);
 		Assert::count(1, $connectorControlsRepository);
 

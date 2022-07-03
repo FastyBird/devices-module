@@ -32,7 +32,7 @@ from tests.pytests.tests import DbTestCase
 class TestConnectorsRepository(DbTestCase):
     @inject
     def test_repository_iterator(self, connector_repository: ConnectorsRepository) -> None:
-        self.assertEqual(1, len(connector_repository.get_all()))
+        self.assertEqual(2, len(connector_repository.get_all()))
 
     # -----------------------------------------------------------------------------
 

@@ -43,6 +43,9 @@ services:
             - addMiddleware(@fbJsonApi.middlewares.jsonapi)
     - {factory: React\EventLoop\Loop::get}
 
+    - {factory: Tests\Tools\DummyConnectorFactory}
+    - {factory: Tests\Tools\DummyConnectorSchema}
+
 contributteTranslation:
     locales:
         default: en_US
@@ -98,7 +101,9 @@ nettrineOrm:
         proxyDir: %tempDir%/cache/doctrine.proxies
 
 nettrineOrmAnnotations:
-    mapping: []
+    mapping: [
+        Tests\Tools: %appDir%/tools
+    ]
 
 fbSimpleAuth:
     token:

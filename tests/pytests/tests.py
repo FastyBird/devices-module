@@ -38,6 +38,9 @@ from sqlalchemy.orm import Session
 from fastybird_devices_module.bootstrap import register_services
 from fastybird_devices_module.entities.base import Base
 
+# Tests libs
+from tests.pytests.entities import DummyConnectorEntity
+
 
 class DbTestCase(unittest.TestCase):
     __db_name: str

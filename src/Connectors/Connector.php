@@ -49,8 +49,8 @@ final class Connector
 	/** @var bool */
 	private bool $stopped = true;
 
-	/** @var IConnectorFactory */
-	private IConnectorFactory $factory;
+	/** @var ConnectorFactory */
+	private ConnectorFactory $factory;
 
 	/** @var IConnector|null */
 	private ?IConnector $connector = null;
@@ -77,7 +77,7 @@ final class Connector
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		IConnectorFactory $factory,
+		ConnectorFactory $factory,
 		Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository,
 		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository,

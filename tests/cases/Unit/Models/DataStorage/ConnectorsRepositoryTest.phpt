@@ -40,7 +40,7 @@ final class ConnectorsRepositoryTest extends DbTestCase
 
 		$reader->read();
 
-		Assert::count(1, $connectorsRepository);
+		Assert::count(2, $connectorsRepository);
 
 		$connector = $connectorsRepository->findById(Uuid\Uuid::fromString('17c59dfa-2edd-438e-8c49-faa4e38e5a5e'));
 

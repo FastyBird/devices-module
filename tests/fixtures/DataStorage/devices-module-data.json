@@ -369,5 +369,17 @@
         "channels" : []
       }
     }
+  },
+  "7a3dd94c-7294-46fd-8c61-1b375c313d4d": {
+    "id" : "7a3dd94c-7294-46fd-8c61-1b375c313d4d",
+    "type" : "dummy",
+    "identifier" : "dummy",
+    "name" : "Dummy",
+    "comment" : null,
+    "enabled" : true,
+    "owner" : null,
+    "properties" : [],
+    "controls" : [],
+    "devices" : []
   }
 }

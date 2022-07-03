@@ -1,51 +1,43 @@
 <?php declare(strict_types = 1);
 
 /**
- * IConnector.php
+ * IConnectorFactory.php
  *
  * @license        More in license.md
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Connectors
- * @since          0.60.0
+ * @since          0.67.0
  *
- * @date           31.05.22
+ * @date           03.07.22
  */
 
 namespace FastyBird\DevicesModule\Connectors;
 
-use Ramsey\Uuid;
+use FastyBird\Metadata\Entities as MetadataEntities;
 
 /**
- * Devices connector interface
+ * Connector factory interface
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Connectors
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IConnector
+interface IConnectorFactory
 {
 
 	/**
-	 * @return Uuid\UuidInterface
+	 * @return string
 	 */
-	public function getId(): Uuid\UuidInterface;
+	public function getType(): string;
 
 	/**
-	 * @return void
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 *
+	 * @return IConnector
 	 */
-	public function execute(): void;
-
-	/**
-	 * @return void
-	 */
-	public function terminate(): void;
-
-	/**
-	 * @return bool
-	 */
-	public function hasUnfinishedTasks(): bool;
+	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): IConnector;
 
 }

@@ -382,6 +382,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Models\DataStorage\ChannelControlsRepository::class);
 
 		// Connector services
+		$builder->addDefinition($this->prefix('connector.factory'), new DI\Definitions\ServiceDefinition())
+			->setType(Connectors\ConnectorFactory::class);
+
 		$builder->addDefinition($this->prefix('connector.service'), new DI\Definitions\ServiceDefinition())
 			->setType(Connectors\Connector::class);
 

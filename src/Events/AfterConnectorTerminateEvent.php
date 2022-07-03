@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Events;
 
-use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\DevicesModule\Connectors;
 use Symfony\Contracts\EventDispatcher;
 
 /**
@@ -29,22 +29,22 @@ use Symfony\Contracts\EventDispatcher;
 class AfterConnectorTerminateEvent extends EventDispatcher\Event
 {
 
-	/** @var MetadataEntities\Modules\DevicesModule\IConnectorEntity */
-	private MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector;
+	/** @var Connectors\IConnector */
+	private Connectors\IConnector $connector;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 * @param Connectors\IConnector $connector
 	 */
 	public function __construct(
-		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+		Connectors\IConnector $connector
 	) {
 		$this->connector = $connector;
 	}
 
 	/**
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity
+	 * @return Connectors\IConnector
 	 */
-	public function getConnector(): MetadataEntities\Modules\DevicesModule\IConnectorEntity
+	public function getConnector(): Connectors\IConnector
 	{
 		return $this->connector;
 	}

@@ -29,7 +29,6 @@ use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
-use SplObjectStorage;
 use Throwable;
 
 /**
@@ -50,14 +49,11 @@ final class Connector
 	/** @var bool */
 	private bool $stopped = true;
 
+	/** @var IConnectorFactory */
+	private IConnectorFactory $factory;
+
 	/** @var IConnector|null */
-	private ?IConnector $service = null;
-
-	/** @var MetadataEntities\Modules\DevicesModule\IConnectorEntity|null */
-	private ?MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector = null;
-
-	/** @var SplObjectStorage<IConnector, null> */
-	private SplObjectStorage $connectors;
+	private ?IConnector $connector = null;
 
 	/** @var Models\Connectors\Properties\IPropertiesRepository */
 	private Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository;
@@ -81,6 +77,7 @@ final class Connector
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
+		IConnectorFactory $factory,
 		Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository,
 		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository,
@@ -89,6 +86,8 @@ final class Connector
 		?PsrEventDispatcher\EventDispatcherInterface $dispatcher,
 		?Log\LoggerInterface $logger = null
 	) {
+		$this->factory = $factory;
+
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
 		$this->connectorPropertiesManager = $connectorPropertiesManager;
 		$this->connectorPropertiesStateRepository = $connectorPropertiesStateRepository;
@@ -98,8 +97,6 @@ final class Connector
 		$this->dispatcher = $dispatcher;
 
 		$this->logger = $logger ?? new Log\NullLogger();
-
-		$this->connectors = new SplObjectStorage();
 	}
 
 	/**
@@ -111,45 +108,31 @@ final class Connector
 	 */
 	public function execute(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): void
 	{
-		$this->connectors->rewind();
-
 		if ($this->dispatcher !== null) {
 			$this->dispatcher->dispatch(new Events\BeforeConnectorStartEvent($connector));
 		}
 
-		$this->connector = $connector;
+		$this->connector = $this->factory->create($connector);
 
-		foreach ($this->connectors as $service) {
-			if ($connector->getType() === $service->getType()) {
-				$this->logger->debug('Starting connector...', [
-					'source' => 'devices-module',
-					'type'   => 'connector',
-				]);
+		$this->logger->debug('Starting connector...', [
+			'source' => 'devices-module',
+			'type'   => 'connector',
+		]);
 
-				try {
-					$this->service = $service;
-					$this->service->initialize($connector);
+		try {
+			// Start connector service
+			$this->connector->execute();
 
-					// Start connector service
-					$this->service->execute();
+			$this->stopped = false;
 
-					$this->stopped = false;
-
-					$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_RUNNING));
-				} catch (Throwable $ex) {
-					throw new Exceptions\TerminateException('Connector can\'t be started');
-				}
-
-				if ($this->dispatcher !== null) {
-					$this->dispatcher->dispatch(new Events\AfterConnectorStartEvent($connector));
-				}
-
-				return;
-			}
+			$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_RUNNING));
+		} catch (Throwable $ex) {
+			throw new Exceptions\TerminateException('Connector can\'t be started');
 		}
 
-		throw new Exceptions\InvalidArgumentException(sprintf('Connector %s is not registered', $connector->getId()
-			->toString()));
+		if ($this->dispatcher !== null) {
+			$this->dispatcher->dispatch(new Events\AfterConnectorStartEvent($connector));
+		}
 	}
 
 	/**
@@ -165,12 +148,12 @@ final class Connector
 		]);
 
 		try {
-			if ($this->service !== null) {
-				if ($this->dispatcher !== null && $this->connector !== null) {
+			if ($this->connector !== null) {
+				if ($this->dispatcher !== null) {
 					$this->dispatcher->dispatch(new Events\BeforeConnectorTerminateEvent($this->connector));
 				}
 
-				$this->service->terminate();
+				$this->connector->terminate();
 
 				$now = $this->dateTimeFactory->getNow();
 
@@ -183,16 +166,16 @@ final class Connector
 						$this->dateTimeFactory->getNow()->getTimestamp() - $now->getTimestamp()
 					) < self::SHUTDOWN_WAITING_DELAY
 				) {
-					if (!$this->service->hasUnfinishedTasks()) {
+					if (!$this->connector->hasUnfinishedTasks()) {
 						$waitingForClosing = false;
 					}
 				}
-			}
 
-			$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_STOPPED));
+				if ($this->dispatcher !== null) {
+					$this->dispatcher->dispatch(new Events\AfterConnectorTerminateEvent($this->connector));
+				}
 
-			if ($this->dispatcher !== null && $this->connector !== null) {
-				$this->dispatcher->dispatch(new Events\AfterConnectorTerminateEvent($this->connector));
+				$this->setConnectorState(ConnectionStateType::get(ConnectionStateType::STATE_STOPPED));
 			}
 		} catch (Throwable $ex) {
 			$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
@@ -203,18 +186,6 @@ final class Connector
 					'code'    => $ex->getCode(),
 				],
 			]);
-		}
-	}
-
-	/**
-	 * @param IConnector $connector
-	 *
-	 * @return void
-	 */
-	public function registerConnector(IConnector $connector): void
-	{
-		if ($this->connectors->contains($connector) === false) {
-			$this->connectors->attach($connector);
 		}
 	}
 

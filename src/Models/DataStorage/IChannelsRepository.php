@@ -44,7 +44,7 @@ interface IChannelsRepository
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $device,
-		string $identifier,
+		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IChannelEntity;
 
 	/**

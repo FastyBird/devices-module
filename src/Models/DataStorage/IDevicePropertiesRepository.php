@@ -37,11 +37,12 @@ interface IDevicePropertiesRepository
 	public function findById(Uuid\UuidInterface $id);
 
 	/**
+	 * @param Uuid\UuidInterface $device
 	 * @param string $identifier
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
 	 */
-	public function findByIdentifier(string $identifier);
+	public function findByIdentifier(Uuid\UuidInterface $device, string $identifier);
 
 	/**
 	 * @param Uuid\UuidInterface $device

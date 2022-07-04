@@ -65,12 +65,15 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(string $identifier)
+	public function findByIdentifier(Uuid\UuidInterface $connector, string $identifier)
 	{
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
-			if ($property->getIdentifier() === $identifier) {
+			if (
+				$property->getConnector()->equals($connector)
+				&& $property->getIdentifier() === $identifier
+			) {
 				return $property;
 			}
 		}

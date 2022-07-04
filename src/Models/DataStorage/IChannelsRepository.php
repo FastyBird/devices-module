@@ -37,11 +37,15 @@ interface IChannelsRepository
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelEntity;
 
 	/**
+	 * @param Uuid\UuidInterface $device
 	 * @param string $identifier
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IChannelEntity|null
 	 */
-	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IChannelEntity;
+	public function findByIdentifier(
+		Uuid\UuidInterface $device,
+		string $identifier,
+	): ?MetadataEntities\Modules\DevicesModule\IChannelEntity;
 
 	/**
 	 * @param Uuid\UuidInterface $device

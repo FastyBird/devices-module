@@ -65,12 +65,17 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity
-	{
+	public function findByIdentifier(
+		Uuid\UuidInterface $connector,
+		string $identifier
+	): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity {
 		$this->devices->rewind();
 
 		foreach ($this->devices as $device) {
-			if ($device->getIdentifier() === $identifier) {
+			if (
+				$device->getConnector()->equals($connector)
+				&& $device->getIdentifier() === $identifier
+			) {
 				return $device;
 			}
 		}

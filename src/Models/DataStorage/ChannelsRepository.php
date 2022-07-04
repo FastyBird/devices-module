@@ -65,12 +65,17 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IChannelEntity
-	{
+	public function findByIdentifier(
+		Uuid\UuidInterface $device,
+		string $identifier
+	): ?MetadataEntities\Modules\DevicesModule\IChannelEntity {
 		$this->channels->rewind();
 
 		foreach ($this->channels as $channel) {
-			if ($channel->getIdentifier() === $identifier) {
+			if (
+				$channel->getDevice()->equals($device)
+				&& $channel->getIdentifier() === $identifier
+			) {
 				return $channel;
 			}
 		}

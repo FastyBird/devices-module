@@ -65,12 +65,15 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(string $identifier)
+	public function findByIdentifier(Uuid\UuidInterface $device, string $identifier)
 	{
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
-			if ($property->getIdentifier() === $identifier) {
+			if (
+				$property->getDevice()->equals($device)
+				&& $property->getIdentifier() === $identifier
+			) {
 				return $property;
 			}
 		}

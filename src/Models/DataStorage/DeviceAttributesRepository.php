@@ -65,12 +65,17 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity
-	{
+	public function findByIdentifier(
+		Uuid\UuidInterface $device,
+		string $identifier
+	): ?MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity {
 		$this->attributes->rewind();
 
 		foreach ($this->attributes as $attribute) {
-			if ($attribute->getIdentifier() === $identifier) {
+			if (
+				$attribute->getDevice()->equals($device)
+				&& $attribute->getIdentifier() === $identifier
+			) {
 				return $attribute;
 			}
 		}

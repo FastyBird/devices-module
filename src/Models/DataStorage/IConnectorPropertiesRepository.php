@@ -37,11 +37,12 @@ interface IConnectorPropertiesRepository
 	public function findById(Uuid\UuidInterface $id);
 
 	/**
+	 * @param Uuid\UuidInterface $connector
 	 * @param string $identifier
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null
 	 */
-	public function findByIdentifier(string $identifier);
+	public function findByIdentifier(Uuid\UuidInterface $connector, string $identifier);
 
 	/**
 	 * @param Uuid\UuidInterface $connector

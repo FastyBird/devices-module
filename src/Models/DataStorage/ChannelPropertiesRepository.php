@@ -65,12 +65,15 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(string $identifier)
+	public function findByIdentifier(Uuid\UuidInterface $channel, string $identifier)
 	{
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
-			if ($property->getIdentifier() === $identifier) {
+			if (
+				$property->getChannel()->equals($channel)
+				&& $property->getIdentifier() === $identifier
+			) {
 				return $property;
 			}
 		}

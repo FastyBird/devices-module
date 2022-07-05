@@ -15,8 +15,6 @@
 
 namespace FastyBird\DevicesModule\Connectors;
 
-use Ramsey\Uuid;
-
 /**
  * Devices connector interface
  *
@@ -27,11 +25,6 @@ use Ramsey\Uuid;
  */
 interface IConnector
 {
-
-	/**
-	 * @return Uuid\UuidInterface
-	 */
-	public function getId(): Uuid\UuidInterface;
 
 	/**
 	 * @return void

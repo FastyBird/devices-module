@@ -29,11 +29,6 @@ interface IConnector
 {
 
 	/**
-	 * @return Uuid\UuidInterface
-	 */
-	public function getId(): Uuid\UuidInterface;
-
-	/**
 	 * @return void
 	 */
 	public function execute(): void;

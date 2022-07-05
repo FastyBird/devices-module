@@ -385,9 +385,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('connector.factory'), new DI\Definitions\ServiceDefinition())
 			->setType(Connectors\ConnectorFactory::class);
 
-		$builder->addDefinition($this->prefix('connector.service'), new DI\Definitions\ServiceDefinition())
-			->setType(Connectors\Connector::class);
-
 		// Consumers
 		$builder->addDefinition($this->prefix('consumer.exchange'), new DI\Definitions\ServiceDefinition())
 			->setType(Consumers\DataExchangeConsumer::class);
@@ -429,28 +426,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		if ($routerService instanceof DI\Definitions\ServiceDefinition) {
 			$routerService->addSetup('?->registerRoutes(?)', [$builder->getDefinitionByType(Router\Routes::class), $routerService]);
-		}
-
-		/**
-		 * Connectors
-		 */
-
-		$connectorServiceService = $builder->getDefinitionByType(Connectors\Connector::class);
-
-		if ($connectorServiceService instanceof DI\Definitions\ServiceDefinition) {
-			$connectorsServices = $builder->findByType(Connectors\IConnector::class);
-
-			foreach ($connectorsServices as $connectorsService) {
-				if ($connectorsService->getType() !== Connectors\Connector::class) {
-					// Connector is not allowed to be autowired
-					$connectorsService->setAutowired(false);
-
-					$connectorServiceService->addSetup('?->registerConnector(?)', [
-						'@self',
-						$connectorsService,
-					]);
-				}
-			}
 		}
 	}
 

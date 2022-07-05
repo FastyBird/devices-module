@@ -15,8 +15,6 @@
 
 namespace FastyBird\DevicesModule\Connectors;
 
-use Ramsey\Uuid;
-
 /**
  * Devices connector interface
  *

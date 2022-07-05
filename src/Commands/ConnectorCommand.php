@@ -211,7 +211,7 @@ class ConnectorCommand extends Console\Command\Command
 				}
 			});
 
-			$this->eventLoop->addSignal(SIGINT, function (int $signal) use($connector, $service): void {
+			$this->eventLoop->addSignal(SIGINT, function (int $signal) use ($connector, $service): void {
 				$this->logger->debug('Stopping connector...', [
 					'source' => 'devices-module',
 					'type'   => 'connector',

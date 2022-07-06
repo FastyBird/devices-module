@@ -46,7 +46,7 @@
     "fastybird/exchange" : "^0.49",
     "fastybird/json-api" : "^0.11",
     "fastybird/metadata" : "^0.67",
-    "fastybird/simple-auth" : "^0.3",
+    "fastybird/simple-auth" : "^0.4",
     "ipub/doctrine-dynamic-discriminator-map": "^1.4",
     "ipub/doctrine-timestampable": "^1.5",
     "ipub/slim-router": "^0.2",

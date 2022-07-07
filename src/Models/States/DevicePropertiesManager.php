@@ -72,7 +72,7 @@ final class DevicePropertiesManager
 
 		$createdState = $this->manager->create($property, $values);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityCreatedEvent($createdState));
+		$this->dispatcher?->dispatch(new Events\StateEntityCreatedEvent($property, $createdState));
 
 		return $createdState;
 	}
@@ -99,7 +99,7 @@ final class DevicePropertiesManager
 
 		$updatedState = $this->manager->update($property, $state, $values);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($state, $updatedState));
+		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
 
 		return $updatedState;
 	}
@@ -124,7 +124,7 @@ final class DevicePropertiesManager
 
 		$result = $this->manager->delete($property, $state);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityDeletedEvent($property->getId()));
+		$this->dispatcher?->dispatch(new Events\StateEntityDeletedEvent($property));
 
 		return $result;
 	}

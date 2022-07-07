@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Subscribers;
 
-use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
@@ -25,7 +24,6 @@ use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
-use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
@@ -44,9 +42,6 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 
 	use Nette\SmartObject;
 
-	/** @var DataStorage\Reader */
-	private DataStorage\Reader $reader;
-
 	/** @var Models\DataStorage\IConnectorPropertiesRepository */
 	private Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository;
 
@@ -63,14 +58,12 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	private ?ExchangePublisher\IPublisher $publisher;
 
 	public function __construct(
-		DataStorage\Reader $reader,
 		Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository,
 		Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository,
 		Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository,
 		ExchangeEntities\EntityFactory $entityFactory,
 		?ExchangePublisher\IPublisher $publisher = null
 	) {
-		$this->reader = $reader;
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
 		$this->devicePropertiesRepository = $devicePropertiesRepository;
 		$this->channelPropertiesRepository = $channelPropertiesRepository;
@@ -97,13 +90,29 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	 *
 	 * @return void
 	 *
-	 * @throws Flysystem\FilesystemException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 */
 	public function stateCreated(Events\StateEntityCreatedEvent $event): void
 	{
-		$this->reader->read();
+		if (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+		) {
+			$this->connectorPropertiesRepository->loadState($event->getState()->getId());
+
+		} elseif (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+		) {
+			$this->devicePropertiesRepository->loadState($event->getState()->getId());
+
+		} elseif (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+		) {
+			$this->channelPropertiesRepository->loadState($event->getState()->getId());
+		}
 
 		$property = $this->findProperty($event->getState()->getId(), $event->getState());
 
@@ -125,13 +134,29 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	 *
 	 * @return void
 	 *
-	 * @throws Flysystem\FilesystemException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 */
 	public function stateUpdated(Events\StateEntityUpdatedEvent $event): void
 	{
-		$this->reader->read();
+		if (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+		) {
+			$this->connectorPropertiesRepository->loadState($event->getState()->getId());
+
+		} elseif (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+		) {
+			$this->devicePropertiesRepository->loadState($event->getState()->getId());
+
+		} elseif (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+		) {
+			$this->channelPropertiesRepository->loadState($event->getState()->getId());
+		}
 
 		$property = $this->findProperty($event->getState()->getId(), $event->getState());
 
@@ -153,22 +178,37 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	 *
 	 * @return void
 	 *
-	 * @throws Flysystem\FilesystemException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 */
 	public function stateDeleted(Events\StateEntityDeletedEvent $event): void
 	{
-		$this->reader->read();
+		if (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+		) {
+			$this->connectorPropertiesRepository->loadState($event->getProperty()->getId());
 
-		$property = $this->connectorPropertiesRepository->findById($event->getId());
+			$property = $this->connectorPropertiesRepository->findById($event->getProperty()->getId());
 
-		if ($property === null) {
-			$property = $this->devicePropertiesRepository->findById($event->getId());
+		} elseif (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+		) {
+			$this->devicePropertiesRepository->loadState($event->getProperty()->getId());
 
-			if ($property === null) {
-				$property = $this->channelPropertiesRepository->findById($event->getId());
-			}
+			$property = $this->devicePropertiesRepository->findById($event->getProperty()->getId());
+
+		} elseif (
+			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+		) {
+			$this->channelPropertiesRepository->loadState($event->getProperty()->getId());
+
+			$property = $this->channelPropertiesRepository->findById($event->getProperty()->getId());
+
+		} else {
+			$property = null;
 		}
 
 		if ($property !== null) {

@@ -229,8 +229,7 @@ class Routes
 						]);
 						$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_PROPERTY_RELATIONSHIP);
 
-						$group->group('/{' . self::URL_PROPERTY_ID . '}', function (Routing\RouteCollector $group
-						): void {
+						$group->group('/{' . self::URL_PROPERTY_ID . '}', function (Routing\RouteCollector $group): void {
 							/**
 							 * CHILDREN
 							 */

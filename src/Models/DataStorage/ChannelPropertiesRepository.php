@@ -133,15 +133,11 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 		}
 
 		if (!$this->properties->contains($entity)) {
-			try {
-				$propertyState = $this->statesRepository->findOneById($entity->getId());
-				$propertyState = $propertyState !== null ? $propertyState->toArray() : [];
-			} catch (Exceptions\NotImplementedException $ex) {
-				$propertyState = [];
-			}
-
 			$entity = $this->entityFactory->create(
-				Utils\Json::encode(array_merge($entity->toArray(), $propertyState))
+				Utils\Json::encode(array_merge(
+					$entity->toArray(),
+					$this->loadPropertyState($entity->getId())
+				))
 			);
 
 			if (
@@ -151,6 +147,31 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 			) {
 				$this->properties->attach($entity, $entity->getId()->toString());
 			}
+		}
+	}
+
+	/**
+	 * @param Uuid\UuidInterface|null $id
+	 *
+	 * @return void
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
+	 */
+	public function loadState(?Uuid\UuidInterface $id = null): void
+	{
+		if ($id === null) {
+			foreach ($this->properties as $property) {
+				$this->append($property);
+			}
+		} else {
+			$property = $this->findById($id);
+
+			if ($property === null) {
+				return;
+			}
+
+			$this->append($property);
 		}
 	}
 
@@ -182,6 +203,22 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 		}
 
 		return new RecursiveArrayIterator($properties);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return mixed[]
+	 */
+	private function loadPropertyState(Uuid\UuidInterface $id): array
+	{
+		try {
+			$propertyState = $this->statesRepository->findOneById($id);
+
+			return $propertyState !== null ? $propertyState->toArray() : [];
+		} catch (Exceptions\NotImplementedException $ex) {
+			return [];
+		}
 	}
 
 }

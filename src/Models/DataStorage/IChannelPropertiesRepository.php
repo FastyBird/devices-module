@@ -16,6 +16,8 @@
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
+use Nette\Utils;
 use Ramsey\Uuid;
 
 /**
@@ -64,6 +66,16 @@ interface IChannelPropertiesRepository
 	public function append(
 		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $entity
 	): void;
+
+	/**
+	 * @param Uuid\UuidInterface|null $id
+	 *
+	 * @return void
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
+	 */
+	public function loadState(?Uuid\UuidInterface $id = null): void;
 
 	/**
 	 * @return void

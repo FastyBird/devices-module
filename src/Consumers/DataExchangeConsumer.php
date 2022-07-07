@@ -80,8 +80,35 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
+		Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository,
+		Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository,
+		Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository,
+		Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
+		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
+		Models\States\DevicePropertiesManager $devicePropertiesStatesManager,
+		Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
+		Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
+		Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
+		ExchangeEntities\EntityFactory $entityFactory,
+		?ExchangePublisher\IPublisher $publisher,
+		?EventDispatcher\EventDispatcherInterface $dispatcher,
 		?Log\LoggerInterface $logger = null
 	) {
+		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
+		$this->devicePropertiesRepository = $devicePropertiesRepository;
+		$this->channelPropertiesRepository = $channelPropertiesRepository;
+		$this->connectorPropertiesStatesManager = $connectorPropertiesStatesManager;
+		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
+		$this->devicePropertiesStatesManager = $devicePropertiesStatesManager;
+		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
+		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
+		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;
+
+		$this->entityFactory = $entityFactory;
+
+		$this->publisher = $publisher;
+		$this->dispatcher = $dispatcher;
+
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 

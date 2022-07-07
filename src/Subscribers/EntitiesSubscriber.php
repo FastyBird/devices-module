@@ -119,7 +119,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			ORM\Events::onFlush,
 			ORM\Events::postPersist,
 			ORM\Events::postUpdate,
-			ORM\Events::postFlush,
 		];
 	}
 
@@ -156,11 +155,15 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			$processEntities[] = $entity;
 		}
 
+		$hasProcessedEntity = false;
+
 		foreach ($processEntities as $entity) {
 			// Check for valid entity
 			if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
 				continue;
 			}
+
+			$hasProcessedEntity = true;
 
 			$this->publishEntity($entity, self::ACTION_DELETED);
 
@@ -203,6 +206,10 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				}
 			}
 		}
+
+		if ($hasProcessedEntity) {
+			$this->configurationDataWriter->write();
+		}
 	}
 
 	/**
@@ -224,6 +231,8 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		$this->publishEntity($entity, self::ACTION_CREATED);
+
+		$this->configurationDataWriter->write();
 	}
 
 	/**
@@ -259,18 +268,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		$this->publishEntity($entity, self::ACTION_UPDATED);
-	}
 
-	/**
-	 * @param ORM\Event\PostFlushEventArgs $args
-	 *
-	 * @return void
-	 *
-	 * @throws Utils\JsonException
-	 * @throws Flysystem\FilesystemException
-	 */
-	public function postFlush(ORM\Event\PostFlushEventArgs $args): void
-	{
 		$this->configurationDataWriter->write();
 	}
 

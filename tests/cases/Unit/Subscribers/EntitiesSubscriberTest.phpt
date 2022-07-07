@@ -76,7 +76,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			'onFlush',
 			'postPersist',
 			'postUpdate',
-			'postFlush',
 		], $subscriber->getSubscribedEvents());
 	}
 

@@ -62,7 +62,7 @@ trait TEntityParams
 	 *
 	 * @return void
 	 */
-	public function setParam(string $key, $value = null): void
+	public function setParam(string $key, mixed $value = null): void
 	{
 		if ($this->params === null) {
 			$this->params = [];
@@ -103,7 +103,7 @@ trait TEntityParams
 	 *
 	 * @return mixed|null
 	 */
-	public function getParam(string $key, $default = null)
+	public function getParam(string $key, mixed $default = null): mixed
 	{
 		if ($this->params === null) {
 			return $default;

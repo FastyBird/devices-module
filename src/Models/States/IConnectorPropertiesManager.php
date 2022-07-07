@@ -38,7 +38,7 @@ interface IConnectorPropertiesManager extends IPropertiesManager
 	 * @return States\IConnectorProperty
 	 */
 	public function create(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property,
 		Utils\ArrayHash $values
 	): States\IConnectorProperty;
 
@@ -50,7 +50,7 @@ interface IConnectorPropertiesManager extends IPropertiesManager
 	 * @return States\IConnectorProperty
 	 */
 	public function update(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property,
 		States\IConnectorProperty $state,
 		Utils\ArrayHash $values
 	): States\IConnectorProperty;
@@ -62,7 +62,7 @@ interface IConnectorPropertiesManager extends IPropertiesManager
 	 * @return bool
 	 */
 	public function delete(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property,
 		States\IConnectorProperty $state
 	): bool;
 

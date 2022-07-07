@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities\Devices\Properties;
 
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
@@ -36,7 +37,7 @@ class StaticProperty extends Property implements IStaticProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getValue()
+	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if ($this->getParent() !== null) {
 			return $this->getParent()->getValue();

@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Models\Channels\Properties;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
+use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -72,6 +73,8 @@ final class PropertiesRepository implements IPropertiesRepository
 	 * @return Entities\Channels\Properties\IProperty[]
 	 *
 	 * @phpstan-param class-string $type
+	 *
+	 * @throws Exception
 	 */
 	public function findAllBy(
 		Queries\FindChannelPropertiesQuery $queryObject,

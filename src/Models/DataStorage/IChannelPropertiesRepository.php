@@ -34,7 +34,7 @@ interface IChannelPropertiesRepository
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null
 	 */
-	public function findById(Uuid\UuidInterface $id);
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null;
 
 	/**
 	 * @param Uuid\UuidInterface $channel
@@ -42,7 +42,7 @@ interface IChannelPropertiesRepository
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null
 	 */
-	public function findByIdentifier(Uuid\UuidInterface $channel, string $identifier);
+	public function findByIdentifier(Uuid\UuidInterface $channel, string $identifier): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null;
 
 	/**
 	 * @param Uuid\UuidInterface $channel
@@ -56,7 +56,9 @@ interface IChannelPropertiesRepository
 	 *
 	 * @return void
 	 */
-	public function append($entity): void;
+	public function append(
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $entity
+	): void;
 
 	/**
 	 * @return void

@@ -34,7 +34,7 @@ interface IDevicePropertiesRepository
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
 	 */
-	public function findById(Uuid\UuidInterface $id);
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null;
 
 	/**
 	 * @param Uuid\UuidInterface $device
@@ -42,7 +42,7 @@ interface IDevicePropertiesRepository
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
 	 */
-	public function findByIdentifier(Uuid\UuidInterface $device, string $identifier);
+	public function findByIdentifier(Uuid\UuidInterface $device, string $identifier): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null;
 
 	/**
 	 * @param Uuid\UuidInterface $device
@@ -56,7 +56,9 @@ interface IDevicePropertiesRepository
 	 *
 	 * @return void
 	 */
-	public function append($entity): void;
+	public function append(
+		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity $entity
+	): void;
 
 	/**
 	 * @return void

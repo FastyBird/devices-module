@@ -15,7 +15,6 @@
 
 namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 
-use DateTime;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
@@ -76,7 +75,7 @@ final class MappedPropertySchema extends PropertySchema
 	 * @param Entities\Devices\Properties\IMappedProperty $property
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|bool|int|float|MetadataTypes\SwitchPayloadType|MetadataTypes\ButtonPayloadType|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
+	 * @return iterable<string, string|bool|int|float|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -101,8 +100,8 @@ final class MappedPropertySchema extends PropertySchema
 
 		} else {
 			return array_merge((array) parent::getAttributes($property, $context), [
-				'value'   => $property->getValue(),
-				'default' => $property->getDefault(),
+				'value'   => Utilities\ValueHelper::flattenValue($property->getValue()),
+				'default' => Utilities\ValueHelper::flattenValue($property->getDefault()),
 			]);
 		}
 	}

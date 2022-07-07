@@ -139,9 +139,7 @@ final class Writer
 
 		$this->filesystem->write(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME, Utils\Json::encode($data));
 
-		if ($this->dispatcher !== null) {
-			$this->dispatcher->dispatch(new Events\DataStorageWrittenEvent());
-		}
+		$this->dispatcher?->dispatch(new Events\DataStorageWrittenEvent());
 	}
 
 }

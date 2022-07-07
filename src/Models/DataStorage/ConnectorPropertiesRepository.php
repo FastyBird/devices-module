@@ -16,9 +16,13 @@
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use Countable;
+use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IteratorAggregate;
 use Nette;
+use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
 use SplObjectStorage;
@@ -41,15 +45,26 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/** @var SplObjectStorage<MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity, string> */
 	private SplObjectStorage $properties;
 
-	public function __construct()
-	{
+	/** @var Models\States\ConnectorPropertiesRepository */
+	private Models\States\ConnectorPropertiesRepository $statesRepository;
+
+	/** @var MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory */
+	private MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $entityFactory;
+
+	public function __construct(
+		Models\States\ConnectorPropertiesRepository $statesRepository,
+		MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $entityFactory
+	) {
+		$this->statesRepository = $statesRepository;
+		$this->entityFactory = $entityFactory;
+
 		$this->properties = new SplObjectStorage();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface $id)
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null
 	{
 		$this->properties->rewind();
 
@@ -65,7 +80,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(Uuid\UuidInterface $connector, string $identifier)
+	public function findByIdentifier(Uuid\UuidInterface $connector, string $identifier): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null
 	{
 		$this->properties->rewind();
 
@@ -101,8 +116,11 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws Utils\JsonException
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function append($entity): void
+	public function append(MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity $entity): void
 	{
 		$existing = $this->findById($entity->getId());
 
@@ -111,7 +129,24 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 		}
 
 		if (!$this->properties->contains($entity)) {
-			$this->properties->attach($entity, $entity->getId()->toString());
+			try {
+				$propertyState = $this->statesRepository->findOneById($entity->getId());
+				$propertyState = $propertyState !== null ? $propertyState->toArray() : [];
+			} catch (Exceptions\NotImplementedException $ex) {
+				$propertyState = [];
+			}
+
+			$entity = $this->entityFactory->create(
+				Utils\Json::encode(array_merge($entity->toArray(), $propertyState))
+			);
+
+			if (
+				$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+			) {
+				$this->properties->attach($entity, $entity->getId()->toString());
+			}
 		}
 	}
 

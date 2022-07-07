@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities\Devices\Properties;
 
+use DateTimeInterface;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
@@ -292,7 +293,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setFormat($format): void
+	public function setFormat(array|string|null $format): void
 	{
 		if ($this->getParent() !== null && !$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)) {
 			throw new Exceptions\InvalidStateException('Value format setter is allowed only for parent');
@@ -304,7 +305,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getInvalid()
+	public function getInvalid(): float|int|string|null
 	{
 		if ($this->getParent() !== null && !$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)) {
 			return $this->getParent()->getInvalid();
@@ -352,7 +353,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDefault()
+	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if ($this->getParent() !== null && !$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)) {
 			return $this->getParent()->getDefault();

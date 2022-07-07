@@ -38,7 +38,7 @@ interface IChannelPropertiesManager extends IPropertiesManager
 	 * @return States\IChannelProperty
 	 */
 	public function create(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property,
 		Utils\ArrayHash $values
 	): States\IChannelProperty;
 
@@ -50,7 +50,7 @@ interface IChannelPropertiesManager extends IPropertiesManager
 	 * @return States\IChannelProperty
 	 */
 	public function update(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state,
 		Utils\ArrayHash $values
 	): States\IChannelProperty;
@@ -62,7 +62,7 @@ interface IChannelPropertiesManager extends IPropertiesManager
 	 * @return bool
 	 */
 	public function delete(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state
 	): bool;
 

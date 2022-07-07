@@ -59,7 +59,7 @@ final class ConnectorPropertiesManager
 	 * @return States\IConnectorProperty
 	 */
 	public function create(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property,
 		Utils\ArrayHash $values
 	): States\IConnectorProperty {
 		if ($this->manager === null) {
@@ -68,9 +68,7 @@ final class ConnectorPropertiesManager
 
 		$createdState = $this->manager->create($property, $values);
 
-		if ($this->dispatcher !== null) {
-			$this->dispatcher->dispatch(new Events\StateEntityCreatedEvent($createdState));
-		}
+		$this->dispatcher?->dispatch(new Events\StateEntityCreatedEvent($createdState));
 
 		return $createdState;
 	}
@@ -83,7 +81,7 @@ final class ConnectorPropertiesManager
 	 * @return States\IConnectorProperty
 	 */
 	public function update(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property,
 		States\IConnectorProperty $state,
 		Utils\ArrayHash $values
 	): States\IConnectorProperty {
@@ -93,9 +91,7 @@ final class ConnectorPropertiesManager
 
 		$updatedState = $this->manager->update($property, $state, $values);
 
-		if ($this->dispatcher !== null) {
-			$this->dispatcher->dispatch(new Events\StateEntityUpdatedEvent($state, $updatedState));
-		}
+		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($state, $updatedState));
 
 		return $updatedState;
 	}
@@ -107,7 +103,7 @@ final class ConnectorPropertiesManager
 	 * @return bool
 	 */
 	public function delete(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property,
 		States\IConnectorProperty $state
 	): bool {
 		if ($this->manager === null) {
@@ -116,9 +112,7 @@ final class ConnectorPropertiesManager
 
 		$result = $this->manager->delete($property, $state);
 
-		if ($this->dispatcher !== null) {
-			$this->dispatcher->dispatch(new Events\StateEntityDeletedEvent($property->getId()));
-		}
+		$this->dispatcher?->dispatch(new Events\StateEntityDeletedEvent($property->getId()));
 
 		return $result;
 	}

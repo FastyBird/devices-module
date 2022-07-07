@@ -15,7 +15,7 @@
 
 namespace FastyBird\DevicesModule\Entities;
 
-use DateTime;
+use DateTimeInterface;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineTimestampable;
 
@@ -96,11 +96,11 @@ interface IProperty extends IEntity,
 	public function getUnit(): ?string;
 
 	/**
-	 * @param string|null $units
+	 * @param string|null $unit
 	 *
 	 * @return void
 	 */
-	public function setUnit(?string $units): void;
+	public function setUnit(?string $unit): void;
 
 	/**
 	 * @return Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null
@@ -108,16 +108,16 @@ interface IProperty extends IEntity,
 	public function getFormat(): ?array;
 
 	/**
-	 * @param string|Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null $format
+	 * @param string|Array<float|null>|Array<int|null>|Array<string>|Array<Array<string|null>>|null $format
 	 *
 	 * @return void
 	 */
-	public function setFormat($format): void;
+	public function setFormat(array|string|null $format): void;
 
 	/**
 	 * @return string|int|float|null
 	 */
-	public function getInvalid();
+	public function getInvalid(): float|int|string|null;
 
 	/**
 	 * @param string|null $invalid
@@ -139,9 +139,9 @@ interface IProperty extends IEntity,
 	public function setNumberOfDecimals(?int $numberOfDecimals): void;
 
 	/**
-	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	 * @return bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	 */
-	public function getValue();
+	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null;
 
 	/**
 	 * @param string|null $value
@@ -151,9 +151,9 @@ interface IProperty extends IEntity,
 	public function setValue(?string $value): void;
 
 	/**
-	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	 * @return bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	 */
-	public function getDefault();
+	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null;
 
 	/**
 	 * @param string|null $default

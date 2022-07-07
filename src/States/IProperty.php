@@ -34,35 +34,40 @@ interface IProperty
 	public function getId(): Uuid\UuidInterface;
 
 	/**
-	 * @param bool|float|int|string|null $actual
+	 * @param float|bool|int|string|null $actual
 	 *
 	 * @return void
 	 */
-	public function setActualValue($actual): void;
+	public function setActualValue(float|bool|int|string|null $actual): void;
 
 	/**
 	 * @return bool|float|int|string|null
 	 */
-	public function getActualValue();
+	public function getActualValue(): float|bool|int|string|null;
 
 	/**
-	 * @param bool|float|int|string|null $expected
+	 * @param float|bool|int|string|null $expected
 	 *
 	 * @return void
 	 */
-	public function setExpectedValue($expected): void;
+	public function setExpectedValue(float|bool|int|string|null $expected): void;
 
 	/**
 	 * @return bool|float|int|string|null
 	 */
-	public function getExpectedValue();
+	public function getExpectedValue(): float|bool|int|string|null;
 
 	/**
 	 * @param bool $pending
 	 *
 	 * @return void
 	 */
-	public function setPending(bool $pending): void;
+	public function setPending(bool|string|null $pending): void;
+
+	/**
+	 * @return bool|string|null
+	 */
+	public function getPending(): bool|string|null;
 
 	/**
 	 * @return bool

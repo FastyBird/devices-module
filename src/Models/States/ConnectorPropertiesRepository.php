@@ -50,7 +50,7 @@ final class ConnectorPropertiesRepository
 	 * @return States\IConnectorProperty|null
 	 */
 	public function findOne(
-		$property
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property
 	): ?States\IConnectorProperty {
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Connector properties state repository is not registered');

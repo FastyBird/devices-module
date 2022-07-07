@@ -90,7 +90,7 @@ abstract class ConnectorHydrator extends JsonApiHydrators\Hydrator
 	 */
 	protected function hydrateEnabledAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
 	{
-		return is_scalar($attributes->get('enabled')) && (bool) $attributes->get('enabled');
+		return is_scalar($attributes->get('enabled')) && boolval($attributes->get('enabled'));
 	}
 
 }

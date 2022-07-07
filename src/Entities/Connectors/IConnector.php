@@ -135,11 +135,11 @@ interface IConnector extends Entities\IEntity,
 	public function getControls(): array;
 
 	/**
-	 * @param Entities\Connectors\Controls\IControl[] $control
+	 * @param Entities\Connectors\Controls\IControl[] $controls
 	 *
 	 * @return void
 	 */
-	public function setControls(array $control): void;
+	public function setControls(array $controls): void;
 
 	/**
 	 * @param Entities\Connectors\Controls\IControl $control

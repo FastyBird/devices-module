@@ -65,7 +65,7 @@ final class ChannelPropertiesManager
 	 * @return States\IChannelProperty
 	 */
 	public function create(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property,
 		Utils\ArrayHash $values
 	): States\IChannelProperty {
 		if ($this->manager === null) {
@@ -78,9 +78,7 @@ final class ChannelPropertiesManager
 
 		$createdState = $this->manager->create($property, $values);
 
-		if ($this->dispatcher !== null) {
-			$this->dispatcher->dispatch(new Events\StateEntityCreatedEvent($createdState));
-		}
+		$this->dispatcher?->dispatch(new Events\StateEntityCreatedEvent($createdState));
 
 		return $createdState;
 	}
@@ -93,7 +91,7 @@ final class ChannelPropertiesManager
 	 * @return States\IChannelProperty
 	 */
 	public function update(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state,
 		Utils\ArrayHash $values
 	): States\IChannelProperty {
@@ -107,9 +105,7 @@ final class ChannelPropertiesManager
 
 		$updatedState = $this->manager->update($property, $state, $values);
 
-		if ($this->dispatcher !== null) {
-			$this->dispatcher->dispatch(new Events\StateEntityUpdatedEvent($state, $updatedState));
-		}
+		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($state, $updatedState));
 
 		return $updatedState;
 	}
@@ -121,7 +117,7 @@ final class ChannelPropertiesManager
 	 * @return bool
 	 */
 	public function delete(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property,
 		States\IChannelProperty $state
 	): bool {
 		if ($this->manager === null) {
@@ -134,9 +130,7 @@ final class ChannelPropertiesManager
 
 		$result = $this->manager->delete($property, $state);
 
-		if ($this->dispatcher !== null) {
-			$this->dispatcher->dispatch(new Events\StateEntityDeletedEvent($property->getId()));
-		}
+		$this->dispatcher?->dispatch(new Events\StateEntityDeletedEvent($property->getId()));
 
 		return $result;
 	}

@@ -37,7 +37,7 @@ interface IConnectorPropertiesRepository extends IPropertiesRepository
 	 * @return States\IConnectorProperty|null
 	 */
 	public function findOne(
-		$property
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty $property
 	): ?States\IConnectorProperty;
 
 	/**

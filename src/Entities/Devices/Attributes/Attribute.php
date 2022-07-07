@@ -152,7 +152,7 @@ class Attribute implements IAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getContent()
+	public function getContent(): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
 	{
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
 			if ($this->content !== null && MetadataTypes\HardwareManufacturerType::isValidValue($this->content)) {
@@ -198,7 +198,7 @@ class Attribute implements IAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setContent($content): void
+	public function setContent(string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content): void
 	{
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\HardwareManufacturerType) {

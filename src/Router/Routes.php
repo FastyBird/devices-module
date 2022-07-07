@@ -166,7 +166,7 @@ class Routes
 	 *
 	 * @return Routing\IRouteGroup
 	 */
-	private function buildRoutes($group): Routing\IRouteGroup
+	private function buildRoutes(Routing\IRouter|Routing\IRouteCollector $group): Routing\IRouteGroup
 	{
 		return $group->group('/v1', function (Routing\RouteCollector $group): void {
 			/**

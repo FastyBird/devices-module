@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\Persistence;
+use Exception;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Router;
 use FastyBird\JsonApi\Builder as JsonApiBuilder;
@@ -233,11 +234,13 @@ abstract class BaseV1Controller
 	 * @param DoctrineCrud\Entities\IEntity|ResultSet<DoctrineCrud\Entities\IEntity>|Array<DoctrineCrud\Entities\IEntity> $data
 	 *
 	 * @return ResponseInterface
+	 *
+	 * @throws Exception
 	 */
 	protected function buildResponse(
 		Message\ServerRequestInterface $request,
 		ResponseInterface $response,
-		$data
+		ResultSet|DoctrineCrud\Entities\IEntity|array $data
 	): ResponseInterface {
 		$totalCount = null;
 

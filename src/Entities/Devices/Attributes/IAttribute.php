@@ -56,13 +56,15 @@ interface IAttribute extends Entities\IEntity,
 	/**
 	 * @return string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
 	 */
-	public function getContent();
+	public function getContent(): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null;
 
 	/**
 	 * @param string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content
 	 *
 	 * @return void
 	 */
-	public function setContent($content): void;
+	public function setContent(
+		string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content
+	): void;
 
 }

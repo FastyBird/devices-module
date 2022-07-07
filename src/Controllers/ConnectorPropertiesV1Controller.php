@@ -153,8 +153,9 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Doctrine\DBAL\Exception
 	 * @throws JsonApiExceptions\IJsonApiException
-	 * @throws Doctrine\DBAL\ConnectionException
+	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
 	 * @Secured
 	 * @Secured\Role(manager,administrator)
@@ -281,8 +282,9 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Doctrine\DBAL\Exception
 	 * @throws JsonApiExceptions\IJsonApiException
-	 * @throws Doctrine\DBAL\ConnectionException
+	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
 	 * @Secured
 	 * @Secured\Role(manager,administrator)
@@ -358,8 +360,9 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Doctrine\DBAL\Exception
 	 * @throws JsonApiExceptions\IJsonApiException
-	 * @throws Doctrine\DBAL\ConnectionException
+	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
 	 * @Secured
 	 * @Secured\Role(manager,administrator)

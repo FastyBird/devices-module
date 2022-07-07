@@ -158,11 +158,11 @@ interface IDevice extends Entities\IEntity,
 	public function getControls(): array;
 
 	/**
-	 * @param Entities\Devices\Controls\IControl[] $control
+	 * @param Entities\Devices\Controls\IControl[] $controls
 	 *
 	 * @return void
 	 */
-	public function setControls(array $control): void;
+	public function setControls(array $controls): void;
 
 	/**
 	 * @param Entities\Devices\Controls\IControl $control
@@ -252,18 +252,18 @@ interface IDevice extends Entities\IEntity,
 	public function getAttributes(): array;
 
 	/**
-	 * @param Entities\Devices\Attributes\IAttribute[] $control
+	 * @param Entities\Devices\Attributes\IAttribute[] $attributes
 	 *
 	 * @return void
 	 */
-	public function setAttributes(array $control): void;
+	public function setAttributes(array $attributes): void;
 
 	/**
-	 * @param Entities\Devices\Attributes\IAttribute $control
+	 * @param Entities\Devices\Attributes\IAttribute $attribute
 	 *
 	 * @return void
 	 */
-	public function addAttribute(Entities\Devices\Attributes\IAttribute $control): void;
+	public function addAttribute(Entities\Devices\Attributes\IAttribute $attribute): void;
 
 	/**
 	 * @param string $identifier
@@ -273,11 +273,11 @@ interface IDevice extends Entities\IEntity,
 	public function getAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute;
 
 	/**
-	 * @param Entities\Devices\Attributes\IAttribute $control
+	 * @param Entities\Devices\Attributes\IAttribute $attribute
 	 *
 	 * @return void
 	 */
-	public function removeAttribute(Entities\Devices\Attributes\IAttribute $control): void;
+	public function removeAttribute(Entities\Devices\Attributes\IAttribute $attribute): void;
 
 	/**
 	 * @param string $identifier

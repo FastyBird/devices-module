@@ -34,18 +34,18 @@ final class ValueHelper
 
 	/**
 	 * @param MetadataTypes\DataTypeType $dataType
-	 * @param bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
+	 * @param bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
 	 * @param Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null $format
 	 * @param float|int|string|null $invalid
 	 *
-	 * @return bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	 * @return bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	 */
 	public static function normalizeValue(
 		MetadataTypes\DataTypeType $dataType,
-		$value,
+		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value,
 		?array $format = null,
-		$invalid = null
-	) {
+		float|int|string|null $invalid = null
+	): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null {
 		if ($value === null) {
 			return null;
 		}
@@ -58,7 +58,7 @@ final class ValueHelper
 			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
 			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
 		) {
-			if ($invalid !== null && $invalid === intval($value)) {
+			if ($invalid === intval($value)) {
 				return $invalid;
 			}
 
@@ -75,7 +75,7 @@ final class ValueHelper
 			return intval($value);
 
 		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-			if ($invalid !== null && $invalid === floatval($value)) {
+			if ($invalid === floatval($value)) {
 				return $invalid;
 			}
 
@@ -120,7 +120,7 @@ final class ValueHelper
 				return $value;
 			}
 
-			$value = Utils\DateTime::createFromFormat(DateTime::ATOM, strval($value));
+			$value = Utils\DateTime::createFromFormat(DateTimeInterface::ATOM, strval($value));
 
 			return $value === false ? null : $value;
 
@@ -178,12 +178,13 @@ final class ValueHelper
 	}
 
 	/**
-	 * @param bool|float|int|string|DateTime|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
+	 * @param bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
 	 *
 	 * @return bool|float|int|string|null
 	 */
-	public static function flattenValue($value)
-	{
+	public static function flattenValue(
+		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
+	): bool|float|int|string|null {
 		if ($value instanceof DateTimeInterface) {
 			return $value->format(DATE_ATOM);
 

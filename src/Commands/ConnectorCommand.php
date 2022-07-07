@@ -24,7 +24,6 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
-use League\Flysystem;
 use Nette\Localization;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
@@ -129,9 +128,6 @@ class ConnectorCommand extends Console\Command\Command
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @throws Flysystem\FilesystemException
-	 * @throws Utils\JsonException
 	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
@@ -176,9 +172,7 @@ class ConnectorCommand extends Console\Command\Command
 
 		try {
 			$this->eventLoop->futureTick(function () use ($connector, $service): void {
-				if ($this->dispatcher !== null) {
-					$this->dispatcher->dispatch(new Events\BeforeConnectorStartEvent($connector));
-				}
+				$this->dispatcher?->dispatch(new Events\BeforeConnectorStartEvent($connector));
 
 				$this->logger->debug('Starting connector...', [
 					'source' => 'devices-module',
@@ -197,9 +191,7 @@ class ConnectorCommand extends Console\Command\Command
 					throw new Exceptions\TerminateException('Connector can\'t be started');
 				}
 
-				if ($this->dispatcher !== null) {
-					$this->dispatcher->dispatch(new Events\AfterConnectorStartEvent($connector));
-				}
+				$this->dispatcher?->dispatch(new Events\AfterConnectorStartEvent($connector));
 			});
 
 			$this->eventLoop->addSignal(SIGINT, function (int $signal) use ($connector, $service): void {
@@ -209,9 +201,7 @@ class ConnectorCommand extends Console\Command\Command
 				]);
 
 				try {
-					if ($this->dispatcher !== null) {
-						$this->dispatcher->dispatch(new Events\BeforeConnectorTerminateEvent($service));
-					}
+					$this->dispatcher?->dispatch(new Events\BeforeConnectorTerminateEvent($service));
 
 					$service->terminate();
 
@@ -231,9 +221,7 @@ class ConnectorCommand extends Console\Command\Command
 						}
 					}
 
-					if ($this->dispatcher !== null) {
-						$this->dispatcher->dispatch(new Events\AfterConnectorTerminateEvent($service));
-					}
+					$this->dispatcher?->dispatch(new Events\AfterConnectorTerminateEvent($service));
 
 					$this->setConnectorState(
 						$connector,

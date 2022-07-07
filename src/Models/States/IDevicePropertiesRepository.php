@@ -37,7 +37,7 @@ interface IDevicePropertiesRepository extends IPropertiesRepository
 	 * @return States\IDeviceProperty|null
 	 */
 	public function findOne(
-		$property
+		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property
 	): ?States\IDeviceProperty;
 
 	/**

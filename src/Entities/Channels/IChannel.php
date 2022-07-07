@@ -125,11 +125,11 @@ interface IChannel extends Entities\IEntity,
 	public function getControls(): array;
 
 	/**
-	 * @param Entities\Channels\Controls\IControl[] $control
+	 * @param Entities\Channels\Controls\IControl[] $controls
 	 *
 	 * @return void
 	 */
-	public function setControls(array $control): void;
+	public function setControls(array $controls): void;
 
 	/**
 	 * @param Entities\Channels\Controls\IControl $control

@@ -287,12 +287,14 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 
 	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $property
-	 * @param bool|float|int|string|null $expectedValue
+	 * @param float|bool|int|string|null $expectedValue
 	 *
 	 * @return bool|float|int|string|null
 	 */
-	private function normalizeValue($property, $expectedValue)
-	{
+	private function normalizeValue(
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $property,
+		float|bool|int|string|null $expectedValue
+	): float|bool|int|string|null {
 		$valueToWrite = Utilities\ValueHelper::normalizeValue(
 			$property->getDataType(),
 			$expectedValue,

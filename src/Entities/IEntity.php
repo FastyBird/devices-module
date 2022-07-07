@@ -48,6 +48,6 @@ interface IEntity extends DoctrineCrud\Entities\IEntity
 	/**
 	 * @return MetadataTypes\ModuleSourceType|MetadataTypes\ConnectorSourceType|MetadataTypes\PluginSourceType
 	 */
-	public function getSource();
+	public function getSource(): MetadataTypes\ModuleSourceType|MetadataTypes\PluginSourceType|MetadataTypes\ConnectorSourceType;
 
 }

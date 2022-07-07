@@ -38,7 +38,7 @@ interface IDevicePropertiesManager extends IPropertiesManager
 	 * @return States\IDeviceProperty
 	 */
 	public function create(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property,
 		Utils\ArrayHash $values
 	): States\IDeviceProperty;
 
@@ -50,7 +50,7 @@ interface IDevicePropertiesManager extends IPropertiesManager
 	 * @return States\IDeviceProperty
 	 */
 	public function update(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property,
 		States\IDeviceProperty $state,
 		Utils\ArrayHash $values
 	): States\IDeviceProperty;
@@ -62,7 +62,7 @@ interface IDevicePropertiesManager extends IPropertiesManager
 	 * @return bool
 	 */
 	public function delete(
-		$property,
+		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property,
 		States\IDeviceProperty $state
 	): bool;
 

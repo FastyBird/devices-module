@@ -37,7 +37,7 @@ interface IChannelPropertiesRepository extends IPropertiesRepository
 	 * @return States\IChannelProperty|null
 	 */
 	public function findOne(
-		$property
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property
 	): ?States\IChannelProperty;
 
 	/**

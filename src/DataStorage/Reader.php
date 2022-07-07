@@ -64,15 +64,6 @@ final class Reader
 	/** @var Models\DataStorage\IChannelControlsRepository */
 	private Models\DataStorage\IChannelControlsRepository $channelControlsRepository;
 
-	/** @var Models\States\ChannelPropertiesRepository */
-	private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository;
-
-	/** @var Models\States\DevicePropertiesRepository */
-	private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository;
-
-	/** @var Models\States\ConnectorPropertiesRepository */
-	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository;
-
 	/** @var MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $connectorEntityFactory;
 
@@ -117,9 +108,6 @@ final class Reader
 		Models\DataStorage\IChannelsRepository $channelsRepository,
 		Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository,
 		Models\DataStorage\IChannelControlsRepository $channelControlsRepository,
-		Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
-		Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
-		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
 		MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $connectorEntityFactory,
 		MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $connectorPropertyEntityFactory,
 		MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory $connectorControlEntityFactory,
@@ -142,10 +130,6 @@ final class Reader
 		$this->channelsRepository = $channelsRepository;
 		$this->channelPropertiesRepository = $channelPropertiesRepository;
 		$this->channelControlsRepository = $channelControlsRepository;
-
-		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;
-		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
-		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
 
 		$this->connectorEntityFactory = $connectorEntityFactory;
 		$this->connectorPropertyEntityFactory = $connectorPropertyEntityFactory;
@@ -262,14 +246,7 @@ final class Reader
 						}
 
 						try {
-							$propertyState = $this->channelPropertiesStatesRepository->findOneById(Uuid::fromString($propertyId));
-							$propertyState = $propertyState !== null ? $propertyState->toArray() : [];
-						} catch (DevicesModule\Exceptions\NotImplementedException $ex) {
-							$propertyState = [];
-						}
-
-						try {
-							$entity = $this->channelPropertyEntityFactory->create(Utils\Json::encode(array_merge($propertyData, $propertyState)));
+							$entity = $this->channelPropertyEntityFactory->create(Utils\Json::encode($propertyData));
 
 							if (
 								$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
@@ -320,14 +297,7 @@ final class Reader
 					}
 
 					try {
-						$propertyState = $this->devicePropertiesStatesRepository->findOneById(Uuid::fromString($propertyId));
-						$propertyState = $propertyState !== null ? $propertyState->toArray() : [];
-					} catch (DevicesModule\Exceptions\NotImplementedException $ex) {
-						$propertyState = [];
-					}
-
-					try {
-						$entity = $this->devicePropertyEntityFactory->create(Utils\Json::encode(array_merge($propertyData, $propertyState)));
+						$entity = $this->devicePropertyEntityFactory->create(Utils\Json::encode($propertyData));
 
 						if (
 							$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
@@ -337,6 +307,7 @@ final class Reader
 							$this->devicePropertiesRepository->append($entity);
 						}
 					} catch (Throwable $ex) {
+						var_dump($ex->getMessage());
 						continue;
 					}
 				}
@@ -396,14 +367,7 @@ final class Reader
 				}
 
 				try {
-					$propertyState = $this->connectorPropertiesStatesRepository->findOneById(Uuid::fromString($propertyId));
-					$propertyState = $propertyState !== null ? $propertyState->toArray() : [];
-				} catch (DevicesModule\Exceptions\NotImplementedException $ex) {
-					$propertyState = [];
-				}
-
-				try {
-					$entity = $this->connectorPropertyEntityFactory->create(Utils\Json::encode(array_merge($propertyData, $propertyState)));
+					$entity = $this->connectorPropertyEntityFactory->create(Utils\Json::encode($propertyData));
 
 					if (
 						$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity

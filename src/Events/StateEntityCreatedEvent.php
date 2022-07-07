@@ -30,13 +30,13 @@ class StateEntityCreatedEvent extends EventDispatcher\Event
 {
 
 	/** @var States\IChannelProperty|States\IDeviceProperty|States\IConnectorProperty */
-	private $state;
+	private States\IDeviceProperty|States\IChannelProperty|States\IConnectorProperty $state;
 
 	/**
 	 * @param States\IChannelProperty|States\IDeviceProperty|States\IConnectorProperty $state
 	 */
 	public function __construct(
-		$state
+		States\IConnectorProperty|States\IChannelProperty|States\IDeviceProperty $state
 	) {
 		$this->state = $state;
 	}
@@ -44,7 +44,7 @@ class StateEntityCreatedEvent extends EventDispatcher\Event
 	/**
 	 * @return States\IChannelProperty|States\IConnectorProperty|States\IDeviceProperty
 	 */
-	public function getState()
+	public function getState(): States\IConnectorProperty|States\IChannelProperty|States\IDeviceProperty
 	{
 		return $this->state;
 	}

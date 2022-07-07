@@ -73,7 +73,7 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 	 */
 	protected function hydrateSettableAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
 	{
-		return is_scalar($attributes->get('settable')) && (bool) $attributes->get('settable');
+		return is_scalar($attributes->get('settable')) && boolval($attributes->get('settable'));
 	}
 
 	/**
@@ -83,7 +83,7 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 	 */
 	protected function hydrateQueryableAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
 	{
-		return is_scalar($attributes->get('queryable')) && (bool) $attributes->get('queryable');
+		return is_scalar($attributes->get('queryable')) && boolval($attributes->get('queryable'));
 	}
 
 	/**
@@ -134,8 +134,7 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 
 		if (is_array($rawFormat)) {
 			if (
-				$rawDataType !== null
-				&& is_scalar($rawDataType)
+				is_scalar($rawDataType)
 				&& MetadataTypes\DataTypeType::isValidValue((string) $rawDataType)
 			) {
 				$dataType = MetadataTypes\DataTypeType::get((string) $rawDataType);

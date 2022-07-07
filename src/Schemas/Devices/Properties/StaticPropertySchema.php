@@ -15,9 +15,9 @@
 
 namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 
-use DateTime;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Schemas;
+use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Neomerx\JsonApi;
 
@@ -59,15 +59,15 @@ final class StaticPropertySchema extends PropertySchema
 	 * @param Entities\Devices\Properties\IStaticProperty $property
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|bool|int|float|MetadataTypes\SwitchPayloadType|MetadataTypes\ButtonPayloadType|DateTime|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
+	 * @return iterable<string, string|bool|int|float|Array<int|null>|Array<float|null>|Array<string>|Array<Array<string|null>>|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return array_merge((array) parent::getAttributes($property, $context), [
-			'value'   => $property->getValue(),
-			'default' => $property->getDefault(),
+			'value'   => Utilities\ValueHelper::flattenValue($property->getValue()),
+			'default' => Utilities\ValueHelper::flattenValue($property->getDefault()),
 		]);
 	}
 

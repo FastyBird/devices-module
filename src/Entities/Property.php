@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Entities;
 
 use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Utilities;
@@ -121,7 +122,7 @@ abstract class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_value", nullable=true, options={"default": null})
 	 */
-	protected $value = null;
+	protected mixed $value = null;
 
 	/**
 	 * @var mixed|null
@@ -129,7 +130,7 @@ abstract class Property implements IProperty
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_default", nullable=true, options={"default": null})
 	 */
-	protected $default = null;
+	protected mixed $default = null;
 
 	/**
 	 * @param string $identifier
@@ -266,7 +267,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setFormat($format): void
+	public function setFormat(array|string|null $format): void
 	{
 		if (is_string($format)) {
 			if ($this->buildFormat($format) === null) {
@@ -367,7 +368,7 @@ abstract class Property implements IProperty
 			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
 		) {
 			return array_map(function (string $item) {
-				if (strpos($item, ':') === false) {
+				if (!str_contains($item, ':')) {
 					return $item;
 				}
 
@@ -391,7 +392,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getInvalid()
+	public function getInvalid(): float|int|string|null
 	{
 		if ($this->invalid === null) {
 			return null;
@@ -448,7 +449,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getValue()
+	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()
@@ -478,7 +479,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDefault()
+	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()

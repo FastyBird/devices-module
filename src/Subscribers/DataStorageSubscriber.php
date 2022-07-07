@@ -50,7 +50,7 @@ final class DataStorageSubscriber implements EventDispatcher\EventSubscriberInte
 	public static function getSubscribedEvents(): array
 	{
 		return [
-			Events\DataStorageWrittenEvent::class  => 'storageWritten',
+			Events\DataStorageWrittenEvent::class => 'storageWritten',
 		];
 	}
 

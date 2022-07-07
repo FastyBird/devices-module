@@ -51,7 +51,7 @@ final class ExchangeSubscriber implements EventDispatcher\EventSubscriberInterfa
 	public static function getSubscribedEvents(): array
 	{
 		return [
-			ExchangeEvents\BeforeMessageConsumedEvent::class  => 'messageConsumed',
+			ExchangeEvents\BeforeMessageConsumedEvent::class => 'messageConsumed',
 		];
 	}
 

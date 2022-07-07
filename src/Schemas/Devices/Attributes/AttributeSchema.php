@@ -83,9 +83,9 @@ final class AttributeSchema extends JsonApiSchemas\JsonApiSchema
 	public function getAttributes($attribute, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			'identifier'	=> $attribute->getIdentifier(),
-			'name'			=> $attribute->getName(),
-			'content'		=> is_scalar($attribute->getContent()) || $attribute->getContent() === null ? $attribute->getContent() : (string) $attribute->getContent(),
+			'identifier' => $attribute->getIdentifier(),
+			'name'       => $attribute->getName(),
+			'content'    => is_scalar($attribute->getContent()) || $attribute->getContent() === null ? $attribute->getContent() : (string) $attribute->getContent(),
 		];
 	}
 

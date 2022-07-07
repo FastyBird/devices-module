@@ -229,7 +229,8 @@ class Routes
 						]);
 						$route->setName(DevicesModule\Constants::ROUTE_NAME_DEVICE_PROPERTY_RELATIONSHIP);
 
-						$group->group('/{' . self::URL_PROPERTY_ID . '}', function (Routing\RouteCollector $group): void {
+						$group->group('/{' . self::URL_PROPERTY_ID . '}', function (Routing\RouteCollector $group
+						): void {
 							/**
 							 * CHILDREN
 							 */
@@ -334,11 +335,16 @@ class Routes
 									]);
 									$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_RELATIONSHIP);
 
-									$group->group('/{' . self::URL_PROPERTY_ID . '}', function (Routing\RouteCollector $group): void {
+									$group->group('/{' . self::URL_PROPERTY_ID . '}', function (
+										Routing\RouteCollector $group
+									): void {
 										/**
 										 * CHILDREN
 										 */
-										$route = $group->get('/children', [$this->channelPropertyChildrenV1Controller, 'index']);
+										$route = $group->get('/children', [
+											$this->channelPropertyChildrenV1Controller,
+											'index',
+										]);
 										$route->setName(DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_CHILDREN);
 									});
 								});
@@ -402,9 +408,15 @@ class Routes
 
 						$group->post('', [$this->connectorPropertiesV1Controller, 'create']);
 
-						$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->connectorPropertiesV1Controller, 'update']);
+						$group->patch('/{' . self::URL_ITEM_ID . '}', [
+							$this->connectorPropertiesV1Controller,
+							'update',
+						]);
 
-						$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->connectorPropertiesV1Controller, 'delete']);
+						$group->delete('/{' . self::URL_ITEM_ID . '}', [
+							$this->connectorPropertiesV1Controller,
+							'delete',
+						]);
 
 						$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [
 							$this->connectorPropertiesV1Controller,

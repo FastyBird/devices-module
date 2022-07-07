@@ -86,9 +86,9 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	public static function getSubscribedEvents(): array
 	{
 		return [
-			Events\StateEntityCreatedEvent::class  => 'stateCreated',
-			Events\StateEntityUpdatedEvent::class  => 'stateUpdated',
-			Events\StateEntityDeletedEvent::class  => 'stateDeleted',
+			Events\StateEntityCreatedEvent::class => 'stateCreated',
+			Events\StateEntityUpdatedEvent::class => 'stateUpdated',
+			Events\StateEntityDeletedEvent::class => 'stateDeleted',
 		];
 	}
 

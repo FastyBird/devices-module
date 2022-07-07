@@ -64,8 +64,9 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null
-	{
+	public function findById(
+		Uuid\UuidInterface $id
+	): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null {
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
@@ -80,8 +81,10 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(Uuid\UuidInterface $connector, string $identifier): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null
-	{
+	public function findByIdentifier(
+		Uuid\UuidInterface $connector,
+		string $identifier
+	): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null {
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
@@ -120,8 +123,9 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	 * @throws Utils\JsonException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity $entity): void
-	{
+	public function append(
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity $entity
+	): void {
 		$existing = $this->findById($entity->getId());
 
 		if ($existing !== null) {

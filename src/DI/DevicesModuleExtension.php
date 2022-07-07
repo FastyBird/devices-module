@@ -426,7 +426,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$routerService = $builder->getDefinitionByType(SlimRouterRouting\Router::class);
 
 		if ($routerService instanceof DI\Definitions\ServiceDefinition) {
-			$routerService->addSetup('?->registerRoutes(?)', [$builder->getDefinitionByType(Router\Routes::class), $routerService]);
+			$routerService->addSetup('?->registerRoutes(?)', [
+				$builder->getDefinitionByType(Router\Routes::class),
+				$routerService,
+			]);
 		}
 	}
 

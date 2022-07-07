@@ -64,8 +64,9 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null
-	{
+	public function findById(
+		Uuid\UuidInterface $id
+	): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null {
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
@@ -80,8 +81,10 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(Uuid\UuidInterface $device, string $identifier): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null
-	{
+	public function findByIdentifier(
+		Uuid\UuidInterface $device,
+		string $identifier
+	): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null {
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
@@ -120,8 +123,9 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	 * @throws Utils\JsonException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity $entity): void
-	{
+	public function append(
+		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity $entity
+	): void {
 		$existing = $this->findById($entity->getId());
 
 		if ($existing !== null) {

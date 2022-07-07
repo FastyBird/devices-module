@@ -124,17 +124,17 @@ final class ChannelSchema extends JsonApiSchemas\JsonApiSchema
 	public function getRelationships($channel, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return [
-			self::RELATIONSHIPS_DEVICE        => [
+			self::RELATIONSHIPS_DEVICE     => [
 				self::RELATIONSHIP_DATA          => $channel->getDevice(),
 				self::RELATIONSHIP_LINKS_SELF    => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_PROPERTIES    => [
+			self::RELATIONSHIPS_PROPERTIES => [
 				self::RELATIONSHIP_DATA          => $channel->getProperties(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONTROLS      => [
+			self::RELATIONSHIPS_CONTROLS   => [
 				self::RELATIONSHIP_DATA          => $channel->getControls(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,

@@ -140,7 +140,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_ATTRIBUTES   => [
+			self::RELATIONSHIPS_ATTRIBUTES => [
 				self::RELATIONSHIP_DATA          => $device->getAttributes(),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
@@ -155,7 +155,7 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => $device->getConnector() !== null,
 			],
-			self::RELATIONSHIPS_PARENTS => [
+			self::RELATIONSHIPS_PARENTS    => [
 				self::RELATIONSHIP_DATA          => $this->getParents($device),
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,

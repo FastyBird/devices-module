@@ -161,8 +161,8 @@ class ConnectorCommand extends Console\Command\Command
 
 		if ($connector === null) {
 			$this->logger->alert('Connector was not found', [
-				'source'    => 'devices-module',
-				'type'      => 'connector',
+				'source' => 'devices-module',
+				'type'   => 'connector',
 			]);
 
 			return 0;

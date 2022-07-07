@@ -64,8 +64,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null
-	{
+	public function findById(
+		Uuid\UuidInterface $id
+	): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null {
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
@@ -80,8 +81,10 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByIdentifier(Uuid\UuidInterface $channel, string $identifier): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null
-	{
+	public function findByIdentifier(
+		Uuid\UuidInterface $channel,
+		string $identifier
+	): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null {
 		$this->properties->rewind();
 
 		foreach ($this->properties as $property) {
@@ -120,8 +123,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 * @throws Utils\JsonException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $entity): void
-	{
+	public function append(
+		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $entity
+	): void {
 		$existing = $this->findById($entity->getId());
 
 		if ($existing !== null) {

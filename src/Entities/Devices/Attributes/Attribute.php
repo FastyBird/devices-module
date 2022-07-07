@@ -114,10 +114,10 @@ class Attribute implements IAttribute
 	public function toArray(): array
 	{
 		return [
-			'id'   			=> $this->getPlainId(),
-			'identifier'	=> $this->getIdentifier(),
-			'name'			=> $this->getName(),
-			'content'		=> is_scalar($this->getContent()) || $this->getContent() === null ? $this->getContent() : (string) $this->getContent(),
+			'id' => $this->getPlainId(),
+			'identifier' => $this->getIdentifier(),
+			'name' => $this->getName(),
+			'content' => is_scalar($this->getContent()) || $this->getContent() === null ? $this->getContent() : (string) $this->getContent(),
 
 			'device' => $this->getDevice()->getPlainId(),
 
@@ -198,8 +198,9 @@ class Attribute implements IAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setContent(string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content): void
-	{
+	public function setContent(
+		string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content
+	): void {
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\HardwareManufacturerType) {
 				$this->content = $content->getValue();

@@ -96,9 +96,9 @@ class ConnectorCommand extends Console\Command\Command
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager,
 		DataStorage\Reader $reader,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
-		?PsrEventDispatcher\EventDispatcherInterface $dispatcher,
 		Localization\Translator $translator,
 		EventLoop\LoopInterface $eventLoop,
+		?PsrEventDispatcher\EventDispatcherInterface $dispatcher,
 		?Log\LoggerInterface $logger = null,
 		?string $name = null
 	) {

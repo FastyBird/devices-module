@@ -41,9 +41,9 @@ class InitializeCommand extends Console\Command\Command
 		?Log\LoggerInterface $logger = null,
 		?string $name = null
 	) {
-		parent::__construct($name);
-
 		$this->logger = $logger ?? new Log\NullLogger();
+
+		parent::__construct($name);
 	}
 
 	/**

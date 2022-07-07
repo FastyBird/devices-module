@@ -102,8 +102,6 @@ class ConnectorCommand extends Console\Command\Command
 		?Log\LoggerInterface $logger = null,
 		?string $name = null
 	) {
-		parent::__construct($name);
-
 		$this->factory = $factory;
 		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
@@ -120,6 +118,8 @@ class ConnectorCommand extends Console\Command\Command
 		$this->dispatcher = $dispatcher;
 
 		$this->logger = $logger ?? new Log\NullLogger();
+
+		parent::__construct($name);
 	}
 
 	/**

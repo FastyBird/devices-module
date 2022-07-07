@@ -128,6 +128,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws ORM\EntityNotFoundException
 	 * @throws Utils\JsonException
+	 * @throws Flysystem\FilesystemException
 	 */
 	public function onFlush(): void
 	{
@@ -219,6 +220,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
+	 * @throws Flysystem\FilesystemException
 	 */
 	public function postPersist(ORM\Event\LifecycleEventArgs $eventArgs): void
 	{
@@ -242,6 +244,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
+	 * @throws Flysystem\FilesystemException
 	 */
 	public function postUpdate(ORM\Event\LifecycleEventArgs $eventArgs): void
 	{

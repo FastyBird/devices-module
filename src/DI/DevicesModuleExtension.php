@@ -349,7 +349,8 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(DataStorage\Writer::class);
 
 		$builder->addDefinition($this->prefix('dataStorage.reader'), new DI\Definitions\ServiceDefinition())
-			->setType(DataStorage\Reader::class);
+			->setType(DataStorage\Reader::class)
+			->addSetup('read');
 
 		$builder->addDefinition($this->prefix('dataStorage.repository.connectors'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\DataStorage\ConnectorsRepository::class);

@@ -169,7 +169,13 @@ final class Reader
 	 */
 	public function read(): void
 	{
-		$dataConfiguration = $this->filesystem->read(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME);
+		try {
+			$dataConfiguration = $this->filesystem->read(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME);
+
+		} catch (Flysystem\UnableToReadFile $ex) {
+			return;
+		}
+
 		$dataConfiguration = Utils\Json::decode($dataConfiguration, Utils\Json::FORCE_ARRAY);
 
 		$this->connectorsRepository->reset();

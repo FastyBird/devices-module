@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Commands;
 
 use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule\Connectors;
-use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Exceptions;
@@ -72,9 +71,6 @@ class ConnectorCommand extends Console\Command\Command
 	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 
-	/** @var DataStorage\Reader */
-	private DataStorage\Reader $reader;
-
 	/** @var Localization\Translator */
 	private Localization\Translator $translator;
 
@@ -94,7 +90,6 @@ class ConnectorCommand extends Console\Command\Command
 		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository,
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager,
-		DataStorage\Reader $reader,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
 		Localization\Translator $translator,
 		EventLoop\LoopInterface $eventLoop,
@@ -108,8 +103,6 @@ class ConnectorCommand extends Console\Command\Command
 		$this->connectorPropertiesManager = $connectorPropertiesManager;
 		$this->connectorPropertiesStateRepository = $connectorPropertiesStateRepository;
 		$this->connectorPropertiesStateManager = $connectorPropertiesStateManager;
-
-		$this->reader = $reader;
 
 		$this->dateTimeFactory = $dateTimeFactory;
 
@@ -167,8 +160,6 @@ class ConnectorCommand extends Console\Command\Command
 
 			return 1;
 		}
-
-		$this->reader->read();
 
 		$connector = $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId));
 

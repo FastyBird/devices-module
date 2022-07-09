@@ -243,7 +243,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/**
 	 * @param Uuid\UuidInterface $id
 	 *
-	 * @return mixed[]
+	 * @return Array<string, mixed>
 	 */
 	private function loadPropertyState(Uuid\UuidInterface $id): array
 	{

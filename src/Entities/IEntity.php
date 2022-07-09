@@ -41,7 +41,7 @@ interface IEntity extends DoctrineCrud\Entities\IEntity
 	public function getPlainId(): string;
 
 	/**
-	 * @return mixed[]
+	 * @return Array<string, mixed>
 	 */
 	public function toArray(): array;
 

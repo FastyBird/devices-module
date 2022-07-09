@@ -49,7 +49,7 @@ interface IProperty
 	public function isValid(): bool;
 
 	/**
-	 * @return mixed[]
+	 * @return Array<string, mixed>
 	 */
 	public function toArray(): array;
 

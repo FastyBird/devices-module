@@ -16,8 +16,6 @@
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use FastyBird\Metadata\Entities as MetadataEntities;
-use FastyBird\Metadata\Exceptions as MetadataExceptions;
-use Nette\Utils;
 use Ramsey\Uuid;
 
 /**
@@ -59,23 +57,12 @@ interface IConnectorPropertiesRepository
 	public function findAllByConnector(Uuid\UuidInterface $connector): array;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity $entity
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $entity
 	 *
 	 * @return void
 	 */
-	public function append(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity $entity
-	): void;
-
-	/**
-	 * @param Uuid\UuidInterface|null $id
-	 *
-	 * @return void
-	 *
-	 * @throws MetadataExceptions\FileNotFoundException
-	 * @throws Utils\JsonException
-	 */
-	public function loadState(?Uuid\UuidInterface $id = null): void;
+	public function append(Uuid\UuidInterface $id, array $entity): void;
 
 	/**
 	 * @return void

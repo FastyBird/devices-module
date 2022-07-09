@@ -34,13 +34,10 @@ use Psr\EventDispatcher;
 final class Writer
 {
 
-	/** @var Models\Connectors\IConnectorsRepository */
 	private Models\Connectors\IConnectorsRepository $connectorsRepository;
 
-	/** @var Flysystem\Filesystem */
 	private Flysystem\Filesystem $filesystem;
 
-	/** @var EventDispatcher\EventDispatcherInterface|null */
 	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
 
 	public function __construct(

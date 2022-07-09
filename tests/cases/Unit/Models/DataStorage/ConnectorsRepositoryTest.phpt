@@ -2,13 +2,9 @@
 
 namespace Tests\Cases;
 
-use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata\Entities as MetadataEntities;
-use League\Flysystem;
-use Mockery;
-use Nette\Utils;
 use Ramsey\Uuid;
 use Tester\Assert;
 
@@ -21,24 +17,20 @@ require_once __DIR__ . '/../../DbTestCase.php';
 final class ConnectorsRepositoryTest extends DbTestCase
 {
 
-	public function testReadConfiguration(): void
+	public function setUp(): void
 	{
-		$filesystem = Mockery::mock(Flysystem\Filesystem::class);
-		$filesystem
-			->shouldReceive('read')
-			->withArgs([DevicesModule\Constants::CONFIGURATION_FILE_FILENAME])
-			->andReturn(Utils\FileSystem::read('./../../../../fixtures/DataStorage/devices-module-data.json'));
+		parent::setUp();
 
-		$this->mockContainerService(
-			Flysystem\Filesystem::class,
-			$filesystem
-		);
-
+		$writer = $this->getContainer()->getByType(DataStorage\Writer::class);
 		$reader = $this->getContainer()->getByType(DataStorage\Reader::class);
 
-		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\IConnectorsRepository::class);
-
+		$writer->write();
 		$reader->read();
+	}
+
+	public function testReadConfiguration(): void
+	{
+		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\IConnectorsRepository::class);
 
 		Assert::count(2, $connectorsRepository);
 

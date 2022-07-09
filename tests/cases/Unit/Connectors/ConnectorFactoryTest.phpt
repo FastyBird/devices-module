@@ -21,22 +21,24 @@ require_once __DIR__ . '/../../../tools/DummyConnectorFactory.php';
 final class ConnectorFactoryTest extends DbTestCase
 {
 
-	public function testCreateConnector()
+	public function setUp(): void
 	{
-		/** @var DataStorage\Writer $writer */
-		$writer = $this->getContainer()->getByType(DataStorage\Writer::class);
+		parent::setUp();
 
-		/** @var DataStorage\Reader $reader */
+		$writer = $this->getContainer()->getByType(DataStorage\Writer::class);
 		$reader = $this->getContainer()->getByType(DataStorage\Reader::class);
 
+		$writer->write();
+		$reader->read();
+	}
+
+	public function testCreateConnector()
+	{
 		/** @var Connectors\ConnectorFactory $factory */
 		$factory = $this->getContainer()->getByType(Connectors\ConnectorFactory::class);
 
 		/** @var Models\DataStorage\ConnectorsRepository $connectorsRepository */
 		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\ConnectorsRepository::class);
-
-		$writer->write();
-		$reader->read();
 
 		$connectorEntity = $connectorsRepository->findById(Uuid\Uuid::fromString('7a3dd94c-7294-46fd-8c61-1b375c313d4d'));
 

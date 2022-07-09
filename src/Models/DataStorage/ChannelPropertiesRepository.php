@@ -20,12 +20,11 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IteratorAggregate;
 use Nette;
-use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
-use SplObjectStorage;
 
 /**
  * Data storage channel properties repository
@@ -42,13 +41,11 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 
 	use Nette\SmartObject;
 
-	/** @var SplObjectStorage<MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity, string> */
-	private SplObjectStorage $properties;
+	/** @var Array<string, Array<string, mixed>> */
+	private array $properties;
 
-	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $statesRepository;
 
-	/** @var MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory $entityFactory;
 
 	public function __construct(
@@ -58,21 +55,43 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 		$this->statesRepository = $statesRepository;
 		$this->entityFactory = $entityFactory;
 
-		$this->properties = new SplObjectStorage();
+		$this->properties = [];
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findById(
 		Uuid\UuidInterface $id
 	): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null {
-		$this->properties->rewind();
+		if (array_key_exists($id->toString(), $this->properties)) {
+			$data = $this->properties[$id->toString()];
 
-		foreach ($this->properties as $property) {
-			if ($property->getId()->equals($id)) {
-				return $property;
+			$state = [];
+
+			if (
+				array_key_exists('type', $data)
+				&& (
+					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+				)
+			) {
+				$state = $this->loadPropertyState($id);
 			}
+
+			$entity = $this->entityFactory->create(array_merge($state, $data));
+
+			if (
+				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+			) {
+				return $entity;
+			}
+
+			return null;
 		}
 
 		return null;
@@ -80,19 +99,43 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $channel,
 		string $identifier
 	): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null {
-		$this->properties->rewind();
-
-		foreach ($this->properties as $property) {
+		foreach ($this->properties as $id => $property) {
 			if (
-				$property->getChannel()->equals($channel)
-				&& $property->getIdentifier() === $identifier
+				array_key_exists('channel', $property)
+				&& $channel->toString() === $property['channel']
+				&& array_key_exists('identifier', $property)
+				&& $property['identifier'] === $identifier
 			) {
-				return $property;
+				$state = [];
+
+				if (
+					array_key_exists('type', $property)
+					&& (
+						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+					)
+				) {
+					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
+				}
+
+				$entity = $this->entityFactory->create(array_merge($state, $property));
+
+				if (
+					$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+				) {
+					return $entity;
+				}
+
+				return null;
 			}
 		}
 
@@ -101,16 +144,36 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findAllByChannel(Uuid\UuidInterface $channel): array
 	{
 		$properties = [];
 
-		$this->properties->rewind();
+		foreach ($this->properties as $id => $property) {
+			if (array_key_exists('channel', $property) && $channel->toString() === $property['channel']) {
+				$state = [];
 
-		foreach ($this->properties as $property) {
-			if ($property->getChannel()->equals($channel)) {
-				$properties[] = $property;
+				if (
+					array_key_exists('type', $property)
+					&& (
+						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+					)
+				) {
+					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
+				}
+
+				$entity = $this->entityFactory->create(array_merge($state, $property));
+
+				if (
+					$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+				) {
+					$properties[] = $entity;
+				}
 			}
 		}
 
@@ -119,60 +182,10 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @throws Utils\JsonException
-	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function append(
-		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $entity
-	): void {
-		$existing = $this->findById($entity->getId());
-
-		if ($existing !== null) {
-			$this->properties->detach($existing);
-		}
-
-		if (!$this->properties->contains($entity)) {
-			$entity = $this->entityFactory->create(
-				Utils\Json::encode(array_merge(
-					$entity->toArray(),
-					$this->loadPropertyState($entity->getId())
-				))
-			);
-
-			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-			) {
-				$this->properties->attach($entity, $entity->getId()->toString());
-			}
-		}
-	}
-
-	/**
-	 * @param Uuid\UuidInterface|null $id
-	 *
-	 * @return void
-	 *
-	 * @throws MetadataExceptions\FileNotFoundException
-	 * @throws Utils\JsonException
-	 */
-	public function loadState(?Uuid\UuidInterface $id = null): void
+	public function append(Uuid\UuidInterface $id, array $entity): void
 	{
-		if ($id === null) {
-			foreach ($this->properties as $property) {
-				$this->append($property);
-			}
-		} else {
-			$property = $this->findById($id);
-
-			if ($property === null) {
-				return;
-			}
-
-			$this->append($property);
-		}
+		$this->properties[$id->toString()] = $entity;
 	}
 
 	/**
@@ -180,7 +193,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function reset(): void
 	{
-		$this->properties = new SplObjectStorage();
+		$this->properties = [];
 	}
 
 	/**
@@ -188,18 +201,40 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function count(): int
 	{
-		return $this->properties->count();
+		return count($this->properties);
 	}
 
 	/**
 	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity>
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
 		$properties = [];
 
-		foreach ($this->properties as $property) {
-			$properties[] = $property;
+		foreach ($this->properties as $id => $property) {
+			$state = [];
+
+			if (
+				array_key_exists('type', $property)
+				&& (
+					$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+					|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+				)
+			) {
+				$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
+			}
+
+			$entity = $this->entityFactory->create(array_merge($state, $property));
+
+			if (
+				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+			) {
+				$properties[] = $entity;
+			}
 		}
 
 		return new RecursiveArrayIterator($properties);

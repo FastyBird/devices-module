@@ -42,19 +42,14 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 
 	use Nette\SmartObject;
 
-	/** @var Models\DataStorage\IConnectorPropertiesRepository */
 	private Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository;
 
-	/** @var Models\DataStorage\IDevicePropertiesRepository */
 	private Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository;
 
-	/** @var Models\DataStorage\IChannelPropertiesRepository */
 	private Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository;
 
-	/** @var ExchangeEntities\EntityFactory */
 	private ExchangeEntities\EntityFactory $entityFactory;
 
-	/** @var ExchangePublisher\IPublisher|null */
 	private ?ExchangePublisher\IPublisher $publisher;
 
 	public function __construct(
@@ -73,9 +68,6 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 		$this->publisher = $publisher;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [
@@ -95,25 +87,6 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	 */
 	public function stateCreated(Events\StateEntityCreatedEvent $event): void
 	{
-		if (
-			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-		) {
-			$this->connectorPropertiesRepository->loadState($event->getState()->getId());
-
-		} elseif (
-			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-		) {
-			$this->devicePropertiesRepository->loadState($event->getState()->getId());
-
-		} elseif (
-			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			$this->channelPropertiesRepository->loadState($event->getState()->getId());
-		}
-
 		$property = $this->findProperty($event->getState()->getId(), $event->getState());
 
 		if ($property !== null) {
@@ -139,25 +112,6 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	 */
 	public function stateUpdated(Events\StateEntityUpdatedEvent $event): void
 	{
-		if (
-			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-		) {
-			$this->connectorPropertiesRepository->loadState($event->getState()->getId());
-
-		} elseif (
-			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-		) {
-			$this->devicePropertiesRepository->loadState($event->getState()->getId());
-
-		} elseif (
-			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-		) {
-			$this->channelPropertiesRepository->loadState($event->getState()->getId());
-		}
-
 		$property = $this->findProperty($event->getState()->getId(), $event->getState());
 
 		if ($property !== null) {
@@ -187,24 +141,18 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
 			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
 		) {
-			$this->connectorPropertiesRepository->loadState($event->getProperty()->getId());
-
 			$property = $this->connectorPropertiesRepository->findById($event->getProperty()->getId());
 
 		} elseif (
 			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
 			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
 		) {
-			$this->devicePropertiesRepository->loadState($event->getProperty()->getId());
-
 			$property = $this->devicePropertiesRepository->findById($event->getProperty()->getId());
 
 		} elseif (
 			$event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
 			|| $event->getProperty() instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
 		) {
-			$this->channelPropertiesRepository->loadState($event->getProperty()->getId());
-
 			$property = $this->channelPropertiesRepository->findById($event->getProperty()->getId());
 
 		} else {
@@ -286,12 +234,6 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 		);
 	}
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 * @param States\IConnectorProperty|States\IDeviceProperty|States\IChannelProperty $state
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null
-	 */
 	private function findProperty(
 		Uuid\UuidInterface $id,
 		States\IConnectorProperty|States\IChannelProperty|States\IDeviceProperty $state

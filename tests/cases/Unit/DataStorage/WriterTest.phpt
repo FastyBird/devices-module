@@ -18,15 +18,16 @@ require_once __DIR__ . '/../DbTestCase.php';
 final class WriterTest extends DbTestCase
 {
 
-	public function testReadConfiguration(): void
+	public function testWriteConfiguration(): void
 	{
 		$filesystem = Mockery::mock(Flysystem\Filesystem::class);
 		$filesystem
 			->shouldReceive('write')
 			->withArgs(function (string $filename, string $data): bool {
 				Assert::same(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME, $filename);
+
 				Tools\JsonAssert::assertFixtureMatch(
-					'./../../../fixtures/DataStorage/devices-module-data.json',
+					__DIR__ . '/../../../fixtures/DataStorage/devices-module-data.json',
 					$data
 				);
 

@@ -36,7 +36,6 @@ final class ExchangeSubscriber implements EventDispatcher\EventSubscriberInterfa
 
 	use Nette\SmartObject;
 
-	/** @var DataStorage\Reader */
 	private DataStorage\Reader $reader;
 
 	public function __construct(
@@ -45,9 +44,6 @@ final class ExchangeSubscriber implements EventDispatcher\EventSubscriberInterfa
 		$this->reader = $reader;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [

@@ -17,11 +17,11 @@ namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IteratorAggregate;
 use Nette;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
-use SplObjectStorage;
 
 /**
  * Data storage channel controls repository
@@ -38,25 +38,28 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 
 	use Nette\SmartObject;
 
-	/** @var SplObjectStorage<MetadataEntities\Modules\DevicesModule\IChannelControlEntity, string> */
-	private SplObjectStorage $controls;
+	/** @var Array<string, Array<string, mixed>> */
+	private array $controls;
 
-	public function __construct()
-	{
-		$this->controls = new SplObjectStorage();
+	private MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $entityFactory;
+
+	public function __construct(
+		MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $entityFactory
+	) {
+		$this->entityFactory = $entityFactory;
+
+		$this->controls = [];
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelControlEntity
 	{
-		$this->controls->rewind();
-
-		foreach ($this->controls as $control) {
-			if ($control->getId()->equals($id)) {
-				return $control;
-			}
+		if (array_key_exists($id->toString(), $this->controls)) {
+			return $this->entityFactory->create($this->controls[$id->toString()]);
 		}
 
 		return null;
@@ -64,16 +67,16 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findAllByChannel(Uuid\UuidInterface $channel): array
 	{
 		$controls = [];
 
-		$this->controls->rewind();
-
 		foreach ($this->controls as $control) {
-			if ($control->getChannel()->equals($channel)) {
-				$controls[] = $control;
+			if (array_key_exists('channel', $control) && $channel->toString() === $control['channel']) {
+				$controls[] = $this->entityFactory->create($control);
 			}
 		}
 
@@ -83,17 +86,9 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IChannelControlEntity $entity): void
+	public function append(Uuid\UuidInterface $id, array $entity): void
 	{
-		$existing = $this->findById($entity->getId());
-
-		if ($existing !== null) {
-			$this->controls->detach($existing);
-		}
-
-		if (!$this->controls->contains($entity)) {
-			$this->controls->attach($entity, $entity->getId()->toString());
-		}
+		$this->controls[$id->toString()] = $entity;
 	}
 
 	/**
@@ -101,7 +96,7 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	 */
 	public function reset(): void
 	{
-		$this->controls = new SplObjectStorage();
+		$this->controls = [];
 	}
 
 	/**
@@ -109,18 +104,20 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	 */
 	public function count(): int
 	{
-		return $this->controls->count();
+		return count($this->controls);
 	}
 
 	/**
 	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity>
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
 		$controls = [];
 
 		foreach ($this->controls as $control) {
-			$controls[] = $control;
+			$controls[] = $this->entityFactory->create($control);
 		}
 
 		return new RecursiveArrayIterator($controls);

@@ -17,11 +17,11 @@ namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IteratorAggregate;
 use Nette;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
-use SplObjectStorage;
 
 /**
  * Data storage channels repository
@@ -38,25 +38,28 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 
 	use Nette\SmartObject;
 
-	/** @var SplObjectStorage<MetadataEntities\Modules\DevicesModule\IChannelEntity, string> */
-	private SplObjectStorage $channels;
+	/** @var Array<string, Array<string, mixed>> */
+	private array $channels;
 
-	public function __construct()
-	{
-		$this->channels = new SplObjectStorage();
+	private MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $entityFactory;
+
+	public function __construct(
+		MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $entityFactory
+	) {
+		$this->entityFactory = $entityFactory;
+
+		$this->channels = [];
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelEntity
 	{
-		$this->channels->rewind();
-
-		foreach ($this->channels as $channel) {
-			if ($channel->getId()->equals($id)) {
-				return $channel;
-			}
+		if (array_key_exists($id->toString(), $this->channels)) {
+			return $this->entityFactory->create($this->channels[$id->toString()]);
 		}
 
 		return null;
@@ -64,19 +67,21 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $device,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IChannelEntity {
-		$this->channels->rewind();
-
 		foreach ($this->channels as $channel) {
 			if (
-				$channel->getDevice()->equals($device)
-				&& $channel->getIdentifier() === $identifier
+				array_key_exists('device', $channel)
+				&& $device->toString() === $channel['device']
+				&& array_key_exists('identifier', $channel)
+				&& $channel['identifier'] === $identifier
 			) {
-				return $channel;
+				return $this->entityFactory->create($channel);
 			}
 		}
 
@@ -85,16 +90,16 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
 		$channels = [];
 
-		$this->channels->rewind();
-
 		foreach ($this->channels as $channel) {
-			if ($channel->getDevice()->equals($device)) {
-				$channels[] = $channel;
+			if (array_key_exists('device', $channel) && $device->toString() === $channel['device']) {
+				$channels[] = $this->entityFactory->create($channel);
 			}
 		}
 
@@ -104,17 +109,9 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IChannelEntity $entity): void
+	public function append(Uuid\UuidInterface $id, array $entity): void
 	{
-		$existing = $this->findById($entity->getId());
-
-		if ($existing !== null) {
-			$this->channels->detach($existing);
-		}
-
-		if (!$this->channels->contains($entity)) {
-			$this->channels->attach($entity, $entity->getId()->toString());
-		}
+		$this->channels[$id->toString()] = $entity;
 	}
 
 	/**
@@ -122,7 +119,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function reset(): void
 	{
-		$this->channels = new SplObjectStorage();
+		$this->channels = [];
 	}
 
 	/**
@@ -130,18 +127,20 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function count(): int
 	{
-		return $this->channels->count();
+		return count($this->channels);
 	}
 
 	/**
 	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelEntity>
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
 		$channels = [];
 
 		foreach ($this->channels as $channel) {
-			$channels[] = $channel;
+			$channels[] = $this->entityFactory->create($channel);
 		}
 
 		return new RecursiveArrayIterator($channels);

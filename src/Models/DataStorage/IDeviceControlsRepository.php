@@ -44,11 +44,12 @@ interface IDeviceControlsRepository
 	public function findAllByDevice(Uuid\UuidInterface $device): array;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceControlEntity $entity
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $entity
 	 *
 	 * @return void
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IDeviceControlEntity $entity): void;
+	public function append(Uuid\UuidInterface $id, array $entity): void;
 
 	/**
 	 * @return void

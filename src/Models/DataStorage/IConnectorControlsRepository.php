@@ -44,11 +44,12 @@ interface IConnectorControlsRepository
 	public function findAllByConnector(Uuid\UuidInterface $connector): array;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorControlEntity $entity
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $entity
 	 *
 	 * @return void
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IConnectorControlEntity $entity): void;
+	public function append(Uuid\UuidInterface $id, array $entity): void;
 
 	/**
 	 * @return void

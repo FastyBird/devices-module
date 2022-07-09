@@ -1,6 +1,6 @@
 fastnumbers>=3.2
-fastybird-exchange>=0.50
-fastybird-metadata>=0.68
+fastybird-exchange>=0.51
+fastybird-metadata>=0.69
 inflection>=0.5
 kink>=0.6
 setuptools>=57.4

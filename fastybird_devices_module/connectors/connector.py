@@ -575,7 +575,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         if self.__connector is None:
             return
 
-        if item.routing_key == RoutingKey.CONNECTOR_ACTION and ControlAction.has_value(str(item.data.get("name"))):
+        if item.routing_key == RoutingKey.CONNECTOR_CONTROL_ACTION and ControlAction.has_value(str(item.data.get("name"))):
             try:
                 connector_control = self.__connectors_control_repository.get_by_name(
                     connector_id=uuid.UUID(item.data.get("connector"), version=4),
@@ -596,7 +596,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 action=ControlAction(item.data.get("name")),
             )
 
-        if item.routing_key == RoutingKey.DEVICE_ACTION and ControlAction.has_value(str(item.data.get("name"))):
+        if item.routing_key == RoutingKey.DEVICE_CONTROL_ACTION and ControlAction.has_value(str(item.data.get("name"))):
             try:
                 device_control = self.__devices_control_repository.get_by_name(
                     device_id=uuid.UUID(item.data.get("device"), version=4), control_name=str(item.data.get("name"))
@@ -616,7 +616,7 @@ class Connector:  # pylint: disable=too-many-instance-attributes
                 action=ControlAction(item.data.get("name")),
             )
 
-        if item.routing_key == RoutingKey.CHANNEL_ACTION and ControlAction.has_value(str(item.data.get("name"))):
+        if item.routing_key == RoutingKey.CHANNEL_CONTROL_ACTION and ControlAction.has_value(str(item.data.get("name"))):
             try:
                 channel_control = self.__channels_control_repository.get_by_name(
                     channel_id=uuid.UUID(item.data.get("channel"), version=4), control_name=str(item.data.get("name"))

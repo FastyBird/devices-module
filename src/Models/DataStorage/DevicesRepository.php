@@ -17,11 +17,11 @@ namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IteratorAggregate;
 use Nette;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
-use SplObjectStorage;
 
 /**
  * Data storage devices repository
@@ -38,25 +38,28 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 
 	use Nette\SmartObject;
 
-	/** @var SplObjectStorage<MetadataEntities\Modules\DevicesModule\IDeviceEntity, string> */
-	private SplObjectStorage $devices;
+	/** @var Array<string, Array<string, mixed>> */
+	private array $devices;
 
-	public function __construct()
-	{
-		$this->devices = new SplObjectStorage();
+	private MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory;
+
+	public function __construct(
+		MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory
+	) {
+		$this->entityFactory = $entityFactory;
+
+		$this->devices = [];
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity
 	{
-		$this->devices->rewind();
-
-		foreach ($this->devices as $device) {
-			if ($device->getId()->equals($id)) {
-				return $device;
-			}
+		if (array_key_exists($id->toString(), $this->devices)) {
+			return $this->entityFactory->create($this->devices[$id->toString()]);
 		}
 
 		return null;
@@ -64,19 +67,21 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $connector,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity {
-		$this->devices->rewind();
-
 		foreach ($this->devices as $device) {
 			if (
-				$device->getConnector()->equals($connector)
-				&& $device->getIdentifier() === $identifier
+				array_key_exists('device', $device)
+				&& $connector->toString() === $device['device']
+				&& array_key_exists('identifier', $device)
+				&& $device['identifier'] === $identifier
 			) {
-				return $device;
+				return $this->entityFactory->create($device);
 			}
 		}
 
@@ -85,16 +90,16 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
 		$devices = [];
 
-		$this->devices->rewind();
-
 		foreach ($this->devices as $device) {
-			if ($device->getConnector()->equals($connector)) {
-				$devices[] = $device;
+			if (array_key_exists('device', $device) && $connector->toString() === $device['device']) {
+				$devices[] = $this->entityFactory->create($device);
 			}
 		}
 
@@ -104,17 +109,9 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IDeviceEntity $entity): void
+	public function append(Uuid\UuidInterface $id, array $entity): void
 	{
-		$existing = $this->findById($entity->getId());
-
-		if ($existing !== null) {
-			$this->devices->detach($existing);
-		}
-
-		if (!$this->devices->contains($entity)) {
-			$this->devices->attach($entity, $entity->getId()->toString());
-		}
+		$this->devices[$id->toString()] = $entity;
 	}
 
 	/**
@@ -122,7 +119,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function reset(): void
 	{
-		$this->devices = new SplObjectStorage();
+		$this->devices = [];
 	}
 
 	/**
@@ -130,18 +127,20 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function count(): int
 	{
-		return $this->devices->count();
+		return count($this->devices);
 	}
 
 	/**
 	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceEntity>
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
 		$devices = [];
 
 		foreach ($this->devices as $device) {
-			$devices[] = $device;
+			$devices[] = $this->entityFactory->create($device);
 		}
 
 		return new RecursiveArrayIterator($devices);

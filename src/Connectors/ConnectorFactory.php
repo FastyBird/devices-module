@@ -46,11 +46,6 @@ final class ConnectorFactory
 		}
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
-	 *
-	 * @return IConnector
-	 */
 	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): IConnector
 	{
 		/** @var IConnectorFactory $factory */

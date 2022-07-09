@@ -29,7 +29,7 @@ interface IEntityParams
 {
 
 	/**
-	 * @param mixed[] $params
+	 * @param Array<string, mixed> $params
 	 *
 	 * @return void
 	 */

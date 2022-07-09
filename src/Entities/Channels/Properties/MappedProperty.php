@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Entities\Channels\Properties;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Ramsey\Uuid;
 use Throwable;
@@ -74,8 +75,8 @@ class MappedProperty extends Property implements IMappedProperty
 	{
 		if ($this->getParent() instanceof Entities\Channels\Properties\StaticProperty) {
 			return array_merge(parent::toArray(), [
-				'value'   => $this->getValue(),
-				'default' => $this->getDefault(),
+				'default' => Utilities\ValueHelper::flattenValue($this->getDefault()),
+				'value'   => Utilities\ValueHelper::flattenValue($this->getValue()),
 			]);
 		}
 

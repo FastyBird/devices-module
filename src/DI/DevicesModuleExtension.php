@@ -47,12 +47,6 @@ use stdClass;
 class DevicesModuleExtension extends DI\CompilerExtension
 {
 
-	/**
-	 * @param Nette\Configurator $config
-	 * @param string $extensionName
-	 *
-	 * @return void
-	 */
 	public static function register(
 		Nette\Configurator $config,
 		string $extensionName = 'fbDevicesModule'
@@ -65,9 +59,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		};
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function getConfigSchema(): Schema\Schema
 	{
 		return Schema\Expect::structure([
@@ -75,9 +66,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		]);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
@@ -98,6 +86,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		// Console commands
 		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())
 			->setType(Commands\InitializeCommand::class);
+
+		$builder->addDefinition($this->prefix('commands.dataStorage'), new DI\Definitions\ServiceDefinition())
+			->setType(Commands\DataStorageCommand::class);
 
 		$builder->addDefinition($this->prefix('commands.connector'), new DI\Definitions\ServiceDefinition())
 			->setType(Commands\ConnectorCommand::class);
@@ -349,8 +340,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(DataStorage\Writer::class);
 
 		$builder->addDefinition($this->prefix('dataStorage.reader'), new DI\Definitions\ServiceDefinition())
-			->setType(DataStorage\Reader::class)
-			->addSetup('read');
+			->setType(DataStorage\Reader::class);
 
 		$builder->addDefinition($this->prefix('dataStorage.repository.connectors'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\DataStorage\ConnectorsRepository::class);
@@ -391,9 +381,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Consumers\DataExchangeConsumer::class);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function beforeCompile(): void
 	{
 		parent::beforeCompile();
@@ -433,13 +420,12 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function afterCompile(
 		PhpGenerator\ClassType $class
 	): void {
 		$builder = $this->getContainerBuilder();
+
+		$initialize = $class->getMethods()['initialize'];
 
 		$entityFactoryServiceName = $builder->getByType(DoctrineCrud\Crud\IEntityCrudFactory::class, true);
 
@@ -472,6 +458,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$connectorsControlsManagerService = $class->getMethod('createService' . ucfirst($this->name) . '__models__connectorsControlsManager');
 		$connectorsControlsManagerService->setBody('return new ' . Models\Connectors\Controls\ControlsManager::class . '($this->getService(\'' . $entityFactoryServiceName . '\')->create(\'' . Entities\Connectors\Controls\Control::class . '\'));');
+
+		$dataStorageReaderServiceName = $builder->getByType(DataStorage\Reader::class, true);
+
+		$initialize->addBody('$this->getService(\'' . $dataStorageReaderServiceName . '\')->read();');
 	}
 
 }

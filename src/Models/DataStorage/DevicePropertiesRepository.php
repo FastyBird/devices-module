@@ -20,12 +20,11 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IteratorAggregate;
 use Nette;
-use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
-use SplObjectStorage;
 
 /**
  * Data storage device properties repository
@@ -42,13 +41,11 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 
 	use Nette\SmartObject;
 
-	/** @var SplObjectStorage<MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity, string> */
-	private SplObjectStorage $properties;
+	/** @var Array<string, Array<string, mixed>> */
+	private array $properties;
 
-	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $statesRepository;
 
-	/** @var MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory $entityFactory;
 
 	public function __construct(
@@ -58,21 +55,43 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 		$this->statesRepository = $statesRepository;
 		$this->entityFactory = $entityFactory;
 
-		$this->properties = new SplObjectStorage();
+		$this->properties = [];
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findById(
 		Uuid\UuidInterface $id
 	): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null {
-		$this->properties->rewind();
+		if (array_key_exists($id->toString(), $this->properties)) {
+			$data = $this->properties[$id->toString()];
 
-		foreach ($this->properties as $property) {
-			if ($property->getId()->equals($id)) {
-				return $property;
+			$state = [];
+
+			if (
+				array_key_exists('type', $data)
+				&& (
+					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+				)
+			) {
+				$state = $this->loadPropertyState($id);
 			}
+
+			$entity = $this->entityFactory->create(array_merge($state, $data));
+
+			if (
+				$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+			) {
+				return $entity;
+			}
+
+			return null;
 		}
 
 		return null;
@@ -80,19 +99,43 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $device,
 		string $identifier
 	): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null {
-		$this->properties->rewind();
-
-		foreach ($this->properties as $property) {
+		foreach ($this->properties as $id => $property) {
 			if (
-				$property->getDevice()->equals($device)
-				&& $property->getIdentifier() === $identifier
+				array_key_exists('device', $property)
+				&& $device->toString() === $property['device']
+				&& array_key_exists('identifier', $property)
+				&& $property['identifier'] === $identifier
 			) {
-				return $property;
+				$state = [];
+
+				if (
+					array_key_exists('type', $property)
+					&& (
+						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+					)
+				) {
+					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
+				}
+
+				$entity = $this->entityFactory->create(array_merge($state, $property));
+
+				if (
+					$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+				) {
+					return $entity;
+				}
+
+				return null;
 			}
 		}
 
@@ -101,16 +144,36 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
 		$properties = [];
 
-		$this->properties->rewind();
+		foreach ($this->properties as $id => $property) {
+			if (array_key_exists('device', $property) && $device->toString() === $property['device']) {
+				$state = [];
 
-		foreach ($this->properties as $property) {
-			if ($property->getDevice()->equals($device)) {
-				$properties[] = $property;
+				if (
+					array_key_exists('type', $property)
+					&& (
+						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+					)
+				) {
+					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
+				}
+
+				$entity = $this->entityFactory->create(array_merge($state, $property));
+
+				if (
+					$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+				) {
+					$properties[] = $entity;
+				}
 			}
 		}
 
@@ -119,60 +182,10 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @throws Utils\JsonException
-	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function append(
-		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity $entity
-	): void {
-		$existing = $this->findById($entity->getId());
-
-		if ($existing !== null) {
-			$this->properties->detach($existing);
-		}
-
-		if (!$this->properties->contains($entity)) {
-			$entity = $this->entityFactory->create(
-				Utils\Json::encode(array_merge(
-					$entity->toArray(),
-					$this->loadPropertyState($entity->getId())
-				))
-			);
-
-			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-			) {
-				$this->properties->attach($entity, $entity->getId()->toString());
-			}
-		}
-	}
-
-	/**
-	 * @param Uuid\UuidInterface|null $id
-	 *
-	 * @return void
-	 *
-	 * @throws MetadataExceptions\FileNotFoundException
-	 * @throws Utils\JsonException
-	 */
-	public function loadState(?Uuid\UuidInterface $id = null): void
+	public function append(Uuid\UuidInterface $id, array $entity): void
 	{
-		if ($id === null) {
-			foreach ($this->properties as $property) {
-				$this->append($property);
-			}
-		} else {
-			$property = $this->findById($id);
-
-			if ($property === null) {
-				return;
-			}
-
-			$this->append($property);
-		}
+		$this->properties[$id->toString()] = $entity;
 	}
 
 	/**
@@ -180,7 +193,7 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	 */
 	public function reset(): void
 	{
-		$this->properties = new SplObjectStorage();
+		$this->properties = [];
 	}
 
 	/**
@@ -188,18 +201,40 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	 */
 	public function count(): int
 	{
-		return $this->properties->count();
+		return count($this->properties);
 	}
 
 	/**
 	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity>
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
 		$properties = [];
 
-		foreach ($this->properties as $property) {
-			$properties[] = $property;
+		foreach ($this->properties as $id => $property) {
+			$state = [];
+
+			if (
+				array_key_exists('type', $property)
+				&& (
+					$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+					|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+				)
+			) {
+				$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
+			}
+
+			$entity = $this->entityFactory->create(array_merge($state, $property));
+
+			if (
+				$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+			) {
+				$properties[] = $entity;
+			}
 		}
 
 		return new RecursiveArrayIterator($properties);
@@ -208,7 +243,7 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	/**
 	 * @param Uuid\UuidInterface $id
 	 *
-	 * @return mixed[]
+	 * @return Array<string, mixed>
 	 */
 	private function loadPropertyState(Uuid\UuidInterface $id): array
 	{

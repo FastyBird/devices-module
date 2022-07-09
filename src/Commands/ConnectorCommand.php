@@ -49,37 +49,26 @@ class ConnectorCommand extends Console\Command\Command
 
 	private const SHUTDOWN_WAITING_DELAY = 3;
 
-	/** @var Connectors\ConnectorFactory */
 	private Connectors\ConnectorFactory $factory;
 
-	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
 
-	/** @var Models\Connectors\Properties\IPropertiesRepository */
 	private Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository;
 
-	/** @var Models\Connectors\Properties\IPropertiesManager */
 	private Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager;
 
-	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository;
 
-	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager;
 
-	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 
-	/** @var Localization\Translator */
 	private Localization\Translator $translator;
 
-	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
-	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
 	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
 
-	/** @var EventLoop\LoopInterface */
 	private EventLoop\LoopInterface $eventLoop;
 
 	public function __construct(
@@ -114,9 +103,6 @@ class ConnectorCommand extends Console\Command\Command
 		parent::__construct($name);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	protected function configure(): void
 	{
 		$this
@@ -126,9 +112,6 @@ class ConnectorCommand extends Console\Command\Command
 			->setDescription('Run connector service.');
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();
@@ -174,7 +157,7 @@ class ConnectorCommand extends Console\Command\Command
 			$this->eventLoop->futureTick(function () use ($connector, $service): void {
 				$this->dispatcher?->dispatch(new Events\BeforeConnectorStartEvent($connector));
 
-				$this->logger->debug('Starting connector...', [
+				$this->logger->info('Starting connector...', [
 					'source' => 'devices-module',
 					'type'   => 'connector',
 				]);
@@ -195,7 +178,7 @@ class ConnectorCommand extends Console\Command\Command
 			});
 
 			$this->eventLoop->addSignal(SIGINT, function (int $signal) use ($connector, $service): void {
-				$this->logger->debug('Stopping connector...', [
+				$this->logger->info('Stopping connector...', [
 					'source' => 'devices-module',
 					'type'   => 'connector',
 				]);
@@ -236,23 +219,34 @@ class ConnectorCommand extends Console\Command\Command
 							'code'    => $ex->getCode(),
 						],
 					]);
+
+					throw new Exceptions\TerminateException(
+						'Error during connector termination process',
+						$ex->getCode(),
+						$ex
+					);
 				}
 			});
 
 			$this->eventLoop->run();
-		} catch (Exceptions\TerminateException $ex) {
+		} catch (Throwable $ex) {
+			if (!$ex instanceof Exceptions\TerminateException) {
+				$this->logger->error('An unhandled error occurred', [
+					'source'    => 'devices-module',
+					'type'      => 'connector',
+					'exception' => [
+						'message' => $ex->getMessage(),
+						'code'    => $ex->getCode(),
+					],
+				]);
+			}
+
 			$this->eventLoop->stop();
 		}
 
 		return 0;
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
-	 * @param MetadataTypes\ConnectionStateType $state
-	 *
-	 * @return void
-	 */
 	private function setConnectorState(
 		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
 		MetadataTypes\ConnectionStateType $state
@@ -268,7 +262,7 @@ class ConnectorCommand extends Console\Command\Command
 				'connector'  => $connector->getId(),
 				'entity'     => Entities\Connectors\Properties\DynamicProperty::class,
 				'identifier' => MetadataTypes\ConnectorPropertyNameType::NAME_STATE,
-				'data_type'  => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
+				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
 				'unit'       => null,
 				'format'     => [
 					MetadataTypes\ConnectionStateType::STATE_RUNNING,

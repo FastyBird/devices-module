@@ -17,11 +17,9 @@ namespace FastyBird\DevicesModule\DataStorage;
 
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Models;
-use FastyBird\Metadata\Entities as MetadataEntities;
 use League\Flysystem;
 use Nette\Utils;
 use Ramsey\Uuid\Uuid;
-use Throwable;
 
 /**
  * Data storage configuration reader
@@ -34,67 +32,26 @@ use Throwable;
 final class Reader
 {
 
-	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
 
-	/** @var Models\DataStorage\IConnectorPropertiesRepository */
 	private Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository;
 
-	/** @var Models\DataStorage\IConnectorControlsRepository */
 	private Models\DataStorage\IConnectorControlsRepository $connectorControlsRepository;
 
-	/** @var Models\DataStorage\IDevicesRepository */
 	private Models\DataStorage\IDevicesRepository $devicesRepository;
 
-	/** @var Models\DataStorage\IDevicePropertiesRepository */
 	private Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository;
 
-	/** @var Models\DataStorage\IDeviceControlsRepository */
 	private Models\DataStorage\IDeviceControlsRepository $deviceControlsRepository;
 
-	/** @var Models\DataStorage\IDeviceAttributesRepository */
 	private Models\DataStorage\IDeviceAttributesRepository $deviceAttributesRepository;
 
-	/** @var Models\DataStorage\IChannelsRepository */
 	private Models\DataStorage\IChannelsRepository $channelsRepository;
 
-	/** @var Models\DataStorage\IChannelPropertiesRepository */
 	private Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository;
 
-	/** @var Models\DataStorage\IChannelControlsRepository */
 	private Models\DataStorage\IChannelControlsRepository $channelControlsRepository;
 
-	/** @var MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $connectorEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $connectorPropertyEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory $connectorControlEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\DeviceEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $deviceEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory $devicePropertyEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $deviceControlEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory $deviceAttributeEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\ChannelEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $channelEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory $channelPropertyEntityFactory;
-
-	/** @var MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $channelControlEntityFactory;
-
-	/** @var Flysystem\Filesystem */
 	private Flysystem\Filesystem $filesystem;
 
 	public function __construct(
@@ -108,16 +65,6 @@ final class Reader
 		Models\DataStorage\IChannelsRepository $channelsRepository,
 		Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository,
 		Models\DataStorage\IChannelControlsRepository $channelControlsRepository,
-		MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $connectorEntityFactory,
-		MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $connectorPropertyEntityFactory,
-		MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory $connectorControlEntityFactory,
-		MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $deviceEntityFactory,
-		MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory $devicePropertyEntityFactory,
-		MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $deviceControlEntityFactory,
-		MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory $deviceAttributeEntityFactory,
-		MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $channelEntityFactory,
-		MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory $channelPropertyEntityFactory,
-		MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $channelControlEntityFactory,
 		Flysystem\Filesystem $filesystem
 	) {
 		$this->connectorsRepository = $connectorsRepository;
@@ -130,17 +77,6 @@ final class Reader
 		$this->channelsRepository = $channelsRepository;
 		$this->channelPropertiesRepository = $channelPropertiesRepository;
 		$this->channelControlsRepository = $channelControlsRepository;
-
-		$this->connectorEntityFactory = $connectorEntityFactory;
-		$this->connectorPropertyEntityFactory = $connectorPropertyEntityFactory;
-		$this->connectorControlEntityFactory = $connectorControlEntityFactory;
-		$this->deviceEntityFactory = $deviceEntityFactory;
-		$this->devicePropertyEntityFactory = $devicePropertyEntityFactory;
-		$this->deviceControlEntityFactory = $deviceControlEntityFactory;
-		$this->deviceAttributeEntityFactory = $deviceAttributeEntityFactory;
-		$this->channelEntityFactory = $channelEntityFactory;
-		$this->channelPropertyEntityFactory = $channelPropertyEntityFactory;
-		$this->channelControlEntityFactory = $channelControlEntityFactory;
 
 		$this->filesystem = $filesystem;
 	}
@@ -245,19 +181,7 @@ final class Reader
 							continue;
 						}
 
-						try {
-							$entity = $this->channelPropertyEntityFactory->create(Utils\Json::encode($propertyData));
-
-							if (
-								$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-								|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-								|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-							) {
-								$this->channelPropertiesRepository->append($entity);
-							}
-						} catch (Throwable $ex) {
-							continue;
-						}
+						$this->channelPropertiesRepository->append(Uuid::fromString($propertyId), $propertyData);
 					}
 
 					foreach ($channelData[DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY] as $controlId => $controlData) {
@@ -271,18 +195,10 @@ final class Reader
 							continue;
 						}
 
-						try {
-							$this->channelControlsRepository->append($this->channelControlEntityFactory->create(Utils\Json::encode($controlData)));
-						} catch (Throwable $ex) {
-							continue;
-						}
+						$this->channelControlsRepository->append(Uuid::fromString($controlId), $controlData);
 					}
 
-					try {
-						$this->channelsRepository->append($this->channelEntityFactory->create(Utils\Json::encode($channelData)));
-					} catch (Throwable $ex) {
-						continue;
-					}
+					$this->channelsRepository->append(Uuid::fromString($channelId), $channelData);
 				}
 
 				foreach ($deviceData[DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY] as $propertyId => $propertyData) {
@@ -296,20 +212,7 @@ final class Reader
 						continue;
 					}
 
-					try {
-						$entity = $this->devicePropertyEntityFactory->create(Utils\Json::encode($propertyData));
-
-						if (
-							$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-							|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-							|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
-						) {
-							$this->devicePropertiesRepository->append($entity);
-						}
-					} catch (Throwable $ex) {
-						var_dump($ex->getMessage());
-						continue;
-					}
+					$this->devicePropertiesRepository->append(Uuid::fromString($propertyId), $propertyData);
 				}
 
 				foreach ($deviceData[DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY] as $controlId => $controlData) {
@@ -323,11 +226,7 @@ final class Reader
 						continue;
 					}
 
-					try {
-						$this->deviceControlsRepository->append($this->deviceControlEntityFactory->create(Utils\Json::encode($controlData)));
-					} catch (Throwable $ex) {
-						continue;
-					}
+					$this->deviceControlsRepository->append(Uuid::fromString($controlId), $controlData);
 				}
 
 				foreach ($deviceData[DevicesModule\Constants::DATA_STORAGE_ATTRIBUTES_KEY] as $attributeId => $attributeData) {
@@ -341,18 +240,10 @@ final class Reader
 						continue;
 					}
 
-					try {
-						$this->deviceAttributesRepository->append($this->deviceAttributeEntityFactory->create(Utils\Json::encode($attributeData)));
-					} catch (Throwable $ex) {
-						continue;
-					}
+					$this->deviceAttributesRepository->append(Uuid::fromString($attributeId), $attributeData);
 				}
 
-				try {
-					$this->devicesRepository->append($this->deviceEntityFactory->create(Utils\Json::encode($deviceData)));
-				} catch (Throwable $ex) {
-					continue;
-				}
+				$this->devicesRepository->append(Uuid::fromString($deviceId), $deviceData);
 			}
 
 			foreach ($connectorData[DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY] as $propertyId => $propertyData) {
@@ -366,19 +257,7 @@ final class Reader
 					continue;
 				}
 
-				try {
-					$entity = $this->connectorPropertyEntityFactory->create(Utils\Json::encode($propertyData));
-
-					if (
-						$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-						|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-						|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-					) {
-						$this->connectorPropertiesRepository->append($entity);
-					}
-				} catch (Throwable $ex) {
-					continue;
-				}
+				$this->connectorPropertiesRepository->append(Uuid::fromString($propertyId), $propertyData);
 			}
 
 			foreach ($connectorData[DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY] as $controlId => $controlData) {
@@ -392,18 +271,10 @@ final class Reader
 					continue;
 				}
 
-				try {
-					$this->connectorControlsRepository->append($this->connectorControlEntityFactory->create(Utils\Json::encode($controlData)));
-				} catch (Throwable $ex) {
-					continue;
-				}
+				$this->connectorControlsRepository->append(Uuid::fromString($controlId), $controlData);
 			}
 
-			try {
-				$this->connectorsRepository->append($this->connectorEntityFactory->create(Utils\Json::encode($connectorData)));
-			} catch (Throwable $ex) {
-				continue;
-			}
+			$this->connectorsRepository->append(Uuid::fromString($connectorId), $connectorData);
 		}
 	}
 

@@ -17,11 +17,11 @@ namespace FastyBird\DevicesModule\Models\DataStorage;
 
 use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IteratorAggregate;
 use Nette;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
-use SplObjectStorage;
 
 /**
  * Data storage device controls repository
@@ -38,25 +38,28 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 
 	use Nette\SmartObject;
 
-	/** @var SplObjectStorage<MetadataEntities\Modules\DevicesModule\IDeviceControlEntity, string> */
-	private SplObjectStorage $controls;
+	/** @var Array<string, Array<string, mixed>> */
+	private array $controls;
 
-	public function __construct()
-	{
-		$this->controls = new SplObjectStorage();
+	private MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory;
+
+	public function __construct(
+		MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory
+	) {
+		$this->entityFactory = $entityFactory;
+
+		$this->controls = [];
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
 	{
-		$this->controls->rewind();
-
-		foreach ($this->controls as $control) {
-			if ($control->getId()->equals($id)) {
-				return $control;
-			}
+		if (array_key_exists($id->toString(), $this->controls)) {
+			return $this->entityFactory->create($this->controls[$id->toString()]);
 		}
 
 		return null;
@@ -64,16 +67,16 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
 		$controls = [];
 
-		$this->controls->rewind();
-
 		foreach ($this->controls as $control) {
-			if ($control->getDevice()->equals($device)) {
-				$controls[] = $control;
+			if (array_key_exists('device', $control) && $device->toString() === $control['device']) {
+				$controls[] = $this->entityFactory->create($control);
 			}
 		}
 
@@ -83,17 +86,9 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(MetadataEntities\Modules\DevicesModule\IDeviceControlEntity $entity): void
+	public function append(Uuid\UuidInterface $id, array $entity): void
 	{
-		$existing = $this->findById($entity->getId());
-
-		if ($existing !== null) {
-			$this->controls->detach($existing);
-		}
-
-		if (!$this->controls->contains($entity)) {
-			$this->controls->attach($entity, $entity->getId()->toString());
-		}
+		$this->controls[$id->toString()] = $entity;
 	}
 
 	/**
@@ -101,7 +96,7 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	 */
 	public function reset(): void
 	{
-		$this->controls = new SplObjectStorage();
+		$this->controls = [];
 	}
 
 	/**
@@ -109,18 +104,20 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	 */
 	public function count(): int
 	{
-		return $this->controls->count();
+		return count($this->controls);
 	}
 
 	/**
 	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceControlEntity>
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
 		$controls = [];
 
 		foreach ($this->controls as $control) {
-			$controls[] = $control;
+			$controls[] = $this->entityFactory->create($control);
 		}
 
 		return new RecursiveArrayIterator($controls);

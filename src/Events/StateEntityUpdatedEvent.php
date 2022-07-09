@@ -31,13 +31,10 @@ use Symfony\Contracts\EventDispatcher;
 class StateEntityUpdatedEvent extends EventDispatcher\Event
 {
 
-	/** @var MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty */
 	private MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property;
 
-	/** @var States\IChannelProperty|States\IDeviceProperty|States\IConnectorProperty */
 	private States\IDeviceProperty|States\IChannelProperty|States\IConnectorProperty $previousState;
 
-	/** @var States\IChannelProperty|States\IDeviceProperty|States\IConnectorProperty */
 	private States\IDeviceProperty|States\IChannelProperty|States\IConnectorProperty $state;
 
 	public function __construct(
@@ -50,25 +47,16 @@ class StateEntityUpdatedEvent extends EventDispatcher\Event
 		$this->state = $state;
 	}
 
-	/**
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty|Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-	 */
 	public function getProperty(): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
 	{
 		return $this->property;
 	}
 
-	/**
-	 * @return States\IChannelProperty|States\IConnectorProperty|States\IDeviceProperty
-	 */
 	public function getPreviousState(): States\IConnectorProperty|States\IChannelProperty|States\IDeviceProperty
 	{
 		return $this->previousState;
 	}
 
-	/**
-	 * @return States\IChannelProperty|States\IConnectorProperty|States\IDeviceProperty
-	 */
 	public function getState(): States\IConnectorProperty|States\IChannelProperty|States\IDeviceProperty
 	{
 		return $this->state;

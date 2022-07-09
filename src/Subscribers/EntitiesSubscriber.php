@@ -23,7 +23,6 @@ use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
-use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
@@ -51,34 +50,24 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
-	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository;
 
-	/** @var Models\States\DevicePropertiesManager */
 	private Models\States\DevicePropertiesManager $devicePropertiesStatesManager;
 
-	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository;
 
-	/** @var Models\States\ChannelPropertiesManager */
 	private Models\States\ChannelPropertiesManager $channelPropertiesStatesManager;
 
-	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository;
 
-	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager;
 
-	/** @var DataStorage\Writer */
 	private DataStorage\Writer $configurationDataWriter;
 
-	/** @var ExchangeEntities\EntityFactory */
 	private ExchangeEntities\EntityFactory $entityFactory;
 
-	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
 
-	/** @var ORM\EntityManagerInterface */
 	private ORM\EntityManagerInterface $entityManager;
 
 	public function __construct(
@@ -169,7 +158,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			$this->publishEntity($entity, self::ACTION_DELETED);
 
 			// Property states cleanup
-			if ($entity instanceof DevicesModule\Entities\Connectors\Properties\IProperty) {
+			if ($entity instanceof DevicesModule\Entities\Connectors\Properties\IDynamicProperty) {
 				try {
 					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
 
@@ -179,10 +168,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				} catch (Exceptions\NotImplementedException $ex) {
 					return;
 				}
-			} elseif (
-				$entity instanceof DevicesModule\Entities\Devices\Properties\IProperty
-				&& $entity->getParent() === null
-			) {
+			} elseif ($entity instanceof DevicesModule\Entities\Devices\Properties\IDynamicProperty) {
 				try {
 					$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
@@ -192,10 +178,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				} catch (Exceptions\NotImplementedException $ex) {
 					return;
 				}
-			} elseif (
-				$entity instanceof DevicesModule\Entities\Channels\Properties\IProperty
-				&& $entity->getParent() === null
-			) {
+			} elseif ($entity instanceof DevicesModule\Entities\Channels\Properties\IDynamicProperty) {
 				try {
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
 
@@ -292,11 +275,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		);
 	}
 
-	/**
-	 * @param string $class
-	 *
-	 * @return string
-	 */
 	private function getRealClass(string $class): string
 	{
 		$pos = strrpos($class, '\\' . Persistence\Proxy::MARKER . '\\');
@@ -355,25 +333,22 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		if ($publishRoutingKey !== null) {
-			if (
-				$entity instanceof Entities\Devices\Properties\IProperty
-				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-			) {
+			if ($entity instanceof Entities\Devices\Properties\IDynamicProperty) {
 				try {
 					$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
-					$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-					$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
-						$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
-							'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
-							'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
-							'pending'       => $state->isPending(),
-							'valid'         => $state->isValid(),
-						] : [], $entity->toArray())), $publishRoutingKey)
+						$this->entityFactory->create(
+							Utils\Json::encode(
+								array_merge(
+									$entity->toArray(),
+									$state !== null ? $state->toArray() : []
+								)
+							),
+							$publishRoutingKey
+						)
 					);
 
 				} catch (Exceptions\NotImplementedException $ex) {
@@ -383,25 +358,22 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
 				}
-			} elseif (
-				$entity instanceof Entities\Channels\Properties\IProperty
-				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-			) {
+			} elseif ($entity instanceof Entities\Channels\Properties\IDynamicProperty) {
 				try {
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
 
-					$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-					$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
-						$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
-							'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
-							'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
-							'pending'       => $state->isPending(),
-							'valid'         => $state->isValid(),
-						] : [], $entity->toArray())), $publishRoutingKey)
+						$this->entityFactory->create(
+							Utils\Json::encode(
+								array_merge(
+									$entity->toArray(),
+									$state !== null ? $state->toArray() : []
+								)
+							),
+							$publishRoutingKey
+						)
 					);
 
 				} catch (Exceptions\NotImplementedException $ex) {
@@ -411,25 +383,22 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
 					);
 				}
-			} elseif (
-				$entity instanceof Entities\Connectors\Properties\IProperty
-				&& $entity->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC)
-			) {
+			} elseif ($entity instanceof Entities\Connectors\Properties\IDynamicProperty) {
 				try {
 					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
-
-					$actualValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getActualValue(), $entity->getFormat(), $entity->getInvalid()) : null;
-					$expectedValue = $state ? Utilities\ValueHelper::normalizeValue($entity->getDataType(), $state->getExpectedValue(), $entity->getFormat(), $entity->getInvalid()) : null;
 
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
-						$this->entityFactory->create(Utils\Json::encode(array_merge($state !== null ? [
-							'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
-							'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
-							'pending'       => $state->isPending(),
-							'valid'         => $state->isValid(),
-						] : [], $entity->toArray())), $publishRoutingKey)
+						$this->entityFactory->create(
+							Utils\Json::encode(
+								array_merge(
+									$entity->toArray(),
+									$state !== null ? $state->toArray() : []
+								)
+							),
+							$publishRoutingKey
+						)
 					);
 
 				} catch (Exceptions\NotImplementedException $ex) {
@@ -449,12 +418,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 	}
 
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param string $class
-	 *
-	 * @return bool
-	 */
 	private function validateEntity(Entities\IEntity $entity, string $class): bool
 	{
 		$result = false;
@@ -470,11 +433,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		return $result;
 	}
 
-	/**
-	 * @param object $entity
-	 *
-	 * @return bool
-	 */
 	private function validateNamespace(object $entity): bool
 	{
 		try {

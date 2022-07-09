@@ -31,7 +31,7 @@ trait TEntityParams
 {
 
 	/**
-	 * @var mixed[]|null
+	 * @var Array<string, mixed>|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="json", name="params", nullable=true)
@@ -47,7 +47,7 @@ trait TEntityParams
 	}
 
 	/**
-	 * @param mixed[] $params
+	 * @param Array<string, mixed> $params
 	 *
 	 * @return void
 	 */

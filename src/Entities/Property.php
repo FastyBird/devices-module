@@ -511,7 +511,7 @@ abstract class Property implements IProperty
 	 */
 	public function toArray(): array
 	{
-		return [
+		$data = [
 			'id'                 => $this->getPlainId(),
 			'type'               => $this->getType()->getValue(),
 			'identifier'         => $this->getIdentifier(),
@@ -524,6 +524,15 @@ abstract class Property implements IProperty
 			'invalid'            => $this->getInvalid(),
 			'number_of_decimals' => $this->getNumberOfDecimals(),
 		];
+
+		if ($this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+			return array_merge($data, [
+				'default' => Utilities\ValueHelper::flattenValue($this->getDefault()),
+				'value'   => Utilities\ValueHelper::flattenValue($this->getValue()),
+			]);
+		}
+
+		return $data;
 	}
 
 }

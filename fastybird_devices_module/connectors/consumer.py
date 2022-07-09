@@ -58,9 +58,9 @@ class ConnectorConsumer(IConsumer):  # pylint: disable=too-few-public-methods
     ]
 
     __CONTROLS_ACTIONS_ROUTING_KEYS: List[RoutingKey] = [
-        RoutingKey.CONNECTOR_ACTION,
-        RoutingKey.DEVICE_ACTION,
-        RoutingKey.CHANNEL_ACTION,
+        RoutingKey.CONNECTOR_CONTROL_ACTION,
+        RoutingKey.DEVICE_CONTROL_ACTION,
+        RoutingKey.CHANNEL_CONTROL_ACTION,
     ]
 
     __queue: ConnectorQueue

@@ -126,9 +126,9 @@ final class Constants
 	];
 
 	public const CONTROLS_ACTIONS_ROUTING_KEYS = [
-		MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_ACTION,
-		MetadataTypes\RoutingKeyType::ROUTE_DEVICE_ACTION,
-		MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_ACTION,
+		MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_CONTROL_ACTION,
+		MetadataTypes\RoutingKeyType::ROUTE_DEVICE_CONTROL_ACTION,
+		MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_CONTROL_ACTION,
 	];
 
 }

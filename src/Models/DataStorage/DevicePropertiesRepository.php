@@ -23,7 +23,6 @@ use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IteratorAggregate;
 use Nette;
-use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
 

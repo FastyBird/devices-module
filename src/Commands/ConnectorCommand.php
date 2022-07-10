@@ -17,11 +17,13 @@ namespace FastyBird\DevicesModule\Commands;
 
 use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule\Connectors;
+use FastyBird\DevicesModule\Consumers;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
+use FastyBird\Exchange\Consumer as ExchangeConsumer;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette\Localization;
@@ -78,6 +80,8 @@ class ConnectorCommand extends Console\Command\Command
 		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager,
 		Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository,
 		Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager,
+		Consumers\ConnectorConsumer $connectorConsumer,
+		ExchangeConsumer\Consumer $consumer,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
 		Localization\Translator $translator,
 		EventLoop\LoopInterface $eventLoop,
@@ -100,6 +104,8 @@ class ConnectorCommand extends Console\Command\Command
 
 		$this->logger = $logger ?? new Log\NullLogger();
 
+		$consumer->register($connectorConsumer);
+
 		parent::__construct($name);
 	}
 
@@ -109,7 +115,7 @@ class ConnectorCommand extends Console\Command\Command
 			->setName('fb:devices-module:connector')
 			->addArgument('connector', Input\InputArgument::OPTIONAL, $this->translator->translate('//commands.connector.inputs.connector.title'))
 			->addOption('noconfirm', null, Input\InputOption::VALUE_NONE, 'do not ask for any confirmation')
-			->setDescription('Run connector service.');
+			->setDescription('Connector communication service');
 	}
 
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
@@ -274,6 +280,10 @@ class ConnectorCommand extends Console\Command\Command
 				'settable'   => false,
 				'queryable'  => false,
 			]));
+		}
+
+		if (!$property instanceof Entities\Connectors\Properties\IDynamicProperty) {
+			throw new Exceptions\InvalidStateException('Connector property entity is not valid type');
 		}
 
 		$propertyState = $this->connectorPropertiesStateRepository->findOne($property);

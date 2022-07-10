@@ -50,7 +50,7 @@ class InitializeCommand extends Console\Command\Command
 		$this
 			->setName('fb:devices-module:initialize')
 			->addOption('noconfirm', null, Input\InputOption::VALUE_NONE, 'do not ask for any confirmation')
-			->setDescription('Initialize module.');
+			->setDescription('Devices module initialization');
 	}
 
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int

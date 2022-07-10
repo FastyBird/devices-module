@@ -45,23 +45,31 @@ final class DevicePropertiesRepository
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
 	 *
 	 * @return States\IDeviceProperty|null
 	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
 	): ?States\IDeviceProperty {
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Device properties state repository is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			if ($property->getParent() instanceof Entities\Devices\Properties\IProperty) {
-				return $this->repository->findOne($property->getParent());
+			$parent = $property->getParent();
+
+			if (
+				$parent instanceof Entities\Devices\Properties\IDynamicProperty
+				|| $parent instanceof Entities\Devices\Properties\IMappedProperty
+			) {
+				return $this->repository->findOne($parent);
+
+			} elseif ($parent instanceof Uuid\UuidInterface) {
+				return $this->repository->findOneById($parent);
 
 			} else {
-				return $this->repository->findOneById($property->getParent());
+				return null;
 			}
 		}
 

@@ -98,16 +98,16 @@ final class Reader
 
 		$dataConfiguration = Utils\Json::decode($dataConfiguration, Utils\Json::FORCE_ARRAY);
 
-		$this->connectorsRepository->reset();
-		$this->connectorPropertiesRepository->reset();
-		$this->connectorControlsRepository->reset();
-		$this->devicesRepository->reset();
-		$this->devicePropertiesRepository->reset();
-		$this->deviceControlsRepository->reset();
-		$this->deviceAttributesRepository->reset();
-		$this->channelsRepository->reset();
-		$this->channelPropertiesRepository->reset();
-		$this->channelControlsRepository->reset();
+		$this->connectorsRepository->clear();
+		$this->connectorPropertiesRepository->clear();
+		$this->connectorControlsRepository->clear();
+		$this->devicesRepository->clear();
+		$this->devicePropertiesRepository->clear();
+		$this->deviceControlsRepository->clear();
+		$this->deviceAttributesRepository->clear();
+		$this->channelsRepository->clear();
+		$this->channelPropertiesRepository->clear();
+		$this->channelControlsRepository->clear();
 
 		if (!is_array($dataConfiguration)) {
 			return;

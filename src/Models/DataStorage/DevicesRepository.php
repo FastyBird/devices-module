@@ -42,7 +42,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	private array $rawData;
 
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceEntity> */
-	private array $devices;
+	private array $entities;
 
 	private MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory;
 
@@ -52,7 +52,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 		$this->entityFactory = $entityFactory;
 
 		$this->rawData = [];
-		$this->devices = [];
+		$this->entities = [];
 	}
 
 	/**
@@ -78,14 +78,14 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 		Uuid\UuidInterface $connector,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity {
-		foreach ($this->rawData as $id => $device) {
+		foreach ($this->rawData as $id => $entity) {
 			if (
-				array_key_exists('connector', $device)
-				&& $connector->toString() === $device['connector']
-				&& array_key_exists('identifier', $device)
-				&& $device['identifier'] === $identifier
+				array_key_exists('connector', $entity)
+				&& $connector->toString() === $entity['connector']
+				&& array_key_exists('identifier', $entity)
+				&& $entity['identifier'] === $identifier
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $device);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
 		}
 
@@ -99,15 +99,15 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
-		$devices = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $device) {
-			if (array_key_exists('connector', $device) && $connector->toString() === $device['connector']) {
-				$devices[] = $this->getEntity(Uuid\Uuid::fromString($id), $device);
+		foreach ($this->rawData as $id => $entity) {
+			if (array_key_exists('connector', $entity) && $connector->toString() === $entity['connector']) {
+				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
 		}
 
-		return $devices;
+		return $entities;
 	}
 
 	/**
@@ -117,18 +117,38 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	{
 		$this->rawData[$id->toString()] = $data;
 
-		if (!array_key_exists($id->toString(), $this->devices)) {
-			unset($this->devices[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->entities)) {
+			unset($this->entities[$id->toString()]);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function reset(): void
+	public function clear(): void
 	{
 		$this->rawData = [];
-		$this->devices = [];
+		$this->entities = [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(Uuid\UuidInterface|array $id): void
+	{
+		if ($id instanceof Uuid\UuidInterface) {
+			if (array_key_exists($id->toString(), $this->entities)) {
+				unset($this->entities[$id->toString()]);
+			}
+		} else {
+			$ids = $id;
+
+			foreach ($ids as $id) {
+				if (array_key_exists($id->toString(), $this->entities)) {
+					unset($this->entities[$id->toString()]);
+				}
+			}
+		}
 	}
 
 	/**
@@ -146,13 +166,13 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
-		$devices = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $device) {
-			$devices[] = $this->getEntity(Uuid\Uuid::fromString($id), $device);
+		foreach ($this->rawData as $id => $entity) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($devices);
+		return new RecursiveArrayIterator($entities);
 	}
 
 	/**
@@ -167,11 +187,11 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 		Uuid\UuidInterface $id,
 		array $data
 	): MetadataEntities\Modules\DevicesModule\IDeviceEntity {
-		if (!array_key_exists($id->toString(), $this->devices)) {
-			$this->devices[$id->toString()] = $this->entityFactory->create($data);
+		if (!array_key_exists($id->toString(), $this->entities)) {
+			$this->entities[$id->toString()] = $this->entityFactory->create($data);
 		}
 
-		return $this->devices[$id->toString()];
+		return $this->entities[$id->toString()];
 	}
 
 }

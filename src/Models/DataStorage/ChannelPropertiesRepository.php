@@ -45,7 +45,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	private array $rawData;
 
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> */
-	private array $properties;
+	private array $entities;
 
 	private Models\States\ChannelPropertiesRepository $statesRepository;
 
@@ -59,7 +59,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 		$this->entityFactory = $entityFactory;
 
 		$this->rawData = [];
-		$this->properties = [];
+		$this->entities = [];
 	}
 
 	/**
@@ -86,14 +86,14 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 		Uuid\UuidInterface $channel,
 		string $identifier
 	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null {
-		foreach ($this->rawData as $id => $property) {
+		foreach ($this->rawData as $id => $entity) {
 			if (
-				array_key_exists('channel', $property)
-				&& $channel->toString() === $property['channel']
-				&& array_key_exists('identifier', $property)
-				&& $property['identifier'] === $identifier
+				array_key_exists('channel', $entity)
+				&& $channel->toString() === $entity['channel']
+				&& array_key_exists('identifier', $entity)
+				&& $entity['identifier'] === $identifier
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $property);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
 		}
 
@@ -107,15 +107,15 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function findAllByChannel(Uuid\UuidInterface $channel): array
 	{
-		$properties = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $property) {
-			if (array_key_exists('channel', $property) && $channel->toString() === $property['channel']) {
-				$properties[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+		foreach ($this->rawData as $id => $entity) {
+			if (array_key_exists('channel', $entity) && $channel->toString() === $entity['channel']) {
+				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
 			}
 		}
 
-		return $properties;
+		return $entities;
 	}
 
 	/**
@@ -125,18 +125,38 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	{
 		$this->rawData[$id->toString()] = $data;
 
-		if (!array_key_exists($id->toString(), $this->properties)) {
-			unset($this->properties[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->entities)) {
+			unset($this->entities[$id->toString()]);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function reset(): void
+	public function clear(): void
 	{
 		$this->rawData = [];
-		$this->properties = [];
+		$this->entities = [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(Uuid\UuidInterface|array $id): void
+	{
+		if ($id instanceof Uuid\UuidInterface) {
+			if (array_key_exists($id->toString(), $this->entities)) {
+				unset($this->entities[$id->toString()]);
+			}
+		} else {
+			$ids = $id;
+
+			foreach ($ids as $id) {
+				if (array_key_exists($id->toString(), $this->entities)) {
+					unset($this->entities[$id->toString()]);
+				}
+			}
+		}
 	}
 
 	/**
@@ -154,13 +174,13 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
-		$properties = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $property) {
-			$properties[] = $this->getEntity(Uuid\Uuid::fromString($id), $property);
+		foreach ($this->rawData as $id => $entity) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($properties);
+		return new RecursiveArrayIterator($entities);
 	}
 
 	/**
@@ -175,7 +195,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 		Uuid\UuidInterface $id,
 		array $data
 	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity {
-		if (!array_key_exists($id->toString(), $this->properties)) {
+		if (!array_key_exists($id->toString(), $this->entities)) {
 			$state = [];
 
 			if (
@@ -195,13 +215,13 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
 				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
 			) {
-				$this->properties[$id->toString()] = $entity;
+				$this->entities[$id->toString()] = $entity;
 			} else {
 				throw new Exceptions\InvalidStateException('Channel property entity could not be created');
 			}
 		}
 
-		return $this->properties[$id->toString()];
+		return $this->entities[$id->toString()];
 	}
 
 	/**
@@ -212,9 +232,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	private function loadPropertyState(Uuid\UuidInterface $id): array
 	{
 		try {
-			$propertyState = $this->statesRepository->findOneById($id);
+			$entityState = $this->statesRepository->findOneById($id);
 
-			return $propertyState !== null ? $propertyState->toArray() : [];
+			return $entityState !== null ? $entityState->toArray() : [];
 		} catch (Exceptions\NotImplementedException $ex) {
 			return [];
 		}

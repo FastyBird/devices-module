@@ -54,6 +54,13 @@ interface IConnectorControlsRepository
 	/**
 	 * @return void
 	 */
-	public function reset(): void;
+	public function clear(): void;
+
+	/**
+	 * @param Uuid\UuidInterface|Array<int, Uuid\UuidInterface> $id
+	 *
+	 * @return void
+	 */
+	public function reset(Uuid\UuidInterface|array $id): void;
 
 }

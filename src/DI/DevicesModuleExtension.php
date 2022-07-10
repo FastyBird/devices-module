@@ -83,16 +83,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('router.validator'), new DI\Definitions\ServiceDefinition())
 			->setType(Router\Validator::class);
 
-		// Console commands
-		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\InitializeCommand::class);
-
-		$builder->addDefinition($this->prefix('commands.dataStorage'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\DataStorageCommand::class);
-
-		$builder->addDefinition($this->prefix('commands.connector'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\ConnectorCommand::class);
-
 		// Database repositories
 		$builder->addDefinition($this->prefix('models.devicesRepository'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\Devices\DevicesRepository::class);
@@ -171,9 +161,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		$builder->addDefinition($this->prefix('subscribers.states'), new DI\Definitions\ServiceDefinition())
 			->setType(Subscribers\StatesSubscriber::class);
-
-		$builder->addDefinition($this->prefix('subscribers.exchange'), new DI\Definitions\ServiceDefinition())
-			->setType(Subscribers\ExchangeSubscriber::class);
 
 		$builder->addDefinition($this->prefix('subscribers.dataStorage'), new DI\Definitions\ServiceDefinition())
 			->setType(Subscribers\DataStorageSubscriber::class);
@@ -377,8 +364,32 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Connectors\ConnectorFactory::class);
 
 		// Consumers
-		$builder->addDefinition($this->prefix('consumer.exchange'), new DI\Definitions\ServiceDefinition())
-			->setType(Consumers\DataExchangeConsumer::class);
+		$builder->addDefinition($this->prefix('consumer.connector'), new DI\Definitions\ServiceDefinition())
+			->setType(Consumers\ConnectorConsumer::class)
+			->setAutowired(false);
+
+		$builder->addDefinition($this->prefix('consumer.dataExchange'), new DI\Definitions\ServiceDefinition())
+			->setType(Consumers\DataExchangeConsumer::class)
+			->setAutowired(false);
+
+		// Console commands
+		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())
+			->setType(Commands\InitializeCommand::class);
+
+		$builder->addDefinition($this->prefix('commands.dataStorage'), new DI\Definitions\ServiceDefinition())
+			->setType(Commands\DataStorageCommand::class);
+
+		$builder->addDefinition($this->prefix('commands.connector'), new DI\Definitions\ServiceDefinition())
+			->setType(Commands\ConnectorCommand::class)
+			->setArguments([
+				'connectorConsumer' => '@' . $this->prefix('consumer.connector'),
+			]);
+
+		$builder->addDefinition($this->prefix('commands.dataExchange'), new DI\Definitions\ServiceDefinition())
+			->setType(Commands\DataExchangeCommand::class)
+			->setArguments([
+				'dataExchangeConsumer' => '@' . $this->prefix('consumer.dataExchange'),
+			]);
 	}
 
 	public function beforeCompile(): void

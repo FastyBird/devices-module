@@ -8,9 +8,9 @@
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
  * @subpackage     Consumers
- * @since          0.60.0
+ * @since          0.72.0
  *
- * @date           31.05.22
+ * @date           10.07.22
  */
 
 namespace FastyBird\DevicesModule\Consumers;
@@ -28,7 +28,7 @@ use Psr\EventDispatcher;
 use Psr\Log;
 
 /**
- * Exchange consumer for connectors
+ * Exchange worker consumer for connectors
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Consumers
@@ -100,7 +100,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 	}
 
 	public function consume(
-		$source,
+		MetadataTypes\ModuleSourceType|MetadataTypes\PluginSourceType|MetadataTypes\ConnectorSourceType $source,
 		MetadataTypes\RoutingKeyType $routingKey,
 		?MetadataEntities\IEntity $entity
 	): void {

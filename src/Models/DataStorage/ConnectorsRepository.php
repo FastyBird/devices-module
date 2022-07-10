@@ -42,7 +42,7 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 	private array $rawData;
 
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorEntity> */
-	private array $connectors;
+	private array $entities;
 
 	private MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory;
 
@@ -52,7 +52,7 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 		$this->entityFactory = $entityFactory;
 
 		$this->rawData = [];
-		$this->connectors = [];
+		$this->entities = [];
 	}
 
 	/**
@@ -76,12 +76,12 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 	 */
 	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity
 	{
-		foreach ($this->rawData as $id => $connector) {
+		foreach ($this->rawData as $id => $entity) {
 			if (
-				array_key_exists('identifier', $connector)
-				&& $connector['identifier'] === $identifier
+				array_key_exists('identifier', $entity)
+				&& $entity['identifier'] === $identifier
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $connector);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
 		}
 
@@ -95,18 +95,38 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 	{
 		$this->rawData[$id->toString()] = $data;
 
-		if (!array_key_exists($id->toString(), $this->connectors)) {
-			unset($this->connectors[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->entities)) {
+			unset($this->entities[$id->toString()]);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function reset(): void
+	public function clear(): void
 	{
 		$this->rawData = [];
-		$this->connectors = [];
+		$this->entities = [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(Uuid\UuidInterface|array $id): void
+	{
+		if ($id instanceof Uuid\UuidInterface) {
+			if (array_key_exists($id->toString(), $this->entities)) {
+				unset($this->entities[$id->toString()]);
+			}
+		} else {
+			$ids = $id;
+
+			foreach ($ids as $id) {
+				if (array_key_exists($id->toString(), $this->entities)) {
+					unset($this->entities[$id->toString()]);
+				}
+			}
+		}
 	}
 
 	/**
@@ -124,13 +144,13 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
-		$connectors = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $connector) {
-			$connectors[] = $this->getEntity(Uuid\Uuid::fromString($id), $connector);
+		foreach ($this->rawData as $id => $entity) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($connectors);
+		return new RecursiveArrayIterator($entities);
 	}
 
 	/**
@@ -145,11 +165,11 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 		Uuid\UuidInterface $id,
 		array $data
 	): MetadataEntities\Modules\DevicesModule\IConnectorEntity {
-		if (!array_key_exists($id->toString(), $this->connectors)) {
-			$this->connectors[$id->toString()] = $this->entityFactory->create($data);
+		if (!array_key_exists($id->toString(), $this->entities)) {
+			$this->entities[$id->toString()] = $this->entityFactory->create($data);
 		}
 
-		return $this->connectors[$id->toString()];
+		return $this->entities[$id->toString()];
 	}
 
 }

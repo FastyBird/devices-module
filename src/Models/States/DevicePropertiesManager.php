@@ -53,13 +53,13 @@ final class DevicePropertiesManager
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
 	 * @param Utils\ArrayHash $values
 	 *
 	 * @return States\IDeviceProperty
 	 */
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property,
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
 		Utils\ArrayHash $values
 	): States\IDeviceProperty {
 		if ($this->manager === null) {
@@ -78,14 +78,14 @@ final class DevicePropertiesManager
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
 	 * @param States\IDeviceProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
 	 * @return States\IDeviceProperty
 	 */
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property,
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
 		States\IDeviceProperty $state,
 		Utils\ArrayHash $values
 	): States\IDeviceProperty {
@@ -99,19 +99,21 @@ final class DevicePropertiesManager
 
 		$updatedState = $this->manager->update($property, $state, $values);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
+		if ($state->toArray() !== $updatedState->toArray()) {
+			$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
+		}
 
 		return $updatedState;
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity $property
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
 	 * @param States\IDeviceProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Entities\Devices\Properties\IProperty $property,
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
 		States\IDeviceProperty $state
 	): bool {
 		if ($this->manager === null) {

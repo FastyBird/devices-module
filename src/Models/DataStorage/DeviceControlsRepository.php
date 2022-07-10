@@ -42,7 +42,7 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	private array $rawData;
 
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceControlEntity> */
-	private array $controls;
+	private array $entities;
 
 	private MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory;
 
@@ -52,7 +52,7 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 		$this->entityFactory = $entityFactory;
 
 		$this->rawData = [];
-		$this->controls = [];
+		$this->entities = [];
 	}
 
 	/**
@@ -76,15 +76,15 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
-		$controls = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $control) {
-			if (array_key_exists('device', $control) && $device->toString() === $control['device']) {
-				$controls[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+		foreach ($this->rawData as $id => $entity) {
+			if (array_key_exists('device', $entity) && $device->toString() === $entity['device']) {
+				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
 			}
 		}
 
-		return $controls;
+		return $entities;
 	}
 
 	/**
@@ -94,18 +94,38 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	{
 		$this->rawData[$id->toString()] = $data;
 
-		if (!array_key_exists($id->toString(), $this->controls)) {
-			unset($this->controls[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->entities)) {
+			unset($this->entities[$id->toString()]);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function reset(): void
+	public function clear(): void
 	{
 		$this->rawData = [];
-		$this->controls = [];
+		$this->entities = [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(Uuid\UuidInterface|array $id): void
+	{
+		if ($id instanceof Uuid\UuidInterface) {
+			if (array_key_exists($id->toString(), $this->entities)) {
+				unset($this->entities[$id->toString()]);
+			}
+		} else {
+			$ids = $id;
+
+			foreach ($ids as $id) {
+				if (array_key_exists($id->toString(), $this->entities)) {
+					unset($this->entities[$id->toString()]);
+				}
+			}
+		}
 	}
 
 	/**
@@ -123,13 +143,13 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
-		$controls = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $control) {
-			$controls[] = $this->getEntity(Uuid\Uuid::fromString($id), $control);
+		foreach ($this->rawData as $id => $entity) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($controls);
+		return new RecursiveArrayIterator($entities);
 	}
 
 	/**
@@ -144,11 +164,11 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 		Uuid\UuidInterface $id,
 		array $data
 	): MetadataEntities\Modules\DevicesModule\IDeviceControlEntity {
-		if (!array_key_exists($id->toString(), $this->controls)) {
-			$this->controls[$id->toString()] = $this->entityFactory->create($data);
+		if (!array_key_exists($id->toString(), $this->entities)) {
+			$this->entities[$id->toString()] = $this->entityFactory->create($data);
 		}
 
-		return $this->controls[$id->toString()];
+		return $this->entities[$id->toString()];
 	}
 
 }

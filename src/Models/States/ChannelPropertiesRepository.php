@@ -45,23 +45,31 @@ final class ChannelPropertiesRepository
 	}
 
 	/**
-	 * @param Entities\Channels\Properties\IProperty|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity $property
+	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
 	 *
 	 * @return States\IChannelProperty|null
 	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Entities\Channels\Properties\IProperty $property
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
 	): ?States\IChannelProperty {
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplementedException('Channel properties state repository is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			if ($property->getParent() instanceof Entities\Channels\Properties\IProperty) {
-				return $this->repository->findOne($property->getParent());
+			$parent = $property->getParent();
+
+			if (
+				$parent instanceof Entities\Channels\Properties\IDynamicProperty
+				|| $parent instanceof Entities\Channels\Properties\IMappedProperty
+			) {
+				return $this->repository->findOne($parent);
+
+			} elseif ($parent instanceof Uuid\UuidInterface) {
+				return $this->repository->findOneById($parent);
 
 			} else {
-				return $this->repository->findOneById($property->getParent());
+				return null;
 			}
 		}
 

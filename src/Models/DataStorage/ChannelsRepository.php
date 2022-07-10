@@ -42,7 +42,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	private array $rawData;
 
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelEntity> */
-	private array $channels;
+	private array $entities;
 
 	private MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $entityFactory;
 
@@ -52,7 +52,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 		$this->entityFactory = $entityFactory;
 
 		$this->rawData = [];
-		$this->channels = [];
+		$this->entities = [];
 	}
 
 	/**
@@ -78,14 +78,14 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 		Uuid\UuidInterface $device,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IChannelEntity {
-		foreach ($this->rawData as $id => $channel) {
+		foreach ($this->rawData as $id => $entity) {
 			if (
-				array_key_exists('device', $channel)
-				&& $device->toString() === $channel['device']
-				&& array_key_exists('identifier', $channel)
-				&& $channel['identifier'] === $identifier
+				array_key_exists('device', $entity)
+				&& $device->toString() === $entity['device']
+				&& array_key_exists('identifier', $entity)
+				&& $entity['identifier'] === $identifier
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $channel);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
 		}
 
@@ -99,15 +99,15 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
-		$channels = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $channel) {
-			if (array_key_exists('device', $channel) && $device->toString() === $channel['device']) {
-				$channels[] = $this->getEntity(Uuid\Uuid::fromString($id), $channel);
+		foreach ($this->rawData as $id => $entity) {
+			if (array_key_exists('device', $entity) && $device->toString() === $entity['device']) {
+				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
 		}
 
-		return $channels;
+		return $entities;
 	}
 
 	/**
@@ -117,18 +117,38 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	{
 		$this->rawData[$id->toString()] = $data;
 
-		if (!array_key_exists($id->toString(), $this->channels)) {
-			unset($this->channels[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->entities)) {
+			unset($this->entities[$id->toString()]);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function reset(): void
+	public function clear(): void
 	{
 		$this->rawData = [];
-		$this->channels = [];
+		$this->entities = [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function reset(Uuid\UuidInterface|array $id): void
+	{
+		if ($id instanceof Uuid\UuidInterface) {
+			if (array_key_exists($id->toString(), $this->entities)) {
+				unset($this->entities[$id->toString()]);
+			}
+		} else {
+			$ids = $id;
+
+			foreach ($ids as $id) {
+				if (array_key_exists($id->toString(), $this->entities)) {
+					unset($this->entities[$id->toString()]);
+				}
+			}
+		}
 	}
 
 	/**
@@ -146,13 +166,13 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
-		$channels = [];
+		$entities = [];
 
-		foreach ($this->rawData as $id => $channel) {
-			$channels[] = $this->getEntity(Uuid\Uuid::fromString($id), $channel);
+		foreach ($this->rawData as $id => $entity) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($channels);
+		return new RecursiveArrayIterator($entities);
 	}
 
 	/**
@@ -167,11 +187,11 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 		Uuid\UuidInterface $id,
 		array $data
 	): MetadataEntities\Modules\DevicesModule\IChannelEntity {
-		if (!array_key_exists($id->toString(), $this->channels)) {
-			$this->channels[$id->toString()] = $this->entityFactory->create($data);
+		if (!array_key_exists($id->toString(), $this->entities)) {
+			$this->entities[$id->toString()] = $this->entityFactory->create($data);
 		}
 
-		return $this->channels[$id->toString()];
+		return $this->entities[$id->toString()];
 	}
 
 }

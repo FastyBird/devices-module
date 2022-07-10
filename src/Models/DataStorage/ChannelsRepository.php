@@ -39,6 +39,9 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	use Nette\SmartObject;
 
 	/** @var Array<string, Array<string, mixed>> */
+	private array $rawData;
+
+	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelEntity> */
 	private array $channels;
 
 	private MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $entityFactory;
@@ -48,6 +51,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	) {
 		$this->entityFactory = $entityFactory;
 
+		$this->rawData = [];
 		$this->channels = [];
 	}
 
@@ -58,8 +62,8 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelEntity
 	{
-		if (array_key_exists($id->toString(), $this->channels)) {
-			return $this->entityFactory->create($this->channels[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->rawData)) {
+			return $this->getEntity($id, $this->rawData[$id->toString()]);
 		}
 
 		return null;
@@ -74,14 +78,14 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 		Uuid\UuidInterface $device,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IChannelEntity {
-		foreach ($this->channels as $channel) {
+		foreach ($this->rawData as $id => $channel) {
 			if (
 				array_key_exists('device', $channel)
 				&& $device->toString() === $channel['device']
 				&& array_key_exists('identifier', $channel)
 				&& $channel['identifier'] === $identifier
 			) {
-				return $this->entityFactory->create($channel);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $channel);
 			}
 		}
 
@@ -97,9 +101,9 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	{
 		$channels = [];
 
-		foreach ($this->channels as $channel) {
+		foreach ($this->rawData as $id => $channel) {
 			if (array_key_exists('device', $channel) && $device->toString() === $channel['device']) {
-				$channels[] = $this->entityFactory->create($channel);
+				$channels[] = $this->getEntity(Uuid\Uuid::fromString($id), $channel);
 			}
 		}
 
@@ -109,9 +113,13 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(Uuid\UuidInterface $id, array $entity): void
+	public function append(Uuid\UuidInterface $id, array $data): void
 	{
-		$this->channels[$id->toString()] = $entity;
+		$this->rawData[$id->toString()] = $data;
+
+		if (!array_key_exists($id->toString(), $this->channels)) {
+			unset($this->channels[$id->toString()]);
+		}
 	}
 
 	/**
@@ -119,6 +127,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function reset(): void
 	{
+		$this->rawData = [];
 		$this->channels = [];
 	}
 
@@ -127,7 +136,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	 */
 	public function count(): int
 	{
-		return count($this->channels);
+		return count($this->rawData);
 	}
 
 	/**
@@ -139,11 +148,30 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	{
 		$channels = [];
 
-		foreach ($this->channels as $channel) {
-			$channels[] = $this->entityFactory->create($channel);
+		foreach ($this->rawData as $id => $channel) {
+			$channels[] = $this->getEntity(Uuid\Uuid::fromString($id), $channel);
 		}
 
 		return new RecursiveArrayIterator($channels);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IChannelEntity
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 */
+	private function getEntity(
+		Uuid\UuidInterface $id,
+		array $data
+	): MetadataEntities\Modules\DevicesModule\IChannelEntity {
+		if (!array_key_exists($id->toString(), $this->channels)) {
+			$this->channels[$id->toString()] = $this->entityFactory->create($data);
+		}
+
+		return $this->channels[$id->toString()];
 	}
 
 }

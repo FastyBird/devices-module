@@ -39,6 +39,9 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	use Nette\SmartObject;
 
 	/** @var Array<string, Array<string, mixed>> */
+	private array $rawData;
+
+	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceEntity> */
 	private array $devices;
 
 	private MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory;
@@ -48,6 +51,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	) {
 		$this->entityFactory = $entityFactory;
 
+		$this->rawData = [];
 		$this->devices = [];
 	}
 
@@ -58,8 +62,8 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity
 	{
-		if (array_key_exists($id->toString(), $this->devices)) {
-			return $this->entityFactory->create($this->devices[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->rawData)) {
+			return $this->getEntity($id, $this->rawData[$id->toString()]);
 		}
 
 		return null;
@@ -74,14 +78,14 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 		Uuid\UuidInterface $connector,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity {
-		foreach ($this->devices as $device) {
+		foreach ($this->rawData as $id => $device) {
 			if (
-				array_key_exists('device', $device)
-				&& $connector->toString() === $device['device']
+				array_key_exists('connector', $device)
+				&& $connector->toString() === $device['connector']
 				&& array_key_exists('identifier', $device)
 				&& $device['identifier'] === $identifier
 			) {
-				return $this->entityFactory->create($device);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $device);
 			}
 		}
 
@@ -97,9 +101,9 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	{
 		$devices = [];
 
-		foreach ($this->devices as $device) {
-			if (array_key_exists('device', $device) && $connector->toString() === $device['device']) {
-				$devices[] = $this->entityFactory->create($device);
+		foreach ($this->rawData as $id => $device) {
+			if (array_key_exists('connector', $device) && $connector->toString() === $device['connector']) {
+				$devices[] = $this->getEntity(Uuid\Uuid::fromString($id), $device);
 			}
 		}
 
@@ -109,9 +113,13 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(Uuid\UuidInterface $id, array $entity): void
+	public function append(Uuid\UuidInterface $id, array $data): void
 	{
-		$this->devices[$id->toString()] = $entity;
+		$this->rawData[$id->toString()] = $data;
+
+		if (!array_key_exists($id->toString(), $this->devices)) {
+			unset($this->devices[$id->toString()]);
+		}
 	}
 
 	/**
@@ -119,6 +127,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function reset(): void
 	{
+		$this->rawData = [];
 		$this->devices = [];
 	}
 
@@ -127,7 +136,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	 */
 	public function count(): int
 	{
-		return count($this->devices);
+		return count($this->rawData);
 	}
 
 	/**
@@ -139,11 +148,30 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	{
 		$devices = [];
 
-		foreach ($this->devices as $device) {
-			$devices[] = $this->entityFactory->create($device);
+		foreach ($this->rawData as $id => $device) {
+			$devices[] = $this->getEntity(Uuid\Uuid::fromString($id), $device);
 		}
 
 		return new RecursiveArrayIterator($devices);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IDeviceEntity
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 */
+	private function getEntity(
+		Uuid\UuidInterface $id,
+		array $data
+	): MetadataEntities\Modules\DevicesModule\IDeviceEntity {
+		if (!array_key_exists($id->toString(), $this->devices)) {
+			$this->devices[$id->toString()] = $this->entityFactory->create($data);
+		}
+
+		return $this->devices[$id->toString()];
 	}
 
 }

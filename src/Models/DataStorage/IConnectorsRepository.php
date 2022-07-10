@@ -45,11 +45,11 @@ interface IConnectorsRepository
 
 	/**
 	 * @param Uuid\UuidInterface $id
-	 * @param Array<string, mixed> $entity
+	 * @param Array<string, mixed> $data
 	 *
 	 * @return void
 	 */
-	public function append(Uuid\UuidInterface $id, array $entity): void;
+	public function append(Uuid\UuidInterface $id, array $data): void;
 
 	/**
 	 * @return void

@@ -42,6 +42,9 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	use Nette\SmartObject;
 
 	/** @var Array<string, Array<string, mixed>> */
+	private array $rawData;
+
+	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> */
 	private array $properties;
 
 	private Models\States\ConnectorPropertiesRepository $statesRepository;
@@ -55,6 +58,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 		$this->statesRepository = $statesRepository;
 		$this->entityFactory = $entityFactory;
 
+		$this->rawData = [];
 		$this->properties = [];
 	}
 
@@ -65,33 +69,9 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	 */
 	public function findById(
 		Uuid\UuidInterface $id
-	): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null {
-		if (array_key_exists($id->toString(), $this->properties)) {
-			$data = $this->properties[$id->toString()];
-
-			$state = [];
-
-			if (
-				array_key_exists('type', $data)
-				&& (
-					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-				)
-			) {
-				$state = $this->loadPropertyState($id);
-			}
-
-			$entity = $this->entityFactory->create(array_merge($state, $data));
-
-			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-			) {
-				return $entity;
-			}
-
-			return null;
+	): MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null {
+		if (array_key_exists($id->toString(), $this->rawData)) {
+			return $this->getEntity($id, $this->rawData[$id->toString()]);
 		}
 
 		return null;
@@ -105,37 +85,15 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	public function findByIdentifier(
 		Uuid\UuidInterface $connector,
 		string $identifier
-	): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null {
-		foreach ($this->properties as $id => $property) {
+	): MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null {
+		foreach ($this->rawData as $id => $property) {
 			if (
 				array_key_exists('connector', $property)
 				&& $connector->toString() === $property['connector']
 				&& array_key_exists('identifier', $property)
 				&& $property['identifier'] === $identifier
 			) {
-				$state = [];
-
-				if (
-					array_key_exists('type', $property)
-					&& (
-						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-					)
-				) {
-					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
-				}
-
-				$entity = $this->entityFactory->create(array_merge($state, $property));
-
-				if (
-					$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-				) {
-					return $entity;
-				}
-
-				return null;
+				return $this->getEntity(Uuid\Uuid::fromString($id), $property);
 			}
 		}
 
@@ -151,29 +109,9 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	{
 		$properties = [];
 
-		foreach ($this->properties as $id => $property) {
+		foreach ($this->rawData as $id => $property) {
 			if (array_key_exists('connector', $property) && $connector->toString() === $property['connector']) {
-				$state = [];
-
-				if (
-					array_key_exists('type', $property)
-					&& (
-						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-					)
-				) {
-					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
-				}
-
-				$entity = $this->entityFactory->create(array_merge($state, $property));
-
-				if (
-					$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-				) {
-					$properties[] = $entity;
-				}
+				$properties[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
 			}
 		}
 
@@ -183,9 +121,13 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(Uuid\UuidInterface $id, array $entity): void
+	public function append(Uuid\UuidInterface $id, array $data): void
 	{
-		$this->properties[$id->toString()] = $entity;
+		$this->rawData[$id->toString()] = $data;
+
+		if (!array_key_exists($id->toString(), $this->properties)) {
+			unset($this->properties[$id->toString()]);
+		}
 	}
 
 	/**
@@ -193,6 +135,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	 */
 	public function reset(): void
 	{
+		$this->rawData = [];
 		$this->properties = [];
 	}
 
@@ -201,7 +144,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	 */
 	public function count(): int
 	{
-		return count($this->properties);
+		return count($this->rawData);
 	}
 
 	/**
@@ -213,31 +156,52 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	{
 		$properties = [];
 
-		foreach ($this->properties as $id => $property) {
-			$state = [];
-
-			if (
-				array_key_exists('type', $property)
-				&& (
-					$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-					|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-				)
-			) {
-				$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
-			}
-
-			$entity = $this->entityFactory->create(array_merge($state, $property));
-
-			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
-			) {
-				$properties[] = $entity;
-			}
+		foreach ($this->rawData as $id => $property) {
+			$properties[] = $this->getEntity(Uuid\Uuid::fromString($id), $property);
 		}
 
 		return new RecursiveArrayIterator($properties);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 */
+	private function getEntity(
+		Uuid\UuidInterface $id,
+		array $data
+	): MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity {
+		if (!array_key_exists($id->toString(), $this->properties)) {
+			$state = [];
+
+			if (
+				array_key_exists('type', $data)
+				&& (
+					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+				)
+			) {
+				$state = $this->loadPropertyState($id);
+			}
+
+			$entity = $this->entityFactory->create(array_merge($state, $data));
+
+			if (
+				$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+			) {
+				$this->properties[$id->toString()] = $entity;
+			} else {
+				throw new Exceptions\InvalidStateException('Connector property entity could not be created');
+			}
+		}
+
+		return $this->properties[$id->toString()];
 	}
 
 	/**

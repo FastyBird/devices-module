@@ -39,6 +39,9 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	use Nette\SmartObject;
 
 	/** @var Array<string, Array<string, mixed>> */
+	private array $rawData;
+
+	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelControlEntity> */
 	private array $controls;
 
 	private MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $entityFactory;
@@ -48,6 +51,7 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	) {
 		$this->entityFactory = $entityFactory;
 
+		$this->rawData = [];
 		$this->controls = [];
 	}
 
@@ -58,8 +62,8 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IChannelControlEntity
 	{
-		if (array_key_exists($id->toString(), $this->controls)) {
-			return $this->entityFactory->create($this->controls[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->rawData)) {
+			return $this->getEntity($id, $this->rawData[$id->toString()]);
 		}
 
 		return null;
@@ -74,9 +78,9 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	{
 		$controls = [];
 
-		foreach ($this->controls as $control) {
+		foreach ($this->rawData as $id => $control) {
 			if (array_key_exists('channel', $control) && $channel->toString() === $control['channel']) {
-				$controls[] = $this->entityFactory->create($control);
+				$controls[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
 			}
 		}
 
@@ -86,9 +90,13 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(Uuid\UuidInterface $id, array $entity): void
+	public function append(Uuid\UuidInterface $id, array $data): void
 	{
-		$this->controls[$id->toString()] = $entity;
+		$this->rawData[$id->toString()] = $data;
+
+		if (!array_key_exists($id->toString(), $this->controls)) {
+			unset($this->controls[$id->toString()]);
+		}
 	}
 
 	/**
@@ -96,6 +104,7 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	 */
 	public function reset(): void
 	{
+		$this->rawData = [];
 		$this->controls = [];
 	}
 
@@ -104,7 +113,7 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	 */
 	public function count(): int
 	{
-		return count($this->controls);
+		return count($this->rawData);
 	}
 
 	/**
@@ -116,11 +125,30 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	{
 		$controls = [];
 
-		foreach ($this->controls as $control) {
-			$controls[] = $this->entityFactory->create($control);
+		foreach ($this->rawData as $id => $control) {
+			$controls[] = $this->getEntity(Uuid\Uuid::fromString($id), $control);
 		}
 
 		return new RecursiveArrayIterator($controls);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IChannelControlEntity
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 */
+	private function getEntity(
+		Uuid\UuidInterface $id,
+		array $data
+	): MetadataEntities\Modules\DevicesModule\IChannelControlEntity {
+		if (!array_key_exists($id->toString(), $this->controls)) {
+			$this->controls[$id->toString()] = $this->entityFactory->create($data);
+		}
+
+		return $this->controls[$id->toString()];
 	}
 
 }

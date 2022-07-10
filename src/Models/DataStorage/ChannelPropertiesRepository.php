@@ -42,6 +42,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	use Nette\SmartObject;
 
 	/** @var Array<string, Array<string, mixed>> */
+	private array $rawData;
+
+	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> */
 	private array $properties;
 
 	private Models\States\ChannelPropertiesRepository $statesRepository;
@@ -55,6 +58,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 		$this->statesRepository = $statesRepository;
 		$this->entityFactory = $entityFactory;
 
+		$this->rawData = [];
 		$this->properties = [];
 	}
 
@@ -65,33 +69,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function findById(
 		Uuid\UuidInterface $id
-	): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null {
-		if (array_key_exists($id->toString(), $this->properties)) {
-			$data = $this->properties[$id->toString()];
-
-			$state = [];
-
-			if (
-				array_key_exists('type', $data)
-				&& (
-					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-				)
-			) {
-				$state = $this->loadPropertyState($id);
-			}
-
-			$entity = $this->entityFactory->create(array_merge($state, $data));
-
-			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-			) {
-				return $entity;
-			}
-
-			return null;
+	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null {
+		if (array_key_exists($id->toString(), $this->rawData)) {
+			return $this->getEntity($id, $this->rawData[$id->toString()]);
 		}
 
 		return null;
@@ -105,37 +85,15 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	public function findByIdentifier(
 		Uuid\UuidInterface $channel,
 		string $identifier
-	): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null {
-		foreach ($this->properties as $id => $property) {
+	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null {
+		foreach ($this->rawData as $id => $property) {
 			if (
 				array_key_exists('channel', $property)
 				&& $channel->toString() === $property['channel']
 				&& array_key_exists('identifier', $property)
 				&& $property['identifier'] === $identifier
 			) {
-				$state = [];
-
-				if (
-					array_key_exists('type', $property)
-					&& (
-						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-					)
-				) {
-					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
-				}
-
-				$entity = $this->entityFactory->create(array_merge($state, $property));
-
-				if (
-					$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-				) {
-					return $entity;
-				}
-
-				return null;
+				return $this->getEntity(Uuid\Uuid::fromString($id), $property);
 			}
 		}
 
@@ -151,29 +109,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	{
 		$properties = [];
 
-		foreach ($this->properties as $id => $property) {
+		foreach ($this->rawData as $id => $property) {
 			if (array_key_exists('channel', $property) && $channel->toString() === $property['channel']) {
-				$state = [];
-
-				if (
-					array_key_exists('type', $property)
-					&& (
-						$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-						|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-					)
-				) {
-					$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
-				}
-
-				$entity = $this->entityFactory->create(array_merge($state, $property));
-
-				if (
-					$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-					|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-				) {
-					$properties[] = $entity;
-				}
+				$properties[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
 			}
 		}
 
@@ -183,9 +121,13 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(Uuid\UuidInterface $id, array $entity): void
+	public function append(Uuid\UuidInterface $id, array $data): void
 	{
-		$this->properties[$id->toString()] = $entity;
+		$this->rawData[$id->toString()] = $data;
+
+		if (!array_key_exists($id->toString(), $this->properties)) {
+			unset($this->properties[$id->toString()]);
+		}
 	}
 
 	/**
@@ -193,6 +135,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function reset(): void
 	{
+		$this->rawData = [];
 		$this->properties = [];
 	}
 
@@ -201,7 +144,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	 */
 	public function count(): int
 	{
-		return count($this->properties);
+		return count($this->rawData);
 	}
 
 	/**
@@ -213,31 +156,52 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	{
 		$properties = [];
 
-		foreach ($this->properties as $id => $property) {
-			$state = [];
-
-			if (
-				array_key_exists('type', $property)
-				&& (
-					$property['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-					|| $property['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
-				)
-			) {
-				$state = $this->loadPropertyState(Uuid\Uuid::fromString($id));
-			}
-
-			$entity = $this->entityFactory->create(array_merge($state, $property));
-
-			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			) {
-				$properties[] = $entity;
-			}
+		foreach ($this->rawData as $id => $property) {
+			$properties[] = $this->getEntity(Uuid\Uuid::fromString($id), $property);
 		}
 
 		return new RecursiveArrayIterator($properties);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 */
+	private function getEntity(
+		Uuid\UuidInterface $id,
+		array $data
+	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity {
+		if (!array_key_exists($id->toString(), $this->properties)) {
+			$state = [];
+
+			if (
+				array_key_exists('type', $data)
+				&& (
+					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
+					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+				)
+			) {
+				$state = $this->loadPropertyState($id);
+			}
+
+			$entity = $this->entityFactory->create(array_merge($state, $data));
+
+			if (
+				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
+				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+			) {
+				$this->properties[$id->toString()] = $entity;
+			} else {
+				throw new Exceptions\InvalidStateException('Channel property entity could not be created');
+			}
+		}
+
+		return $this->properties[$id->toString()];
 	}
 
 	/**

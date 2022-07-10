@@ -39,6 +39,9 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	use Nette\SmartObject;
 
 	/** @var Array<string, Array<string, mixed>> */
+	private array $rawData;
+
+	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity> */
 	private array $attributes;
 
 	private MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory $entityFactory;
@@ -48,6 +51,7 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	) {
 		$this->entityFactory = $entityFactory;
 
+		$this->rawData = [];
 		$this->attributes = [];
 	}
 
@@ -58,8 +62,8 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	 */
 	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity
 	{
-		if (array_key_exists($id->toString(), $this->attributes)) {
-			return $this->entityFactory->create($this->attributes[$id->toString()]);
+		if (array_key_exists($id->toString(), $this->rawData)) {
+			return $this->getEntity($id, $this->rawData[$id->toString()]);
 		}
 
 		return null;
@@ -74,14 +78,14 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 		Uuid\UuidInterface $device,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity {
-		foreach ($this->attributes as $attribute) {
+		foreach ($this->rawData as $id => $attribute) {
 			if (
 				array_key_exists('device', $attribute)
 				&& $device->toString() === $attribute['device']
 				&& array_key_exists('identifier', $attribute)
 				&& $attribute['identifier'] === $identifier
 			) {
-				return $this->entityFactory->create($attribute);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $attribute);
 			}
 		}
 
@@ -97,9 +101,9 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	{
 		$attributes = [];
 
-		foreach ($this->attributes as $attribute) {
+		foreach ($this->rawData as $id => $attribute) {
 			if (array_key_exists('device', $attribute) && $device->toString() === $attribute['device']) {
-				$attributes[] = $this->entityFactory->create($attribute);
+				$attributes[] = $this->getEntity(Uuid\Uuid::fromString($id), $attribute);
 			}
 		}
 
@@ -109,9 +113,13 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	/**
 	 * {@inheritDoc}
 	 */
-	public function append(Uuid\UuidInterface $id, array $entity): void
+	public function append(Uuid\UuidInterface $id, array $data): void
 	{
-		$this->attributes[$id->toString()] = $entity;
+		$this->rawData[$id->toString()] = $data;
+
+		if (!array_key_exists($id->toString(), $this->attributes)) {
+			unset($this->attributes[$id->toString()]);
+		}
 	}
 
 	/**
@@ -119,6 +127,7 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	 */
 	public function reset(): void
 	{
+		$this->rawData = [];
 		$this->attributes = [];
 	}
 
@@ -127,7 +136,7 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	 */
 	public function count(): int
 	{
-		return count($this->attributes);
+		return count($this->rawData);
 	}
 
 	/**
@@ -139,11 +148,30 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	{
 		$attributes = [];
 
-		foreach ($this->attributes as $attribute) {
-			$attributes[] = $this->entityFactory->create($attribute);
+		foreach ($this->rawData as $id => $attribute) {
+			$attributes[] = $this->getEntity(Uuid\Uuid::fromString($id), $attribute);
 		}
 
 		return new RecursiveArrayIterator($attributes);
+	}
+
+	/**
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 */
+	private function getEntity(
+		Uuid\UuidInterface $id,
+		array $data
+	): MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity {
+		if (!array_key_exists($id->toString(), $this->attributes)) {
+			$this->attributes[$id->toString()] = $this->entityFactory->create($data);
+		}
+
+		return $this->attributes[$id->toString()];
 	}
 
 }

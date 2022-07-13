@@ -183,6 +183,19 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
+	public function findProperty(string $identifier): ?Entities\Channels\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Channels\Properties\IProperty $row) use ($identifier): bool {
+				return $identifier === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function removeProperty(Entities\Channels\Properties\IProperty $property): void
 	{
 		// Check if collection contain removing entity...
@@ -190,27 +203,6 @@ class Channel implements IChannel
 			// ...and remove it from collection
 			$this->properties->removeElement($property);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasProperty(string $property): bool
-	{
-		return $this->findProperty($property) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty
-	{
-		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\IProperty $row) use ($property): bool {
-				return $property === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -252,7 +244,20 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getControl(string $name): ?Entities\Channels\Controls\IControl
+	public function getControl(string $id): ?Entities\Channels\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Channels\Controls\IControl $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findControl(string $name): ?Entities\Channels\Controls\IControl
 	{
 		$found = $this->controls
 			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
@@ -272,27 +277,6 @@ class Channel implements IChannel
 			// ...and remove it from collection
 			$this->controls->removeElement($control);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasControl(string $name): bool
-	{
-		return $this->findControl($name) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Channels\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**

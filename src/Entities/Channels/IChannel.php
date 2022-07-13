@@ -99,25 +99,18 @@ interface IChannel extends Entities\IEntity,
 	public function getProperty(string $id): ?Entities\Channels\Properties\IProperty;
 
 	/**
+	 * @param string $identifier
+	 *
+	 * @return Properties\IProperty|null
+	 */
+	public function findProperty(string $identifier): ?Entities\Channels\Properties\IProperty;
+
+	/**
 	 * @param Properties\IProperty $property
 	 *
 	 * @return void
 	 */
 	public function removeProperty(Entities\Channels\Properties\IProperty $property): void;
-
-	/**
-	 * @param string $property
-	 *
-	 * @return bool
-	 */
-	public function hasProperty(string $property): bool;
-
-	/**
-	 * @param string $property
-	 *
-	 * @return Properties\IProperty|null
-	 */
-	public function findProperty(string $property): ?Entities\Channels\Properties\IProperty;
 
 	/**
 	 * @return Entities\Channels\Controls\IControl[]
@@ -139,25 +132,11 @@ interface IChannel extends Entities\IEntity,
 	public function addControl(Entities\Channels\Controls\IControl $control): void;
 
 	/**
-	 * @param string $name
+	 * @param string $id
 	 *
 	 * @return Entities\Channels\Controls\IControl|null
 	 */
-	public function getControl(string $name): ?Entities\Channels\Controls\IControl;
-
-	/**
-	 * @param Entities\Channels\Controls\IControl $control
-	 *
-	 * @return void
-	 */
-	public function removeControl(Entities\Channels\Controls\IControl $control): void;
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
-	public function hasControl(string $name): bool;
+	public function getControl(string $id): ?Entities\Channels\Controls\IControl;
 
 	/**
 	 * @param string $name
@@ -165,5 +144,12 @@ interface IChannel extends Entities\IEntity,
 	 * @return Entities\Channels\Controls\IControl|null
 	 */
 	public function findControl(string $name): ?Entities\Channels\Controls\IControl;
+
+	/**
+	 * @param Entities\Channels\Controls\IControl $control
+	 *
+	 * @return void
+	 */
+	public function removeControl(Entities\Channels\Controls\IControl $control): void;
 
 }

@@ -36,6 +36,10 @@ use Throwable;
 class DataExchangeCommand extends Console\Command\Command
 {
 
+	private Consumers\DataExchangeConsumer $dataExchangeConsumer;
+
+	private ExchangeConsumer\Consumer $consumer;
+
 	private EventLoop\LoopInterface $eventLoop;
 
 	private Log\LoggerInterface $logger;
@@ -51,7 +55,8 @@ class DataExchangeCommand extends Console\Command\Command
 
 		$this->logger = $logger ?? new Log\NullLogger();
 
-		$consumer->register($dataExchangeConsumer);
+		$this->consumer = $consumer;
+		$this->dataExchangeConsumer = $dataExchangeConsumer;
 
 		parent::__construct($name);
 	}
@@ -71,6 +76,8 @@ class DataExchangeCommand extends Console\Command\Command
 		if ($symfonyApp === null) {
 			return 1;
 		}
+
+		$this->consumer->register($this->dataExchangeConsumer);
 
 		$io = new Style\SymfonyStyle($input, $output);
 

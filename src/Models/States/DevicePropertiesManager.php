@@ -99,9 +99,7 @@ final class DevicePropertiesManager
 
 		$updatedState = $this->manager->update($property, $state, $values);
 
-		if ($state->toArray() !== $updatedState->toArray()) {
-			$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
-		}
+		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
 
 		return $updatedState;
 	}

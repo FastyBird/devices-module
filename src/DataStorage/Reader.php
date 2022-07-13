@@ -16,9 +16,11 @@
 namespace FastyBird\DevicesModule\DataStorage;
 
 use FastyBird\DevicesModule;
+use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Models;
 use League\Flysystem;
 use Nette\Utils;
+use Psr\EventDispatcher;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -54,6 +56,8 @@ final class Reader
 
 	private Flysystem\Filesystem $filesystem;
 
+	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
+
 	public function __construct(
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
 		Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository,
@@ -65,7 +69,8 @@ final class Reader
 		Models\DataStorage\IChannelsRepository $channelsRepository,
 		Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository,
 		Models\DataStorage\IChannelControlsRepository $channelControlsRepository,
-		Flysystem\Filesystem $filesystem
+		Flysystem\Filesystem $filesystem,
+		?EventDispatcher\EventDispatcherInterface $dispatcher
 	) {
 		$this->connectorsRepository = $connectorsRepository;
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
@@ -79,6 +84,8 @@ final class Reader
 		$this->channelControlsRepository = $channelControlsRepository;
 
 		$this->filesystem = $filesystem;
+
+		$this->dispatcher = $dispatcher;
 	}
 
 	/**
@@ -276,6 +283,8 @@ final class Reader
 
 			$this->connectorsRepository->append(Uuid::fromString($connectorId), $connectorData);
 		}
+
+		$this->dispatcher?->dispatch(new Events\DataStorageReadedEvent());
 	}
 
 }

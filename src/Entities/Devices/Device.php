@@ -328,6 +328,19 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
+	public function findChannel(string $identifier): ?Entities\Channels\IChannel
+	{
+		$found = $this->channels
+			->filter(function (Entities\Channels\IChannel $row) use ($identifier): bool {
+				return $identifier === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function removeChannel(Entities\Channels\IChannel $channel): void
 	{
 		// Check if collection contain removing entity...
@@ -376,7 +389,20 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getControl(string $name): ?Entities\Devices\Controls\IControl
+	public function getControl(string $id): ?Entities\Devices\Controls\IControl
+	{
+		$found = $this->controls
+			->filter(function (Entities\Devices\Controls\IControl $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findControl(string $name): ?Entities\Devices\Controls\IControl
 	{
 		$found = $this->controls
 			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
@@ -396,27 +422,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 			// ...and remove it from collection
 			$this->controls->removeElement($control);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasControl(string $name): bool
-	{
-		return $this->findControl($name) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Devices\Controls\IControl
-	{
-		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
-				return $name === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -471,6 +476,19 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
+	public function findProperty(string $identifier): ?Entities\Devices\Properties\IProperty
+	{
+		$found = $this->properties
+			->filter(function (Entities\Devices\Properties\IProperty $row) use ($identifier): bool {
+				return $identifier === $row->getIdentifier();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function removeProperty(Entities\Devices\Properties\IProperty $property): void
 	{
 		// Check if collection contain removing entity...
@@ -478,27 +496,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 			// ...and remove it from collection
 			$this->properties->removeElement($property);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasProperty(string $property): bool
-	{
-		return $this->findProperty($property) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty
-	{
-		$found = $this->properties
-			->filter(function (Entities\Devices\Properties\IProperty $row) use ($property): bool {
-				return $property === $row->getIdentifier();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**
@@ -540,11 +537,24 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute
+	public function getAttribute(string $id): ?Entities\Devices\Attributes\IAttribute
+	{
+		$found = $this->attributes
+			->filter(function (Entities\Devices\Attributes\IAttribute $row) use ($id): bool {
+				return $id === $row->getPlainId();
+			});
+
+		return $found->isEmpty() ? null : $found->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute
 	{
 		$found = $this->attributes
 			->filter(function (Entities\Devices\Attributes\IAttribute $row) use ($identifier): bool {
-				return $identifier === $row->getName();
+				return $identifier === $row->getIdentifier();
 			});
 
 		return $found->isEmpty() ? null : $found->first();
@@ -560,27 +570,6 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 			// ...and remove it from collection
 			$this->attributes->removeElement($attribute);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasAttribute(string $identifier): bool
-	{
-		return $this->findAttribute($identifier) !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute
-	{
-		$found = $this->attributes
-			->filter(function (Entities\Devices\Attributes\IAttribute $row) use ($identifier): bool {
-				return $identifier === $row->getName();
-			});
-
-		return $found->isEmpty() ? null : $found->first();
 	}
 
 	/**

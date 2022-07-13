@@ -123,10 +123,8 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 
 						if ($state !== null) {
 							$this->connectorPropertiesStatesManager->update($property, $state, Nette\Utils\ArrayHash::from([
-								'actualValue'   => $state->getActualValue(),
 								'expectedValue' => $valueToWrite,
-								'pending'       => $state->getActualValue() !== $valueToWrite,
-								'valid'         => $state->isValid(),
+								'pending'       => true,
 							]));
 
 						} else {
@@ -174,10 +172,8 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 
 						if ($state !== null) {
 							$this->devicePropertiesStatesManager->update($property, $state, Nette\Utils\ArrayHash::from([
-								'actualValue'   => $state->getActualValue(),
 								'expectedValue' => $valueToWrite,
-								'pending'       => $state->getActualValue() !== $valueToWrite,
-								'valid'         => $state->isValid(),
+								'pending'       => true,
 							]));
 
 						} else {
@@ -225,10 +221,8 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 
 						if ($state !== null) {
 							$this->channelPropertiesStatesManager->update($property, $state, Nette\Utils\ArrayHash::from([
-								'actualValue'   => $state->getActualValue(),
 								'expectedValue' => $valueToWrite,
-								'pending'       => $state->getActualValue() !== $valueToWrite,
-								'valid'         => $state->isValid(),
+								'pending'       => true,
 							]));
 
 						} else {

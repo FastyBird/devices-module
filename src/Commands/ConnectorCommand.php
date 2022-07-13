@@ -63,6 +63,10 @@ class ConnectorCommand extends Console\Command\Command
 
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager;
 
+	private Consumers\ConnectorConsumer $connectorConsumer;
+
+	private ExchangeConsumer\Consumer $consumer;
+
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 
 	private Localization\Translator $translator;
@@ -96,6 +100,9 @@ class ConnectorCommand extends Console\Command\Command
 		$this->connectorPropertiesStateRepository = $connectorPropertiesStateRepository;
 		$this->connectorPropertiesStateManager = $connectorPropertiesStateManager;
 
+		$this->connectorConsumer = $connectorConsumer;
+		$this->consumer = $consumer;
+
 		$this->dateTimeFactory = $dateTimeFactory;
 
 		$this->translator = $translator;
@@ -103,8 +110,6 @@ class ConnectorCommand extends Console\Command\Command
 		$this->dispatcher = $dispatcher;
 
 		$this->logger = $logger ?? new Log\NullLogger();
-
-		$consumer->register($connectorConsumer);
 
 		parent::__construct($name);
 	}
@@ -125,6 +130,8 @@ class ConnectorCommand extends Console\Command\Command
 		if ($symfonyApp === null) {
 			return 1;
 		}
+
+		$this->consumer->register($this->connectorConsumer);
 
 		$io = new Style\SymfonyStyle($input, $output);
 

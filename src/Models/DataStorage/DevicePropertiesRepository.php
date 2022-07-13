@@ -145,6 +145,8 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	public function reset(Uuid\UuidInterface|array $id): void
 	{
 		if ($id instanceof Uuid\UuidInterface) {
+			var_dump('RESET CH');
+			var_dump($id->toString());
 			if (array_key_exists($id->toString(), $this->entities)) {
 				unset($this->entities[$id->toString()]);
 			}

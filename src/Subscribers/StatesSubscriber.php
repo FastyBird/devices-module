@@ -19,7 +19,6 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
-use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata\Entities as MetadataEntities;
@@ -110,14 +109,18 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 	 */
 	public function stateUpdated(Events\StateEntityUpdatedEvent $event): void
 	{
-		$this->refreshRepository($event->getProperty());
+		if ($event->getPreviousState()->toArray() !== $event->getState()->toArray()) {
+			$this->refreshRepository($event->getProperty());
+		}
 
 		$this->publishEntity($event->getProperty(), $event->getState());
 
 		$parent = $this->findParent($event->getProperty());
 
 		if ($parent !== null) {
-			$this->refreshRepository($parent);
+			if ($event->getPreviousState()->toArray() !== $event->getState()->toArray()) {
+				$this->refreshRepository($parent);
+			}
 
 			$this->publishEntity($parent, $event->getState());
 		}
@@ -166,18 +169,21 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 		if (
 			$property instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+			|| $property instanceof Entities\Connectors\Properties\IProperty
 		) {
 			$routingKey = MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED);
 
 		} elseif (
 			$property instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+			|| $property instanceof Entities\Devices\Properties\IProperty
 		) {
 			$routingKey = MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ENTITY_REPORTED);
 
 		} elseif (
 			$property instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+			|| $property instanceof Entities\Channels\Properties\IProperty
 		) {
 			$routingKey = MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ENTITY_REPORTED);
 
@@ -185,18 +191,18 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 			return;
 		}
 
-		$actualValue = $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat(), $property->getInvalid());
-		$expectedValue = $state === null ? null : Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid());
-
 		$this->publisher->publish(
 			MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 			$routingKey,
-			$this->entityFactory->create(Utils\Json::encode(array_merge($property->toArray(), [
-				'actualValue'   => Utilities\ValueHelper::flattenValue($actualValue),
-				'expectedValue' => Utilities\ValueHelper::flattenValue($expectedValue),
-				'pending'       => !($state === null) && $state->isPending(),
-				'valid'         => !($state === null) && $state->isValid(),
-			])), $routingKey)
+			$this->entityFactory->create(
+				Utils\Json::encode(
+					array_merge(
+						$property->toArray(),
+						$state ? $state->toArray() : []
+					)
+				),
+				$routingKey
+			)
 		);
 	}
 

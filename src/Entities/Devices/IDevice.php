@@ -146,6 +146,13 @@ interface IDevice extends Entities\IEntity,
 	public function getChannel(string $id): ?Entities\Channels\IChannel;
 
 	/**
+	 * @param string $identifier
+	 *
+	 * @return Entities\Channels\IChannel|null
+	 */
+	public function findChannel(string $identifier): ?Entities\Channels\IChannel;
+
+	/**
 	 * @param Entities\Channels\IChannel $channel
 	 *
 	 * @return void
@@ -172,25 +179,11 @@ interface IDevice extends Entities\IEntity,
 	public function addControl(Entities\Devices\Controls\IControl $control): void;
 
 	/**
-	 * @param string $name
+	 * @param string $id
 	 *
 	 * @return Entities\Devices\Controls\IControl|null
 	 */
-	public function getControl(string $name): ?Entities\Devices\Controls\IControl;
-
-	/**
-	 * @param Entities\Devices\Controls\IControl $control
-	 *
-	 * @return void
-	 */
-	public function removeControl(Entities\Devices\Controls\IControl $control): void;
-
-	/**
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
-	public function hasControl(string $name): bool;
+	public function getControl(string $id): ?Entities\Devices\Controls\IControl;
 
 	/**
 	 * @param string $name
@@ -198,6 +191,13 @@ interface IDevice extends Entities\IEntity,
 	 * @return Entities\Devices\Controls\IControl|null
 	 */
 	public function findControl(string $name): ?Entities\Devices\Controls\IControl;
+
+	/**
+	 * @param Entities\Devices\Controls\IControl $control
+	 *
+	 * @return void
+	 */
+	public function removeControl(Entities\Devices\Controls\IControl $control): void;
 
 	/**
 	 * @return Entities\Devices\Properties\IProperty[]
@@ -226,25 +226,18 @@ interface IDevice extends Entities\IEntity,
 	public function getProperty(string $id): ?Entities\Devices\Properties\IProperty;
 
 	/**
+	 * @param string $identifier
+	 *
+	 * @return Properties\IProperty|null
+	 */
+	public function findProperty(string $identifier): ?Entities\Devices\Properties\IProperty;
+
+	/**
 	 * @param Properties\IProperty $property
 	 *
 	 * @return void
 	 */
 	public function removeProperty(Entities\Devices\Properties\IProperty $property): void;
-
-	/**
-	 * @param string $property
-	 *
-	 * @return bool
-	 */
-	public function hasProperty(string $property): bool;
-
-	/**
-	 * @param string $property
-	 *
-	 * @return Properties\IProperty|null
-	 */
-	public function findProperty(string $property): ?Entities\Devices\Properties\IProperty;
 
 	/**
 	 * @return Entities\Devices\Attributes\IAttribute[]
@@ -266,25 +259,11 @@ interface IDevice extends Entities\IEntity,
 	public function addAttribute(Entities\Devices\Attributes\IAttribute $attribute): void;
 
 	/**
-	 * @param string $identifier
+	 * @param string $id
 	 *
 	 * @return Entities\Devices\Attributes\IAttribute|null
 	 */
-	public function getAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute;
-
-	/**
-	 * @param Entities\Devices\Attributes\IAttribute $attribute
-	 *
-	 * @return void
-	 */
-	public function removeAttribute(Entities\Devices\Attributes\IAttribute $attribute): void;
-
-	/**
-	 * @param string $identifier
-	 *
-	 * @return bool
-	 */
-	public function hasAttribute(string $identifier): bool;
+	public function getAttribute(string $id): ?Entities\Devices\Attributes\IAttribute;
 
 	/**
 	 * @param string $identifier
@@ -292,6 +271,13 @@ interface IDevice extends Entities\IEntity,
 	 * @return Entities\Devices\Attributes\IAttribute|null
 	 */
 	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute;
+
+	/**
+	 * @param Entities\Devices\Attributes\IAttribute $attribute
+	 *
+	 * @return void
+	 */
+	public function removeAttribute(Entities\Devices\Attributes\IAttribute $attribute): void;
 
 	/**
 	 * @return Entities\Connectors\IConnector

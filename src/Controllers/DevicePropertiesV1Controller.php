@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -55,6 +56,11 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Devices\Properties\IPropertiesRepository */
 	private Models\Devices\Properties\IPropertiesRepository $devicePropertiesRepository;
 
+	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
+	 * @param Models\Devices\Properties\IPropertiesRepository $devicePropertiesRepository
+	 * @param Models\Devices\Properties\IPropertiesManager $devicePropertiesManager
+	 */
 	public function __construct(
 		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Devices\Properties\IPropertiesRepository $devicePropertiesRepository,
@@ -71,6 +77,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
@@ -95,6 +102,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
@@ -116,6 +124,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -244,6 +253,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -380,6 +390,7 @@ final class DevicePropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(

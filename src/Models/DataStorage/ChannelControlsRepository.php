@@ -44,8 +44,12 @@ final class ChannelControlsRepository implements IChannelControlsRepository, Cou
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelControlEntity> */
 	private array $entities;
 
+	/** @var MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $entityFactory;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $entityFactory
+	 */
 	public function __construct(
 		MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $entityFactory
 	) {

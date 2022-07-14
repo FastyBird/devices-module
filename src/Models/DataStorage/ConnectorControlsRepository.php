@@ -44,8 +44,12 @@ final class ConnectorControlsRepository implements IConnectorControlsRepository,
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity> */
 	private array $entities;
 
+	/** @var MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory $entityFactory;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory $entityFactory
+	 */
 	public function __construct(
 		MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory $entityFactory
 	) {

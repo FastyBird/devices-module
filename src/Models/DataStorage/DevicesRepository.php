@@ -44,8 +44,12 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceEntity> */
 	private array $entities;
 
+	/** @var MetadataEntities\Modules\DevicesModule\DeviceEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory
+	 */
 	public function __construct(
 		MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory
 	) {

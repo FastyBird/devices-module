@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Controllers;
 
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -47,6 +48,10 @@ final class DeviceAttributesV1Controller extends BaseV1Controller
 	/** @var Models\Devices\Attributes\IAttributesRepository */
 	private Models\Devices\Attributes\IAttributesRepository $deviceAttributesRepository;
 
+	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
+	 * @param Models\Devices\Attributes\IAttributesRepository $deviceAttributesRepository
+	 */
 	public function __construct(
 		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Devices\Attributes\IAttributesRepository $deviceAttributesRepository
@@ -61,6 +66,7 @@ final class DeviceAttributesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
@@ -85,6 +91,7 @@ final class DeviceAttributesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
@@ -120,6 +127,7 @@ final class DeviceAttributesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(

@@ -38,6 +38,9 @@ final class ChannelPropertiesRepository
 	/** @var IChannelPropertiesRepository|null */
 	private ?IChannelPropertiesRepository $repository;
 
+	/**
+	 * @param IChannelPropertiesRepository|null $repository
+	 */
 	public function __construct(
 		?IChannelPropertiesRepository $repository
 	) {

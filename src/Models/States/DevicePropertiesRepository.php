@@ -38,6 +38,9 @@ final class DevicePropertiesRepository
 	/** @var IDevicePropertiesRepository|null */
 	protected ?IDevicePropertiesRepository $repository;
 
+	/**
+	 * @param IDevicePropertiesRepository|null $repository
+	 */
 	public function __construct(
 		?IDevicePropertiesRepository $repository
 	) {

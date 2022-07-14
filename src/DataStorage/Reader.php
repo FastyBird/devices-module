@@ -19,6 +19,7 @@ use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Models;
 use League\Flysystem;
+use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher;
 use Ramsey\Uuid\Uuid;
@@ -34,30 +35,58 @@ use Ramsey\Uuid\Uuid;
 final class Reader
 {
 
+	use Nette\SmartObject;
+
+	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
 
+	/** @var Models\DataStorage\IConnectorPropertiesRepository */
 	private Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository;
 
+	/** @var Models\DataStorage\IConnectorControlsRepository */
 	private Models\DataStorage\IConnectorControlsRepository $connectorControlsRepository;
 
+	/** @var Models\DataStorage\IDevicesRepository */
 	private Models\DataStorage\IDevicesRepository $devicesRepository;
 
+	/** @var Models\DataStorage\IDevicePropertiesRepository */
 	private Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository;
 
+	/** @var Models\DataStorage\IDeviceControlsRepository */
 	private Models\DataStorage\IDeviceControlsRepository $deviceControlsRepository;
 
+	/** @var Models\DataStorage\IDeviceAttributesRepository */
 	private Models\DataStorage\IDeviceAttributesRepository $deviceAttributesRepository;
 
+	/** @var Models\DataStorage\IChannelsRepository */
 	private Models\DataStorage\IChannelsRepository $channelsRepository;
 
+	/** @var Models\DataStorage\IChannelPropertiesRepository */
 	private Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository;
 
+	/** @var Models\DataStorage\IChannelControlsRepository */
 	private Models\DataStorage\IChannelControlsRepository $channelControlsRepository;
 
+	/** @var Flysystem\Filesystem */
 	private Flysystem\Filesystem $filesystem;
 
+	/** @var EventDispatcher\EventDispatcherInterface|null */
 	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
 
+	/**
+	 * @param Models\DataStorage\IConnectorsRepository $connectorsRepository
+	 * @param Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository
+	 * @param Models\DataStorage\IConnectorControlsRepository $connectorControlsRepository
+	 * @param Models\DataStorage\IDevicesRepository $devicesRepository
+	 * @param Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository
+	 * @param Models\DataStorage\IDeviceControlsRepository $deviceControlsRepository
+	 * @param Models\DataStorage\IDeviceAttributesRepository $deviceAttributesRepository
+	 * @param Models\DataStorage\IChannelsRepository $channelsRepository
+	 * @param Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository
+	 * @param Models\DataStorage\IChannelControlsRepository $channelControlsRepository
+	 * @param Flysystem\Filesystem $filesystem
+	 * @param EventDispatcher\EventDispatcherInterface|null $dispatcher
+	 */
 	public function __construct(
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
 		Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository,

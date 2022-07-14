@@ -45,6 +45,10 @@ final class DevicePropertiesManager
 	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
 	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
 
+	/**
+	 * @param IDevicePropertiesManager|null $manager
+	 * @param PsrEventDispatcher\EventDispatcherInterface|null $dispatcher
+	 */
 	public function __construct(
 		?IDevicePropertiesManager $manager,
 		?PsrEventDispatcher\EventDispatcherInterface $dispatcher

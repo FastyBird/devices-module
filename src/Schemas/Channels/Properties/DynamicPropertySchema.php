@@ -45,6 +45,11 @@ final class DynamicPropertySchema extends PropertySchema
 	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $propertiesStatesRepository;
 
+	/**
+	 * @param Routing\IRouter $router
+	 * @param Models\Channels\Properties\IPropertiesRepository $propertiesRepository
+	 * @param Models\States\ChannelPropertiesRepository $propertiesStatesRepository
+	 */
 	public function __construct(
 		Routing\IRouter $router,
 		Models\Channels\Properties\IPropertiesRepository $propertiesRepository,
@@ -84,7 +89,7 @@ final class DynamicPropertySchema extends PropertySchema
 		try {
 			$state = $this->propertiesStatesRepository->findOne($property);
 
-		} catch (Exceptions\NotImplementedException $ex) {
+		} catch (Exceptions\NotImplementedException) {
 			$state = null;
 		}
 

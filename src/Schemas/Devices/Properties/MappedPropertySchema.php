@@ -45,6 +45,11 @@ final class MappedPropertySchema extends PropertySchema
 	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $propertiesStatesRepository;
 
+	/**
+	 * @param Routing\IRouter $router
+	 * @param Models\Devices\Properties\IPropertiesRepository $propertiesRepository
+	 * @param Models\States\DevicePropertiesRepository $propertiesStatesRepository
+	 */
 	public function __construct(
 		Routing\IRouter $router,
 		Models\Devices\Properties\IPropertiesRepository $propertiesRepository,
@@ -84,7 +89,7 @@ final class MappedPropertySchema extends PropertySchema
 		try {
 			$state = $this->propertiesStatesRepository->findOne($property);
 
-		} catch (Exceptions\NotImplementedException $ex) {
+		} catch (Exceptions\NotImplementedException) {
 			$state = null;
 		}
 

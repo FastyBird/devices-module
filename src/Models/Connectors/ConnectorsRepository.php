@@ -47,6 +47,9 @@ final class ConnectorsRepository implements IConnectorsRepository
 	/** @var Persistence\ManagerRegistry */
 	private Persistence\ManagerRegistry $managerRegistry;
 
+	/**
+	 * @param Persistence\ManagerRegistry $managerRegistry
+	 */
 	public function __construct(Persistence\ManagerRegistry $managerRegistry)
 	{
 		$this->managerRegistry = $managerRegistry;

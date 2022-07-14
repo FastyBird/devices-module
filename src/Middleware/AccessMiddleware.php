@@ -38,6 +38,9 @@ final class AccessMiddleware implements MiddlewareInterface
 	/** @var Localization\Translator */
 	private Localization\Translator $translator;
 
+	/**
+	 * @param Localization\Translator $translator
+	 */
 	public function __construct(
 		Localization\Translator $translator
 	) {
@@ -57,14 +60,14 @@ final class AccessMiddleware implements MiddlewareInterface
 		try {
 			return $handler->handle($request);
 
-		} catch (SimpleAuthExceptions\UnauthorizedAccessException $ex) {
+		} catch (SimpleAuthExceptions\UnauthorizedAccessException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNAUTHORIZED,
 				$this->translator->translate('//devices-module.base.messages.unauthorized.heading'),
 				$this->translator->translate('//devices-module.base.messages.unauthorized.message')
 			);
 
-		} catch (SimpleAuthExceptions\ForbiddenAccessException $ex) {
+		} catch (SimpleAuthExceptions\ForbiddenAccessException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_FORBIDDEN,
 				$this->translator->translate('//devices-module.base.messages.forbidden.heading'),

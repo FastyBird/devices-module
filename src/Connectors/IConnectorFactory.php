@@ -28,8 +28,16 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 interface IConnectorFactory
 {
 
+	/**
+	 * @return string
+	 */
 	public function getType(): string;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 *
+	 * @return IConnector
+	 */
 	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): IConnector;
 
 }

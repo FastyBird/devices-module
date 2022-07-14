@@ -47,10 +47,16 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository, C
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity> */
 	private array $entities;
 
+	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $statesRepository;
 
+	/** @var MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory $entityFactory;
 
+	/**
+	 * @param Models\States\DevicePropertiesRepository $statesRepository
+	 * @param MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory $entityFactory
+	 */
 	public function __construct(
 		Models\States\DevicePropertiesRepository $statesRepository,
 		MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory $entityFactory

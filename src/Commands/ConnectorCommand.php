@@ -51,32 +51,61 @@ class ConnectorCommand extends Console\Command\Command
 
 	private const SHUTDOWN_WAITING_DELAY = 3;
 
+	/** @var Connectors\ConnectorFactory */
 	private Connectors\ConnectorFactory $factory;
 
+	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
 
+	/** @var Models\Connectors\Properties\IPropertiesRepository */
 	private Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository;
 
+	/** @var Models\Connectors\Properties\IPropertiesManager */
 	private Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager;
 
+	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository;
 
+	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager;
 
+	/** @var Consumers\ConnectorConsumer */
 	private Consumers\ConnectorConsumer $connectorConsumer;
 
+	/** @var ExchangeConsumer\Consumer */
 	private ExchangeConsumer\Consumer $consumer;
 
+	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 
+	/** @var Localization\Translator */
 	private Localization\Translator $translator;
 
+	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
+	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
 	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
 
+	/** @var EventLoop\LoopInterface */
 	private EventLoop\LoopInterface $eventLoop;
 
+	/**
+	 * @param Connectors\ConnectorFactory $factory
+	 * @param Models\DataStorage\IConnectorsRepository $connectorsRepository
+	 * @param Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository
+	 * @param Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager
+	 * @param Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository
+	 * @param Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager
+	 * @param Consumers\ConnectorConsumer $connectorConsumer
+	 * @param ExchangeConsumer\Consumer $consumer
+	 * @param DateTimeFactory\DateTimeFactory $dateTimeFactory
+	 * @param Localization\Translator $translator
+	 * @param EventLoop\LoopInterface $eventLoop
+	 * @param PsrEventDispatcher\EventDispatcherInterface|null $dispatcher
+	 * @param Log\LoggerInterface|null $logger
+	 * @param string|null $name
+	 */
 	public function __construct(
 		Connectors\ConnectorFactory $factory,
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
@@ -114,6 +143,9 @@ class ConnectorCommand extends Console\Command\Command
 		parent::__construct($name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function configure(): void
 	{
 		$this
@@ -123,6 +155,9 @@ class ConnectorCommand extends Console\Command\Command
 			->setDescription('Connector communication service');
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();
@@ -260,6 +295,12 @@ class ConnectorCommand extends Console\Command\Command
 		return 0;
 	}
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 * @param MetadataTypes\ConnectionStateType $state
+	 *
+	 * @return void
+	 */
 	private function setConnectorState(
 		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
 		MetadataTypes\ConnectionStateType $state

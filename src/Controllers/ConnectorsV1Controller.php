@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
+use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -60,6 +61,8 @@ class ConnectorsV1Controller extends BaseV1Controller
 	 * @param Message\ResponseInterface $response
 	 *
 	 * @return Message\ResponseInterface
+	 *
+	 * @throws Exception
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
@@ -79,6 +82,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
@@ -112,7 +116,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 					$this->translator->translate('//devices-module.base.messages.notFound.message')
 				);
 			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
+		} catch (Uuid\Exception\InvalidUuidStringException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
@@ -130,6 +134,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -204,6 +209,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(

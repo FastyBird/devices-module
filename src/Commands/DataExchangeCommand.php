@@ -36,14 +36,25 @@ use Throwable;
 class DataExchangeCommand extends Console\Command\Command
 {
 
+	/** @var Consumers\DataExchangeConsumer */
 	private Consumers\DataExchangeConsumer $dataExchangeConsumer;
 
+	/** @var ExchangeConsumer\Consumer */
 	private ExchangeConsumer\Consumer $consumer;
 
+	/** @var EventLoop\LoopInterface */
 	private EventLoop\LoopInterface $eventLoop;
 
+	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
+	/**
+	 * @param Consumers\DataExchangeConsumer $dataExchangeConsumer
+	 * @param ExchangeConsumer\Consumer $consumer
+	 * @param EventLoop\LoopInterface $eventLoop
+	 * @param Log\LoggerInterface|null $logger
+	 * @param string|null $name
+	 */
 	public function __construct(
 		Consumers\DataExchangeConsumer $dataExchangeConsumer,
 		ExchangeConsumer\Consumer $consumer,
@@ -61,6 +72,9 @@ class DataExchangeCommand extends Console\Command\Command
 		parent::__construct($name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function configure(): void
 	{
 		$this
@@ -69,6 +83,9 @@ class DataExchangeCommand extends Console\Command\Command
 			->setDescription('Data exchange worker');
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();

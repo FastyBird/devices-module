@@ -44,8 +44,12 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorEntity> */
 	private array $entities;
 
+	/** @var MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory
+	 */
 	public function __construct(
 		MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory
 	) {

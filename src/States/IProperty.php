@@ -28,24 +28,62 @@ use Ramsey\Uuid;
 interface IProperty
 {
 
+	/**
+	 * @return Uuid\UuidInterface
+	 */
 	public function getId(): Uuid\UuidInterface;
 
+	/**
+	 * @param float|bool|int|string|null $actual
+	 *
+	 * @return void
+	 */
 	public function setActualValue(float|bool|int|string|null $actual): void;
 
+	/**
+	 * @return float|bool|int|string|null
+	 */
 	public function getActualValue(): float|bool|int|string|null;
 
+	/**
+	 * @param float|bool|int|string|null $expected
+	 *
+	 * @return void
+	 */
 	public function setExpectedValue(float|bool|int|string|null $expected): void;
 
+	/**
+	 * @return float|bool|int|string|null
+	 */
 	public function getExpectedValue(): float|bool|int|string|null;
 
+	/**
+	 * @param bool|string|null $pending
+	 *
+	 * @return void
+	 */
 	public function setPending(bool|string|null $pending): void;
 
+	/**
+	 * @return bool|string|null
+	 */
 	public function getPending(): bool|string|null;
 
+	/**
+	 * @return bool
+	 */
 	public function isPending(): bool;
 
+	/**
+	 * @param bool $valid
+	 *
+	 * @return void
+	 */
 	public function setValid(bool $valid): void;
 
+	/**
+	 * @return bool
+	 */
 	public function isValid(): bool;
 
 	/**

@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Controllers;
 
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -41,6 +42,9 @@ final class DeviceChildrenV1Controller extends BaseV1Controller
 	/** @var Models\Devices\IDevicesRepository */
 	protected Models\Devices\IDevicesRepository $devicesRepository;
 
+	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
+	 */
 	public function __construct(
 		Models\Devices\IDevicesRepository $devicesRepository
 	) {
@@ -53,6 +57,7 @@ final class DeviceChildrenV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(

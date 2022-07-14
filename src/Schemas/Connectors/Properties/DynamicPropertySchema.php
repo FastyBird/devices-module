@@ -45,6 +45,10 @@ final class DynamicPropertySchema extends PropertySchema
 	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $propertiesStatesRepository;
 
+	/**
+	 * @param Routing\IRouter $router
+	 * @param Models\States\ConnectorPropertiesRepository $propertiesStatesRepository
+	 */
 	public function __construct(
 		Routing\IRouter $router,
 		Models\States\ConnectorPropertiesRepository $propertiesStatesRepository
@@ -83,7 +87,7 @@ final class DynamicPropertySchema extends PropertySchema
 		try {
 			$state = $this->propertiesStatesRepository->findOne($property);
 
-		} catch (Exceptions\NotImplementedException $ex) {
+		} catch (Exceptions\NotImplementedException) {
 			$state = null;
 		}
 

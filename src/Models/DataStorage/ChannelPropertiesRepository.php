@@ -47,10 +47,16 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> */
 	private array $entities;
 
+	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $statesRepository;
 
+	/** @var MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory $entityFactory;
 
+	/**
+	 * @param Models\States\ChannelPropertiesRepository $statesRepository
+	 * @param MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory $entityFactory
+	 */
 	public function __construct(
 		Models\States\ChannelPropertiesRepository $statesRepository,
 		MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory $entityFactory

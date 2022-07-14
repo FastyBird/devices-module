@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
@@ -56,6 +57,11 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Connectors\Properties\IPropertiesManager */
 	protected Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager;
 
+	/**
+	 * @param Models\Connectors\IConnectorsRepository $connectorsRepository
+	 * @param Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository
+	 * @param Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager
+	 */
 	public function __construct(
 		Models\Connectors\IConnectorsRepository $connectorsRepository,
 		Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository,
@@ -72,6 +78,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
@@ -96,6 +103,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
@@ -136,7 +144,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 					$this->translator->translate('//devices-module.base.messages.notFound.message')
 				);
 			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
+		} catch (Uuid\Exception\InvalidUuidStringException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
@@ -154,6 +162,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -283,6 +292,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -419,6 +429,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(

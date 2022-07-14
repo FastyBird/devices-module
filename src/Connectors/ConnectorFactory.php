@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Connectors;
 
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use Nette;
 use SplObjectStorage;
 
 /**
@@ -29,6 +30,8 @@ use SplObjectStorage;
  */
 final class ConnectorFactory
 {
+
+	use Nette\SmartObject;
 
 	/** @var SplObjectStorage<IConnectorFactory, null> */
 	private SplObjectStorage $factories;
@@ -46,6 +49,11 @@ final class ConnectorFactory
 		}
 	}
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 *
+	 * @return IConnector
+	 */
 	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): IConnector
 	{
 		/** @var IConnectorFactory $factory */

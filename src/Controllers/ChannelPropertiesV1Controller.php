@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -59,6 +60,12 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\Properties\IPropertiesManager */
 	protected Models\Channels\Properties\IPropertiesManager $channelPropertiesManager;
 
+	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
+	 * @param Models\Channels\IChannelsRepository $channelsRepository
+	 * @param Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository
+	 * @param Models\Channels\Properties\IPropertiesManager $channelPropertiesManager
+	 */
 	public function __construct(
 		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Channels\IChannelsRepository $channelsRepository,
@@ -77,6 +84,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
@@ -103,6 +111,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
@@ -126,6 +135,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -257,6 +267,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -397,6 +408,7 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(

@@ -166,14 +166,14 @@ abstract class BaseV1Controller
 		try {
 			$document = new JsonAPIDocument\Document(Utils\Json::decode($request->getBody()->getContents()));
 
-		} catch (Utils\JsonException $ex) {
+		} catch (Utils\JsonException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_BAD_REQUEST,
 				$this->translator->translate('//devices-module.base.messages.notValidJson.heading'),
 				$this->translator->translate('//devices-module.base.messages.notValidJson.message')
 			);
 
-		} catch (JsonAPIDocument\Exceptions\RuntimeException $ex) {
+		} catch (JsonAPIDocument\Exceptions\RuntimeException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_BAD_REQUEST,
 				$this->translator->translate('//devices-module.base.messages.notValidJsonApi.heading'),

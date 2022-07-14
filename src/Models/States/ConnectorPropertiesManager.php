@@ -45,6 +45,10 @@ final class ConnectorPropertiesManager
 	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
 	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
 
+	/**
+	 * @param IConnectorPropertiesManager|null $manager
+	 * @param PsrEventDispatcher\EventDispatcherInterface|null $dispatcher
+	 */
 	public function __construct(
 		?IConnectorPropertiesManager $manager,
 		?PsrEventDispatcher\EventDispatcherInterface $dispatcher

@@ -20,6 +20,7 @@ use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use League\Flysystem;
+use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher;
 
@@ -34,12 +35,22 @@ use Psr\EventDispatcher;
 final class Writer
 {
 
+	use Nette\SmartObject;
+
+	/** @var Models\Connectors\IConnectorsRepository */
 	private Models\Connectors\IConnectorsRepository $connectorsRepository;
 
+	/** @var Flysystem\Filesystem */
 	private Flysystem\Filesystem $filesystem;
 
+	/** @var EventDispatcher\EventDispatcherInterface|null */
 	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
 
+	/**
+	 * @param Models\Connectors\IConnectorsRepository $connectorsRepository
+	 * @param Flysystem\Filesystem $filesystem
+	 * @param EventDispatcher\EventDispatcherInterface|null $dispatcher
+	 */
 	public function __construct(
 		Models\Connectors\IConnectorsRepository $connectorsRepository,
 		Flysystem\Filesystem $filesystem,

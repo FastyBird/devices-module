@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Controllers;
 
 use Doctrine;
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -56,6 +57,12 @@ class DevicesV1Controller extends BaseV1Controller
 	/** @var Models\Channels\IChannelsManager */
 	protected Models\Channels\IChannelsManager $channelsManager;
 
+	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
+	 * @param Models\Devices\IDevicesManager $devicesManager
+	 * @param Models\Channels\IChannelsRepository $channelsRepository
+	 * @param Models\Channels\IChannelsManager $channelsManager
+	 */
 	public function __construct(
 		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Devices\IDevicesManager $devicesManager,
@@ -73,6 +80,8 @@ class DevicesV1Controller extends BaseV1Controller
 	 * @param Message\ResponseInterface $response
 	 *
 	 * @return Message\ResponseInterface
+	 *
+	 * @throws Exception
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
@@ -92,6 +101,7 @@ class DevicesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
@@ -110,6 +120,7 @@ class DevicesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -235,6 +246,7 @@ class DevicesV1Controller extends BaseV1Controller
 	 * @return Message\ResponseInterface
 	 *
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
 	 *
@@ -393,6 +405,7 @@ class DevicesV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(

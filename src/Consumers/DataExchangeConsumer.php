@@ -40,32 +40,60 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 
 	use Nette\SmartObject;
 
+	/** @var Models\DataStorage\IConnectorPropertiesRepository */
 	private Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository;
 
+	/** @var Models\DataStorage\IDevicePropertiesRepository */
 	private Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository;
 
+	/** @var Models\DataStorage\IChannelPropertiesRepository */
 	private Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository;
 
+	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager;
 
+	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository;
 
+	/** @var Models\States\DevicePropertiesManager */
 	private Models\States\DevicePropertiesManager $devicePropertiesStatesManager;
 
+	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository;
 
+	/** @var Models\States\ChannelPropertiesManager */
 	private Models\States\ChannelPropertiesManager $channelPropertiesStatesManager;
 
+	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository;
 
+	/** @var ExchangeEntities\EntityFactory */
 	private ExchangeEntities\EntityFactory $entityFactory;
 
+	/** @var ExchangePublisher\IPublisher|null */
 	private ?ExchangePublisher\IPublisher $publisher;
 
+	/** @var EventDispatcher\EventDispatcherInterface|null */
 	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
 
+	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
+	/**
+	 * @param Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository
+	 * @param Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository
+	 * @param Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository
+	 * @param Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager
+	 * @param Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository
+	 * @param Models\States\DevicePropertiesManager $devicePropertiesStatesManager
+	 * @param Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository
+	 * @param Models\States\ChannelPropertiesManager $channelPropertiesStatesManager
+	 * @param Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository
+	 * @param ExchangeEntities\EntityFactory $entityFactory
+	 * @param ExchangePublisher\IPublisher|null $publisher
+	 * @param EventDispatcher\EventDispatcherInterface|null $dispatcher
+	 * @param Log\LoggerInterface|null $logger
+	 */
 	public function __construct(
 		Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository,
 		Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository,
@@ -99,6 +127,9 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function consume(
 		MetadataTypes\ModuleSourceType|MetadataTypes\PluginSourceType|MetadataTypes\ConnectorSourceType $source,
 		MetadataTypes\RoutingKeyType $routingKey,
@@ -263,6 +294,12 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 		}
 	}
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $property
+	 * @param float|bool|int|string|null $expectedValue
+	 *
+	 * @return float|bool|int|string|null
+	 */
 	private function normalizeValue(
 		MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity $property,
 		float|bool|int|string|null $expectedValue

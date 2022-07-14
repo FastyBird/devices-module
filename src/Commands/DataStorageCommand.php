@@ -35,10 +35,17 @@ use Throwable;
 class DataStorageCommand extends Console\Command\Command
 {
 
+	/** @var DataStorage\Writer */
 	private DataStorage\Writer $writer;
 
+	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
+	/**
+	 * @param DataStorage\Writer $writer
+	 * @param Log\LoggerInterface|null $logger
+	 * @param string|null $name
+	 */
 	public function __construct(
 		DataStorage\Writer $writer,
 		?Log\LoggerInterface $logger = null,
@@ -51,6 +58,9 @@ class DataStorageCommand extends Console\Command\Command
 		parent::__construct($name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function configure(): void
 	{
 		$this
@@ -59,6 +69,9 @@ class DataStorageCommand extends Console\Command\Command
 			->setDescription('Devices module data storage initialization');
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();

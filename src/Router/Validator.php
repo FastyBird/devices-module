@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Router;
 
+use Exception;
 use FastRoute;
 use FastRoute\RouteCollector as FastRouteCollector;
 use FastRoute\RouteParser\Std;
@@ -39,6 +40,9 @@ class Validator
 	/** @var SlimRouterRouting\FastRouteDispatcher|null */
 	private ?SlimRouterRouting\FastRouteDispatcher $routerDispatcher = null;
 
+	/**
+	 * @param DI\Container $container
+	 */
 	public function __construct(
 		DI\Container $container
 	) {
@@ -50,6 +54,8 @@ class Validator
 	 * @param string $method
 	 *
 	 * @return bool
+	 *
+	 * @throws Exception
 	 */
 	public function validate(string $link, string $method = RequestMethodInterface::METHOD_GET): bool
 	{
@@ -59,6 +65,11 @@ class Validator
 		return $results[0] === SlimRouterRouting\RoutingResults::FOUND;
 	}
 
+	/**
+	 * @return SlimRouterRouting\FastRouteDispatcher
+	 *
+	 * @throws Exception
+	 */
 	private function getRouterDispatcher(): SlimRouterRouting\FastRouteDispatcher
 	{
 		if ($this->routerDispatcher !== null) {

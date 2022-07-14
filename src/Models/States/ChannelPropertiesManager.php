@@ -49,6 +49,11 @@ final class ChannelPropertiesManager
 	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
 	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
 
+	/**
+	 * @param ExchangeEntities\EntityFactory $entityFactory
+	 * @param IChannelPropertiesManager|null $manager
+	 * @param PsrEventDispatcher\EventDispatcherInterface|null $dispatcher
+	 */
 	public function __construct(
 		ExchangeEntities\EntityFactory $entityFactory,
 		?IChannelPropertiesManager $manager,

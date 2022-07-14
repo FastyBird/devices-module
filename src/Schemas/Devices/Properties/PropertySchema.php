@@ -53,6 +53,10 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 	/** @var Models\Devices\Properties\IPropertiesRepository */
 	private Models\Devices\Properties\IPropertiesRepository $propertiesRepository;
 
+	/**
+	 * @param Routing\IRouter $router
+	 * @param Models\Devices\Properties\IPropertiesRepository $propertiesRepository
+	 */
 	public function __construct(
 		Routing\IRouter $router,
 		Models\Devices\Properties\IPropertiesRepository $propertiesRepository

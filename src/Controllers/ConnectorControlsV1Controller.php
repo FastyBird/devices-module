@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Controllers;
 
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -47,6 +48,10 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 	/** @var Models\Connectors\Controls\IControlsRepository */
 	private Models\Connectors\Controls\IControlsRepository $connectorControlsRepository;
 
+	/**
+	 * @param Models\Connectors\IConnectorsRepository $connectorsRepository
+	 * @param Models\Connectors\Controls\IControlsRepository $connectorControlsRepository
+	 */
 	public function __construct(
 		Models\Connectors\IConnectorsRepository $connectorsRepository,
 		Models\Connectors\Controls\IControlsRepository $connectorControlsRepository
@@ -61,6 +66,7 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
@@ -85,6 +91,7 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
@@ -120,6 +127,7 @@ final class ConnectorControlsV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(

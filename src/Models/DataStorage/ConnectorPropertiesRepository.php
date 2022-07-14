@@ -47,10 +47,16 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> */
 	private array $entities;
 
+	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $statesRepository;
 
+	/** @var MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $entityFactory;
 
+	/**
+	 * @param Models\States\ConnectorPropertiesRepository $statesRepository
+	 * @param MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $entityFactory
+	 */
 	public function __construct(
 		Models\States\ConnectorPropertiesRepository $statesRepository,
 		MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $entityFactory

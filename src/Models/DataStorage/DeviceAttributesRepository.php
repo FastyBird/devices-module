@@ -44,8 +44,12 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository, C
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity> */
 	private array $entities;
 
+	/** @var MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory $entityFactory;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory $entityFactory
+	 */
 	public function __construct(
 		MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory $entityFactory
 	) {

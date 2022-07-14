@@ -38,6 +38,9 @@ final class ConnectorPropertiesRepository
 	/** @var IConnectorPropertiesRepository|null */
 	protected ?IConnectorPropertiesRepository $repository;
 
+	/**
+	 * @param IConnectorPropertiesRepository|null $repository
+	 */
 	public function __construct(
 		?IConnectorPropertiesRepository $repository
 	) {

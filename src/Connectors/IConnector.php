@@ -26,10 +26,19 @@ namespace FastyBird\DevicesModule\Connectors;
 interface IConnector
 {
 
+	/**
+	 * @return void
+	 */
 	public function execute(): void;
 
+	/**
+	 * @return void
+	 */
 	public function terminate(): void;
 
+	/**
+	 * @return bool
+	 */
 	public function hasUnfinishedTasks(): bool;
 
 }

@@ -44,8 +44,12 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelEntity> */
 	private array $entities;
 
+	/** @var MetadataEntities\Modules\DevicesModule\ChannelEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $entityFactory;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $entityFactory
+	 */
 	public function __construct(
 		MetadataEntities\Modules\DevicesModule\ChannelEntityFactory $entityFactory
 	) {

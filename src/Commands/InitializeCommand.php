@@ -34,8 +34,13 @@ use Throwable;
 class InitializeCommand extends Console\Command\Command
 {
 
+	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
+	/**
+	 * @param Log\LoggerInterface|null $logger
+	 * @param string|null $name
+	 */
 	public function __construct(
 		?Log\LoggerInterface $logger = null,
 		?string $name = null
@@ -45,6 +50,9 @@ class InitializeCommand extends Console\Command\Command
 		parent::__construct($name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function configure(): void
 	{
 		$this
@@ -53,6 +61,9 @@ class InitializeCommand extends Console\Command\Command
 			->setDescription('Devices module initialization');
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();

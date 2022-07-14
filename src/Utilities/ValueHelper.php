@@ -177,6 +177,11 @@ final class ValueHelper
 		return $value;
 	}
 
+	/**
+	 * @param bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
+	 *
+	 * @return bool|float|int|string|null
+	 */
 	public static function flattenValue(
 		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
 	): bool|float|int|string|null {

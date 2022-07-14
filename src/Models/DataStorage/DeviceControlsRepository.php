@@ -44,8 +44,12 @@ final class DeviceControlsRepository implements IDeviceControlsRepository, Count
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceControlEntity> */
 	private array $entities;
 
+	/** @var MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory */
 	private MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory;
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory
+	 */
 	public function __construct(
 		MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory
 	) {

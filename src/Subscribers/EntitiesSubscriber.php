@@ -50,26 +50,48 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
+	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository;
 
+	/** @var Models\States\DevicePropertiesManager */
 	private Models\States\DevicePropertiesManager $devicePropertiesStatesManager;
 
+	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository;
 
+	/** @var Models\States\ChannelPropertiesManager */
 	private Models\States\ChannelPropertiesManager $channelPropertiesStatesManager;
 
+	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository;
 
+	/** @var Models\States\ConnectorPropertiesManager */
 	private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager;
 
+	/** @var DataStorage\Writer */
 	private DataStorage\Writer $configurationDataWriter;
 
+	/** @var ExchangeEntities\EntityFactory */
 	private ExchangeEntities\EntityFactory $entityFactory;
 
+	/** @var ExchangePublisher\Publisher|null */
 	private ?ExchangePublisher\Publisher $publisher;
 
+	/** @var ORM\EntityManagerInterface */
 	private ORM\EntityManagerInterface $entityManager;
 
+	/**
+	 * @param ORM\EntityManagerInterface $entityManager
+	 * @param Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository
+	 * @param Models\States\DevicePropertiesManager $devicePropertiesStatesManager
+	 * @param Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository
+	 * @param Models\States\ChannelPropertiesManager $channelPropertiesStatesManager
+	 * @param Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository
+	 * @param Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager
+	 * @param DataStorage\Writer $configurationDataWriter
+	 * @param ExchangeEntities\EntityFactory $entityFactory
+	 * @param ExchangePublisher\Publisher|null $publisher
+	 */
 	public function __construct(
 		ORM\EntityManagerInterface $entityManager,
 		Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
@@ -98,9 +120,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * Register events
-	 *
-	 * @return string[]
+	 * {@inheritDoc}
 	 */
 	public function getSubscribedEvents(): array
 	{
@@ -165,7 +185,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					if ($state !== null) {
 						$this->connectorPropertiesStatesManager->delete($entity, $state);
 					}
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplementedException) {
 					return;
 				}
 			} elseif ($entity instanceof DevicesModule\Entities\Devices\Properties\IDynamicProperty) {
@@ -175,7 +195,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					if ($state !== null) {
 						$this->devicePropertiesStatesManager->delete($entity, $state);
 					}
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplementedException) {
 					return;
 				}
 			} elseif ($entity instanceof DevicesModule\Entities\Channels\Properties\IDynamicProperty) {
@@ -185,7 +205,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 					if ($state !== null) {
 						$this->channelPropertiesStatesManager->delete($entity, $state);
 					}
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplementedException) {
 					return;
 				}
 			}
@@ -275,6 +295,11 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		);
 	}
 
+	/**
+	 * @param string $class
+	 *
+	 * @return string
+	 */
 	private function getRealClass(string $class): string
 	{
 		$pos = strrpos($class, '\\' . Persistence\Proxy::MARKER . '\\');
@@ -351,7 +376,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						)
 					);
 
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplementedException) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
@@ -376,7 +401,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						)
 					);
 
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplementedException) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
@@ -401,7 +426,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 						)
 					);
 
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplementedException) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
@@ -418,6 +443,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 	}
 
+	/**
+	 * @param Entities\IEntity $entity
+	 * @param string $class
+	 *
+	 * @return bool
+	 */
 	private function validateEntity(Entities\IEntity $entity, string $class): bool
 	{
 		$result = false;
@@ -433,12 +464,17 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		return $result;
 	}
 
+	/**
+	 * @param object $entity
+	 *
+	 * @return bool
+	 */
 	private function validateNamespace(object $entity): bool
 	{
 		try {
 			$rc = new ReflectionClass($entity);
 
-		} catch (ReflectionException $ex) {
+		} catch (ReflectionException) {
 			return false;
 		}
 

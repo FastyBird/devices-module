@@ -62,6 +62,11 @@ abstract class DeviceSchema extends JsonApiSchemas\JsonApiSchema
 	/** @var Routing\IRouter */
 	protected Routing\IRouter $router;
 
+	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
+	 * @param Models\Channels\IChannelsRepository $channelsRepository
+	 * @param Routing\IRouter $router
+	 */
 	public function __construct(
 		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Channels\IChannelsRepository $channelsRepository,

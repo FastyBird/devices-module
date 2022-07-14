@@ -35,14 +35,21 @@ final class DataStorageSubscriber implements EventDispatcher\EventSubscriberInte
 
 	use Nette\SmartObject;
 
+	/** @var DataStorage\Reader */
 	private DataStorage\Reader $reader;
 
+	/**
+	 * @param DataStorage\Reader $reader
+	 */
 	public function __construct(
 		DataStorage\Reader $reader
 	) {
 		$this->reader = $reader;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [

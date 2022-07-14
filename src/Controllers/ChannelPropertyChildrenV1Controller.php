@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Controllers;
 
+use Exception;
 use FastyBird\DevicesModule\Controllers;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
@@ -46,6 +47,10 @@ final class ChannelPropertyChildrenV1Controller extends BaseV1Controller
 	/** @var Models\Channels\Properties\IPropertiesRepository */
 	protected Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository;
 
+	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
+	 * @param Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository
+	 */
 	public function __construct(
 		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\Channels\Properties\IPropertiesRepository $channelPropertiesRepository
@@ -60,6 +65,7 @@ final class ChannelPropertyChildrenV1Controller extends BaseV1Controller
 	 *
 	 * @return Message\ResponseInterface
 	 *
+	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(

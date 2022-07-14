@@ -41,16 +41,28 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 
 	use Nette\SmartObject;
 
+	/** @var Models\DataStorage\IConnectorPropertiesRepository */
 	private Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository;
 
+	/** @var Models\DataStorage\IDevicePropertiesRepository */
 	private Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository;
 
+	/** @var Models\DataStorage\IChannelPropertiesRepository */
 	private Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository;
 
+	/** @var ExchangeEntities\EntityFactory */
 	private ExchangeEntities\EntityFactory $entityFactory;
 
+	/** @var ExchangePublisher\IPublisher|null */
 	private ?ExchangePublisher\IPublisher $publisher;
 
+	/**
+	 * @param Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository
+	 * @param Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository
+	 * @param Models\DataStorage\IChannelPropertiesRepository $channelPropertiesRepository
+	 * @param ExchangeEntities\EntityFactory $entityFactory
+	 * @param ExchangePublisher\IPublisher|null $publisher
+	 */
 	public function __construct(
 		Models\DataStorage\IConnectorPropertiesRepository $connectorPropertiesRepository,
 		Models\DataStorage\IDevicePropertiesRepository $devicePropertiesRepository,
@@ -67,6 +79,9 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 		$this->publisher = $publisher;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [
@@ -206,6 +221,11 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 		);
 	}
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\IProperty $property
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\IProperty|null
+	 */
 	private function findParent(
 		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\IProperty $property
 	): MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\IProperty|null {
@@ -244,6 +264,11 @@ final class StatesSubscriber implements EventDispatcher\EventSubscriberInterface
 		return null;
 	}
 
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\IProperty $property
+	 *
+	 * @return void
+	 */
 	private function refreshRepository(
 		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\IProperty $property
 	): void {

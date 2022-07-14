@@ -56,7 +56,7 @@ trait TDevicePropertyFinder
 					$this->translator->translate('//devices-module.base.messages.notFound.message')
 				);
 			}
-		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
+		} catch (Uuid\Exception\InvalidUuidStringException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),

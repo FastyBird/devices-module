@@ -402,6 +402,13 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setArguments([
 				'dataExchangeConsumer' => '@' . $this->prefix('consumer.dataExchange'),
 			]);
+
+		// Connection states manager
+		$builder->addDefinition($this->prefix('consumer.connectionState.connector'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\ConnectorConnectionStateManager::class);
+
+		$builder->addDefinition($this->prefix('consumer.connectionState.device'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\DeviceConnectionStateManager::class);
 	}
 
 	/**

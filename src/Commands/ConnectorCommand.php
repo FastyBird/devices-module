@@ -18,16 +18,12 @@ namespace FastyBird\DevicesModule\Commands;
 use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule\Connectors;
 use FastyBird\DevicesModule\Consumers;
-use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
-use FastyBird\DevicesModule\Queries;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
-use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette\Localization;
-use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
 use Ramsey\Uuid;
@@ -57,23 +53,14 @@ class ConnectorCommand extends Console\Command\Command
 	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
 
-	/** @var Models\Connectors\Properties\IPropertiesRepository */
-	private Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository;
-
-	/** @var Models\Connectors\Properties\IPropertiesManager */
-	private Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager;
-
-	/** @var Models\States\ConnectorPropertiesRepository */
-	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository;
-
-	/** @var Models\States\ConnectorPropertiesManager */
-	private Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager;
-
 	/** @var Consumers\ConnectorConsumer */
 	private Consumers\ConnectorConsumer $connectorConsumer;
 
 	/** @var ExchangeConsumer\Consumer */
 	private ExchangeConsumer\Consumer $consumer;
+
+	/** @var Models\States\ConnectorConnectionStateManager */
+	private Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager;
 
 	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
@@ -93,10 +80,7 @@ class ConnectorCommand extends Console\Command\Command
 	/**
 	 * @param Connectors\ConnectorFactory $factory
 	 * @param Models\DataStorage\IConnectorsRepository $connectorsRepository
-	 * @param Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository
-	 * @param Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager
-	 * @param Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository
-	 * @param Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager
+	 * @param Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager
 	 * @param Consumers\ConnectorConsumer $connectorConsumer
 	 * @param ExchangeConsumer\Consumer $consumer
 	 * @param DateTimeFactory\DateTimeFactory $dateTimeFactory
@@ -109,10 +93,7 @@ class ConnectorCommand extends Console\Command\Command
 	public function __construct(
 		Connectors\ConnectorFactory $factory,
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
-		Models\Connectors\Properties\IPropertiesRepository $connectorPropertiesRepository,
-		Models\Connectors\Properties\IPropertiesManager $connectorPropertiesManager,
-		Models\States\ConnectorPropertiesRepository $connectorPropertiesStateRepository,
-		Models\States\ConnectorPropertiesManager $connectorPropertiesStateManager,
+		Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager,
 		Consumers\ConnectorConsumer $connectorConsumer,
 		ExchangeConsumer\Consumer $consumer,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
@@ -124,10 +105,8 @@ class ConnectorCommand extends Console\Command\Command
 	) {
 		$this->factory = $factory;
 		$this->connectorsRepository = $connectorsRepository;
-		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
-		$this->connectorPropertiesManager = $connectorPropertiesManager;
-		$this->connectorPropertiesStateRepository = $connectorPropertiesStateRepository;
-		$this->connectorPropertiesStateManager = $connectorPropertiesStateManager;
+
+		$this->connectorConnectionStateManager = $connectorConnectionStateManager;
 
 		$this->connectorConsumer = $connectorConsumer;
 		$this->consumer = $consumer;
@@ -214,7 +193,7 @@ class ConnectorCommand extends Console\Command\Command
 					// Start connector service
 					$service->execute();
 
-					$this->setConnectorState(
+					$this->connectorConnectionStateManager->setState(
 						$connector,
 						MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING)
 					);
@@ -254,10 +233,12 @@ class ConnectorCommand extends Console\Command\Command
 
 					$this->dispatcher?->dispatch(new Events\AfterConnectorTerminateEvent($service));
 
-					$this->setConnectorState(
+					$this->connectorConnectionStateManager->setState(
 						$connector,
 						MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_STOPPED)
 					);
+
+					$this->eventLoop->stop();
 				} catch (Throwable $ex) {
 					$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
 						'source'    => 'devices-module',
@@ -293,65 +274,6 @@ class ConnectorCommand extends Console\Command\Command
 		}
 
 		return 0;
-	}
-
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
-	 * @param MetadataTypes\ConnectionStateType $state
-	 *
-	 * @return void
-	 */
-	private function setConnectorState(
-		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
-		MetadataTypes\ConnectionStateType $state
-	): void {
-		$findProperty = new Queries\FindConnectorPropertiesQuery();
-		$findProperty->byConnectorId($connector->getId());
-		$findProperty->byIdentifier(MetadataTypes\ConnectorPropertyNameType::NAME_STATE);
-
-		$property = $this->connectorPropertiesRepository->findOneBy($findProperty);
-
-		if ($property === null) {
-			$property = $this->connectorPropertiesManager->create(Utils\ArrayHash::from([
-				'connector'  => $connector->getId(),
-				'entity'     => Entities\Connectors\Properties\DynamicProperty::class,
-				'identifier' => MetadataTypes\ConnectorPropertyNameType::NAME_STATE,
-				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
-				'unit'       => null,
-				'format'     => [
-					MetadataTypes\ConnectionStateType::STATE_RUNNING,
-					MetadataTypes\ConnectionStateType::STATE_STOPPED,
-					MetadataTypes\ConnectionStateType::STATE_UNKNOWN,
-					MetadataTypes\ConnectionStateType::STATE_SLEEPING,
-					MetadataTypes\ConnectionStateType::STATE_ALERT,
-				],
-				'settable'   => false,
-				'queryable'  => false,
-			]));
-		}
-
-		if (!$property instanceof Entities\Connectors\Properties\IDynamicProperty) {
-			throw new Exceptions\InvalidStateException('Connector property entity is not valid type');
-		}
-
-		$propertyState = $this->connectorPropertiesStateRepository->findOne($property);
-
-		if ($propertyState === null) {
-			$this->connectorPropertiesStateManager->create($property, Utils\ArrayHash::from([
-				'actualValue'   => $state->getValue(),
-				'expectedValue' => null,
-				'pending'       => false,
-				'valid'         => true,
-			]));
-
-		} else {
-			$this->connectorPropertiesStateManager->update($property, $propertyState, Utils\ArrayHash::from([
-				'actualValue'   => $state->getValue(),
-				'expectedValue' => null,
-				'pending'       => false,
-				'valid'         => true,
-			]));
-		}
 	}
 
 }

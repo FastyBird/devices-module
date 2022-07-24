@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Models\States;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
+use FastyBird\DevicesModule\Queries;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
@@ -37,11 +38,14 @@ final class ConnectorConnectionStateManager
 
 	use Nette\SmartObject;
 
-	/** @var Models\DataStorage\IConnectorPropertiesRepository */
-	private Models\DataStorage\IConnectorPropertiesRepository $repository;
+	/** @var Models\Connectors\IConnectorsRepository */
+	private Models\Connectors\IConnectorsRepository $connectorsRepository;
 
 	/** @var Models\Connectors\Properties\IPropertiesManager */
 	private Models\Connectors\Properties\IPropertiesManager $manager;
+
+	/** @var Models\DataStorage\IConnectorPropertiesRepository */
+	private Models\DataStorage\IConnectorPropertiesRepository $dataStorageRepository;
 
 	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $statesRepository;
@@ -53,20 +57,23 @@ final class ConnectorConnectionStateManager
 	private Log\LoggerInterface $logger;
 
 	/**
+	 * @param Models\Connectors\IConnectorsRepository $connectorsRepository
 	 * @param Models\DataStorage\IConnectorPropertiesRepository $repository
 	 * @param Models\Connectors\Properties\IPropertiesManager $manager
-	 * @param Models\States\ConnectorPropertiesRepository $statesRepository
-	 * @param Models\States\ConnectorPropertiesManager $statesManager
+	 * @param ConnectorPropertiesRepository $statesRepository
+	 * @param ConnectorPropertiesManager $statesManager
 	 * @param Log\LoggerInterface|null $logger
 	 */
 	public function __construct(
+		Models\Connectors\IConnectorsRepository $connectorsRepository,
 		Models\DataStorage\IConnectorPropertiesRepository $repository,
 		Models\Connectors\Properties\IPropertiesManager $manager,
 		Models\States\ConnectorPropertiesRepository $statesRepository,
 		Models\States\ConnectorPropertiesManager $statesManager,
 		?Log\LoggerInterface $logger = null
 	) {
-		$this->repository = $repository;
+		$this->connectorsRepository = $connectorsRepository;
+		$this->dataStorageRepository = $repository;
 		$this->manager = $manager;
 		$this->statesRepository = $statesRepository;
 		$this->statesManager = $statesManager;
@@ -84,14 +91,25 @@ final class ConnectorConnectionStateManager
 		Entities\Connectors\IConnector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
 		MetadataTypes\ConnectionStateType $state
 	): bool {
-		$stateProperty = $this->repository->findByIdentifier(
+		$stateProperty = $this->dataStorageRepository->findByIdentifier(
 			$connector->getId(),
 			MetadataTypes\ConnectorPropertyNameType::NAME_STATE
 		);
 
 		if ($stateProperty === null) {
+			if (!$connector instanceof Entities\Connectors\IConnector) {
+				$findConnectorQuery = new Queries\FindConnectorsQuery();
+				$findConnectorQuery->byId($connector->getId());
+
+				$connector = $this->connectorsRepository->findOneBy($findConnectorQuery);
+
+				if ($connector === null) {
+					throw new Exceptions\InvalidStateException('Connector could not be loaded');
+				}
+			}
+
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
-				'connector'  => $connector->getId(),
+				'connector'  => $connector,
 				'entity'     => Entities\Connectors\Properties\DynamicProperty::class,
 				'identifier' => MetadataTypes\ConnectorPropertyNameType::NAME_STATE,
 				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
@@ -187,7 +205,7 @@ final class ConnectorConnectionStateManager
 	public function getState(
 		Entities\Connectors\IConnector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
 	): MetadataTypes\ConnectionStateType {
-		$stateProperty = $this->repository->findByIdentifier(
+		$stateProperty = $this->dataStorageRepository->findByIdentifier(
 			$connector->getId(),
 			MetadataTypes\ConnectorPropertyNameType::NAME_STATE
 		);

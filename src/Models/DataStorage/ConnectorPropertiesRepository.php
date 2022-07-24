@@ -23,6 +23,7 @@ use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IteratorAggregate;
 use Nette;
+use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
 
@@ -97,7 +98,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 				array_key_exists('connector', $entity)
 				&& $connector->toString() === $entity['connector']
 				&& array_key_exists('identifier', $entity)
-				&& $entity['identifier'] === $identifier
+				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}

@@ -23,6 +23,7 @@ use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IteratorAggregate;
 use Nette;
+use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
 
@@ -97,7 +98,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository,
 				array_key_exists('channel', $entity)
 				&& $channel->toString() === $entity['channel']
 				&& array_key_exists('identifier', $entity)
-				&& $entity['identifier'] === $identifier
+				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}

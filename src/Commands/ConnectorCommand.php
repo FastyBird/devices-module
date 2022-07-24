@@ -198,7 +198,7 @@ class ConnectorCommand extends Console\Command\Command
 						MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING)
 					);
 				} catch (Throwable $ex) {
-					throw new Exceptions\TerminateException('Connector can\'t be started');
+					throw new Exceptions\TerminateException('Connector can\'t be started', $ex->getCode(), $ex);
 				}
 
 				$this->dispatcher?->dispatch(new Events\AfterConnectorStartEvent($connector));

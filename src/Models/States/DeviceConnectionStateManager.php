@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Models\States;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
+use FastyBird\DevicesModule\Queries;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
@@ -37,11 +38,14 @@ final class DeviceConnectionStateManager
 
 	use Nette\SmartObject;
 
-	/** @var Models\DataStorage\IDevicePropertiesRepository */
-	private Models\DataStorage\IDevicePropertiesRepository $repository;
+	/** @var Models\Devices\IDevicesRepository */
+	private Models\Devices\IDevicesRepository $devicesRepository;
 
 	/** @var Models\Devices\Properties\IPropertiesManager */
 	private Models\Devices\Properties\IPropertiesManager $manager;
+
+	/** @var Models\DataStorage\IDevicePropertiesRepository */
+	private Models\DataStorage\IDevicePropertiesRepository $repository;
 
 	/** @var Models\States\DevicePropertiesRepository */
 	private Models\States\DevicePropertiesRepository $statesRepository;
@@ -53,19 +57,22 @@ final class DeviceConnectionStateManager
 	private Log\LoggerInterface $logger;
 
 	/**
+	 * @param Models\Devices\IDevicesRepository $devicesRepository
 	 * @param Models\DataStorage\IDevicePropertiesRepository $repository
 	 * @param Models\Devices\Properties\IPropertiesManager $manager
-	 * @param Models\States\DevicePropertiesRepository $statesRepository
-	 * @param Models\States\DevicePropertiesManager $statesManager
+	 * @param DevicePropertiesRepository $statesRepository
+	 * @param DevicePropertiesManager $statesManager
 	 * @param Log\LoggerInterface|null $logger
 	 */
 	public function __construct(
+		Models\Devices\IDevicesRepository $devicesRepository,
 		Models\DataStorage\IDevicePropertiesRepository $repository,
 		Models\Devices\Properties\IPropertiesManager $manager,
 		Models\States\DevicePropertiesRepository $statesRepository,
 		Models\States\DevicePropertiesManager $statesManager,
 		?Log\LoggerInterface $logger = null
 	) {
+		$this->devicesRepository = $devicesRepository;
 		$this->repository = $repository;
 		$this->manager = $manager;
 		$this->statesRepository = $statesRepository;
@@ -90,9 +97,20 @@ final class DeviceConnectionStateManager
 		);
 
 		if ($stateProperty === null) {
+			if (!$device instanceof Entities\Devices\IDevice) {
+				$findDeviceQuery = new Queries\FindDevicesQuery();
+				$findDeviceQuery->byId($device->getId());
+
+				$device = $this->devicesRepository->findOneBy($findDeviceQuery);
+
+				if ($device === null) {
+					throw new Exceptions\InvalidStateException('Connector could not be loaded');
+				}
+			}
+
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
-				'connector'  => $device->getId(),
-				'entity'     => Entities\Connectors\Properties\DynamicProperty::class,
+				'device'     => $device,
+				'entity'     => Entities\Devices\Properties\DynamicProperty::class,
 				'identifier' => MetadataTypes\ConnectorPropertyNameType::NAME_STATE,
 				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
 				'unit'       => null,

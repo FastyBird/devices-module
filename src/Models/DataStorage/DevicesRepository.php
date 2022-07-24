@@ -20,6 +20,7 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IteratorAggregate;
 use Nette;
+use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
 
@@ -87,7 +88,7 @@ final class DevicesRepository implements IDevicesRepository, Countable, Iterator
 				array_key_exists('connector', $entity)
 				&& $connector->toString() === $entity['connector']
 				&& array_key_exists('identifier', $entity)
-				&& $entity['identifier'] === $identifier
+				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}

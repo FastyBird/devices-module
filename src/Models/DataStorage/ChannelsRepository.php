@@ -20,6 +20,7 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IteratorAggregate;
 use Nette;
+use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
 
@@ -87,7 +88,7 @@ final class ChannelsRepository implements IChannelsRepository, Countable, Iterat
 				array_key_exists('device', $entity)
 				&& $device->toString() === $entity['device']
 				&& array_key_exists('identifier', $entity)
-				&& $entity['identifier'] === $identifier
+				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}

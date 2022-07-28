@@ -388,18 +388,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())
 			->setType(Commands\InitializeCommand::class);
 
-		$builder->addDefinition($this->prefix('commands.dataStorage'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\DataStorageCommand::class);
-
-		$builder->addDefinition($this->prefix('commands.connector'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\ConnectorCommand::class)
+		$builder->addDefinition($this->prefix('commands.service'), new DI\Definitions\ServiceDefinition())
+			->setType(Commands\ServiceCommand::class)
 			->setArguments([
-				'connectorConsumer' => '@' . $this->prefix('consumer.connector'),
-			]);
-
-		$builder->addDefinition($this->prefix('commands.dataExchange'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\DataExchangeCommand::class)
-			->setArguments([
+				'connectorConsumer'    => '@' . $this->prefix('consumer.connector'),
 				'dataExchangeConsumer' => '@' . $this->prefix('consumer.dataExchange'),
 			]);
 

@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * ConnectorCommand.php
+ * ServiceCommand.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -28,6 +28,7 @@ use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
 use Ramsey\Uuid;
 use React\EventLoop;
+use RuntimeException;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
@@ -42,7 +43,7 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class ConnectorCommand extends Console\Command\Command
+class ServiceCommand extends Console\Command\Command
 {
 
 	private const SHUTDOWN_WAITING_DELAY = 3;
@@ -55,6 +56,9 @@ class ConnectorCommand extends Console\Command\Command
 
 	/** @var Consumers\ConnectorConsumer */
 	private Consumers\ConnectorConsumer $connectorConsumer;
+
+	/** @var Consumers\DataExchangeConsumer */
+	private Consumers\DataExchangeConsumer $dataExchangeConsumer;
 
 	/** @var ExchangeConsumer\Consumer */
 	private ExchangeConsumer\Consumer $consumer;
@@ -82,6 +86,7 @@ class ConnectorCommand extends Console\Command\Command
 	 * @param Models\DataStorage\IConnectorsRepository $connectorsRepository
 	 * @param Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager
 	 * @param Consumers\ConnectorConsumer $connectorConsumer
+	 * @param Consumers\DataExchangeConsumer $dataExchangeConsumer
 	 * @param ExchangeConsumer\Consumer $consumer
 	 * @param DateTimeFactory\DateTimeFactory $dateTimeFactory
 	 * @param Localization\Translator $translator
@@ -95,6 +100,7 @@ class ConnectorCommand extends Console\Command\Command
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
 		Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager,
 		Consumers\ConnectorConsumer $connectorConsumer,
+		Consumers\DataExchangeConsumer $dataExchangeConsumer,
 		ExchangeConsumer\Consumer $consumer,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
 		Localization\Translator $translator,
@@ -109,6 +115,7 @@ class ConnectorCommand extends Console\Command\Command
 		$this->connectorConnectionStateManager = $connectorConnectionStateManager;
 
 		$this->connectorConsumer = $connectorConsumer;
+		$this->dataExchangeConsumer = $dataExchangeConsumer;
 		$this->consumer = $consumer;
 
 		$this->dateTimeFactory = $dateTimeFactory;
@@ -128,10 +135,15 @@ class ConnectorCommand extends Console\Command\Command
 	protected function configure(): void
 	{
 		$this
-			->setName('fb:devices-module:connector')
-			->addArgument('connector', Input\InputArgument::OPTIONAL, $this->translator->translate('//commands.connector.inputs.connector.title'))
-			->addOption('noconfirm', null, Input\InputOption::VALUE_NONE, 'do not ask for any confirmation')
-			->setDescription('Connector communication service');
+			->setName('fb:devices-module:service')
+			->setDescription('Devices module service')
+			->setDefinition(
+				new Input\InputDefinition([
+					new Input\InputOption('connector', 'c', Input\InputOption::VALUE_OPTIONAL, 'run devices module connector', true),
+					new Input\InputOption('exchange', 'e', Input\InputOption::VALUE_OPTIONAL, 'run devices module data exchange', false),
+					new Input\InputOption('no-confirm', 'nc', Input\InputOption::VALUE_NONE, 'do not ask for any confirmation', false),
+				])
+			);
 	}
 
 	/**
@@ -142,21 +154,78 @@ class ConnectorCommand extends Console\Command\Command
 		$symfonyApp = $this->getApplication();
 
 		if ($symfonyApp === null) {
-			return 1;
+			return Console\Command\Command::FAILURE;
 		}
-
-		$this->consumer->register($this->connectorConsumer);
 
 		$io = new Style\SymfonyStyle($input, $output);
 
-		$io->title('FB devices module - connector');
+		$io->title('FB devices module - service');
+
+		$io->note('This action will run module services.');
+
+		if (!$input->getOption('no-confirm')) {
+			/** @var bool $continue */
+			$continue = $io->ask('Would you like to continue?', 'n', function ($answer): bool {
+				if (!in_array($answer, ['y', 'Y', 'n', 'N'], true)) {
+					throw new RuntimeException('You must type Y or N');
+				}
+
+				return in_array($answer, ['y', 'Y'], true);
+			});
+
+			if (!$continue) {
+				return Console\Command\Command::SUCCESS;
+			}
+		}
+
+		try {
+			if ($input->getOption('exchange')) {
+				$this->consumer->register($this->dataExchangeConsumer);
+			}
+
+			if ($input->getOption('connector')) {
+				$this->executeConnector($io, $input);
+			}
+
+			return Console\Command\Command::SUCCESS;
+
+		} catch (Throwable $ex) {
+			// Log caught exception
+			$this->logger->error('An unhandled error occurred', [
+				'source'    => 'devices-module',
+				'type'      => 'service-cmd',
+				'exception' => [
+					'message' => $ex->getMessage(),
+					'code'    => $ex->getCode(),
+				],
+			]);
+
+			$io->error('Something went wrong, service could not be finished. Error was logged.');
+
+			return Console\Command\Command::FAILURE;
+		}
+	}
+
+	/**
+	 * @param Style\SymfonyStyle $io
+	 * @param Input\InputInterface $input
+	 *
+	 * @return void
+	 */
+	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
+	{
+		$io->newLine();
+
+		$io->section('Preparing module connector');
+
+		$this->consumer->register($this->connectorConsumer);
 
 		if (
-			$input->hasArgument('connector')
-			&& is_string($input->getArgument('connector'))
-			&& $input->getArgument('connector') !== ''
+			$input->hasOption('connector')
+			&& is_string($input->getOption('connector'))
+			&& $input->getOption('connector') !== ''
 		) {
-			$connectorId = $input->getArgument('connector');
+			$connectorId = $input->getOption('connector');
 		} else {
 			$connectorId = $io->ask($this->translator->translate('//commands.connector.inputs.connector.title'));
 		}
@@ -164,7 +233,7 @@ class ConnectorCommand extends Console\Command\Command
 		if (!Uuid\Uuid::isValid($connectorId)) {
 			$io->error($this->translator->translate('//commands.connector.validation.identifierNotValid'));
 
-			return 1;
+			return;
 		}
 
 		$connector = $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId));
@@ -175,92 +244,75 @@ class ConnectorCommand extends Console\Command\Command
 				'type'   => 'connector',
 			]);
 
-			return 0;
+			return;
 		}
+
+		$io->newLine();
+
+		$io->section('Initializing module connector');
 
 		$service = $this->factory->create($connector);
 
-		try {
-			$this->eventLoop->futureTick(function () use ($connector, $service): void {
-				$this->dispatcher?->dispatch(new Events\BeforeConnectorStartEvent($connector));
+		$this->eventLoop->futureTick(function () use ($connector, $service): void {
+			$this->dispatcher?->dispatch(new Events\BeforeConnectorStartEvent($connector));
 
-				$this->logger->info('Starting connector...', [
-					'source' => 'devices-module',
-					'type'   => 'connector',
-				]);
+			$this->logger->info('Starting connector...', [
+				'source' => 'devices-module',
+				'type'   => 'connector',
+			]);
 
-				try {
-					// Start connector service
-					$service->execute();
+			try {
+				// Start connector service
+				$service->execute();
 
-					$this->connectorConnectionStateManager->setState(
-						$connector,
-						MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING)
-					);
-				} catch (Throwable $ex) {
-					throw new Exceptions\TerminateException('Connector can\'t be started', $ex->getCode(), $ex);
-				}
+				$this->connectorConnectionStateManager->setState(
+					$connector,
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING)
+				);
+			} catch (Throwable $ex) {
+				throw new Exceptions\TerminateException('Connector can\'t be started', $ex->getCode(), $ex);
+			}
 
-				$this->dispatcher?->dispatch(new Events\AfterConnectorStartEvent($connector));
-			});
+			$this->dispatcher?->dispatch(new Events\AfterConnectorStartEvent($connector));
+		});
 
-			$this->eventLoop->addSignal(SIGINT, function (int $signal) use ($connector, $service): void {
-				$this->logger->info('Stopping connector...', [
-					'source' => 'devices-module',
-					'type'   => 'connector',
-				]);
+		$this->eventLoop->addSignal(SIGINT, function (int $signal) use ($connector, $service): void {
+			$this->logger->info('Stopping connector...', [
+				'source' => 'devices-module',
+				'type'   => 'connector',
+			]);
 
-				try {
-					$this->dispatcher?->dispatch(new Events\BeforeConnectorTerminateEvent($service));
+			try {
+				$this->dispatcher?->dispatch(new Events\BeforeConnectorTerminateEvent($service));
 
-					$service->terminate();
+				$service->terminate();
 
-					$now = $this->dateTimeFactory->getNow();
+				$now = $this->dateTimeFactory->getNow();
 
-					$waitingForClosing = true;
+				$waitingForClosing = true;
 
-					// Wait until connector is fully terminated
-					while (
-						$waitingForClosing
-						&& (
-							$this->dateTimeFactory->getNow()->getTimestamp() - $now->getTimestamp()
-						) < self::SHUTDOWN_WAITING_DELAY
-					) {
-						if (!$service->hasUnfinishedTasks()) {
-							$waitingForClosing = false;
-						}
+				// Wait until connector is fully terminated
+				while (
+					$waitingForClosing
+					&& (
+						$this->dateTimeFactory->getNow()->getTimestamp() - $now->getTimestamp()
+					) < self::SHUTDOWN_WAITING_DELAY
+				) {
+					if (!$service->hasUnfinishedTasks()) {
+						$waitingForClosing = false;
 					}
-
-					$this->dispatcher?->dispatch(new Events\AfterConnectorTerminateEvent($service));
-
-					$this->connectorConnectionStateManager->setState(
-						$connector,
-						MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_STOPPED)
-					);
-
-					$this->eventLoop->stop();
-				} catch (Throwable $ex) {
-					$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
-						'source'    => 'devices-module',
-						'type'      => 'connector',
-						'exception' => [
-							'message' => $ex->getMessage(),
-							'code'    => $ex->getCode(),
-						],
-					]);
-
-					throw new Exceptions\TerminateException(
-						'Error during connector termination process',
-						$ex->getCode(),
-						$ex
-					);
 				}
-			});
 
-			$this->eventLoop->run();
-		} catch (Throwable $ex) {
-			if (!$ex instanceof Exceptions\TerminateException) {
-				$this->logger->error('An unhandled error occurred', [
+				$this->dispatcher?->dispatch(new Events\AfterConnectorTerminateEvent($service));
+
+				$this->connectorConnectionStateManager->setState(
+					$connector,
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_STOPPED)
+				);
+
+				$this->eventLoop->stop();
+			} catch (Throwable $ex) {
+				$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
 					'source'    => 'devices-module',
 					'type'      => 'connector',
 					'exception' => [
@@ -268,12 +320,16 @@ class ConnectorCommand extends Console\Command\Command
 						'code'    => $ex->getCode(),
 					],
 				]);
+
+				throw new Exceptions\TerminateException(
+					'Error during connector termination process',
+					$ex->getCode(),
+					$ex
+				);
 			}
+		});
 
-			$this->eventLoop->stop();
-		}
-
-		return 0;
+		$this->eventLoop->run();
 	}
 
 }

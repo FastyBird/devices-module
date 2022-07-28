@@ -15,6 +15,8 @@
 
 namespace FastyBird\DevicesModule\Commands;
 
+use Exception;
+use FastyBird\DevicesModule\DataStorage;
 use Psr\Log;
 use RuntimeException;
 use Symfony\Component\Console;
@@ -34,17 +36,24 @@ use Throwable;
 class InitializeCommand extends Console\Command\Command
 {
 
+	/** @var DataStorage\Writer */
+	private DataStorage\Writer $writer;
+
 	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
 	/**
+	 * @param DataStorage\Writer $writer
 	 * @param Log\LoggerInterface|null $logger
 	 * @param string|null $name
 	 */
 	public function __construct(
+		DataStorage\Writer $writer,
 		?Log\LoggerInterface $logger = null,
 		?string $name = null
 	) {
+		$this->writer = $writer;
+
 		$this->logger = $logger ?? new Log\NullLogger();
 
 		parent::__construct($name);
@@ -57,8 +66,14 @@ class InitializeCommand extends Console\Command\Command
 	{
 		$this
 			->setName('fb:devices-module:initialize')
-			->addOption('noconfirm', null, Input\InputOption::VALUE_NONE, 'do not ask for any confirmation')
-			->setDescription('Devices module initialization');
+			->setDescription('Devices module initialization')
+			->setDefinition(
+				new Input\InputDefinition([
+					new Input\InputOption('database', 'db', Input\InputOption::VALUE_OPTIONAL, 'initialize module database', true),
+					new Input\InputOption('data-storage', 'ds', Input\InputOption::VALUE_OPTIONAL, 'initialize module data storage', false),
+					new Input\InputOption('no-confirm', 'nc', Input\InputOption::VALUE_NONE, 'do not ask for any confirmation', false),
+				])
+			);
 	}
 
 	/**
@@ -69,7 +84,7 @@ class InitializeCommand extends Console\Command\Command
 		$symfonyApp = $this->getApplication();
 
 		if ($symfonyApp === null) {
-			return 1;
+			return Console\Command\Command::FAILURE;
 		}
 
 		$io = new Style\SymfonyStyle($input, $output);
@@ -78,51 +93,35 @@ class InitializeCommand extends Console\Command\Command
 
 		$io->note('This action will create|update module database structure.');
 
-		/** @var bool $continue */
-		$continue = $io->ask('Would you like to continue?', 'n', function ($answer): bool {
-			if (!in_array($answer, ['y', 'Y', 'n', 'N'], true)) {
-				throw new RuntimeException('You must type Y or N');
+		if (!$input->getOption('no-confirm')) {
+			/** @var bool $continue */
+			$continue = $io->ask('Would you like to continue?', 'n', function ($answer): bool {
+				if (!in_array($answer, ['y', 'Y', 'n', 'N'], true)) {
+					throw new RuntimeException('You must type Y or N');
+				}
+
+				return in_array($answer, ['y', 'Y'], true);
+			});
+
+			if (!$continue) {
+				return Console\Command\Command::SUCCESS;
 			}
-
-			return in_array($answer, ['y', 'Y'], true);
-		});
-
-		if (!$continue) {
-			return 0;
 		}
 
 		try {
-			$io->section('Preparing module database');
-
-			$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
-
-			$result = $databaseCmd->run(new Input\ArrayInput([
-				'--force' => true,
-			]), $output);
-
-			if ($result !== 0) {
-				$io->error('Something went wrong, initialization could not be finished.');
-
-				return 1;
+			if ($input->getOption('database')) {
+				$this->initializeDatabase($io, $output);
 			}
 
-			$databaseProxiesCmd = $symfonyApp->find('orm:generate-proxies');
-
-			$result = $databaseProxiesCmd->run(new Input\ArrayInput([
-				'--quiet' => true,
-			]), $output);
-
-			if ($result !== 0) {
-				$io->error('Something went wrong, initialization could not be finished.');
-
-				return 1;
+			if ($input->getOption('data-storage')) {
+				$this->initializeDataStorage($io);
 			}
 
 			$io->newLine(3);
 
-			$io->success('Devices module has been successfully initialized and can be now started.');
+			$io->success('Devices module has been successfully initialized and can be now used.');
 
-			return 0;
+			return Console\Command\Command::SUCCESS;
 
 		} catch (Throwable $ex) {
 			// Log caught exception
@@ -137,7 +136,90 @@ class InitializeCommand extends Console\Command\Command
 
 			$io->error('Something went wrong, initialization could not be finished. Error was logged.');
 
-			return 1;
+			return Console\Command\Command::FAILURE;
+		}
+	}
+
+	/**
+	 * @param Style\SymfonyStyle $io
+	 * @param Output\OutputInterface $output
+	 *
+	 * @return void
+	 *
+	 * @throws Exception
+	 */
+	private function initializeDatabase(Style\SymfonyStyle $io, Output\OutputInterface $output): void
+	{
+		$symfonyApp = $this->getApplication();
+
+		if ($symfonyApp === null) {
+			return;
+		}
+
+		$io->newLine();
+
+		$io->section('Preparing module database');
+
+		$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
+
+		$result = $databaseCmd->run(new Input\ArrayInput([
+			'--force' => true,
+		]), $output);
+
+		if ($result !== Console\Command\Command::SUCCESS) {
+			$io->error('Something went wrong, initialization could not be finished.');
+
+			return;
+		}
+
+		$databaseProxiesCmd = $symfonyApp->find('orm:generate-proxies');
+
+		$result = $databaseProxiesCmd->run(new Input\ArrayInput([
+			'--quiet' => true,
+		]), $output);
+
+		if ($result !== 0) {
+			$io->error('Something went wrong, database initialization could not be finished.');
+
+			return;
+		}
+
+		$io->success('Devices module database has been successfully initialized.');
+
+	}
+
+	/**
+	 * @param Style\SymfonyStyle $io
+	 *
+	 * @return void
+	 */
+	private function initializeDataStorage(Style\SymfonyStyle $io): void
+	{
+		$io->newLine();
+
+		$io->section('Preparing module data storage');
+
+		try {
+			$this->writer->write();
+
+			$io->success('Devices module data storage has been successfully initialized.');
+
+			return;
+
+		} catch (Throwable $ex) {
+			// Log caught exception
+			$this->logger->error('An unhandled error occurred', [
+				'source'    => 'devices-module',
+				'type'      => 'data-storage-cmd',
+				'exception' => [
+					'message' => $ex->getMessage(),
+					'code'    => $ex->getCode(),
+				],
+			]);
+
+			$io->error('Something went wrong, data storage initialization could not be finished. Error was logged.');
+
+			return;
 		}
 	}
 

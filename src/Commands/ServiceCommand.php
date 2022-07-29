@@ -238,7 +238,7 @@ class ServiceCommand extends Console\Command\Command
 
 			/** @var MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector */
 			foreach ($this->connectorsRepository as $connector) {
-				$connectors[] = $connector->getIdentifier();
+				$connectors[] = $connector->getIdentifier() . $connector->getName() ? ' [' . $connector->getName() . ']'  : '';
 			}
 
 			if (count($connectors) === 0) {

@@ -185,7 +185,6 @@ class InitializeCommand extends Console\Command\Command
 		}
 
 		$io->success('Devices module database has been successfully initialized.');
-
 	}
 
 	/**

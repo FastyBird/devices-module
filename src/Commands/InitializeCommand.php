@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Commands;
 
 use Exception;
 use FastyBird\DevicesModule\DataStorage;
+use FastyBird\Metadata;
 use Psr\Log;
 use RuntimeException;
 use Symfony\Component\Console;
@@ -126,7 +127,7 @@ class InitializeCommand extends Console\Command\Command
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => 'devices-module',
+				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
 				'type'      => 'initialize-cmd',
 				'exception' => [
 					'message' => $ex->getMessage(),
@@ -208,8 +209,8 @@ class InitializeCommand extends Console\Command\Command
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => 'devices-module',
-				'type'      => 'data-storage-cmd',
+				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
+				'type'      => 'initialize-cmd',
 				'exception' => [
 					'message' => $ex->getMessage(),
 					'code'    => $ex->getCode(),

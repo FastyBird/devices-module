@@ -21,6 +21,7 @@ use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
 use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
+use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
@@ -181,7 +182,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 							);
 						} else {
 							$this->logger->warning('Exchange publisher is not configured', [
-								'source' => 'devices-module',
+								'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 								'type'   => 'exchange-consumer',
 							]);
 						}
@@ -230,7 +231,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 							);
 						} else {
 							$this->logger->warning('Exchange publisher is not configured', [
-								'source' => 'devices-module',
+								'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 								'type'   => 'exchange-consumer',
 							]);
 						}
@@ -279,7 +280,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 							);
 						} else {
 							$this->logger->warning('Exchange publisher is not configured', [
-								'source' => 'devices-module',
+								'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 								'type'   => 'exchange-consumer',
 							]);
 						}
@@ -288,7 +289,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 			}
 		} else {
 			$this->logger->warning('Received data message without data', [
-				'source' => 'devices-module',
+				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 				'type'   => 'exchange-consumer',
 			]);
 		}

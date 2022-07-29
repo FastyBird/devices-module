@@ -95,6 +95,22 @@ final class ConnectorsRepository implements IConnectorsRepository, Countable, It
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws MetadataExceptions\FileNotFoundException
+	 */
+	public function findAll(): array
+	{
+		$connectors = [];
+
+		foreach ($this->rawData as $id => $entity) {
+			$connectors[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		}
+
+		return $connectors;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{

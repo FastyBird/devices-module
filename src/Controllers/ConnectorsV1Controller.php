@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
+use FastyBird\Metadata;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message;
 use Ramsey\Uuid;
@@ -169,7 +170,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module',
+					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'      => 'connectors-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),

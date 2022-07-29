@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
+use FastyBird\Metadata;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette\Utils;
@@ -208,7 +209,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module',
+					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'      => 'channels-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
@@ -288,7 +289,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => 'devices-module',
+					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'      => 'channels-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
@@ -357,7 +358,7 @@ final class ChannelsV1Controller extends BaseV1Controller
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => 'devices-module',
+				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
 				'type'      => 'channels-controller',
 				'exception' => [
 					'message' => $ex->getMessage(),

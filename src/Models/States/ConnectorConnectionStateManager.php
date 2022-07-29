@@ -19,6 +19,7 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
+use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
@@ -137,7 +138,7 @@ final class ConnectorConnectionStateManager
 				$this->logger->warning(
 					'States repository is not configured. State could not be fetched',
 					[
-						'source' => 'devices-module',
+						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 						'type'   => 'connection-state-manager',
 					]
 				);
@@ -162,7 +163,7 @@ final class ConnectorConnectionStateManager
 					$this->logger->warning(
 						'States manager is not configured. State could not be saved',
 						[
-							'source' => 'devices-module',
+							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 							'type'   => 'connection-state-manager',
 						]
 					);
@@ -186,7 +187,7 @@ final class ConnectorConnectionStateManager
 					$this->logger->warning(
 						'States manager is not configured. State could not be saved',
 						[
-							'source' => 'devices-module',
+							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 							'type'   => 'connection-state-manager',
 						]
 					);

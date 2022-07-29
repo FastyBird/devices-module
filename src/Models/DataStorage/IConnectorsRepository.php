@@ -44,6 +44,11 @@ interface IConnectorsRepository
 	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity;
 
 	/**
+	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity[]
+	 */
+	public function findAll(): array;
+
+	/**
 	 * @param Uuid\UuidInterface $id
 	 * @param Array<string, mixed> $data
 	 *

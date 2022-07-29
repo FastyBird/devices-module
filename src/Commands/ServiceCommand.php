@@ -22,8 +22,8 @@ use FastyBird\DevicesModule\Events;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
-use Nette\Localization;
 use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
 use Ramsey\Uuid;
@@ -69,9 +69,6 @@ class ServiceCommand extends Console\Command\Command
 	/** @var DateTimeFactory\DateTimeFactory */
 	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
 
-	/** @var Localization\Translator */
-	private Localization\Translator $translator;
-
 	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
@@ -89,7 +86,6 @@ class ServiceCommand extends Console\Command\Command
 	 * @param Consumers\DataExchangeConsumer $dataExchangeConsumer
 	 * @param ExchangeConsumer\Consumer $consumer
 	 * @param DateTimeFactory\DateTimeFactory $dateTimeFactory
-	 * @param Localization\Translator $translator
 	 * @param EventLoop\LoopInterface $eventLoop
 	 * @param PsrEventDispatcher\EventDispatcherInterface|null $dispatcher
 	 * @param Log\LoggerInterface|null $logger
@@ -103,7 +99,6 @@ class ServiceCommand extends Console\Command\Command
 		Consumers\DataExchangeConsumer $dataExchangeConsumer,
 		ExchangeConsumer\Consumer $consumer,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
-		Localization\Translator $translator,
 		EventLoop\LoopInterface $eventLoop,
 		?PsrEventDispatcher\EventDispatcherInterface $dispatcher,
 		?Log\LoggerInterface $logger = null,
@@ -120,7 +115,6 @@ class ServiceCommand extends Console\Command\Command
 
 		$this->dateTimeFactory = $dateTimeFactory;
 
-		$this->translator = $translator;
 		$this->eventLoop = $eventLoop;
 		$this->dispatcher = $dispatcher;
 
@@ -139,9 +133,9 @@ class ServiceCommand extends Console\Command\Command
 			->setDescription('Devices module service')
 			->setDefinition(
 				new Input\InputDefinition([
-					new Input\InputOption('connector', 'c', Input\InputOption::VALUE_OPTIONAL, 'run devices module connector', true),
-					new Input\InputOption('exchange', 'e', Input\InputOption::VALUE_OPTIONAL, 'run devices module data exchange', false),
-					new Input\InputOption('no-confirm', 'nc', Input\InputOption::VALUE_NONE, 'do not ask for any confirmation', false),
+					new Input\InputOption('connector', 'c', Input\InputOption::VALUE_OPTIONAL, 'Run devices module connector', true),
+					new Input\InputOption('exchange', 'e', Input\InputOption::VALUE_NONE, 'Run devices module data exchange'),
+					new Input\InputOption('no-confirm', null, Input\InputOption::VALUE_NONE, 'Do not ask for any confirmation'),
 				])
 			);
 	}
@@ -226,25 +220,54 @@ class ServiceCommand extends Console\Command\Command
 			&& $input->getOption('connector') !== ''
 		) {
 			$connectorId = $input->getOption('connector');
+
+			if (Uuid\Uuid::isValid($connectorId)) {
+				$connector = $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId));
+			} else {
+				$connector = $this->connectorsRepository->findByIdentifier($connectorId);
+			}
+
+			if ($connector === null) {
+				$io->warning('Connector was not found in system');
+
+				return;
+			}
+
 		} else {
-			$connectorId = $io->ask($this->translator->translate('//commands.connector.inputs.connector.title'));
-		}
+			$connectors = [];
 
-		if (!Uuid\Uuid::isValid($connectorId)) {
-			$io->error($this->translator->translate('//commands.connector.validation.identifierNotValid'));
+			/** @var MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector */
+			foreach ($this->connectorsRepository as $connector) {
+				$connectors[] = $connector->getIdentifier();
+			}
 
-			return;
-		}
+			if (count($connectors) === 0) {
+				$io->warning('No connectors registered in system');
 
-		$connector = $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId));
+				return;
+			}
 
-		if ($connector === null) {
-			$this->logger->alert('Connector was not found', [
-				'source' => 'devices-module',
-				'type'   => 'connector',
-			]);
+			$question = new Console\Question\ChoiceQuestion(
+				'Please select connector to execute',
+				$connectors
+			);
 
-			return;
+			$question->setErrorMessage('Selected connector: %s is not valid.');
+
+			$connectorIdentifier = $io->askQuestion($question);
+
+			$connector = $this->connectorsRepository->findByIdentifier($connectorIdentifier);
+
+			if ($connector === null) {
+				$io->error('Something went wrong, connector could not be loaded');
+
+				$this->logger->alert('Connector was not found', [
+					'source' => 'devices-module',
+					'type'   => 'connector',
+				]);
+
+				return;
+			}
 		}
 
 		$io->newLine();

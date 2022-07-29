@@ -69,9 +69,9 @@ class InitializeCommand extends Console\Command\Command
 			->setDescription('Devices module initialization')
 			->setDefinition(
 				new Input\InputDefinition([
-					new Input\InputOption('database', 'db', Input\InputOption::VALUE_OPTIONAL, 'initialize module database', true),
-					new Input\InputOption('data-storage', 'ds', Input\InputOption::VALUE_OPTIONAL, 'initialize module data storage', false),
-					new Input\InputOption('no-confirm', 'nc', Input\InputOption::VALUE_NONE, 'do not ask for any confirmation', false),
+					new Input\InputOption('database', 'd', Input\InputOption::VALUE_NONE, 'Initialize module database'),
+					new Input\InputOption('data-storage', 's', Input\InputOption::VALUE_NONE, 'Initialize module data storage'),
+					new Input\InputOption('no-confirm', null, Input\InputOption::VALUE_NONE, 'Do not ask for any confirmation'),
 				])
 			);
 	}

@@ -15,7 +15,9 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
+use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use IteratorAggregate;
 use Ramsey\Uuid;
 
 /**
@@ -25,8 +27,10 @@ use Ramsey\Uuid;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @extends IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorEntity>
  */
-interface IConnectorsRepository
+interface IConnectorsRepository extends Countable, IteratorAggregate
 {
 
 	/**
@@ -42,11 +46,6 @@ interface IConnectorsRepository
 	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity|null
 	 */
 	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity;
-
-	/**
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity[]
-	 */
-	public function findAll(): array;
 
 	/**
 	 * @param Uuid\UuidInterface $id

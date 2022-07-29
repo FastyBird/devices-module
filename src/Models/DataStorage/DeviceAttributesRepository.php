@@ -15,10 +15,8 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
-use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
-use IteratorAggregate;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
@@ -31,10 +29,8 @@ use RecursiveArrayIterator;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity>
  */
-final class DeviceAttributesRepository implements IDeviceAttributesRepository, Countable, IteratorAggregate
+final class DeviceAttributesRepository implements IDeviceAttributesRepository
 {
 
 	use Nette\SmartObject;

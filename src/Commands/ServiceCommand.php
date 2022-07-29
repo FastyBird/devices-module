@@ -235,7 +235,7 @@ class ServiceCommand extends Console\Command\Command
 		} else {
 			$connectors = [];
 
-			foreach ($this->connectorsRepository->findAll() as $connector) {
+			foreach ($this->connectorsRepository as $connector) {
 				$connectors[] = $connector->getIdentifier() . $connector->getName() ? ' [' . $connector->getName() . ']' : '';
 			}
 

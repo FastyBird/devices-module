@@ -15,7 +15,9 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
+use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use IteratorAggregate;
 use Ramsey\Uuid;
 
 /**
@@ -25,8 +27,10 @@ use Ramsey\Uuid;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @extends IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity>
  */
-interface IChannelControlsRepository
+interface IChannelControlsRepository extends Countable, IteratorAggregate
 {
 
 	/**

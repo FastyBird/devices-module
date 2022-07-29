@@ -15,10 +15,8 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
-use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
-use IteratorAggregate;
 use Nette;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
@@ -30,10 +28,8 @@ use RecursiveArrayIterator;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity>
  */
-final class ConnectorControlsRepository implements IConnectorControlsRepository, Countable, IteratorAggregate
+final class ConnectorControlsRepository implements IConnectorControlsRepository
 {
 
 	use Nette\SmartObject;

@@ -28,7 +28,6 @@ use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
 use Ramsey\Uuid;
 use React\EventLoop;
-use RuntimeException;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;

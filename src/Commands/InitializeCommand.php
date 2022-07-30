@@ -19,7 +19,6 @@ use Exception;
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\Metadata;
 use Psr\Log;
-use RuntimeException;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;

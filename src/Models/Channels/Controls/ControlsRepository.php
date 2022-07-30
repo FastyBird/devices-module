@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Models\Channels\Controls;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
+use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -67,6 +68,37 @@ final class ControlsRepository implements IControlsRepository
 	}
 
 	/**
+	 * @param Queries\FindChannelControlsQuery $queryObject
+	 *
+	 * @return Entities\Channels\Controls\IControl[]
+	 *
+	 * @throws Exception
+	 */
+	public function findAllBy(Queries\FindChannelControlsQuery $queryObject): array
+	{
+		$result = $queryObject->fetch($this->getRepository());
+
+		return is_array($result) ? $result : $result->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
+	public function getResultSet(
+		Queries\FindChannelControlsQuery $queryObject
+	): DoctrineOrmQuery\ResultSet {
+		$result = $queryObject->fetch($this->getRepository());
+
+		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
+			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @param string $type
 	 *
 	 * @return ORM\EntityRepository
@@ -88,23 +120,6 @@ final class ControlsRepository implements IControlsRepository
 		}
 
 		return $this->repository;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function getResultSet(
-		Queries\FindChannelControlsQuery $queryObject
-	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
-		}
-
-		return $result;
 	}
 
 }

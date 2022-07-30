@@ -40,6 +40,13 @@ interface IControlsRepository
 	/**
 	 * @param Queries\FindDeviceControlsQuery $queryObject
 	 *
+	 * @return Entities\Devices\Controls\IControl[]
+	 */
+	public function findAllBy(Queries\FindDeviceControlsQuery $queryObject): array;
+
+	/**
+	 * @param Queries\FindDeviceControlsQuery $queryObject
+	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\IControl>

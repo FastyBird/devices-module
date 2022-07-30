@@ -40,6 +40,13 @@ interface IAttributesRepository
 	/**
 	 * @param Queries\FindDeviceAttributesQuery $queryObject
 	 *
+	 * @return Entities\Devices\Attributes\IAttribute[]
+	 */
+	public function findAllBy(Queries\FindDeviceAttributesQuery $queryObject): array;
+
+	/**
+	 * @param Queries\FindDeviceAttributesQuery $queryObject
+	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\IAttribute>

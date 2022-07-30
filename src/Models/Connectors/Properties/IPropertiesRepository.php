@@ -47,6 +47,19 @@ interface IPropertiesRepository
 	 * @param Queries\FindConnectorPropertiesQuery $queryObject
 	 * @param string $type
 	 *
+	 * @return Entities\Connectors\Properties\IProperty[]
+	 *
+	 * @phpstan-param class-string $type
+	 */
+	public function findAllBy(
+		Queries\FindConnectorPropertiesQuery $queryObject,
+		string $type = Entities\Connectors\Properties\Property::class
+	): array;
+
+	/**
+	 * @param Queries\FindConnectorPropertiesQuery $queryObject
+	 * @param string $type
+	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-param class-string $type

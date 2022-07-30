@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Models\Connectors\Properties;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
+use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -66,6 +67,25 @@ final class PropertiesRepository implements IPropertiesRepository
 		$property = $queryObject->fetchOne($this->getRepository($type));
 
 		return $property;
+	}
+
+	/**
+	 * @param Queries\FindConnectorPropertiesQuery $queryObject
+	 * @param string $type
+	 *
+	 * @return Entities\Connectors\Properties\IProperty[]
+	 *
+	 * @phpstan-param class-string $type
+	 *
+	 * @throws Exception
+	 */
+	public function findAllBy(
+		Queries\FindConnectorPropertiesQuery $queryObject,
+		string $type = Entities\Connectors\Properties\Property::class
+	): array {
+		$result = $queryObject->fetch($this->getRepository($type));
+
+		return is_array($result) ? $result : $result->toArray();
 	}
 
 	/**

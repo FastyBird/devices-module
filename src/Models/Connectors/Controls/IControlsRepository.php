@@ -40,6 +40,13 @@ interface IControlsRepository
 	/**
 	 * @param Queries\FindConnectorControlsQuery $queryObject
 	 *
+	 * @return Entities\Connectors\Controls\IControl[]
+	 */
+	public function findAllBy(Queries\FindConnectorControlsQuery $queryObject): array;
+
+	/**
+	 * @param Queries\FindConnectorControlsQuery $queryObject
+	 *
 	 * @return DoctrineOrmQuery\ResultSet
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\IControl>

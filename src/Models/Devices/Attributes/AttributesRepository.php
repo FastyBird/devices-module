@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Models\Devices\Attributes;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
+use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -67,6 +68,37 @@ final class AttributesRepository implements IAttributesRepository
 	}
 
 	/**
+	 * @param Queries\FindDeviceAttributesQuery $queryObject
+	 *
+	 * @return Entities\Devices\Attributes\IAttribute[]
+	 *
+	 * @throws Exception
+	 */
+	public function findAllBy(Queries\FindDeviceAttributesQuery $queryObject): array
+	{
+		$result = $queryObject->fetch($this->getRepository());
+
+		return is_array($result) ? $result : $result->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Throwable
+	 */
+	public function getResultSet(
+		Queries\FindDeviceAttributesQuery $queryObject
+	): DoctrineOrmQuery\ResultSet {
+		$result = $queryObject->fetch($this->getRepository());
+
+		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
+			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @param string $type
 	 *
 	 * @return ORM\EntityRepository
@@ -88,23 +120,6 @@ final class AttributesRepository implements IAttributesRepository
 		}
 
 		return $this->repository;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Throwable
-	 */
-	public function getResultSet(
-		Queries\FindDeviceAttributesQuery $queryObject
-	): DoctrineOrmQuery\ResultSet {
-		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
-		}
-
-		return $result;
 	}
 
 }

@@ -67,6 +67,24 @@ class FindDevicesQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
+	 * @param Entities\Connectors\IConnector $connector
+	 *
+	 * @return void
+	 */
+	public function forConnector(Entities\Connectors\IConnector $connector): void
+	{
+		$this->select[] = function (ORM\QueryBuilder $qb): void {
+			$qb->addSelect('connector');
+			$qb->join('d.connector', 'connector');
+		};
+
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($connector): void {
+			$qb->andWhere('connector.id = :connector')
+				->setParameter('connector', $connector->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+		};
+	}
+
+	/**
 	 * @param Entities\Devices\IDevice $device
 	 *
 	 * @return void

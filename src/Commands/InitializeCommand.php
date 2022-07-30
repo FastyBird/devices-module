@@ -95,14 +95,12 @@ class InitializeCommand extends Console\Command\Command
 		$io->note('This action will create|update module database structure.');
 
 		if (!$input->getOption('no-confirm')) {
-			/** @var bool $continue */
-			$continue = $io->ask('Would you like to continue?', 'n', function ($answer): bool {
-				if (!in_array($answer, ['y', 'Y', 'n', 'N'], true)) {
-					throw new RuntimeException('You must type Y or N');
-				}
+			$question = new Console\Question\ConfirmationQuestion(
+				'Would you like to continue?',
+				false
+			);
 
-				return in_array($answer, ['y', 'Y'], true);
-			});
+			$continue = $io->askQuestion($question);
 
 			if (!$continue) {
 				return Console\Command\Command::SUCCESS;
@@ -117,8 +115,6 @@ class InitializeCommand extends Console\Command\Command
 			if ($input->getOption('data-storage')) {
 				$this->initializeDataStorage($io);
 			}
-
-			$io->newLine(3);
 
 			$io->success('Devices module has been successfully initialized and can be now used.');
 
@@ -157,8 +153,6 @@ class InitializeCommand extends Console\Command\Command
 			return;
 		}
 
-		$io->newLine();
-
 		$io->section('Preparing module database');
 
 		$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
@@ -195,8 +189,6 @@ class InitializeCommand extends Console\Command\Command
 	 */
 	private function initializeDataStorage(Style\SymfonyStyle $io): void
 	{
-		$io->newLine();
-
 		$io->section('Preparing module data storage');
 
 		try {

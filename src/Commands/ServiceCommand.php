@@ -158,14 +158,12 @@ class ServiceCommand extends Console\Command\Command
 		$io->note('This action will run module services.');
 
 		if (!$input->getOption('no-confirm')) {
-			/** @var bool $continue */
-			$continue = $io->ask('Would you like to continue?', 'n', function ($answer): bool {
-				if (!in_array($answer, ['y', 'Y', 'n', 'N'], true)) {
-					throw new RuntimeException('You must type Y or N');
-				}
+			$question = new Console\Question\ConfirmationQuestion(
+				'Would you like to continue?',
+				false
+			);
 
-				return in_array($answer, ['y', 'Y'], true);
-			});
+			$continue = $io->askQuestion($question);
 
 			if (!$continue) {
 				return Console\Command\Command::SUCCESS;
@@ -208,9 +206,7 @@ class ServiceCommand extends Console\Command\Command
 	 */
 	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
-		$io->newLine();
-
-		$io->section('Preparing module connector');
+		$io->section('Preparing connector');
 
 		$this->consumer->register($this->connectorConsumer);
 
@@ -236,7 +232,7 @@ class ServiceCommand extends Console\Command\Command
 			$connectors = [];
 
 			foreach ($this->connectorsRepository as $connector) {
-				$connectors[] = $connector->getIdentifier() . $connector->getName() ? ' [' . $connector->getName() . ']' : '';
+				$connectors[$connector->getIdentifier()] = $connector->getIdentifier() . $connector->getName() ? ' [' . $connector->getName() . ']' : '';
 			}
 
 			if (count($connectors) === 0) {
@@ -247,14 +243,25 @@ class ServiceCommand extends Console\Command\Command
 
 			$question = new Console\Question\ChoiceQuestion(
 				'Please select connector to execute',
-				$connectors
+				array_values($connectors)
 			);
 
 			$question->setErrorMessage('Selected connector: %s is not valid.');
 
-			$connectorIdentifier = $io->askQuestion($question);
+			$connectorIdentifierKey = array_search($io->askQuestion($question), $connectors);
 
-			$connector = $this->connectorsRepository->findByIdentifier($connectorIdentifier);
+			if ($connectorIdentifierKey === false) {
+				$io->error('Something went wrong, connector could not be loaded');
+
+				$this->logger->alert('Connector identifier was not able to get from answer', [
+					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+					'type'   => 'service-cmd',
+				]);
+
+				return;
+			}
+
+			$connector = $this->connectorsRepository->findByIdentifier($connectorIdentifierKey);
 
 			if ($connector === null) {
 				$io->error('Something went wrong, connector could not be loaded');
@@ -268,9 +275,7 @@ class ServiceCommand extends Console\Command\Command
 			}
 		}
 
-		$io->newLine();
-
-		$io->section('Initializing module connector');
+		$io->section('Initializing connector');
 
 		$service = $this->factory->create($connector);
 

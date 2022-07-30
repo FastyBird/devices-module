@@ -275,6 +275,12 @@ class ServiceCommand extends Console\Command\Command
 			}
 		}
 
+		if (!$connector->isEnabled()) {
+			$io->warning('Connector is disabled. Disabled connector could not be executed');
+
+			return;
+		}
+
 		$io->section('Initializing connector');
 
 		$service = $this->factory->create($connector);

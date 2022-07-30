@@ -88,7 +88,7 @@ final class AttributeSchema extends JsonApiSchemas\JsonApiSchema
 		return [
 			'identifier' => $attribute->getIdentifier(),
 			'name'       => $attribute->getName(),
-			'content'    => is_scalar($attribute->getContent()) || $attribute->getContent() === null ? $attribute->getContent() : (string) $attribute->getContent(),
+			'content'    => is_scalar($attribute->getContent(true)) || $attribute->getContent(true) === null ? $attribute->getContent(true) : (string) $attribute->getContent(),
 		];
 	}
 

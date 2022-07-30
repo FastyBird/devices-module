@@ -72,6 +72,7 @@ class InitializeCommand extends Console\Command\Command
 					new Input\InputOption('database', 'd', Input\InputOption::VALUE_NONE, 'Initialize module database'),
 					new Input\InputOption('data-storage', 's', Input\InputOption::VALUE_NONE, 'Initialize module data storage'),
 					new Input\InputOption('no-confirm', null, Input\InputOption::VALUE_NONE, 'Do not ask for any confirmation'),
+					new Input\InputOption('quiet', 'q', Input\InputOption::VALUE_NONE, 'Do not output any message'),
 				])
 			);
 	}
@@ -89,9 +90,11 @@ class InitializeCommand extends Console\Command\Command
 
 		$io = new Style\SymfonyStyle($input, $output);
 
-		$io->title('FB devices module - initialization');
+		if (!$input->getOption('quiet')) {
+			$io->title('FB devices module - initialization');
 
-		$io->note('This action will create|update module database structure.');
+			$io->note('This action will create|update module database structure.');
+		}
 
 		if (!$input->getOption('no-confirm')) {
 			$question = new Console\Question\ConfirmationQuestion(
@@ -108,14 +111,16 @@ class InitializeCommand extends Console\Command\Command
 
 		try {
 			if ($input->getOption('database')) {
-				$this->initializeDatabase($io, $output);
+				$this->initializeDatabase($io, $input, $output);
 			}
 
 			if ($input->getOption('data-storage')) {
-				$this->initializeDataStorage($io);
+				$this->initializeDataStorage($io, $input);
 			}
 
-			$io->success('Devices module has been successfully initialized and can be now used.');
+			if (!$input->getOption('quiet')) {
+				$io->success('Devices module has been successfully initialized and can be now used.');
+			}
 
 			return Console\Command\Command::SUCCESS;
 
@@ -130,7 +135,9 @@ class InitializeCommand extends Console\Command\Command
 				],
 			]);
 
-			$io->error('Something went wrong, initialization could not be finished. Error was logged.');
+			if (!$input->getOption('quiet')) {
+				$io->error('Something went wrong, initialization could not be finished. Error was logged.');
+			}
 
 			return Console\Command\Command::FAILURE;
 		}
@@ -138,21 +145,27 @@ class InitializeCommand extends Console\Command\Command
 
 	/**
 	 * @param Style\SymfonyStyle $io
+	 * @param Input\InputInterface $input
 	 * @param Output\OutputInterface $output
 	 *
 	 * @return void
 	 *
 	 * @throws Exception
 	 */
-	private function initializeDatabase(Style\SymfonyStyle $io, Output\OutputInterface $output): void
-	{
+	private function initializeDatabase(
+		Style\SymfonyStyle $io,
+		Input\InputInterface $input,
+		Output\OutputInterface $output
+	): void {
 		$symfonyApp = $this->getApplication();
 
 		if ($symfonyApp === null) {
 			return;
 		}
 
-		$io->section('Preparing module database');
+		if (!$input->getOption('quiet')) {
+			$io->section('Preparing module database');
+		}
 
 		$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
 
@@ -161,7 +174,9 @@ class InitializeCommand extends Console\Command\Command
 		]), $output);
 
 		if ($result !== Console\Command\Command::SUCCESS) {
-			$io->error('Something went wrong, initialization could not be finished.');
+			if (!$input->getOption('quiet')) {
+				$io->error('Something went wrong, initialization could not be finished.');
+			}
 
 			return;
 		}
@@ -173,27 +188,36 @@ class InitializeCommand extends Console\Command\Command
 		]), $output);
 
 		if ($result !== 0) {
-			$io->error('Something went wrong, database initialization could not be finished.');
+			if (!$input->getOption('quiet')) {
+				$io->error('Something went wrong, database initialization could not be finished.');
+			}
 
 			return;
 		}
 
-		$io->success('Devices module database has been successfully initialized.');
+		if (!$input->getOption('quiet')) {
+			$io->success('Devices module database has been successfully initialized.');
+		}
 	}
 
 	/**
 	 * @param Style\SymfonyStyle $io
+	 * @param Input\InputInterface $input
 	 *
 	 * @return void
 	 */
-	private function initializeDataStorage(Style\SymfonyStyle $io): void
+	private function initializeDataStorage(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
-		$io->section('Preparing module data storage');
+		if (!$input->getOption('quiet')) {
+			$io->section('Preparing module data storage');
+		}
 
 		try {
 			$this->writer->write();
 
-			$io->success('Devices module data storage has been successfully initialized.');
+			if (!$input->getOption('quiet')) {
+				$io->success('Devices module data storage has been successfully initialized.');
+			}
 
 			return;
 
@@ -208,7 +232,9 @@ class InitializeCommand extends Console\Command\Command
 				],
 			]);
 
-			$io->error('Something went wrong, data storage initialization could not be finished. Error was logged.');
+			if (!$input->getOption('quiet')) {
+				$io->error('Something went wrong, data storage initialization could not be finished. Error was logged.');
+			}
 
 			return;
 		}

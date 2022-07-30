@@ -135,6 +135,7 @@ class ServiceCommand extends Console\Command\Command
 					new Input\InputOption('connector', 'c', Input\InputOption::VALUE_OPTIONAL, 'Run devices module connector', true),
 					new Input\InputOption('exchange', 'e', Input\InputOption::VALUE_NONE, 'Run devices module data exchange'),
 					new Input\InputOption('no-confirm', null, Input\InputOption::VALUE_NONE, 'Do not ask for any confirmation'),
+					new Input\InputOption('quiet', 'q', Input\InputOption::VALUE_NONE, 'Do not output any message'),
 				])
 			);
 	}
@@ -146,9 +147,11 @@ class ServiceCommand extends Console\Command\Command
 	{
 		$io = new Style\SymfonyStyle($input, $output);
 
-		$io->title('FB devices module - service');
+		if (!$input->getOption('quiet')) {
+			$io->title('FB devices module - service');
 
-		$io->note('This action will run module services.');
+			$io->note('This action will run module services.');
+		}
 
 		if (!$input->getOption('no-confirm')) {
 			$question = new Console\Question\ConfirmationQuestion(
@@ -199,7 +202,9 @@ class ServiceCommand extends Console\Command\Command
 				],
 			]);
 
-			$io->error('Something went wrong, service could not be finished. Error was logged.');
+			if (!$input->getOption('quiet')) {
+				$io->error('Something went wrong, service could not be finished. Error was logged.');
+			}
 
 			return Console\Command\Command::FAILURE;
 		}
@@ -213,7 +218,9 @@ class ServiceCommand extends Console\Command\Command
 	 */
 	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
-		$io->section('Preparing connector');
+		if (!$input->getOption('quiet')) {
+			$io->section('Preparing connector');
+		}
 
 		$this->consumer->register($this->connectorConsumer);
 
@@ -231,7 +238,9 @@ class ServiceCommand extends Console\Command\Command
 			}
 
 			if ($connector === null) {
-				$io->warning('Connector was not found in system');
+				if (!$input->getOption('quiet')) {
+					$io->warning('Connector was not found in system');
+				}
 
 				return;
 			}
@@ -243,7 +252,9 @@ class ServiceCommand extends Console\Command\Command
 			}
 
 			if (count($connectors) === 0) {
-				$io->warning('No connectors registered in system');
+				if (!$input->getOption('quiet')) {
+					$io->warning('No connectors registered in system');
+				}
 
 				return;
 			}
@@ -258,9 +269,11 @@ class ServiceCommand extends Console\Command\Command
 			$connectorIdentifierKey = array_search($io->askQuestion($question), $connectors);
 
 			if ($connectorIdentifierKey === false) {
-				$io->error('Something went wrong, connector could not be loaded');
+				if (!$input->getOption('quiet')) {
+					$io->error('Something went wrong, connector could not be loaded');
+				}
 
-				$this->logger->alert('Connector identifier was not able to get from answer', [
+				$this->logger->error('Connector identifier was not able to get from answer', [
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'   => 'service-cmd',
 				]);
@@ -271,9 +284,11 @@ class ServiceCommand extends Console\Command\Command
 			$connector = $this->connectorsRepository->findByIdentifier($connectorIdentifierKey);
 
 			if ($connector === null) {
-				$io->error('Something went wrong, connector could not be loaded');
+				if (!$input->getOption('quiet')) {
+					$io->error('Something went wrong, connector could not be loaded');
+				}
 
-				$this->logger->alert('Connector was not found', [
+				$this->logger->error('Connector was not found', [
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'   => 'service-cmd',
 				]);
@@ -283,12 +298,16 @@ class ServiceCommand extends Console\Command\Command
 		}
 
 		if (!$connector->isEnabled()) {
-			$io->warning('Connector is disabled. Disabled connector could not be executed');
+			if (!$input->getOption('quiet')) {
+				$io->warning('Connector is disabled. Disabled connector could not be executed');
+			}
 
 			return;
 		}
 
-		$io->section('Initializing connector');
+		if (!$input->getOption('quiet')) {
+			$io->section('Initializing connector');
+		}
 
 		$service = $this->factory->create($connector);
 

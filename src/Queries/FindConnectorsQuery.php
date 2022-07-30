@@ -55,6 +55,18 @@ class FindConnectorsQuery extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
+	 * @param string $identifier
+	 *
+	 * @return void
+	 */
+	public function byIdentifier(string $identifier): void
+	{
+		$this->filter[] = function (ORM\QueryBuilder $qb) use ($identifier): void {
+			$qb->andWhere('c.identifier = :identifier')->setParameter('identifier', $identifier);
+		};
+	}
+
+	/**
 	 * @param string $sortBy
 	 * @param string $sortDir
 	 *

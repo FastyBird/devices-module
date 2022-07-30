@@ -144,12 +144,6 @@ class ServiceCommand extends Console\Command\Command
 	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
-		$symfonyApp = $this->getApplication();
-
-		if ($symfonyApp === null) {
-			return Console\Command\Command::FAILURE;
-		}
-
 		$io = new Style\SymfonyStyle($input, $output);
 
 		$io->title('FB devices module - service');
@@ -175,7 +169,21 @@ class ServiceCommand extends Console\Command\Command
 			}
 
 			if ($input->getOption('connector')) {
-				$this->executeConnector($io, $input);
+				try {
+					$this->executeConnector($io, $input);
+
+				} catch (Exceptions\TerminateException $ex) {
+					$this->logger->debug('Stopping connector', [
+						'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
+						'type'      => 'service-cmd',
+						'exception' => [
+							'message' => $ex->getMessage(),
+							'code'    => $ex->getCode(),
+						],
+					]);
+
+					$this->eventLoop->stop();
+				}
 			}
 
 			return Console\Command\Command::SUCCESS;

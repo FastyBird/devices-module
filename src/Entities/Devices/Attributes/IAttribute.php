@@ -54,9 +54,11 @@ interface IAttribute extends Entities\IEntity,
 	public function setName(?string $name): void;
 
 	/**
+	 * @param bool $plain
+	 *
 	 * @return string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
 	 */
-	public function getContent(): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null;
+	public function getContent(bool $plain = false): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null;
 
 	/**
 	 * @param string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content

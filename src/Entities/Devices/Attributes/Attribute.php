@@ -152,11 +152,15 @@ class Attribute implements IAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getContent(): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
+	public function getContent(bool $plain = false): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
 	{
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
 			if ($this->content !== null && MetadataTypes\HardwareManufacturerType::isValidValue($this->content)) {
 				return MetadataTypes\HardwareManufacturerType::get($this->content);
+			}
+
+			if ($this->content !== null && $plain) {
+				return $this->content;
 			}
 
 			return MetadataTypes\HardwareManufacturerType::get(MetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC);
@@ -165,6 +169,10 @@ class Attribute implements IAttribute
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MODEL) {
 			if ($this->content !== null && MetadataTypes\DeviceModelType::isValidValue($this->content)) {
 				return MetadataTypes\DeviceModelType::get($this->content);
+			}
+
+			if ($this->content !== null && $plain) {
+				return $this->content;
 			}
 
 			return MetadataTypes\DeviceModelType::get(MetadataTypes\DeviceModelType::MODEL_CUSTOM);
@@ -187,6 +195,10 @@ class Attribute implements IAttribute
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_FIRMWARE_MANUFACTURER) {
 			if ($this->content !== null && MetadataTypes\FirmwareManufacturerType::isValidValue($this->content)) {
 				return MetadataTypes\FirmwareManufacturerType::get($this->content);
+			}
+
+			if ($this->content !== null && $plain) {
+				return $this->content;
 			}
 
 			return MetadataTypes\FirmwareManufacturerType::get(MetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC);

@@ -478,7 +478,17 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			return false;
 		}
 
-		return str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule');
+		if (str_starts_with($rc->getNamespaceName(), 'FastyBird\DevicesModule')) {
+			return true;
+		}
+
+		foreach ($rc->getInterfaces() as $interface) {
+			if (str_starts_with($interface->getNamespaceName(), 'FastyBird\DevicesModule')) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

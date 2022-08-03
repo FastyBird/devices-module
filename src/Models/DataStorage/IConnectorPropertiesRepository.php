@@ -54,10 +54,12 @@ interface IConnectorPropertiesRepository extends Countable, IteratorAggregate
 	): MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|null;
 
 	/**
-	 * @param Uuid\UuidInterface $connector
-	 * @param string|null $type
+	 * @template T
 	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity[]
+	 * @param Uuid\UuidInterface $connector
+	 * @param class-string<T>|null $type
+	 *
+	 * @return T[]|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity[]
 	 */
 	public function findAllByConnector(
 		Uuid\UuidInterface $connector,

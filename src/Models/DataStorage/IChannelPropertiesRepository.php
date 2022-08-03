@@ -54,10 +54,12 @@ interface IChannelPropertiesRepository extends Countable, IteratorAggregate
 	): MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|null;
 
 	/**
-	 * @param Uuid\UuidInterface $channel
-	 * @param string|null $type
+	 * @template T
 	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity[]
+	 * @param Uuid\UuidInterface $channel
+	 * @param class-string<T>|null $type
+	 *
+	 * @return T[]|MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity[]
 	 */
 	public function findAllByChannel(
 		Uuid\UuidInterface $channel,

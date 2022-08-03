@@ -54,12 +54,12 @@ interface IDevicePropertiesRepository extends Countable, IteratorAggregate
 	): MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|null;
 
 	/**
-	 * @template T
-	 *
 	 * @param Uuid\UuidInterface $device
 	 * @param class-string<T>|null $type
 	 *
 	 * @return T[]|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity[]
+	 *
+	 * @template T
 	 */
 	public function findAllByDevice(
 		Uuid\UuidInterface $device,

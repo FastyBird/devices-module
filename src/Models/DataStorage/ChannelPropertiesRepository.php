@@ -108,13 +108,17 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function findAllByChannel(Uuid\UuidInterface $channel): array
-	{
+	public function findAllByChannel(
+		Uuid\UuidInterface $channel,
+		?string $type = null
+	): array {
 		$entities = [];
 
 		foreach ($this->rawData as $id => $entity) {
 			if (array_key_exists('channel', $entity) && $channel->toString() === $entity['channel']) {
-				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+				if ($type === null || $entity instanceof $type) {
+					$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+				}
 			}
 		}
 

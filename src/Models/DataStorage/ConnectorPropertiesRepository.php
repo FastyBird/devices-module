@@ -108,13 +108,17 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function findAllByConnector(Uuid\UuidInterface $connector): array
-	{
+	public function findAllByConnector(
+		Uuid\UuidInterface $connector,
+		?string $type = null
+	): array {
 		$entities = [];
 
 		foreach ($this->rawData as $id => $entity) {
 			if (array_key_exists('connector', $entity) && $connector->toString() === $entity['connector']) {
-				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+				if ($type === null || $entity instanceof $type) {
+					$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+				}
 			}
 		}
 

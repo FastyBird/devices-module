@@ -55,10 +55,16 @@ interface IDevicePropertiesRepository extends Countable, IteratorAggregate
 
 	/**
 	 * @param Uuid\UuidInterface $device
+	 * @param string|null $type
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity[]
+	 *
+	 * @phpstan-param class-string $type
 	 */
-	public function findAllByDevice(Uuid\UuidInterface $device): array;
+	public function findAllByDevice(
+		Uuid\UuidInterface $device,
+		?string $type = null
+	): array;
 
 	/**
 	 * @param Uuid\UuidInterface $id

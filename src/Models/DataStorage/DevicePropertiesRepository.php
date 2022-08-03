@@ -108,13 +108,17 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function findAllByDevice(Uuid\UuidInterface $device): array
-	{
+	public function findAllByDevice(
+		Uuid\UuidInterface $device,
+		?string $type = null
+	): array {
 		$entities = [];
 
 		foreach ($this->rawData as $id => $entity) {
 			if (array_key_exists('device', $entity) && $device->toString() === $entity['device']) {
-				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+				if ($type === null || $entity instanceof $type) {
+					$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+				}
 			}
 		}
 

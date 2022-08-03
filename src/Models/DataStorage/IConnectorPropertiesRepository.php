@@ -55,10 +55,14 @@ interface IConnectorPropertiesRepository extends Countable, IteratorAggregate
 
 	/**
 	 * @param Uuid\UuidInterface $connector
+	 * @param string|null $type
 	 *
 	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity[]
 	 */
-	public function findAllByConnector(Uuid\UuidInterface $connector): array;
+	public function findAllByConnector(
+		Uuid\UuidInterface $connector,
+		?string $type = null
+	): array;
 
 	/**
 	 * @param Uuid\UuidInterface $id

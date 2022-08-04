@@ -72,9 +72,9 @@ final class DevicePropertyChildrenV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_PROPERTY_ID), $device);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_PROPERTY_ID)), $device);
 
 		$findQuery = new Queries\FindDevicePropertiesQuery();
 		$findQuery->forParent($property);

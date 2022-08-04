@@ -68,14 +68,8 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 	/** @var Models\States\ChannelPropertiesRepository */
 	private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository;
 
-	/** @var ExchangeEntities\EntityFactory */
-	private ExchangeEntities\EntityFactory $entityFactory;
-
 	/** @var ExchangePublisher\IPublisher|null */
 	private ?ExchangePublisher\IPublisher $publisher;
-
-	/** @var EventDispatcher\EventDispatcherInterface|null */
-	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
 
 	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
@@ -90,9 +84,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 	 * @param Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository
 	 * @param Models\States\ChannelPropertiesManager $channelPropertiesStatesManager
 	 * @param Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository
-	 * @param ExchangeEntities\EntityFactory $entityFactory
 	 * @param ExchangePublisher\IPublisher|null $publisher
-	 * @param EventDispatcher\EventDispatcherInterface|null $dispatcher
 	 * @param Log\LoggerInterface|null $logger
 	 */
 	public function __construct(
@@ -105,9 +97,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 		Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
 		Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
 		Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
-		ExchangeEntities\EntityFactory $entityFactory,
 		?ExchangePublisher\IPublisher $publisher,
-		?EventDispatcher\EventDispatcherInterface $dispatcher,
 		?Log\LoggerInterface $logger = null
 	) {
 		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
@@ -120,10 +110,7 @@ final class DataExchangeConsumer implements ExchangeConsumer\IConsumer
 		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
 		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;
 
-		$this->entityFactory = $entityFactory;
-
 		$this->publisher = $publisher;
-		$this->dispatcher = $dispatcher;
 
 		$this->logger = $logger ?? new Log\NullLogger();
 	}

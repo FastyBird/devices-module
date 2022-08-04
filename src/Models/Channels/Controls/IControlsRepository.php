@@ -47,9 +47,7 @@ interface IControlsRepository
 	/**
 	 * @param Queries\FindChannelControlsQuery $queryObject
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\IControl>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\IControl>
 	 */
 	public function getResultSet(
 		Queries\FindChannelControlsQuery $queryObject

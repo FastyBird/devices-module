@@ -38,9 +38,7 @@ final class DevicesRepository implements IDevicesRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository[]
-	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\IDevice>[]
+	 * @var ORM\EntityRepository<Entities\Devices\IDevice>[]
 	 */
 	private array $repository = [];
 
@@ -77,9 +75,17 @@ final class DevicesRepository implements IDevicesRepository
 		Queries\FindDevicesQuery $queryObject,
 		string $type = Entities\Devices\Device::class
 	): array {
+		/** @var Array<Entities\Devices\IDevice>|DoctrineOrmQuery\ResultSet<Entities\Devices\IDevice> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
-		return is_array($result) ? $result : $result->toArray();
+		if (is_array($result)) {
+			return $result;
+		}
+
+		/** @var Entities\Devices\IDevice[] $data */
+		$data = $result->toArray();
+
+		return $data;
 	}
 
 	/**
@@ -101,17 +107,14 @@ final class DevicesRepository implements IDevicesRepository
 	}
 
 	/**
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Devices\IDevice>
+	 * @return ORM\EntityRepository<Entities\Devices\IDevice>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
+			/** @var ORM\EntityRepository<Entities\Devices\IDevice> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {

@@ -35,14 +35,12 @@ final class DevicesManager implements IDevicesManager
 	use Nette\SmartObject;
 
 	/**
-	 * @var Crud\IEntityCrud
-	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Devices\IDevice>
+	 * @var Crud\IEntityCrud<Entities\Devices\IDevice>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Devices\IDevice> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Devices\IDevice> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

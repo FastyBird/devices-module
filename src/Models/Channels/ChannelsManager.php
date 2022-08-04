@@ -35,9 +35,7 @@ final class ChannelsManager implements IChannelsManager
 	use Nette\SmartObject;
 
 	/**
-	 * @var Crud\IEntityCrud
-	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Channels\IChannel>
+	 * @var Crud\IEntityCrud<Entities\Channels\IChannel>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 

@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Models\Devices\Controls;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
-use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -39,9 +38,7 @@ final class ControlsRepository implements IControlsRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository|null
-	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Controls\IControl>|null
+	 * @var ORM\EntityRepository<Entities\Devices\Controls\IControl>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -68,17 +65,23 @@ final class ControlsRepository implements IControlsRepository
 	}
 
 	/**
-	 * @param Queries\FindDeviceControlsQuery $queryObject
+	 * {@inheritDoc}
 	 *
-	 * @return Entities\Devices\Controls\IControl[]
-	 *
-	 * @throws Exception
+	 * @throws Throwable
 	 */
 	public function findAllBy(Queries\FindDeviceControlsQuery $queryObject): array
 	{
+		/** @var Array<Entities\Devices\Controls\IControl>|DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\IControl> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
-		return is_array($result) ? $result : $result->toArray();
+		if (is_array($result)) {
+			return $result;
+		}
+
+		/** @var Entities\Devices\Controls\IControl[] $data */
+		$data = $result->toArray();
+
+		return $data;
 	}
 
 	/**
@@ -99,17 +102,14 @@ final class ControlsRepository implements IControlsRepository
 	}
 
 	/**
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return  ORM\EntityRepository<Entities\Devices\Controls\IControl>
+	 * @return ORM\EntityRepository<Entities\Devices\Controls\IControl>
 	 */
 	private function getRepository(string $type = Entities\Devices\Controls\Control::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
+			/** @var ORM\EntityRepository<Entities\Devices\Controls\IControl> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {

@@ -35,14 +35,12 @@ final class ControlsManager implements IControlsManager
 	use Nette\SmartObject;
 
 	/**
-	 * @var Crud\IEntityCrud
-	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Channels\Controls\IControl>
+	 * @var Crud\IEntityCrud<Entities\Channels\Controls\IControl>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\Controls\IControl> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Channels\Controls\IControl> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

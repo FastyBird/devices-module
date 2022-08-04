@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Models\Devices\Attributes;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
-use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -39,9 +38,7 @@ final class AttributesRepository implements IAttributesRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository|null
-	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>|null
+	 * @var ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -68,17 +65,23 @@ final class AttributesRepository implements IAttributesRepository
 	}
 
 	/**
-	 * @param Queries\FindDeviceAttributesQuery $queryObject
+	 * {@inheritDoc}
 	 *
-	 * @return Entities\Devices\Attributes\IAttribute[]
-	 *
-	 * @throws Exception
+	 * @throws Throwable
 	 */
 	public function findAllBy(Queries\FindDeviceAttributesQuery $queryObject): array
 	{
+		/** @var Array<Entities\Devices\Attributes\IAttribute>|DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\IAttribute> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
-		return is_array($result) ? $result : $result->toArray();
+		if (is_array($result)) {
+			return $result;
+		}
+
+		/** @var Entities\Devices\Attributes\IAttribute[] $data */
+		$data = $result->toArray();
+
+		return $data;
 	}
 
 	/**
@@ -99,17 +102,14 @@ final class AttributesRepository implements IAttributesRepository
 	}
 
 	/**
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return  ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>
+	 * @return ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>
 	 */
 	private function getRepository(string $type = Entities\Devices\Attributes\Attribute::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
+			/** @var ORM\EntityRepository<Entities\Devices\Attributes\IAttribute> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {

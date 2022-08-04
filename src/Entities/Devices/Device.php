@@ -633,7 +633,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 */
 	public function getOwnerId(): ?string
 	{
-		return $this->owner;
+		return $this->owner !== null ? strval($this->owner) : null;
 	}
 
 	/**

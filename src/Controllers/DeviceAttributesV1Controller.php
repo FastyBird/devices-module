@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use Fig\Http\Message\StatusCodeInterface;
+use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 
@@ -74,7 +75,7 @@ final class DeviceAttributesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
 		$findQuery = new Queries\FindDeviceAttributesQuery();
 		$findQuery->forDevice($device);
@@ -99,12 +100,12 @@ final class DeviceAttributesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)))) {
 			$findQuery = new Queries\FindDeviceAttributesQuery();
 			$findQuery->forDevice($device);
-			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
+			$findQuery->byId(Uuid\Uuid::fromString(strval($request->getAttribute(Router\Routes::URL_ITEM_ID))));
 
 			// & attribute
 			$attribute = $this->deviceAttributesRepository->findOneBy($findQuery);
@@ -135,15 +136,15 @@ final class DeviceAttributesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
 		// & relation entity name
-		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
+		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)))) {
 			$findQuery = new Queries\FindDeviceAttributesQuery();
 			$findQuery->forDevice($device);
-			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
+			$findQuery->byId(Uuid\Uuid::fromString(strval($request->getAttribute(Router\Routes::URL_ITEM_ID))));
 
 			// & attribute
 			$attribute = $this->deviceAttributesRepository->findOneBy($findQuery);

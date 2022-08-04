@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use Fig\Http\Message\StatusCodeInterface;
+use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 
@@ -81,10 +82,10 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 
 		$findQuery = new Queries\FindChannelControlsQuery();
 		$findQuery->forChannel($channel);
@@ -109,15 +110,15 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)))) {
 			$findQuery = new Queries\FindChannelControlsQuery();
 			$findQuery->forChannel($channel);
-			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
+			$findQuery->byId(Uuid\Uuid::fromString(strval($request->getAttribute(Router\Routes::URL_ITEM_ID))));
 
 			// & control
 			$control = $this->channelControlsRepository->findOneBy($findQuery);
@@ -148,18 +149,18 @@ final class ChannelControlsV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 
 		// & relation entity name
-		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
+		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)))) {
 			$findQuery = new Queries\FindChannelControlsQuery();
 			$findQuery->forChannel($channel);
-			$findQuery->byId(Uuid\Uuid::fromString($request->getAttribute(Router\Routes::URL_ITEM_ID)));
+			$findQuery->byId(Uuid\Uuid::fromString(strval($request->getAttribute(Router\Routes::URL_ITEM_ID))));
 
 			// & control
 			$control = $this->channelControlsRepository->findOneBy($findQuery);

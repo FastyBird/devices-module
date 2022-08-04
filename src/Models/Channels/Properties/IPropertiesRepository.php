@@ -32,11 +32,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindChannelPropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Channels\Properties\IProperty|null
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
 		Queries\FindChannelPropertiesQuery $queryObject,
@@ -45,11 +43,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindChannelPropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Channels\Properties\IProperty[]
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
 		Queries\FindChannelPropertiesQuery $queryObject,
@@ -58,13 +54,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindChannelPropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\IProperty>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\IProperty>
 	 */
 	public function getResultSet(
 		Queries\FindChannelPropertiesQuery $queryObject,

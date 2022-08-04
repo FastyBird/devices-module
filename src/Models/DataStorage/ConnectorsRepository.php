@@ -80,7 +80,7 @@ final class ConnectorsRepository implements IConnectorsRepository
 		foreach ($this->rawData as $id => $entity) {
 			if (
 				array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
+				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
@@ -151,7 +151,10 @@ final class ConnectorsRepository implements IConnectorsRepository
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($entities);
+		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorEntity> $result */
+		$result = new RecursiveArrayIterator($entities);
+
+		return $result;
 	}
 
 	/**

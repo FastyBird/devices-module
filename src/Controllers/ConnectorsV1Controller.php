@@ -25,6 +25,7 @@ use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use FastyBird\Metadata;
 use Fig\Http\Message\StatusCodeInterface;
+use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 use Throwable;
@@ -90,7 +91,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_ITEM_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		return $this->buildResponse($request, $response, $connector);
 	}
@@ -146,7 +147,7 @@ class ConnectorsV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_ITEM_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		$document = $this->createDocument($request);
 
@@ -217,9 +218,9 @@ class ConnectorsV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_ITEM_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
-		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
+		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
 		if ($relationEntity === Schemas\Connectors\ConnectorSchema::RELATIONSHIPS_DEVICES) {
 			return $this->buildResponse($request, $response, $connector->getDevices());

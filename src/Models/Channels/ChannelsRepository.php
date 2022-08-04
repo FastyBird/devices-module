@@ -38,9 +38,7 @@ final class ChannelsRepository implements IChannelsRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository|null
-	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Channels\IChannel>|null
+	 * @var ORM\EntityRepository<Entities\Channels\IChannel>|null
 	 */
 	private ?ORM\EntityRepository $repository = null;
 
@@ -73,9 +71,17 @@ final class ChannelsRepository implements IChannelsRepository
 	 */
 	public function findAllBy(Queries\FindChannelsQuery $queryObject): array
 	{
+		/** @var Array<Entities\Channels\IChannel>|DoctrineOrmQuery\ResultSet<Entities\Channels\IChannel> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
-		return is_array($result) ? $result : $result->toArray();
+		if (is_array($result)) {
+			return $result;
+		}
+
+		/** @var Entities\Channels\IChannel[] $data */
+		$data = $result->toArray();
+
+		return $data;
 	}
 
 	/**
@@ -96,17 +102,14 @@ final class ChannelsRepository implements IChannelsRepository
 	}
 
 	/**
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Channels\IChannel>
+	 * @return ORM\EntityRepository<Entities\Channels\IChannel>
 	 */
 	private function getRepository(string $type = Entities\Channels\Channel::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
+			/** @var ORM\EntityRepository<Entities\Channels\IChannel> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {

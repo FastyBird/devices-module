@@ -47,9 +47,7 @@ interface IChannelsRepository
 	/**
 	 * @param Queries\FindChannelsQuery $queryObject
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\IChannel>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\IChannel>
 	 */
 	public function getResultSet(
 		Queries\FindChannelsQuery $queryObject

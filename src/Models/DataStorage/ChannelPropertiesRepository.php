@@ -94,7 +94,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 				array_key_exists('channel', $entity)
 				&& $channel->toString() === $entity['channel']
 				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
+				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
@@ -187,7 +187,10 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($entities);
+		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> $result */
+		$result = new RecursiveArrayIterator($entities);
+
+		return $result;
 	}
 
 	/**

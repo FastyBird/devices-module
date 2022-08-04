@@ -61,11 +61,11 @@ final class ConnectorConsumer implements ExchangeConsumer\IConsumer
 		?MetadataEntities\IEntity $entity
 	): void {
 		if (
-			Utils\Strings::startsWith($routingKey->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_PREFIX_KEY)
+			Utils\Strings::startsWith(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_PREFIX_KEY)
 			&& (
-				Utils\Strings::contains($routingKey->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_CREATED_KEY)
-				|| Utils\Strings::contains($routingKey->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_UPDATED_KEY)
-				|| Utils\Strings::contains($routingKey->getValue(), MetadataConstants::MESSAGE_BUS_ENTITY_DELETED_KEY)
+				Utils\Strings::contains(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_CREATED_KEY)
+				|| Utils\Strings::contains(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_UPDATED_KEY)
+				|| Utils\Strings::contains(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_DELETED_KEY)
 			)
 		) {
 			$this->reader->read();

@@ -21,6 +21,7 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
+use Nette\Utils;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -186,7 +187,7 @@ class Attribute implements IAttribute
 					|| preg_match('/^([0-9A-Fa-f]{12})$/', (string) $this->content) !== 0
 				)
 			) {
-				return implode(':', str_split(strtolower(str_replace([':', '-'], '', (string) $this->content)), 2));
+				return implode(':', str_split(Utils\Strings::lower(str_replace([':', '-'], '', (string) $this->content)), 2));
 			}
 
 			return null;
@@ -215,15 +216,15 @@ class Attribute implements IAttribute
 	): void {
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\HardwareManufacturerType) {
-				$this->content = $content->getValue();
+				$this->content = strval($content->getValue());
 			} else {
-				$this->content = $content !== null ? strtolower((string) $content) : null;
+				$this->content = $content !== null ? Utils\Strings::lower((string) $content) : null;
 			}
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MODEL) {
 			if ($content instanceof MetadataTypes\DeviceModelType) {
-				$this->content = $content->getValue();
+				$this->content = strval($content->getValue());
 			} else {
-				$this->content = $content !== null ? strtolower((string) $content) : null;
+				$this->content = $content !== null ? Utils\Strings::lower((string) $content) : null;
 			}
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MAC_ADDRESS) {
 			if (
@@ -234,15 +235,15 @@ class Attribute implements IAttribute
 				throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
 			}
 
-			$this->content = $content !== null ? strtolower(str_replace([
+			$this->content = $content !== null ? Utils\Strings::lower(str_replace([
 				':',
 				'-',
 			], '', (string) $content)) : null;
 		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_FIRMWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\FirmwareManufacturerType) {
-				$this->content = $content->getValue();
+				$this->content = strval($content->getValue());
 			} else {
-				$this->content = $content !== null ? strtolower((string) $content) : null;
+				$this->content = $content !== null ? Utils\Strings::lower((string) $content) : null;
 			}
 		} elseif (is_string($content) || $content === null) {
 			$this->content = $content;

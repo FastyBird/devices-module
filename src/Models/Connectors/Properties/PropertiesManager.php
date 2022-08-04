@@ -35,14 +35,12 @@ final class PropertiesManager implements IPropertiesManager
 	use Nette\SmartObject;
 
 	/**
-	 * @var Crud\IEntityCrud
-	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Connectors\Properties\IProperty>
+	 * @var Crud\IEntityCrud<Entities\Connectors\Properties\IProperty>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Connectors\Properties\IProperty> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Connectors\Properties\IProperty> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

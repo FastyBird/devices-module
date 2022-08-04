@@ -32,11 +32,9 @@ interface IConnectorsRepository
 
 	/**
 	 * @param Queries\FindConnectorsQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Connectors\IConnector|null
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
 		Queries\FindConnectorsQuery $queryObject,
@@ -45,11 +43,9 @@ interface IConnectorsRepository
 
 	/**
 	 * @param Queries\FindConnectorsQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Connectors\IConnector[]
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
 		Queries\FindConnectorsQuery $queryObject,
@@ -58,13 +54,9 @@ interface IConnectorsRepository
 
 	/**
 	 * @param Queries\FindConnectorsQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\IConnector>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\IConnector>
 	 */
 	public function getResultSet(
 		Queries\FindConnectorsQuery $queryObject,

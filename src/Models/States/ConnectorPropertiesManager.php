@@ -77,14 +77,14 @@ final class ConnectorPropertiesManager
 		) {
 			$actualValue = Utilities\ValueHelper::normalizeValue(
 				$property->getDataType(),
-				$values->offsetGet('actualValue'),
+				strval($values->offsetGet('actualValue')),
 				$property->getFormat(),
 				$property->getInvalid()
 			);
 
 			$expectedValue = Utilities\ValueHelper::normalizeValue(
 				$property->getDataType(),
-				$values->offsetGet('expectedValue'),
+				strval($values->offsetGet('expectedValue')),
 				$property->getFormat(),
 				$property->getInvalid()
 			);

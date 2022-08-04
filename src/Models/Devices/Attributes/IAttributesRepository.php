@@ -47,9 +47,7 @@ interface IAttributesRepository
 	/**
 	 * @param Queries\FindDeviceAttributesQuery $queryObject
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\IAttribute>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\IAttribute>
 	 */
 	public function getResultSet(
 		Queries\FindDeviceAttributesQuery $queryObject

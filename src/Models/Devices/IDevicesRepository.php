@@ -32,11 +32,9 @@ interface IDevicesRepository
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Devices\IDevice|null
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
 		Queries\FindDevicesQuery $queryObject,
@@ -45,11 +43,9 @@ interface IDevicesRepository
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Devices\IDevice[]
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
 		Queries\FindDevicesQuery $queryObject,
@@ -58,13 +54,9 @@ interface IDevicesRepository
 
 	/**
 	 * @param Queries\FindDevicesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\IDevice>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\IDevice>
 	 */
 	public function getResultSet(
 		Queries\FindDevicesQuery $queryObject,

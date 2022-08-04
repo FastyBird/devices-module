@@ -145,7 +145,7 @@ abstract class PropertyHydrator extends JsonApiHydrators\Hydrator
 					|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
 				) {
 					return implode(',', array_map(function ($item): string {
-						return is_array($item) ? implode(':', $item) : $item;
+						return is_array($item) ? implode(':', $item) : strval($item);
 					}, $rawFormat));
 				}
 

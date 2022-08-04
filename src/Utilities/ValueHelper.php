@@ -95,7 +95,7 @@ final class ValueHelper
 			return $value;
 
 		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
-			return in_array(strtolower(strval($value)), ['true', 't', 'yes', 'y', '1', 'on'], true);
+			return in_array(Utils\Strings::lower(strval($value)), ['true', 't', 'yes', 'y', '1', 'on'], true);
 
 		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_DATE)) {
 			if ($value instanceof DateTime) {
@@ -154,12 +154,12 @@ final class ValueHelper
 							return false;
 						}
 
-						return strtolower(strval($value)) === $item[0]
-							|| strtolower(strval($value)) === $item[1]
-							|| strtolower(strval($value)) === $item[2];
+						return Utils\Strings::lower(strval($value)) === $item[0]
+							|| Utils\Strings::lower(strval($value)) === $item[1]
+							|| Utils\Strings::lower(strval($value)) === $item[2];
 					}
 
-					return strtolower(strval($value)) === $item;
+					return Utils\Strings::lower(strval($value)) === $item;
 				});
 
 				if (count($filtered) === 1) {
@@ -189,7 +189,7 @@ final class ValueHelper
 			return $value->format(DATE_ATOM);
 
 		} elseif ($value instanceof Consistence\Enum\Enum) {
-			return $value->getValue();
+			return is_numeric($value->getValue()) ? $value->getValue() : strval($value->getValue());
 		}
 
 		return $value;

@@ -84,7 +84,7 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository
 				array_key_exists('device', $entity)
 				&& $device->toString() === $entity['device']
 				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
+				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
@@ -173,7 +173,10 @@ final class DeviceAttributesRepository implements IDeviceAttributesRepository
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($entities);
+		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity> $result */
+		$result = new RecursiveArrayIterator($entities);
+
+		return $result;
 	}
 
 	/**

@@ -149,7 +149,10 @@ final class ChannelControlsRepository implements IChannelControlsRepository
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($entities);
+		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity> $result */
+		$result = new RecursiveArrayIterator($entities);
+
+		return $result;
 	}
 
 	/**

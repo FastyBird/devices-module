@@ -47,9 +47,7 @@ interface IControlsRepository
 	/**
 	 * @param Queries\FindDeviceControlsQuery $queryObject
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\IControl>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\IControl>
 	 */
 	public function getResultSet(
 		Queries\FindDeviceControlsQuery $queryObject

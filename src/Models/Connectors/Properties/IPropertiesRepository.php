@@ -32,11 +32,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindConnectorPropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Connectors\Properties\IProperty|null
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
 		Queries\FindConnectorPropertiesQuery $queryObject,
@@ -45,11 +43,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindConnectorPropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Connectors\Properties\IProperty[]
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
 		Queries\FindConnectorPropertiesQuery $queryObject,
@@ -58,13 +54,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindConnectorPropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\IProperty>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\IProperty>
 	 */
 	public function getResultSet(
 		Queries\FindConnectorPropertiesQuery $queryObject,

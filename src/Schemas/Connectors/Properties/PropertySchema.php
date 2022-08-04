@@ -71,7 +71,7 @@ abstract class PropertySchema extends JsonApiSchemas\JsonApiSchema
 			'name'               => $property->getName(),
 			'settable'           => $property->isSettable(),
 			'queryable'          => $property->isQueryable(),
-			'data_type'          => $property->getDataType()->getValue(),
+			'data_type'          => strval($property->getDataType()->getValue()),
 			'unit'               => $property->getUnit(),
 			'format'             => $property->getFormat(),
 			'invalid'            => $property->getInvalid(),

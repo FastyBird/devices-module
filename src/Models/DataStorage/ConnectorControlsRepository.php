@@ -149,7 +149,10 @@ final class ConnectorControlsRepository implements IConnectorControlsRepository
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($entities);
+		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity> $result */
+		$result = new RecursiveArrayIterator($entities);
+
+		return $result;
 	}
 
 	/**

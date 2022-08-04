@@ -65,7 +65,7 @@ final class DeviceChildrenV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
 		$findQuery = new Queries\FindDevicesQuery();
 		$findQuery->forParent($device);

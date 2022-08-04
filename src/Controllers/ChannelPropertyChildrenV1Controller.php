@@ -73,11 +73,11 @@ final class ChannelPropertyChildrenV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_PROPERTY_ID), $channel);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_PROPERTY_ID)), $channel);
 
 		$findQuery = new Queries\FindChannelPropertiesQuery();
 		$findQuery->forParent($property);

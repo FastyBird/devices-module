@@ -32,11 +32,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindDevicePropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Devices\Properties\IProperty|null
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findOneBy(
 		Queries\FindDevicePropertiesQuery $queryObject,
@@ -45,11 +43,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindDevicePropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
 	 * @return Entities\Devices\Properties\IProperty[]
-	 *
-	 * @phpstan-param class-string $type
 	 */
 	public function findAllBy(
 		Queries\FindDevicePropertiesQuery $queryObject,
@@ -58,13 +54,9 @@ interface IPropertiesRepository
 
 	/**
 	 * @param Queries\FindDevicePropertiesQuery $queryObject
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\IProperty>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\IProperty>
 	 */
 	public function getResultSet(
 		Queries\FindDevicePropertiesQuery $queryObject,

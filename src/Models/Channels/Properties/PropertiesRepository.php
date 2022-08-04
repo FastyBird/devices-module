@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Models\Channels\Properties;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
-use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -39,9 +38,7 @@ final class PropertiesRepository implements IPropertiesRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository[]
-	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Channels\Properties\IProperty>[]
+	 * @var ORM\EntityRepository<Entities\Channels\Properties\IProperty>[]
 	 */
 	private array $repository = [];
 
@@ -70,22 +67,25 @@ final class PropertiesRepository implements IPropertiesRepository
 	}
 
 	/**
-	 * @param Queries\FindChannelPropertiesQuery $queryObject
-	 * @param string $type
+	 * {@inheritDoc}
 	 *
-	 * @return Entities\Channels\Properties\IProperty[]
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @throws Exception
+	 * @throws Throwable
 	 */
 	public function findAllBy(
 		Queries\FindChannelPropertiesQuery $queryObject,
 		string $type = Entities\Channels\Properties\Property::class
 	): array {
+		/** @var Array<Entities\Channels\Properties\IProperty>|DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\IProperty> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
-		return is_array($result) ? $result : $result->toArray();
+		if (is_array($result)) {
+			return $result;
+		}
+
+		/** @var Entities\Channels\Properties\IProperty[] $data */
+		$data = $result->toArray();
+
+		return $data;
 	}
 
 	/**
@@ -107,17 +107,14 @@ final class PropertiesRepository implements IPropertiesRepository
 	}
 
 	/**
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Channels\Properties\IProperty>
+	 * @return ORM\EntityRepository<Entities\Channels\Properties\IProperty>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
+			/** @var ORM\EntityRepository<Entities\Channels\Properties\IProperty> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {

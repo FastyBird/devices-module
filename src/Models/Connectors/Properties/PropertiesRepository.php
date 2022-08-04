@@ -39,9 +39,7 @@ final class PropertiesRepository implements IPropertiesRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository[]
-	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\Properties\IProperty>[]
+	 * @var ORM\EntityRepository<Entities\Connectors\Properties\IProperty>[]
 	 */
 	private array $repository = [];
 
@@ -70,22 +68,25 @@ final class PropertiesRepository implements IPropertiesRepository
 	}
 
 	/**
-	 * @param Queries\FindConnectorPropertiesQuery $queryObject
-	 * @param string $type
+	 * {@inheritDoc}
 	 *
-	 * @return Entities\Connectors\Properties\IProperty[]
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @throws Exception
+	 * @throws Throwable
 	 */
 	public function findAllBy(
 		Queries\FindConnectorPropertiesQuery $queryObject,
 		string $type = Entities\Connectors\Properties\Property::class
 	): array {
+		/** @var Array<Entities\Connectors\Properties\IProperty>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\IProperty> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
-		return is_array($result) ? $result : $result->toArray();
+		if (is_array($result)) {
+			return $result;
+		}
+
+		/** @var Entities\Connectors\Properties\IProperty[] $data */
+		$data = $result->toArray();
+
+		return $data;
 	}
 
 	/**
@@ -107,17 +108,14 @@ final class PropertiesRepository implements IPropertiesRepository
 	}
 
 	/**
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\Properties\IProperty>
+	 * @return ORM\EntityRepository<Entities\Connectors\Properties\IProperty>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
+			/** @var ORM\EntityRepository<Entities\Connectors\Properties\IProperty> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {

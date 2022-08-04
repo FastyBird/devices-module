@@ -117,20 +117,20 @@ abstract class Property implements IProperty
 	protected ?int $numberOfDecimals = null;
 
 	/**
-	 * @var mixed|null
+	 * @var string|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_value", nullable=true, options={"default": null})
 	 */
-	protected mixed $value = null;
+	protected ?string $value = null;
 
 	/**
-	 * @var mixed|null
+	 * @var string|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_default", nullable=true, options={"default": null})
 	 */
-	protected mixed $default = null;
+	protected ?string $default = null;
 
 	/**
 	 * @param string $identifier
@@ -374,7 +374,9 @@ abstract class Property implements IProperty
 
 				$parts = array_map(function (?string $item): ?string {
 					return $item === '' ? null : $item;
-				}, array_map('trim', explode(':', $item) + [null, null, null]));
+				}, array_map(function ($item): string {
+					return trim(strval($item));
+				}, explode(':', $item) + [null, null, null]));
 
 				return [
 					$parts[0],
@@ -452,8 +454,7 @@ abstract class Property implements IProperty
 	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()
-				->getValue()));
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())));
 		}
 
 		if ($this->value === null) {
@@ -469,8 +470,7 @@ abstract class Property implements IProperty
 	public function setValue(?string $value): void
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()
-				->getValue()));
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())));
 		}
 
 		$this->value = $value;
@@ -482,8 +482,7 @@ abstract class Property implements IProperty
 	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', $this->getType()
-				->getValue()));
+			throw new Exceptions\InvalidStateException(sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())));
 		}
 
 		if ($this->default === null) {
@@ -499,8 +498,7 @@ abstract class Property implements IProperty
 	public function setDefault(?string $default): void
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidStateException(sprintf('Default value is not allowed for property type: %s', $this->getType()
-				->getValue()));
+			throw new Exceptions\InvalidStateException(sprintf('Default value is not allowed for property type: %s', strval($this->getType()->getValue())));
 		}
 
 		$this->default = $default;

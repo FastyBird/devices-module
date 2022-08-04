@@ -117,7 +117,7 @@ trait TEntityParams
 
 				foreach ($parts as $part) {
 					if (isset($val)) {
-						if (isset($val[$part])) {
+						if (is_array($val) && array_key_exists($part, $val)) {
 							$val = $val[$part];
 						} else {
 							$val = null;

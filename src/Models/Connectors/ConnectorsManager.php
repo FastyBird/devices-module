@@ -35,14 +35,12 @@ final class ConnectorsManager implements IConnectorsManager
 	use Nette\SmartObject;
 
 	/**
-	 * @var Crud\IEntityCrud
-	 *
-	 * @phpstan-var Crud\IEntityCrud<Entities\Connectors\IConnector>
+	 * @var Crud\IEntityCrud<Entities\Connectors\IConnector>
 	 */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Connectors\IConnector> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Connectors\IConnector> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud

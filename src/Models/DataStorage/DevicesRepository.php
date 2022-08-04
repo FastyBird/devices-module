@@ -84,7 +84,7 @@ final class DevicesRepository implements IDevicesRepository
 				array_key_exists('connector', $entity)
 				&& $connector->toString() === $entity['connector']
 				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
+				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
@@ -173,7 +173,10 @@ final class DevicesRepository implements IDevicesRepository
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($entities);
+		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceEntity> $result */
+		$result = new RecursiveArrayIterator($entities);
+
+		return $result;
 	}
 
 	/**

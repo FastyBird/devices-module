@@ -93,9 +93,9 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 
 		$findQuery = new Queries\FindChannelPropertiesQuery();
 		$findQuery->forChannel($channel);
@@ -120,11 +120,11 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $channel);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $channel);
 
 		return $this->buildResponse($request, $response, $property);
 	}
@@ -148,9 +148,9 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
-		$this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 
 		$document = $this->createDocument($request);
 
@@ -280,11 +280,11 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $channel);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $channel);
 
 		$document = $this->createDocument($request);
 
@@ -360,11 +360,11 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $channel);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $channel);
 
 		try {
 			// Start transaction connection to the database
@@ -417,16 +417,16 @@ final class ChannelPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load device
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_DEVICE_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
-		$channel = $this->findChannel($request->getAttribute(Router\Routes::URL_CHANNEL_ID), $device);
+		$channel = $this->findChannel(strval($request->getAttribute(Router\Routes::URL_CHANNEL_ID)), $device);
 
 		// & relation entity name
-		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
+		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)))) {
 			// & property
-			$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $channel);
+			$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $channel);
 
 			if ($relationEntity === Schemas\Channels\Properties\PropertySchema::RELATIONSHIPS_CHANNEL) {
 				return $this->buildResponse($request, $response, $property->getChannel());

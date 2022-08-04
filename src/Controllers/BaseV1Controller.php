@@ -34,6 +34,7 @@ use Nette\Utils;
 use Psr\Http\Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log;
+use stdClass;
 
 /**
  * API base controller
@@ -137,7 +138,7 @@ abstract class BaseV1Controller
 		Message\ResponseInterface $response
 	): ResponseInterface {
 		// & relation entity name
-		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
+		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
 		if ($relationEntity !== '') {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -164,7 +165,17 @@ abstract class BaseV1Controller
 	protected function createDocument(Message\ServerRequestInterface $request): JsonAPIDocument\IDocument
 	{
 		try {
-			$document = new JsonAPIDocument\Document(Utils\Json::decode($request->getBody()->getContents()));
+			$content = Utils\Json::decode($request->getBody()->getContents());
+
+			if (!$content instanceof stdClass) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_BAD_REQUEST,
+					$this->translator->translate('//devices-module.base.messages.notValidJsonApi.heading'),
+					$this->translator->translate('//devices-module.base.messages.notValidJsonApi.message')
+				);
+			}
+
+			$document = new JsonAPIDocument\Document($content);
 
 		} catch (Utils\JsonException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
@@ -257,12 +268,22 @@ abstract class BaseV1Controller
 					$data->applyPaging($pageOffset, $pageLimit);
 				}
 			}
+
+			/** @var DoctrineCrud\Entities\IEntity[] $entity */
+			$entity = $data->toArray();
+
+		} elseif (is_array($data)) {
+			/** @var DoctrineCrud\Entities\IEntity[] $entity */
+			$entity = $data;
+
+		} else {
+			$entity = $data;
 		}
 
 		return $this->builder->build(
 			$request,
 			$response,
-			$data instanceof ResultSet ? $data->toArray() : $data,
+			$entity,
 			$totalCount,
 			function (string $link): bool {
 				return $this->routesValidator->validate($link);

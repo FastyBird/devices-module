@@ -87,7 +87,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load connector
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_CONNECTOR_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 
 		$findQuery = new Queries\FindConnectorPropertiesQuery();
 		$findQuery->forConnector($connector);
@@ -112,9 +112,9 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load connector
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_CONNECTOR_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $connector);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $connector);
 
 		return $this->buildResponse($request, $response, $property);
 	}
@@ -175,7 +175,7 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load connector
-		$this->findConnector($request->getAttribute(Router\Routes::URL_CONNECTOR_ID));
+		$this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 
 		$document = $this->createDocument($request);
 
@@ -305,9 +305,9 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load connector
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_CONNECTOR_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $connector);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $connector);
 
 		$document = $this->createDocument($request);
 
@@ -383,9 +383,9 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load connector
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_CONNECTOR_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 		// & property
-		$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $connector);
+		$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $connector);
 
 		try {
 			// Start transaction connection to the database
@@ -438,14 +438,14 @@ final class ConnectorPropertiesV1Controller extends BaseV1Controller
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
 		// At first, try to load connector
-		$connector = $this->findConnector($request->getAttribute(Router\Routes::URL_CONNECTOR_ID));
+		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 
 		// & relation entity name
-		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
+		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
-		if (Uuid\Uuid::isValid($request->getAttribute(Router\Routes::URL_ITEM_ID))) {
+		if (Uuid\Uuid::isValid(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)))) {
 			// & property
-			$property = $this->findProperty($request->getAttribute(Router\Routes::URL_ITEM_ID), $connector);
+			$property = $this->findProperty(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)), $connector);
 
 			if ($relationEntity === Schemas\Connectors\Properties\PropertySchema::RELATIONSHIPS_CONNECTOR) {
 				return $this->buildResponse($request, $response, $property->getConnector());

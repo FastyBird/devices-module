@@ -38,9 +38,7 @@ final class ConnectorsRepository implements IConnectorsRepository
 	use Nette\SmartObject;
 
 	/**
-	 * @var ORM\EntityRepository[]
-	 *
-	 * @phpstan-var ORM\EntityRepository<Entities\Connectors\IConnector>[]
+	 * @var ORM\EntityRepository<Entities\Connectors\IConnector>[]
 	 */
 	private array $repository = [];
 
@@ -77,9 +75,17 @@ final class ConnectorsRepository implements IConnectorsRepository
 		Queries\FindConnectorsQuery $queryObject,
 		string $type = Entities\Connectors\Connector::class
 	): array {
+		/** @var Array<Entities\Connectors\IConnector>|DoctrineOrmQuery\ResultSet<Entities\Connectors\IConnector> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
-		return is_array($result) ? $result : $result->toArray();
+		if (is_array($result)) {
+			return $result;
+		}
+
+		/** @var Entities\Connectors\IConnector[] $data */
+		$data = $result->toArray();
+
+		return $data;
 	}
 
 	/**
@@ -101,17 +107,14 @@ final class ConnectorsRepository implements IConnectorsRepository
 	}
 
 	/**
-	 * @param string $type
+	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository
-	 *
-	 * @phpstan-param class-string $type
-	 *
-	 * @phpstan-return ORM\EntityRepository<Entities\Connectors\IConnector>
+	 * @return ORM\EntityRepository<Entities\Connectors\IConnector>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
+			/** @var ORM\EntityRepository<Entities\Connectors\IConnector> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {

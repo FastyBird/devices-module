@@ -109,7 +109,7 @@ class DevicesV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		return $this->buildResponse($request, $response, $device);
 	}
@@ -262,7 +262,7 @@ class DevicesV1Controller extends BaseV1Controller
 
 		$this->validateIdentifier($request, $document);
 
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		$hydrator = $this->hydratorsContainer->findHydrator($document);
 
@@ -356,7 +356,7 @@ class DevicesV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		try {
 			// Start transaction connection to the database
@@ -413,9 +413,9 @@ class DevicesV1Controller extends BaseV1Controller
 		Message\ServerRequestInterface $request,
 		Message\ResponseInterface $response
 	): Message\ResponseInterface {
-		$device = $this->findDevice($request->getAttribute(Router\Routes::URL_ITEM_ID));
+		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
-		$relationEntity = strtolower($request->getAttribute(Router\Routes::RELATION_ENTITY));
+		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
 		if ($relationEntity === Schemas\Devices\DeviceSchema::RELATIONSHIPS_CONNECTOR) {
 			return $this->buildResponse($request, $response, $device->getConnector());

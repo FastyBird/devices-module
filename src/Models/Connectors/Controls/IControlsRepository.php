@@ -47,9 +47,7 @@ interface IControlsRepository
 	/**
 	 * @param Queries\FindConnectorControlsQuery $queryObject
 	 *
-	 * @return DoctrineOrmQuery\ResultSet
-	 *
-	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\IControl>
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\IControl>
 	 */
 	public function getResultSet(
 		Queries\FindConnectorControlsQuery $queryObject

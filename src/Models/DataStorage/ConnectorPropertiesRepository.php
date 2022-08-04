@@ -94,7 +94,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 				array_key_exists('connector', $entity)
 				&& $connector->toString() === $entity['connector']
 				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower($entity['identifier']) === Utils\Strings::lower($identifier)
+				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
 			) {
 				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 			}
@@ -187,7 +187,10 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
 		}
 
-		return new RecursiveArrayIterator($entities);
+		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> $result */
+		$result = new RecursiveArrayIterator($entities);
+
+		return $result;
 	}
 
 	/**

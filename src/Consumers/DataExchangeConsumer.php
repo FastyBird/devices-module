@@ -25,6 +25,7 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Psr\Log;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Exchange worker consumer for connectors

@@ -57,9 +57,11 @@ interface IConnectorPropertiesRepository extends Countable, IteratorAggregate
 	 * @param Uuid\UuidInterface $connector
 	 * @param class-string<T>|null $type
 	 *
-	 * @return T[]|MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity[]
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity>
 	 *
 	 * @template T
+	 *
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> : Array<int, T>)
 	 */
 	public function findAllByConnector(
 		Uuid\UuidInterface $connector,

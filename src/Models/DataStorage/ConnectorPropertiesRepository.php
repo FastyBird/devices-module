@@ -89,14 +89,14 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 		Uuid\UuidInterface $connector,
 		string $identifier
 	): MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null {
-		foreach ($this->rawData as $id => $entity) {
+		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
-				array_key_exists('connector', $entity)
-				&& $connector->toString() === $entity['connector']
-				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
+				array_key_exists('connector', $rawDataRow)
+				&& $connector->toString() === $rawDataRow['connector']
+				&& array_key_exists('identifier', $rawDataRow)
+				&& Utils\Strings::lower(strval($rawDataRow['identifier'])) === Utils\Strings::lower($identifier)
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -114,10 +114,12 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	): array {
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			if (array_key_exists('connector', $entity) && $connector->toString() === $entity['connector']) {
-				if ($type === null || $entity instanceof $type) {
-					$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			if (array_key_exists('connector', $rawDataRow) && $connector->toString() === $rawDataRow['connector']) {
+				$entity = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
+
+				if ($type === null || is_subclass_of($entity, $type)) {
+					$entities[] = $entity;
 				}
 			}
 		}
@@ -183,8 +185,8 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
 		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> $result */

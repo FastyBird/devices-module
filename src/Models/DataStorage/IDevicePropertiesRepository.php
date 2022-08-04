@@ -57,9 +57,11 @@ interface IDevicePropertiesRepository extends Countable, IteratorAggregate
 	 * @param Uuid\UuidInterface $device
 	 * @param class-string<T>|null $type
 	 *
-	 * @return T[]|MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity[]|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity[]
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity>
 	 *
 	 * @template T
+	 *
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity> : Array<int, T>)
 	 */
 	public function findAllByDevice(
 		Uuid\UuidInterface $device,

@@ -89,14 +89,14 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 		Uuid\UuidInterface $device,
 		string $identifier
 	): MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null {
-		foreach ($this->rawData as $id => $entity) {
+		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
-				array_key_exists('device', $entity)
-				&& $device->toString() === $entity['device']
-				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
+				array_key_exists('device', $rawDataRow)
+				&& $device->toString() === $rawDataRow['device']
+				&& array_key_exists('identifier', $rawDataRow)
+				&& Utils\Strings::lower(strval($rawDataRow['identifier'])) === Utils\Strings::lower($identifier)
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -114,10 +114,12 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	): array {
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			if (array_key_exists('device', $entity) && $device->toString() === $entity['device']) {
-				if ($type === null || $entity instanceof $type) {
-					$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			if (array_key_exists('device', $rawDataRow) && $device->toString() === $rawDataRow['device']) {
+				$entity = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
+
+				if ($type === null || is_subclass_of($entity, $type)) {
+					$entities[] = $entity;
 				}
 			}
 		}
@@ -183,8 +185,8 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
 		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity> $result */

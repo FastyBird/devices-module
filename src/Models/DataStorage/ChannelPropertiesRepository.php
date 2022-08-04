@@ -89,14 +89,14 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 		Uuid\UuidInterface $channel,
 		string $identifier
 	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null {
-		foreach ($this->rawData as $id => $entity) {
+		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
-				array_key_exists('channel', $entity)
-				&& $channel->toString() === $entity['channel']
-				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
+				array_key_exists('channel', $rawDataRow)
+				&& $channel->toString() === $rawDataRow['channel']
+				&& array_key_exists('identifier', $rawDataRow)
+				&& Utils\Strings::lower(strval($rawDataRow['identifier'])) === Utils\Strings::lower($identifier)
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -114,10 +114,12 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	): array {
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			if (array_key_exists('channel', $entity) && $channel->toString() === $entity['channel']) {
-				if ($type === null || $entity instanceof $type) {
-					$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			if (array_key_exists('channel', $rawDataRow) && $channel->toString() === $rawDataRow['channel']) {
+				$entity = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
+
+				if ($type === null || is_subclass_of($entity, $type)) {
+					$entities[] = $entity;
 				}
 			}
 		}
@@ -183,8 +185,8 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
 		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> $result */

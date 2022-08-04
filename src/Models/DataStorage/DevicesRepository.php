@@ -79,14 +79,14 @@ final class DevicesRepository implements IDevicesRepository
 		Uuid\UuidInterface $connector,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity {
-		foreach ($this->rawData as $id => $entity) {
+		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
-				array_key_exists('connector', $entity)
-				&& $connector->toString() === $entity['connector']
-				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
+				array_key_exists('connector', $rawDataRow)
+				&& $connector->toString() === $rawDataRow['connector']
+				&& array_key_exists('identifier', $rawDataRow)
+				&& Utils\Strings::lower(strval($rawDataRow['identifier'])) === Utils\Strings::lower($identifier)
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -102,9 +102,9 @@ final class DevicesRepository implements IDevicesRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			if (array_key_exists('connector', $entity) && $connector->toString() === $entity['connector']) {
-				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			if (array_key_exists('connector', $rawDataRow) && $connector->toString() === $rawDataRow['connector']) {
+				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -169,8 +169,8 @@ final class DevicesRepository implements IDevicesRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
 		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceEntity> $result */

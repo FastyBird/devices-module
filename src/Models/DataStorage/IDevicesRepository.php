@@ -54,7 +54,7 @@ interface IDevicesRepository extends Countable, IteratorAggregate
 	/**
 	 * @param Uuid\UuidInterface $connector
 	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDeviceEntity[]
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceEntity>
 	 */
 	public function findAllByConnector(Uuid\UuidInterface $connector): array;
 

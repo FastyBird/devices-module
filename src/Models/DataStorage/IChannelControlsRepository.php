@@ -43,7 +43,7 @@ interface IChannelControlsRepository extends Countable, IteratorAggregate
 	/**
 	 * @param Uuid\UuidInterface $channel
 	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IChannelControlEntity[]
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity>
 	 */
 	public function findAllByChannel(Uuid\UuidInterface $channel): array;
 

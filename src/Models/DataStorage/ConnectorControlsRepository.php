@@ -78,9 +78,9 @@ final class ConnectorControlsRepository implements IConnectorControlsRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			if (array_key_exists('connector', $entity) && $connector->toString() === $entity['connector']) {
-				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $this->rawData[$id]);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			if (array_key_exists('connector', $rawDataRow) && $connector->toString() === $rawDataRow['connector']) {
+				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -145,8 +145,8 @@ final class ConnectorControlsRepository implements IConnectorControlsRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
 		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity> $result */

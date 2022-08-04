@@ -54,7 +54,7 @@ interface IDeviceAttributesRepository extends Countable, IteratorAggregate
 	/**
 	 * @param Uuid\UuidInterface $device
 	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity[]
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity>
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array;
 

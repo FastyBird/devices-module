@@ -54,7 +54,7 @@ interface IChannelsRepository extends Countable, IteratorAggregate
 	/**
 	 * @param Uuid\UuidInterface $device
 	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IChannelEntity[]
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IChannelEntity>
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array;
 

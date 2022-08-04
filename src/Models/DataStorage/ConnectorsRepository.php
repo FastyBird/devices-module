@@ -77,12 +77,12 @@ final class ConnectorsRepository implements IConnectorsRepository
 	 */
 	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity
 	{
-		foreach ($this->rawData as $id => $entity) {
+		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
-				array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
+				array_key_exists('identifier', $rawDataRow)
+				&& Utils\Strings::lower(strval($rawDataRow['identifier'])) === Utils\Strings::lower($identifier)
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -147,8 +147,8 @@ final class ConnectorsRepository implements IConnectorsRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
 		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorEntity> $result */

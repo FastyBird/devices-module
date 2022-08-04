@@ -79,14 +79,14 @@ final class ChannelsRepository implements IChannelsRepository
 		Uuid\UuidInterface $device,
 		string $identifier
 	): ?MetadataEntities\Modules\DevicesModule\IChannelEntity {
-		foreach ($this->rawData as $id => $entity) {
+		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
-				array_key_exists('device', $entity)
-				&& $device->toString() === $entity['device']
-				&& array_key_exists('identifier', $entity)
-				&& Utils\Strings::lower(strval($entity['identifier'])) === Utils\Strings::lower($identifier)
+				array_key_exists('device', $rawDataRow)
+				&& $device->toString() === $rawDataRow['device']
+				&& array_key_exists('identifier', $rawDataRow)
+				&& Utils\Strings::lower(strval($rawDataRow['identifier'])) === Utils\Strings::lower($identifier)
 			) {
-				return $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+				return $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -102,9 +102,9 @@ final class ChannelsRepository implements IChannelsRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			if (array_key_exists('device', $entity) && $device->toString() === $entity['device']) {
-				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			if (array_key_exists('device', $rawDataRow) && $device->toString() === $rawDataRow['device']) {
+				$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 			}
 		}
 
@@ -169,8 +169,8 @@ final class ChannelsRepository implements IChannelsRepository
 	{
 		$entities = [];
 
-		foreach ($this->rawData as $id => $entity) {
-			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $entity);
+		foreach ($this->rawData as $id => $rawDataRow) {
+			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
 		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelEntity> $result */

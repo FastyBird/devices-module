@@ -43,7 +43,7 @@ interface IConnectorControlsRepository extends Countable, IteratorAggregate
 	/**
 	 * @param Uuid\UuidInterface $connector
 	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorControlEntity[]
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity>
 	 */
 	public function findAllByConnector(Uuid\UuidInterface $connector): array;
 

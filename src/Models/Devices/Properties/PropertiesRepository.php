@@ -37,9 +37,7 @@ final class PropertiesRepository implements IPropertiesRepository
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var ORM\EntityRepository<Entities\Devices\Properties\IProperty>[]
-	 */
+	/** @var ORM\EntityRepository<Entities\Devices\Properties\IProperty>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */

@@ -37,9 +37,7 @@ final class ControlsRepository implements IControlsRepository
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var ORM\EntityRepository<Entities\Connectors\Controls\IControl>|null
-	 */
+	/** @var ORM\EntityRepository<Entities\Connectors\Controls\IControl>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */

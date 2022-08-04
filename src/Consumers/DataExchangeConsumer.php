@@ -19,13 +19,11 @@ use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
-use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
-use Psr\EventDispatcher;
 use Psr\Log;
 
 /**

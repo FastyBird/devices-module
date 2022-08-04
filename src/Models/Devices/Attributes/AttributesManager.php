@@ -34,9 +34,7 @@ final class AttributesManager implements IAttributesManager
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var Crud\IEntityCrud<Entities\Devices\Attributes\IAttribute>
-	 */
+	/** @var Crud\IEntityCrud<Entities\Devices\Attributes\IAttribute> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**

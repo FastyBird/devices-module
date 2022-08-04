@@ -37,9 +37,7 @@ final class DevicesRepository implements IDevicesRepository
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var ORM\EntityRepository<Entities\Devices\IDevice>[]
-	 */
+	/** @var ORM\EntityRepository<Entities\Devices\IDevice>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */

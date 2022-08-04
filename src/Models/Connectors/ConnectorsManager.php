@@ -34,9 +34,7 @@ final class ConnectorsManager implements IConnectorsManager
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var Crud\IEntityCrud<Entities\Connectors\IConnector>
-	 */
+	/** @var Crud\IEntityCrud<Entities\Connectors\IConnector> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**

@@ -34,9 +34,7 @@ final class DevicesManager implements IDevicesManager
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var Crud\IEntityCrud<Entities\Devices\IDevice>
-	 */
+	/** @var Crud\IEntityCrud<Entities\Devices\IDevice> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**

@@ -31,7 +31,6 @@ use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use ReflectionClass;
-use ReflectionException;
 
 /**
  * Doctrine entities events

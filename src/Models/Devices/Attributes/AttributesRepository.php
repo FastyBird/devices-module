@@ -37,9 +37,7 @@ final class AttributesRepository implements IAttributesRepository
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>|null
-	 */
+	/** @var ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */

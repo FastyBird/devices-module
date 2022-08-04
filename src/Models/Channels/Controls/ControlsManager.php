@@ -34,9 +34,7 @@ final class ControlsManager implements IControlsManager
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var Crud\IEntityCrud<Entities\Channels\Controls\IControl>
-	 */
+	/** @var Crud\IEntityCrud<Entities\Channels\Controls\IControl> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**

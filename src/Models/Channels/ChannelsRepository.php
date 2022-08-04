@@ -37,9 +37,7 @@ final class ChannelsRepository implements IChannelsRepository
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var ORM\EntityRepository<Entities\Channels\IChannel>|null
-	 */
+	/** @var ORM\EntityRepository<Entities\Channels\IChannel>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */

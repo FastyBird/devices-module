@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Models\Connectors\Properties;
 
 use Doctrine\ORM;
 use Doctrine\Persistence;
-use Exception;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
@@ -38,9 +37,7 @@ final class PropertiesRepository implements IPropertiesRepository
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var ORM\EntityRepository<Entities\Connectors\Properties\IProperty>[]
-	 */
+	/** @var ORM\EntityRepository<Entities\Connectors\Properties\IProperty>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */

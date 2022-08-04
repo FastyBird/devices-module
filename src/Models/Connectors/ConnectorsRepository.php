@@ -37,9 +37,7 @@ final class ConnectorsRepository implements IConnectorsRepository
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var ORM\EntityRepository<Entities\Connectors\IConnector>[]
-	 */
+	/** @var ORM\EntityRepository<Entities\Connectors\IConnector>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */

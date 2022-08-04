@@ -34,9 +34,7 @@ final class PropertiesManager implements IPropertiesManager
 
 	use Nette\SmartObject;
 
-	/**
-	 * @var Crud\IEntityCrud<Entities\Devices\Properties\IProperty>
-	 */
+	/** @var Crud\IEntityCrud<Entities\Devices\Properties\IProperty> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**

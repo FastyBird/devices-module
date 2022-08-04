@@ -204,13 +204,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	{
 		// onFlush was executed before, everything already initialized
 		$entity = $eventArgs->getObject();
-		var_dump('TEST 2');
-var_dump(get_class($entity));
+
 		// Check for valid entity
 		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
 			return;
 		}
-var_dump('TEST');
+
 		$this->publishEntity($entity, self::ACTION_DELETED);
 
 		// Property states cleanup

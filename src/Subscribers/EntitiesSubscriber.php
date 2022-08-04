@@ -17,7 +17,6 @@ namespace FastyBird\DevicesModule\Subscribers;
 
 use Doctrine\Common;
 use Doctrine\ORM;
-use Doctrine\Persistence;
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Entities;
@@ -124,95 +123,10 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	public function getSubscribedEvents(): array
 	{
 		return [
-			ORM\Events::onFlush,
 			ORM\Events::postPersist,
 			ORM\Events::postUpdate,
+			ORM\Events::postRemove,
 		];
-	}
-
-	/**
-	 * @return void
-	 *
-	 * @throws MetadataExceptions\FileNotFoundException
-	 * @throws ORM\EntityNotFoundException
-	 * @throws Utils\JsonException
-	 * @throws Flysystem\FilesystemException
-	 */
-	public function onFlush(): void
-	{
-		$uow = $this->entityManager->getUnitOfWork();
-
-		$processedEntities = [];
-
-		$processEntities = [];
-
-		foreach ($uow->getScheduledEntityDeletions() as $entity) {
-			// Check for valid entity
-			if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
-				continue;
-			}
-
-			// Doctrine is fine deleting elements multiple times. We are not.
-			$hash = $this->getHash($entity, $uow->getEntityIdentifier($entity));
-
-			if (in_array($hash, $processedEntities, true)) {
-				continue;
-			}
-
-			$processedEntities[] = $hash;
-
-			$processEntities[] = $entity;
-		}
-
-		$hasProcessedEntity = false;
-
-		foreach ($processEntities as $entity) {
-			// Check for valid entity
-			if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
-				continue;
-			}
-
-			$hasProcessedEntity = true;
-
-			$this->publishEntity($entity, self::ACTION_DELETED);
-
-			// Property states cleanup
-			if ($entity instanceof DevicesModule\Entities\Connectors\Properties\IDynamicProperty) {
-				try {
-					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
-
-					if ($state !== null) {
-						$this->connectorPropertiesStatesManager->delete($entity, $state);
-					}
-				} catch (Exceptions\NotImplementedException) {
-					return;
-				}
-			} elseif ($entity instanceof DevicesModule\Entities\Devices\Properties\IDynamicProperty) {
-				try {
-					$state = $this->devicePropertiesStatesRepository->findOne($entity);
-
-					if ($state !== null) {
-						$this->devicePropertiesStatesManager->delete($entity, $state);
-					}
-				} catch (Exceptions\NotImplementedException) {
-					return;
-				}
-			} elseif ($entity instanceof DevicesModule\Entities\Channels\Properties\IDynamicProperty) {
-				try {
-					$state = $this->channelPropertiesStatesRepository->findOne($entity);
-
-					if ($state !== null) {
-						$this->channelPropertiesStatesManager->delete($entity, $state);
-					}
-				} catch (Exceptions\NotImplementedException) {
-					return;
-				}
-			}
-		}
-
-		if ($hasProcessedEntity) {
-			$this->configurationDataWriter->write();
-		}
 	}
 
 	/**
@@ -278,36 +192,61 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param Entities\IEntity $entity
-	 * @param mixed[] $identifier
+	 * @param ORM\Event\LifecycleEventArgs $eventArgs
 	 *
-	 * @return string
-	 */
-	private function getHash(Entities\IEntity $entity, array $identifier): string
-	{
-		return implode(
-			' ',
-			array_merge(
-				[$this->getRealClass(get_class($entity))],
-				$identifier
-			)
-		);
-	}
-
-	/**
-	 * @param string $class
+	 * @return void
 	 *
-	 * @return string
+	 * @throws Flysystem\FilesystemException
+	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws Utils\JsonException
 	 */
-	private function getRealClass(string $class): string
+	public function postRemove(ORM\Event\LifecycleEventArgs $eventArgs): void
 	{
-		$pos = strrpos($class, '\\' . Persistence\Proxy::MARKER . '\\');
+		// onFlush was executed before, everything already initialized
+		$entity = $eventArgs->getObject();
+		var_dump('TEST 2');
+var_dump(get_class($entity));
+		// Check for valid entity
+		if (!$entity instanceof Entities\IEntity || !$this->validateNamespace($entity)) {
+			return;
+		}
+var_dump('TEST');
+		$this->publishEntity($entity, self::ACTION_DELETED);
 
-		if ($pos === false) {
-			return $class;
+		// Property states cleanup
+		if ($entity instanceof DevicesModule\Entities\Connectors\Properties\IDynamicProperty) {
+			try {
+				$state = $this->connectorPropertiesStatesRepository->findOne($entity);
+
+				if ($state !== null) {
+					$this->connectorPropertiesStatesManager->delete($entity, $state);
+				}
+			} catch (Exceptions\NotImplementedException) {
+				return;
+			}
+		} elseif ($entity instanceof DevicesModule\Entities\Devices\Properties\IDynamicProperty) {
+			try {
+				$state = $this->devicePropertiesStatesRepository->findOne($entity);
+
+				if ($state !== null) {
+					$this->devicePropertiesStatesManager->delete($entity, $state);
+				}
+			} catch (Exceptions\NotImplementedException) {
+				return;
+			}
+		} elseif ($entity instanceof DevicesModule\Entities\Channels\Properties\IDynamicProperty) {
+			try {
+				$state = $this->channelPropertiesStatesRepository->findOne($entity);
+
+				if ($state !== null) {
+					$this->channelPropertiesStatesManager->delete($entity, $state);
+				}
+			} catch (Exceptions\NotImplementedException) {
+				return;
+			}
 		}
 
-		return substr($class, $pos + Persistence\Proxy::MARKER_LENGTH + 2);
+		$this->configurationDataWriter->write();
 	}
 
 	/**

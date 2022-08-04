@@ -73,9 +73,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		);
 
 		Assert::same([
-			'onFlush',
 			'postPersist',
 			'postUpdate',
+			'postRemove',
 		], $subscriber->getSubscribedEvents());
 	}
 
@@ -129,8 +129,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
-		$entity = Mockery::mock(MetadataEntities\Modules\TriggersModule\ManualTriggerEntity::class);
-		$entity
+		$entityItem = Mockery::mock(MetadataEntities\Modules\DevicesModule\DeviceEntity::class);
+		$entityItem
 			->shouldReceive('toArray')
 			->andReturn([
 				'identifier'            => 'device-name',
@@ -146,7 +146,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$entityFactory = Mockery::mock(ExchangeEntities\EntityFactory::class);
 		$entityFactory
 			->shouldReceive('create')
-			->andReturn($entity);
+			->andReturn($entityItem);
 
 		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
 		$configurationWriter
@@ -230,8 +230,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
-		$entity = Mockery::mock(MetadataEntities\Modules\TriggersModule\ManualTriggerEntity::class);
-		$entity
+		$entityItem = Mockery::mock(MetadataEntities\Modules\DevicesModule\DeviceEntity::class);
+		$entityItem
 			->shouldReceive('toArray')
 			->andReturn([
 				'identifier'            => 'device-name',
@@ -247,7 +247,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$entityFactory = Mockery::mock(ExchangeEntities\EntityFactory::class);
 		$entityFactory
 			->shouldReceive('create')
-			->andReturn($entity);
+			->andReturn($entityItem);
 
 		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
 		$configurationWriter
@@ -312,25 +312,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$entity = new Entities\Devices\BlankDevice('device-name', $connectorEntity, 'device-name');
 		$entity->setName('Device custom name');
 
-		$uow = Mockery::mock(ORM\UnitOfWork::class);
-		$uow
-			->shouldReceive('getScheduledEntityDeletions')
-			->withNoArgs()
-			->andReturn([$entity])
-			->times(1)
-			->getMock()
-			->shouldReceive('getEntityIdentifier')
-			->andReturn([
-				123,
-			])
-			->times(1);
-
 		$entityManager = $this->getEntityManager();
-		$entityManager
-			->shouldReceive('getUnitOfWork')
-			->withNoArgs()
-			->andReturn($uow)
-			->times(1);
 
 		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
 		$connectorPropertiesStateRepository
@@ -353,8 +335,8 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
-		$entity = Mockery::mock(MetadataEntities\Modules\TriggersModule\ManualTriggerEntity::class);
-		$entity
+		$entityItem = Mockery::mock(MetadataEntities\Modules\DevicesModule\DeviceEntity::class);
+		$entityItem
 			->shouldReceive('toArray')
 			->andReturn([
 				'identifier'            => 'device-name',
@@ -370,7 +352,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$entityFactory = Mockery::mock(ExchangeEntities\EntityFactory::class);
 		$entityFactory
 			->shouldReceive('create')
-			->andReturn($entity);
+			->andReturn($entityItem);
 
 		$configurationWriter = Mockery::mock(DataStorage\Writer::class);
 		$configurationWriter
@@ -389,7 +371,13 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$subscriber->onFlush();
+		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
+		$eventArgs
+			->shouldReceive('getObject')
+			->andReturn($entity)
+			->times(1);
+
+		$subscriber->postRemove($eventArgs);
 	}
 
 	/**

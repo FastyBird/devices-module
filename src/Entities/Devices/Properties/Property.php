@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
+use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
@@ -203,8 +204,7 @@ abstract class Property extends Entities\Property implements IProperty
 	public function setSettable(bool $settable): void
 	{
 		if (
-			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+			$this->getParent() !== null && !$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidStateException('Settable setter is allowed only for parent');
 		}
@@ -305,7 +305,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFormat(): ?array
+	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()

@@ -19,6 +19,7 @@ use Consistence;
 use DateTime;
 use DateTimeInterface;
 use FastyBird\Metadata\Types as MetadataTypes;
+use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use Nette\Utils;
 
 /**
@@ -35,7 +36,7 @@ final class ValueHelper
 	/**
 	 * @param MetadataTypes\DataTypeType $dataType
 	 * @param bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value
-	 * @param Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null $format
+	 * @param MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null $format
 	 * @param float|int|string|null $invalid
 	 *
 	 * @return bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
@@ -43,7 +44,7 @@ final class ValueHelper
 	public static function normalizeValue(
 		MetadataTypes\DataTypeType $dataType,
 		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value,
-		?array $format = null,
+		MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null $format = null,
 		float|int|string|null $invalid = null
 	): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null {
 		if ($value === null) {
@@ -62,12 +63,12 @@ final class ValueHelper
 				return $invalid;
 			}
 
-			if (is_array($format) && count($format) === 2) {
-				if ($format[0] !== null && intval($format[0]) > intval($value)) {
+			if ($format instanceof MetadataValueObjects\NumberRangeFormat) {
+				if ($format->getMin() !== null && intval($format->getMin()) > intval($value)) {
 					return null;
 				}
 
-				if ($format[1] !== null && intval($format[1]) < intval($value)) {
+				if ($format->getMax() !== null && intval($format->getMax()) < intval($value)) {
 					return null;
 				}
 			}
@@ -79,12 +80,12 @@ final class ValueHelper
 				return $invalid;
 			}
 
-			if (is_array($format) && count($format) === 2) {
-				if ($format[0] !== null && floatval($format[0]) > floatval($value)) {
+			if ($format instanceof MetadataValueObjects\NumberRangeFormat) {
+				if ($format->getMin() !== null && intval($format->getMin()) > intval($value)) {
 					return null;
 				}
 
-				if ($format[1] !== null && floatval($format[1]) < floatval($value)) {
+				if ($format->getMax() !== null && intval($format->getMax()) < intval($value)) {
 					return null;
 				}
 			}
@@ -147,25 +148,38 @@ final class ValueHelper
 			return null;
 
 		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
-			if (is_array($format) && count($format) > 0) {
-				$filtered = array_filter($format, function ($item) use ($value): bool {
-					if (is_array($item)) {
-						if (count($item) !== 3) {
-							return false;
-						}
-
-						return Utils\Strings::lower(strval($value)) === $item[0]
-							|| Utils\Strings::lower(strval($value)) === $item[1]
-							|| Utils\Strings::lower(strval($value)) === $item[2];
-					}
-
+			if ($format instanceof MetadataValueObjects\StringEnumFormat) {
+				$filtered = array_filter($format->getItems(), function (string $item) use ($value): bool {
 					return Utils\Strings::lower(strval($value)) === $item;
 				});
 
 				if (count($filtered) === 1) {
-					$filtered = array_pop($filtered);
+					return $value;
+				}
 
-					return is_array($filtered) ? $filtered[0] : $filtered;
+				return null;
+
+			} elseif ($format instanceof MetadataValueObjects\CombinedEnumFormat) {
+				$filtered = array_filter(
+					$format->getItems(),
+					function (array $item) use ($value): bool {
+						$filteredInner = array_filter(
+							$item,
+							function (?MetadataValueObjects\CombinedEnumFormatItem $part) use ($value): bool {
+								if ($part === null) {
+									return false;
+								}
+
+								return Utils\Strings::lower(strval($value)) === $part->getValue();
+							}
+						);
+
+						return count($filteredInner) === 1;
+					}
+				);
+
+				if (count($filtered) === 1) {
+					return $value;
 				}
 
 				return null;

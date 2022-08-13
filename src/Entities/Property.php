@@ -20,7 +20,9 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Utilities;
+use FastyBird\Metadata;
 use FastyBird\Metadata\Types as MetadataTypes;
+use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
@@ -259,7 +261,7 @@ abstract class Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFormat(): ?array
+	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	{
 		return $this->buildFormat($this->format);
 	}
@@ -280,112 +282,105 @@ abstract class Property implements IProperty
 
 		} elseif (is_array($format)) {
 			if (
-				$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
-				|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
+				in_array($this->dataType->getValue(), [
+					MetadataTypes\DataTypeType::DATA_TYPE_CHAR,
+					MetadataTypes\DataTypeType::DATA_TYPE_UCHAR,
+					MetadataTypes\DataTypeType::DATA_TYPE_SHORT,
+					MetadataTypes\DataTypeType::DATA_TYPE_USHORT,
+					MetadataTypes\DataTypeType::DATA_TYPE_INT,
+					MetadataTypes\DataTypeType::DATA_TYPE_UINT,
+					MetadataTypes\DataTypeType::DATA_TYPE_FLOAT,
+				], true)
 			) {
-				$plainFormat = implode(',', array_map(function ($item): string {
+				$plainFormat = implode(':', array_map(function ($item): string {
 					if (is_array($item)) {
-						return $item[0] . ':' . ($item[1] ?? '') . ':' . ($item[2] ?? '');
+						return implode('|', array_map(function ($part): string|int|float {
+							return is_array($part) ? strval($part) : $part;
+						}, $item));
 					}
 
 					return strval($item);
 				}, $format));
 
-				if ($this->buildFormat($plainFormat) === null) {
-					throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
+				if (preg_match(Metadata\Constants::VALUE_FORMAT_NUMBER_RANGE, $plainFormat) === 1) {
+					$this->format = $plainFormat;
 				}
 
-				$this->format = $plainFormat;
+				throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
 
-				return;
+			} elseif (
+				in_array($this->dataType->getValue(), [
+					MetadataTypes\DataTypeType::DATA_TYPE_ENUM,
+					MetadataTypes\DataTypeType::DATA_TYPE_BUTTON,
+					MetadataTypes\DataTypeType::DATA_TYPE_SWITCH,
+				], true)
+			) {
+				$plainFormat = implode(',', array_map(function ($item): string {
+					if (is_array($item)) {
+						return (is_array($item[0]) ? implode('|', $item[0]) : $item[0])
+							. ':' . (is_array($item[1]) ? implode('|', $item[1]) : ($item[1] ?? ''))
+							. (isset($item[2]) ? (':' . (is_array($item[2]) ? implode('|', $item[2]) : ($item[2] ?? ''))) : '');
+					}
 
-			} else {
-				$plainFormat = strval($format[0]) . ':' . strval($format[1]);
+					return strval($item);
+				}, $format));
 
-				if ($this->buildFormat($plainFormat) === null) {
-					throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
+				if (
+					preg_match(Metadata\Constants::VALUE_FORMAT_STRING_ENUM, $plainFormat) === 1
+					|| preg_match(Metadata\Constants::VALUE_FORMAT_COMBINED_ENUM, $plainFormat) === 1
+				) {
+					$this->format = $plainFormat;
+
+					return;
 				}
 
-				$this->format = $plainFormat;
-
-				return;
+				throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
 			}
 		}
 
 		$this->format = null;
 	}
 
+
 	/**
 	 * @param string|null $format
 	 *
-	 * @return Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null
+	 * @return MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	 */
-	protected function buildFormat(?string $format): ?array
-	{
+	private function buildFormat(
+		?string $format
+	): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null {
 		if ($format === null) {
 			return null;
 		}
 
 		if (
-			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			in_array($this->dataType->getValue(), [
+				MetadataTypes\DataTypeType::DATA_TYPE_CHAR,
+				MetadataTypes\DataTypeType::DATA_TYPE_UCHAR,
+				MetadataTypes\DataTypeType::DATA_TYPE_SHORT,
+				MetadataTypes\DataTypeType::DATA_TYPE_USHORT,
+				MetadataTypes\DataTypeType::DATA_TYPE_INT,
+				MetadataTypes\DataTypeType::DATA_TYPE_UINT,
+				MetadataTypes\DataTypeType::DATA_TYPE_FLOAT,
+			], true)
 		) {
-			[$min, $max] = explode(':', $format) + [null, null];
-
-			if ($min !== null && $max !== null && intval($min) <= intval($max)) {
-				return [intval($min), intval($max)];
-			}
-
-			if ($min !== null && $max === null) {
-				return [intval($min), null];
-			}
-
-			if ($min === null && $max !== null) {
-				return [null, intval($max)];
-			}
-		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
-			[$min, $max] = explode(':', $format) + [null, null];
-
-			if ($min !== null && $max !== null && floatval($min) <= floatval($max)) {
-				return [floatval($min), floatval($max)];
-			}
-
-			if ($min !== null && $max === null) {
-				return [floatval($min), null];
-			}
-
-			if ($min === null && $max !== null) {
-				return [null, floatval($max)];
+			if (preg_match(Metadata\Constants::VALUE_FORMAT_NUMBER_RANGE, $format) === 1) {
+				return new MetadataValueObjects\NumberRangeFormat($format);
 			}
 		} elseif (
-			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
+			in_array($this->dataType->getValue(), [
+				MetadataTypes\DataTypeType::DATA_TYPE_ENUM,
+				MetadataTypes\DataTypeType::DATA_TYPE_BUTTON,
+				MetadataTypes\DataTypeType::DATA_TYPE_SWITCH,
+			], true)
 		) {
-			return array_map(function (string $item) {
-				if (!str_contains($item, ':')) {
-					return $item;
-				}
+			if (preg_match(Metadata\Constants::VALUE_FORMAT_STRING_ENUM, $format) === 1) {
+				return new MetadataValueObjects\StringEnumFormat($format);
 
-				$parts = array_map(function (?string $item): ?string {
-					return $item === '' ? null : $item;
-				}, array_map(function ($item): string {
-					return trim(strval($item));
-				}, explode(':', $item) + [null, null, null]));
-
-				return [
-					$parts[0],
-					(is_string($parts[1]) && $parts[1] !== '' ? $parts[1] : null),
-					(is_string($parts[2]) && $parts[2] !== '' ? $parts[2] : null),
-				];
-			}, array_filter(array_map('trim', explode(',', $format)), function ($item): bool {
-				return $item !== '';
-			}));
+			} elseif (preg_match(Metadata\Constants::VALUE_FORMAT_COMBINED_ENUM, $format) === 1) {
+				return new MetadataValueObjects\CombinedEnumFormat($format);
+			}
 		}
 
 		return null;
@@ -518,7 +513,7 @@ abstract class Property implements IProperty
 			'queryable'          => $this->isQueryable(),
 			'data_type'          => $this->getDataType()->getValue(),
 			'unit'               => $this->getUnit(),
-			'format'             => $this->getFormat(),
+			'format'             => $this->getFormat()?->toArray(),
 			'invalid'            => $this->getInvalid(),
 			'number_of_decimals' => $this->getNumberOfDecimals(),
 		];

@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Entities;
 
 use DateTimeInterface;
 use FastyBird\Metadata\Types as MetadataTypes;
+use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineTimestampable;
 
 /**
@@ -103,12 +104,12 @@ interface IProperty extends IEntity,
 	public function setUnit(?string $unit): void;
 
 	/**
-	 * @return Array<string>|Array<Array<string|null>>|Array<int|null>|Array<float|null>|null
+	 * @return MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	 */
-	public function getFormat(): ?array;
+	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null;
 
 	/**
-	 * @param string|Array<float|null>|Array<int|null>|Array<string>|Array<Array<string|null>>|null $format
+	 * @param string|Array<int, string>|Array<int, string|int|float|Array<int, string|int|float>|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|null>>|null $format
 	 *
 	 * @return void
 	 */

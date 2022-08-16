@@ -25,6 +25,7 @@ use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
+use Nette\Utils;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -304,6 +305,8 @@ abstract class Property implements IProperty
 
 				if (preg_match(Metadata\Constants::VALUE_FORMAT_NUMBER_RANGE, $plainFormat) === 1) {
 					$this->format = $plainFormat;
+
+					return;
 				}
 
 				throw new Exceptions\InvalidArgumentException('Provided property format is not valid');
@@ -316,10 +319,10 @@ abstract class Property implements IProperty
 				], true)
 			) {
 				$plainFormat = implode(',', array_map(function ($item): string {
-					if (is_array($item)) {
-						return (is_array($item[0]) ? implode('|', $item[0]) : $item[0])
-							. ':' . (is_array($item[1]) ? implode('|', $item[1]) : ($item[1] ?? ''))
-							. (isset($item[2]) ? (':' . (is_array($item[2]) ? implode('|', $item[2]) : ($item[2] ?? ''))) : '');
+					if (is_array($item) || $item instanceof Utils\ArrayHash) {
+						return implode(':', array_map(function (string|array|int|float|bool|Utils\ArrayHash|null $part): string {
+							return is_array($part) || $part instanceof Utils\ArrayHash ? implode('|', (array) $part) : ($part !== null ? strval($part) : '');
+						}, (array) $item));
 					}
 
 					return strval($item);

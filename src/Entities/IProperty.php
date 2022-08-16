@@ -19,6 +19,7 @@ use DateTimeInterface;
 use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineTimestampable;
+use Nette\Utils;
 
 /**
  * Device or channel property entity interface
@@ -109,7 +110,7 @@ interface IProperty extends IEntity,
 	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null;
 
 	/**
-	 * @param string|Array<int, string>|Array<int, string|int|float|Array<int, string|int|float>|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|null>>|null $format
+	 * @param string|Array<int, string>|Array<int, string|int|float|Array<int, string|int|float>|Utils\ArrayHash|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|Utils\ArrayHash|null>>|null $format
 	 *
 	 * @return void
 	 */

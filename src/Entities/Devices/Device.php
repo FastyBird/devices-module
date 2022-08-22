@@ -101,7 +101,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_name", nullable=true, options={"default": null})
 	 */
-	protected ?string $name;
+	protected ?string $name = null;
 
 	/**
 	 * @var string|null

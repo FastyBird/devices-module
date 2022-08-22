@@ -118,7 +118,7 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 			if (array_key_exists('device', $rawDataRow) && $device->toString() === $rawDataRow['device']) {
 				$entity = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 
-				if ($type === null || is_subclass_of($entity, $type)) {
+				if ($type === null || is_a($entity, $type) || is_subclass_of($entity, $type)) {
 					$entities[] = $entity;
 				}
 			}

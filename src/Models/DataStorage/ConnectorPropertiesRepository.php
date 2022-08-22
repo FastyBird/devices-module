@@ -118,7 +118,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 			if (array_key_exists('connector', $rawDataRow) && $connector->toString() === $rawDataRow['connector']) {
 				$entity = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 
-				if ($type === null || is_subclass_of($entity, $type)) {
+				if ($type === null || is_a($entity, $type) || is_subclass_of($entity, $type)) {
 					$entities[] = $entity;
 				}
 			}

@@ -82,7 +82,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="connector_name", nullable=true, options={"default": null})
 	 */
-	protected ?string $name;
+	protected ?string $name = null;
 
 	/**
 	 * @var string|null

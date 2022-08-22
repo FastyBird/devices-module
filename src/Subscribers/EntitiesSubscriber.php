@@ -268,7 +268,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		switch ($action) {
 			case self::ACTION_CREATED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
+					if (is_a($entity, $class)) {
 						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
 					}
 				}
@@ -277,7 +277,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 			case self::ACTION_UPDATED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
+					if (is_a($entity, $class)) {
 						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
 					}
 				}
@@ -286,7 +286,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 			case self::ACTION_DELETED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-					if ($this->validateEntity($entity, $class)) {
+					if (is_a($entity, $class)) {
 						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
 					}
 				}
@@ -378,27 +378,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 				);
 			}
 		}
-	}
-
-	/**
-	 * @param Entities\IEntity $entity
-	 * @param string $class
-	 *
-	 * @return bool
-	 */
-	private function validateEntity(Entities\IEntity $entity, string $class): bool
-	{
-		$result = false;
-
-		if (get_class($entity) === $class) {
-			$result = true;
-		}
-
-		if (is_subclass_of($entity, $class)) {
-			$result = true;
-		}
-
-		return $result;
 	}
 
 	/**

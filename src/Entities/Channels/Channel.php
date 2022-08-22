@@ -71,7 +71,7 @@ class Channel implements IChannel
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="channel_name", nullable=true, options={"default": null})
 	 */
-	private ?string $name;
+	private ?string $name = null;
 
 	/**
 	 * @var string|null

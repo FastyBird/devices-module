@@ -94,7 +94,7 @@ final class DeviceConnectionStateManager
 	): bool {
 		$stateProperty = $this->repository->findByIdentifier(
 			$device->getId(),
-			MetadataTypes\DevicePropertyNameType::NAME_STATE
+			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE
 		);
 
 		if ($stateProperty === null) {
@@ -112,7 +112,7 @@ final class DeviceConnectionStateManager
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
 				'device'     => $device,
 				'entity'     => Entities\Devices\Properties\DynamicProperty::class,
-				'identifier' => MetadataTypes\ConnectorPropertyNameType::NAME_STATE,
+				'identifier' => MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
 				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
 				'unit'       => null,
 				'format'     => [
@@ -213,7 +213,7 @@ final class DeviceConnectionStateManager
 	): MetadataTypes\ConnectionStateType {
 		$stateProperty = $this->repository->findByIdentifier(
 			$device->getId(),
-			MetadataTypes\DevicePropertyNameType::NAME_STATE
+			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE
 		);
 
 		if (

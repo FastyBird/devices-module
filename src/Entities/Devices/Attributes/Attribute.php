@@ -155,7 +155,7 @@ class Attribute implements IAttribute
 	 */
 	public function getContent(bool $plain = false): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
 	{
-		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
+		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MANUFACTURER) {
 			if ($this->content !== null && MetadataTypes\HardwareManufacturerType::isValidValue($this->content)) {
 				return MetadataTypes\HardwareManufacturerType::get($this->content);
 			}
@@ -167,7 +167,7 @@ class Attribute implements IAttribute
 			return MetadataTypes\HardwareManufacturerType::get(MetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC);
 		}
 
-		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MODEL) {
+		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MODEL) {
 			if ($this->content !== null && MetadataTypes\DeviceModelType::isValidValue($this->content)) {
 				return MetadataTypes\DeviceModelType::get($this->content);
 			}
@@ -179,7 +179,7 @@ class Attribute implements IAttribute
 			return MetadataTypes\DeviceModelType::get(MetadataTypes\DeviceModelType::MODEL_CUSTOM);
 		}
 
-		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MAC_ADDRESS) {
+		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MAC_ADDRESS) {
 			if (
 				$this->content !== null
 				&& (
@@ -193,7 +193,7 @@ class Attribute implements IAttribute
 			return null;
 		}
 
-		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_FIRMWARE_MANUFACTURER) {
+		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_FIRMWARE_MANUFACTURER) {
 			if ($this->content !== null && MetadataTypes\FirmwareManufacturerType::isValidValue($this->content)) {
 				return MetadataTypes\FirmwareManufacturerType::get($this->content);
 			}
@@ -214,19 +214,19 @@ class Attribute implements IAttribute
 	public function setContent(
 		string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content
 	): void {
-		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MANUFACTURER) {
+		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\HardwareManufacturerType) {
 				$this->content = strval($content->getValue());
 			} else {
 				$this->content = $content !== null ? Utils\Strings::lower((string) $content) : null;
 			}
-		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MODEL) {
+		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MODEL) {
 			if ($content instanceof MetadataTypes\DeviceModelType) {
 				$this->content = strval($content->getValue());
 			} else {
 				$this->content = $content !== null ? Utils\Strings::lower((string) $content) : null;
 			}
-		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_HARDWARE_MAC_ADDRESS) {
+		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MAC_ADDRESS) {
 			if (
 				$content !== null
 				&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', (string) $content) === 0
@@ -239,7 +239,7 @@ class Attribute implements IAttribute
 				':',
 				'-',
 			], '', (string) $content)) : null;
-		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeNameType::ATTRIBUTE_FIRMWARE_MANUFACTURER) {
+		} elseif ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_FIRMWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\FirmwareManufacturerType) {
 				$this->content = strval($content->getValue());
 			} else {

@@ -94,7 +94,7 @@ final class ConnectorConnectionStateManager
 	): bool {
 		$stateProperty = $this->dataStorageRepository->findByIdentifier(
 			$connector->getId(),
-			MetadataTypes\ConnectorPropertyNameType::NAME_STATE
+			MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE
 		);
 
 		if ($stateProperty === null) {
@@ -112,7 +112,7 @@ final class ConnectorConnectionStateManager
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
 				'connector'  => $connector,
 				'entity'     => Entities\Connectors\Properties\DynamicProperty::class,
-				'identifier' => MetadataTypes\ConnectorPropertyNameType::NAME_STATE,
+				'identifier' => MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
 				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
 				'unit'       => null,
 				'format'     => [
@@ -208,7 +208,7 @@ final class ConnectorConnectionStateManager
 	): MetadataTypes\ConnectionStateType {
 		$stateProperty = $this->dataStorageRepository->findByIdentifier(
 			$connector->getId(),
-			MetadataTypes\ConnectorPropertyNameType::NAME_STATE
+			MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE
 		);
 
 		if (

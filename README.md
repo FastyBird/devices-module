@@ -1,7 +1,7 @@
 # FastyBird IoT devices module
 
-[![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/master?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/actions)
-[![Licence](https://badgen.net/github/license/FastyBird/devices-module?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/blob/master/LICENSE.md)
+[![Build Status](https://badgen.net/github/checks/FastyBird/devices-module/main?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/actions)
+[![Licence](https://badgen.net/github/license/FastyBird/devices-module?cache=300&style=flat-square)](https://github.com/FastyBird/devices-module/blob/main/LICENSE.md)
 [![Code coverage](https://badgen.net/coveralls/c/github/FastyBird/devices-module?cache=300&style=flat-square)](https://coveralls.io/r/FastyBird/devices-module)
 
 ![PHP](https://badgen.net/packagist/php/FastyBird/devices-module?cache=300&style=flat-square)
@@ -88,7 +88,7 @@ pip install fastybird-devices-module
 ## Documentation
 
 Learn how to use devices module and manage your connectors & devices
-in [documentation](https://github.com/FastyBird/devices-module/blob/master/.docs/en/index.md).
+in [documentation](https://github.com/FastyBird/devices-module/blob/main/.docs/en/index.md).
 
 ## Feedback
 

@@ -27,7 +27,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # Library dependencies
 from fastybird_metadata.devices_module import (
-    DeviceAttributeName,
+    DeviceAttributeIdentifier,
     DeviceModel,
     FirmwareManufacturer,
     HardwareManufacturer,
@@ -906,25 +906,25 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         self
     ) -> Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None]:
         """Attribute content"""
-        if self.identifier == DeviceAttributeName.HARDWARE_MANUFACTURER.value:
+        if self.identifier == DeviceAttributeIdentifier.HARDWARE_MANUFACTURER.value:
             if self.col_content is not None and HardwareManufacturer.has_value(self.col_content.lower()):
                 return HardwareManufacturer(self.col_content.lower())
 
             return HardwareManufacturer.GENERIC
 
-        if self.identifier == DeviceAttributeName.HARDWARE_MODEL.value:
+        if self.identifier == DeviceAttributeIdentifier.HARDWARE_MODEL.value:
             if self.col_content is not None and DeviceModel.has_value(self.col_content.lower()):
                 return DeviceModel(self.col_content.lower())
 
             return DeviceModel.CUSTOM
 
-        if self.identifier == DeviceAttributeName.HARDWARE_MAC_ADDRESS.value:
+        if self.identifier == DeviceAttributeIdentifier.HARDWARE_MAC_ADDRESS.value:
             if self.col_content is None:
                 return None
 
             return ":".join([self.col_content[index : (index + 2)] for index in range(0, len(self.col_content), 2)])
 
-        if self.identifier == DeviceAttributeName.FIRMWARE_MANUFACTURER.value:
+        if self.identifier == DeviceAttributeIdentifier.FIRMWARE_MANUFACTURER.value:
             if self.col_content is not None and FirmwareManufacturer.has_value(self.col_content.lower()):
                 return FirmwareManufacturer(self.col_content.lower())
 
@@ -940,21 +940,21 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
         content: Union[str, HardwareManufacturer, FirmwareManufacturer, DeviceModel, None],
     ) -> None:
         """Attribute content setter"""
-        if self.identifier == DeviceAttributeName.HARDWARE_MANUFACTURER.value:
+        if self.identifier == DeviceAttributeIdentifier.HARDWARE_MANUFACTURER.value:
             if isinstance(content, HardwareManufacturer):
                 self.col_content = content.value
 
             else:
                 self.col_content = str(content).lower() if content is not None else None
 
-        elif self.identifier == DeviceAttributeName.HARDWARE_MODEL.value:
+        elif self.identifier == DeviceAttributeIdentifier.HARDWARE_MODEL.value:
             if isinstance(content, DeviceModel):
                 self.col_content = content.value
 
             else:
                 self.col_content = str(content).lower() if content is not None else None
 
-        elif self.identifier == DeviceAttributeName.HARDWARE_MAC_ADDRESS.value:
+        elif self.identifier == DeviceAttributeIdentifier.HARDWARE_MAC_ADDRESS.value:
             if (
                 content is not None
                 and len(re.findall("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", str(content))) == 0
@@ -968,7 +968,7 @@ class DeviceAttributeEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):
             else:
                 self.col_content = None
 
-        elif self.identifier == DeviceAttributeName.FIRMWARE_MANUFACTURER.value:
+        elif self.identifier == DeviceAttributeIdentifier.FIRMWARE_MANUFACTURER.value:
             if isinstance(content, FirmwareManufacturer):
                 self.col_content = content.value
 

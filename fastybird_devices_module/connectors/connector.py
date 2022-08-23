@@ -32,7 +32,7 @@ from asyncio import AbstractEventLoop
 from importlib import util as import_util
 from typing import Dict, Optional, Union
 
-from fastybird_metadata.devices_module import ConnectionState, ConnectorPropertyName
+from fastybird_metadata.devices_module import ConnectionState, ConnectorPropertyIdentifier
 
 # Library libs
 from fastybird_metadata.routing import RoutingKey
@@ -957,13 +957,13 @@ class Connector:  # pylint: disable=too-many-instance-attributes
         if self.__connector is not None:
             state_property = self.__connectors_properties_repository.get_by_identifier(
                 connector_id=self.__connector.id,
-                property_identifier=ConnectorPropertyName.STATE.value,
+                property_identifier=ConnectorPropertyIdentifier.STATE.value,
             )
 
             if state_property is None:
                 property_data = {
                     "connector_id": self.__connector.id,
-                    "identifier": ConnectorPropertyName.STATE.value,
+                    "identifier": ConnectorPropertyIdentifier.STATE.value,
                     "data_type": DataType.ENUM,
                     "unit": None,
                     "format": [

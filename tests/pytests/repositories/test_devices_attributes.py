@@ -18,7 +18,7 @@
 import uuid
 
 # Library dependencies
-from fastybird_metadata.devices_module import DeviceAttributeName
+from fastybird_metadata.devices_module import DeviceAttributeIdentifier
 from fastybird_metadata.routing import RoutingKey
 from kink import inject
 
@@ -44,7 +44,7 @@ class TestDeviceAttributesRepository(DbTestCase):
         )
 
         self.assertIsInstance(entity, DeviceAttributeEntity)
-        self.assertEqual(DeviceAttributeName.HARDWARE_MANUFACTURER.value, entity.identifier)
+        self.assertEqual(DeviceAttributeIdentifier.HARDWARE_MANUFACTURER.value, entity.identifier)
 
     # -----------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ class TestDeviceAttributesRepository(DbTestCase):
         self.assertEqual(
             {
                 "id": "03164a6d-9628-460c-95cc-90e6216332d9",
-                "identifier": DeviceAttributeName.HARDWARE_MANUFACTURER.value,
+                "identifier": DeviceAttributeIdentifier.HARDWARE_MANUFACTURER.value,
                 "name": None,
                 "content": "itead",
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",

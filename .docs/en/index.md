@@ -61,7 +61,7 @@ pip install fastybird-devices-module
 This module is dependent on other Nette extensions. All this extensions have to enabled and configured in NEON
 configuration file.
 
-Example configuration could be found [here](https://github.com/FastyBird/devices-module/blob/master/config/example.neon)
+Example configuration could be found [here](https://github.com/FastyBird/devices-module/blob/main/config/example.neon)
 
 ## Initialization
 

@@ -144,7 +144,7 @@ final class DeviceConnectionStateManager
 					'States repository is not configured. State could not be fetched',
 					[
 						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-						'type'   => 'connection-state-manager',
+						'type'   => 'device-connection-state-manager',
 					]
 				);
 
@@ -169,7 +169,7 @@ final class DeviceConnectionStateManager
 						'States manager is not configured. State could not be saved',
 						[
 							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-							'type'   => 'connection-state-manager',
+							'type'   => 'device-connection-state-manager',
 						]
 					);
 				}
@@ -193,7 +193,7 @@ final class DeviceConnectionStateManager
 						'States manager is not configured. State could not be saved',
 						[
 							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-							'type'   => 'connection-state-manager',
+							'type'   => 'device-connection-state-manager',
 						]
 					);
 				}

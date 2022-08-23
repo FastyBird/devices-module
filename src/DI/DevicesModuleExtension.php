@@ -334,6 +334,20 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('states.managers.channels.properties'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\States\ChannelPropertiesManager::class);
 
+		// Connection states manager
+		$builder->addDefinition($this->prefix('consumer.connectionState.connector'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\ConnectorConnectionStateManager::class);
+
+		$builder->addDefinition($this->prefix('consumer.connectionState.device'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\DeviceConnectionStateManager::class);
+
+		// Properties states manager
+		$builder->addDefinition($this->prefix('consumer.propertyState.device'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\DevicePropertyStateManager::class);
+
+		$builder->addDefinition($this->prefix('consumer.propertyState.channel'), new DI\Definitions\ServiceDefinition())
+			->setType(Models\States\ChannelPropertyStateManager::class);
+
 		// Data storage
 		$builder->addDefinition($this->prefix('dataStorage.writer'), new DI\Definitions\ServiceDefinition())
 			->setType(DataStorage\Writer::class);
@@ -394,13 +408,6 @@ class DevicesModuleExtension extends DI\CompilerExtension
 				'connectorConsumer'    => '@' . $this->prefix('consumer.connector'),
 				'dataExchangeConsumer' => '@' . $this->prefix('consumer.dataExchange'),
 			]);
-
-		// Connection states manager
-		$builder->addDefinition($this->prefix('consumer.connectionState.connector'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\States\ConnectorConnectionStateManager::class);
-
-		$builder->addDefinition($this->prefix('consumer.connectionState.device'), new DI\Definitions\ServiceDefinition())
-			->setType(Models\States\DeviceConnectionStateManager::class);
 	}
 
 	/**

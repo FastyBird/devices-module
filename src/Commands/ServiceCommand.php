@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
 use FastyBird\Metadata;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
@@ -53,6 +54,27 @@ class ServiceCommand extends Console\Command\Command
 	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
 
+	/** @var Models\DataStorage\IDevicesRepository */
+	private Models\DataStorage\IDevicesRepository $devicesRepository;
+
+	/** @var Models\DataStorage\IDevicePropertiesRepository */
+	private Models\DataStorage\IDevicePropertiesRepository $devicesPropertiesRepository;
+
+	/** @var Models\DataStorage\IChannelsRepository */
+	private Models\DataStorage\IChannelsRepository $channelsRepository;
+
+	/** @var Models\DataStorage\IChannelPropertiesRepository */
+	private Models\DataStorage\IChannelPropertiesRepository $channelsPropertiesRepository;
+
+	/** @var Models\States\DeviceConnectionStateManager */
+	private Models\States\DeviceConnectionStateManager $deviceConnectionStateManager;
+
+	/** @var Models\States\DevicePropertyStateManager */
+	private Models\States\DevicePropertyStateManager $devicePropertyStateManager;
+
+	/** @var Models\States\ChannelPropertyStateManager */
+	private Models\States\ChannelPropertyStateManager $channelPropertyStateManager;
+
 	/** @var Consumers\ConnectorConsumer */
 	private Consumers\ConnectorConsumer $connectorConsumer;
 
@@ -80,7 +102,14 @@ class ServiceCommand extends Console\Command\Command
 	/**
 	 * @param Connectors\ConnectorFactory $factory
 	 * @param Models\DataStorage\IConnectorsRepository $connectorsRepository
+	 * @param Models\DataStorage\IDevicesRepository $devicesRepository
+	 * @param Models\DataStorage\IDevicePropertiesRepository $devicesPropertiesRepository
+	 * @param Models\DataStorage\IChannelsRepository $channelsRepository
+	 * @param Models\DataStorage\IChannelPropertiesRepository $channelsPropertiesRepository
 	 * @param Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager
+	 * @param Models\States\DeviceConnectionStateManager $deviceConnectionStateManager
+	 * @param Models\States\DevicePropertyStateManager $devicePropertyStateManager
+	 * @param Models\States\ChannelPropertyStateManager $channelPropertyStateManager
 	 * @param Consumers\ConnectorConsumer $connectorConsumer
 	 * @param Consumers\DataExchangeConsumer $dataExchangeConsumer
 	 * @param ExchangeConsumer\Consumer $consumer
@@ -93,7 +122,14 @@ class ServiceCommand extends Console\Command\Command
 	public function __construct(
 		Connectors\ConnectorFactory $factory,
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
+		Models\DataStorage\IDevicesRepository $devicesRepository,
+		Models\DataStorage\IDevicePropertiesRepository $devicesPropertiesRepository,
+		Models\DataStorage\IChannelsRepository $channelsRepository,
+		Models\DataStorage\IChannelPropertiesRepository $channelsPropertiesRepository,
 		Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager,
+		Models\States\DeviceConnectionStateManager $deviceConnectionStateManager,
+		Models\States\DevicePropertyStateManager $devicePropertyStateManager,
+		Models\States\ChannelPropertyStateManager $channelPropertyStateManager,
 		Consumers\ConnectorConsumer $connectorConsumer,
 		Consumers\DataExchangeConsumer $dataExchangeConsumer,
 		ExchangeConsumer\Consumer $consumer,
@@ -105,8 +141,16 @@ class ServiceCommand extends Console\Command\Command
 	) {
 		$this->factory = $factory;
 		$this->connectorsRepository = $connectorsRepository;
+		$this->devicesRepository = $devicesRepository;
+		$this->devicesPropertiesRepository = $devicesPropertiesRepository;
+		$this->channelsRepository = $channelsRepository;
+		$this->channelsPropertiesRepository = $channelsPropertiesRepository;
 
 		$this->connectorConnectionStateManager = $connectorConnectionStateManager;
+		$this->deviceConnectionStateManager = $deviceConnectionStateManager;
+
+		$this->devicePropertyStateManager = $devicePropertyStateManager;
+		$this->channelPropertyStateManager = $channelPropertyStateManager;
 
 		$this->connectorConsumer = $connectorConsumer;
 		$this->dataExchangeConsumer = $dataExchangeConsumer;
@@ -320,6 +364,11 @@ class ServiceCommand extends Console\Command\Command
 			]);
 
 			try {
+				$this->resetConnectorDevices(
+					$connector,
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN)
+				);
+
 				// Start connector service
 				$service->execute();
 
@@ -344,6 +393,11 @@ class ServiceCommand extends Console\Command\Command
 				$this->dispatcher?->dispatch(new Events\BeforeConnectorTerminateEvent($service));
 
 				$service->terminate();
+
+				$this->resetConnectorDevices(
+					$connector,
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_DISCONNECTED)
+				);
 
 				$now = $this->dateTimeFactory->getNow();
 
@@ -388,6 +442,42 @@ class ServiceCommand extends Console\Command\Command
 		});
 
 		$this->eventLoop->run();
+	}
+
+	/**
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 * @param MetadataTypes\ConnectionStateType $state
+	 *
+	 * @return void
+	 */
+	private function resetConnectorDevices(
+		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
+		MetadataTypes\ConnectionStateType $state
+	): void {
+		foreach ($this->devicesRepository->findAllByConnector($connector->getId()) as $device) {
+			$this->deviceConnectionStateManager->setState(
+				$device,
+				$state
+			);
+
+			/** @var MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity[] $properties */
+			$properties = $this->devicesPropertiesRepository->findAllByDevice(
+				$device->getId(),
+				MetadataEntities\Modules\DevicesModule\DeviceDynamicPropertyEntity::class
+			);
+
+			$this->devicePropertyStateManager->setValidState($properties, false);
+
+			foreach ($this->channelsRepository->findAllByDevice($device->getId()) as $channel) {
+				/** @var MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity[] $properties */
+				$properties = $this->channelsPropertiesRepository->findAllByChannel(
+					$channel->getId(),
+					MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity::class
+				);
+
+				$this->channelPropertyStateManager->setValidState($properties, false);
+			}
+		}
 	}
 
 }

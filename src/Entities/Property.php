@@ -294,10 +294,10 @@ abstract class Property implements IProperty
 				], true)
 			) {
 				$plainFormat = implode(':', array_map(function ($item): string {
-					if (is_array($item)) {
+					if (is_array($item) || $item instanceof Utils\ArrayHash) {
 						return implode('|', array_map(function ($part): string|int|float {
 							return is_array($part) ? strval($part) : $part;
-						}, $item));
+						}, (array) $item));
 					}
 
 					return strval($item);

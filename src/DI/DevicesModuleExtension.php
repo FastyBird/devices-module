@@ -47,6 +47,8 @@ use stdClass;
 class DevicesModuleExtension extends DI\CompilerExtension
 {
 
+	public const CONNECTOR_TYPE_TAG = 'connector_type';
+
 	/**
 	 * @param Nette\Configurator $config
 	 * @param string $extensionName
@@ -449,6 +451,26 @@ class DevicesModuleExtension extends DI\CompilerExtension
 				$builder->getDefinitionByType(Router\Routes::class),
 				$routerService,
 			]);
+		}
+
+		/**
+		 * Connectors
+		 */
+
+		$connectorFactoryService = $builder->getDefinitionByType(Connectors\ConnectorFactory::class);
+
+		if ($connectorFactoryService instanceof DI\Definitions\ServiceDefinition) {
+			$connectorsExecutorsFactoriesServices = $builder->findByType(Connectors\IConnectorFactory::class);
+
+			foreach ($connectorsExecutorsFactoriesServices as $connectorExecutorFactoryService) {
+				if (is_string($connectorExecutorFactoryService->getTag(self::CONNECTOR_TYPE_TAG))) {
+					$connectorFactoryService->addSetup('?->attach(?, ?)', [
+						$connectorFactoryService,
+						$connectorExecutorFactoryService,
+						$connectorExecutorFactoryService->getTag(self::CONNECTOR_TYPE_TAG),
+					]);
+				}
+			}
 		}
 	}
 

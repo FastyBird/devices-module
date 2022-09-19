@@ -33,20 +33,23 @@ final class ConnectorFactory
 
 	use Nette\SmartObject;
 
-	/** @var SplObjectStorage<IConnectorFactory, null> */
+	/** @var SplObjectStorage<IConnectorFactory, string> */
 	private SplObjectStorage $factories;
 
-	/**
-	 * @param IConnectorFactory[] $factories
-	 */
-	public function __construct(
-		array $factories
-	) {
+	public function __construct()
+	{
 		$this->factories = new SplObjectStorage();
+	}
 
-		foreach ($factories as $factory) {
-			$this->factories->attach($factory);
-		}
+	/**
+	 * @param IConnectorFactory $factory
+	 * @param string $type
+	 *
+	 * @return void
+	 */
+	public function attach(IConnectorFactory $factory, string $type): void
+	{
+		$this->factories->attach($factory, $type);
 	}
 
 	/**
@@ -58,12 +61,12 @@ final class ConnectorFactory
 	{
 		/** @var IConnectorFactory $factory */
 		foreach ($this->factories as $factory) {
-			if ($connector->getType() === $factory->getType()) {
+			if ($connector->getType() === $this->factories[$factory]) {
 				return $factory->create($connector);
 			}
 		}
 
-		throw new Exceptions\InvalidStateException('Connector could not be created');
+		throw new Exceptions\InvalidStateException('Connector executor could not be created');
 	}
 
 }

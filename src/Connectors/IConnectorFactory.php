@@ -29,11 +29,6 @@ interface IConnectorFactory
 {
 
 	/**
-	 * @return string
-	 */
-	public function getType(): string;
-
-	/**
 	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
 	 *
 	 * @return IConnector

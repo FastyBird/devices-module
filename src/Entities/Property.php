@@ -85,11 +85,11 @@ abstract class Property implements Entity,
 	/**
 	 * @var MetadataTypes\DataTypeType
 	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 *
 	 * @Enum(class=MetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="property_data_type", length=100, nullable=true, options={"default": "unknown"})
-	 *
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	protected $dataType;
 

@@ -387,17 +387,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('dataStorage.repository.channel.controls'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\DataStorage\ChannelControlsRepository::class);
 
-		// Connector services
-		$builder->addDefinition($this->prefix('connector.factory'), new DI\Definitions\ServiceDefinition())
-			->setType(Connectors\ConnectorFactory::class);
-
 		// Consumers
 		$builder->addDefinition($this->prefix('consumer.connector'), new DI\Definitions\ServiceDefinition())
 			->setType(Consumers\ConnectorConsumer::class)
-			->setAutowired(false);
-
-		$builder->addDefinition($this->prefix('consumer.dataExchange'), new DI\Definitions\ServiceDefinition())
-			->setType(Consumers\DataExchangeConsumer::class)
 			->setAutowired(false);
 
 		// Console commands
@@ -405,10 +397,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Commands\InitializeCommand::class);
 
 		$builder->addDefinition($this->prefix('commands.service'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\ServiceCommand::class)
+			->setType(Commands\ConnectorCommand::class)
 			->setArguments([
-				'connectorConsumer'    => '@' . $this->prefix('consumer.connector'),
-				'dataExchangeConsumer' => '@' . $this->prefix('consumer.dataExchange'),
+				'connectorConsumer' => '@' . $this->prefix('consumer.connector'),
 			]);
 	}
 
@@ -457,15 +448,15 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		 * Connectors
 		 */
 
-		$connectorFactoryService = $builder->getDefinitionByType(Connectors\ConnectorFactory::class);
+		$connectorCommand = $builder->getDefinitionByType(Commands\ConnectorCommand::class);
 
-		if ($connectorFactoryService instanceof DI\Definitions\ServiceDefinition) {
+		if ($connectorCommand instanceof DI\Definitions\ServiceDefinition) {
 			$connectorsExecutorsFactoriesServices = $builder->findByType(Connectors\IConnectorFactory::class);
 
 			foreach ($connectorsExecutorsFactoriesServices as $connectorExecutorFactoryService) {
 				if (is_string($connectorExecutorFactoryService->getTag(self::CONNECTOR_TYPE_TAG))) {
-					$connectorFactoryService->addSetup('?->attach(?, ?)', [
-						$connectorFactoryService,
+					$connectorCommand->addSetup('?->attach(?, ?)', [
+						$connectorCommand,
 						$connectorExecutorFactoryService,
 						$connectorExecutorFactoryService->getTag(self::CONNECTOR_TYPE_TAG),
 					]);

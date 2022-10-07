@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * ServiceCommand.php
+ * ConnectorCommand.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -29,6 +29,7 @@ use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
 use Ramsey\Uuid;
 use React\EventLoop;
+use SplObjectStorage;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
@@ -43,13 +44,15 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class ServiceCommand extends Console\Command\Command
+class ConnectorCommand extends Console\Command\Command
 {
+
+	public const NAME = 'fb:devices-module:connector';
 
 	private const SHUTDOWN_WAITING_DELAY = 3;
 
-	/** @var Connectors\ConnectorFactory */
-	private Connectors\ConnectorFactory $factory;
+	/** @var SplObjectStorage<Connectors\IConnectorFactory, string> */
+	private SplObjectStorage $factories;
 
 	/** @var Models\DataStorage\IConnectorsRepository */
 	private Models\DataStorage\IConnectorsRepository $connectorsRepository;
@@ -78,9 +81,6 @@ class ServiceCommand extends Console\Command\Command
 	/** @var Consumers\ConnectorConsumer */
 	private Consumers\ConnectorConsumer $connectorConsumer;
 
-	/** @var Consumers\DataExchangeConsumer */
-	private Consumers\DataExchangeConsumer $dataExchangeConsumer;
-
 	/** @var ExchangeConsumer\Consumer */
 	private ExchangeConsumer\Consumer $consumer;
 
@@ -100,7 +100,6 @@ class ServiceCommand extends Console\Command\Command
 	private EventLoop\LoopInterface $eventLoop;
 
 	/**
-	 * @param Connectors\ConnectorFactory $factory
 	 * @param Models\DataStorage\IConnectorsRepository $connectorsRepository
 	 * @param Models\DataStorage\IDevicesRepository $devicesRepository
 	 * @param Models\DataStorage\IDevicePropertiesRepository $devicesPropertiesRepository
@@ -111,7 +110,6 @@ class ServiceCommand extends Console\Command\Command
 	 * @param Models\States\DevicePropertyStateManager $devicePropertyStateManager
 	 * @param Models\States\ChannelPropertyStateManager $channelPropertyStateManager
 	 * @param Consumers\ConnectorConsumer $connectorConsumer
-	 * @param Consumers\DataExchangeConsumer $dataExchangeConsumer
 	 * @param ExchangeConsumer\Consumer $consumer
 	 * @param DateTimeFactory\DateTimeFactory $dateTimeFactory
 	 * @param EventLoop\LoopInterface $eventLoop
@@ -120,7 +118,6 @@ class ServiceCommand extends Console\Command\Command
 	 * @param string|null $name
 	 */
 	public function __construct(
-		Connectors\ConnectorFactory $factory,
 		Models\DataStorage\IConnectorsRepository $connectorsRepository,
 		Models\DataStorage\IDevicesRepository $devicesRepository,
 		Models\DataStorage\IDevicePropertiesRepository $devicesPropertiesRepository,
@@ -131,7 +128,6 @@ class ServiceCommand extends Console\Command\Command
 		Models\States\DevicePropertyStateManager $devicePropertyStateManager,
 		Models\States\ChannelPropertyStateManager $channelPropertyStateManager,
 		Consumers\ConnectorConsumer $connectorConsumer,
-		Consumers\DataExchangeConsumer $dataExchangeConsumer,
 		ExchangeConsumer\Consumer $consumer,
 		DateTimeFactory\DateTimeFactory $dateTimeFactory,
 		EventLoop\LoopInterface $eventLoop,
@@ -139,7 +135,6 @@ class ServiceCommand extends Console\Command\Command
 		?Log\LoggerInterface $logger = null,
 		?string $name = null
 	) {
-		$this->factory = $factory;
 		$this->connectorsRepository = $connectorsRepository;
 		$this->devicesRepository = $devicesRepository;
 		$this->devicesPropertiesRepository = $devicesPropertiesRepository;
@@ -153,7 +148,6 @@ class ServiceCommand extends Console\Command\Command
 		$this->channelPropertyStateManager = $channelPropertyStateManager;
 
 		$this->connectorConsumer = $connectorConsumer;
-		$this->dataExchangeConsumer = $dataExchangeConsumer;
 		$this->consumer = $consumer;
 
 		$this->dateTimeFactory = $dateTimeFactory;
@@ -163,7 +157,20 @@ class ServiceCommand extends Console\Command\Command
 
 		$this->logger = $logger ?? new Log\NullLogger();
 
+		$this->factories = new SplObjectStorage();
+
 		parent::__construct($name);
+	}
+
+	/**
+	 * @param Connectors\IConnectorFactory $factory
+	 * @param string $type
+	 *
+	 * @return void
+	 */
+	public function attach(Connectors\IConnectorFactory $factory, string $type): void
+	{
+		$this->factories->attach($factory, $type);
 	}
 
 	/**
@@ -172,12 +179,11 @@ class ServiceCommand extends Console\Command\Command
 	protected function configure(): void
 	{
 		$this
-			->setName('fb:devices-module:service')
+			->setName(self::NAME)
 			->setDescription('Devices module service')
 			->setDefinition(
 				new Input\InputDefinition([
 					new Input\InputOption('connector', 'c', Input\InputOption::VALUE_OPTIONAL, 'Run devices module connector', true),
-					new Input\InputOption('exchange', 'e', Input\InputOption::VALUE_NONE, 'Run devices module data exchange'),
 					new Input\InputOption('no-confirm', null, Input\InputOption::VALUE_NONE, 'Do not ask for any confirmation'),
 					new Input\InputOption('quiet', 'q', Input\InputOption::VALUE_NONE, 'Do not output any message'),
 				])
@@ -211,15 +217,14 @@ class ServiceCommand extends Console\Command\Command
 		}
 
 		try {
-			if ($input->getOption('exchange')) {
-				$this->consumer->register($this->dataExchangeConsumer);
-			}
-
 			if ($input->getOption('connector')) {
 				try {
 					$this->executeConnector($io, $input);
 
 				} catch (Exceptions\TerminateException $ex) {
+					var_dump($ex->getMessage());
+					var_dump($ex->getFile());
+					var_dump($ex->getLine());
 					$this->logger->debug('Stopping connector', [
 						'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
 						'type'      => 'service-cmd',
@@ -233,9 +238,14 @@ class ServiceCommand extends Console\Command\Command
 				}
 			}
 
+			$this->eventLoop->run();
+
 			return Console\Command\Command::SUCCESS;
 
 		} catch (Throwable $ex) {
+			var_dump($ex->getMessage());
+			var_dump($ex->getFile());
+			var_dump($ex->getLine());
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
 				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
@@ -259,6 +269,8 @@ class ServiceCommand extends Console\Command\Command
 	 * @param Input\InputInterface $input
 	 *
 	 * @return void
+	 *
+	 * @throws Exceptions\TerminateException
 	 */
 	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
@@ -353,7 +365,18 @@ class ServiceCommand extends Console\Command\Command
 			$io->section('Initializing connector');
 		}
 
-		$service = $this->factory->create($connector);
+		$service = null;
+
+		/** @var Connectors\IConnectorFactory $factory */
+		foreach ($this->factories as $factory) {
+			if ($connector->getType() === $this->factories[$factory]) {
+				$service = $factory->create($connector);
+			}
+		}
+
+		if ($service === null) {
+			throw new Exceptions\TerminateException('Connector service could not created');
+		}
 
 		$this->eventLoop->futureTick(function () use ($connector, $service): void {
 			$this->dispatcher?->dispatch(new Events\BeforeConnectorStartEvent($connector));
@@ -377,6 +400,9 @@ class ServiceCommand extends Console\Command\Command
 					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING)
 				);
 			} catch (Throwable $ex) {
+				var_dump($ex->getMessage());
+				var_dump($ex->getFile());
+				var_dump($ex->getLine());
 				throw new Exceptions\TerminateException('Connector can\'t be started', $ex->getCode(), $ex);
 			}
 
@@ -424,6 +450,9 @@ class ServiceCommand extends Console\Command\Command
 
 				$this->eventLoop->stop();
 			} catch (Throwable $ex) {
+				var_dump($ex->getMessage());
+				var_dump($ex->getFile());
+				var_dump($ex->getLine());
 				$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
 					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'      => 'service-cmd',
@@ -440,8 +469,6 @@ class ServiceCommand extends Console\Command\Command
 				);
 			}
 		});
-
-		$this->eventLoop->run();
 	}
 
 	/**

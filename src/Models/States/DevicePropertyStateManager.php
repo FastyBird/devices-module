@@ -7,7 +7,7 @@
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
- * @subpackage     States
+ * @subpackage     DynamicProperties
  * @since          0.73.0
  *
  * @date           23.08.22
@@ -26,7 +26,7 @@ use Psr\Log;
  * Useful device dynamic property state helpers
  *
  * @package        FastyBird:DevicesModule!
- * @subpackage     States
+ * @subpackage     DynamicProperties
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
@@ -72,9 +72,9 @@ final class DevicePropertyStateManager
 	): void {
 		try {
 			$propertyState = $this->devicePropertyStateRepository->findOne($property);
-		} catch (DevicesModuleExceptions\NotImplementedException) {
+		} catch (DevicesModuleExceptions\NotImplemented) {
 			$this->logger->warning(
-				'States repository is not configured. State could not be fetched',
+				'DynamicProperties repository is not configured. State could not be fetched',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'   => 'device-property-state-manager',
@@ -129,9 +129,9 @@ final class DevicePropertyStateManager
 					]
 				);
 			}
-		} catch (DevicesModuleExceptions\NotImplementedException) {
+		} catch (DevicesModuleExceptions\NotImplemented) {
 			$this->logger->warning(
-				'States manager is not configured. State could not be saved',
+				'DynamicProperties manager is not configured. State could not be saved',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'   => 'device-property-state-manager',

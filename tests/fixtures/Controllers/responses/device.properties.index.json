@@ -61,7 +61,7 @@
       }
     },
     {
-      "type" : "com.fastybird.devices-module/property/device/static",
+      "type" : "com.fastybird.devices-module/property/device/variable",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
         "identifier" : "password",
@@ -110,7 +110,7 @@
       }
     },
     {
-      "type" : "com.fastybird.devices-module/property/device/static",
+      "type" : "com.fastybird.devices-module/property/device/variable",
       "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
       "attributes" : {
         "identifier" : "status_led",
@@ -212,7 +212,7 @@
       }
     },
     {
-      "type" : "com.fastybird.devices-module/property/device/static",
+      "type" : "com.fastybird.devices-module/property/device/variable",
       "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
       "attributes" : {
         "identifier" : "username",

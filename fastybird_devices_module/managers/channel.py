@@ -29,7 +29,7 @@ from fastybird_devices_module.entities.channel import (
     ChannelEntity,
     ChannelMappedPropertyEntity,
     ChannelPropertyEntity,
-    ChannelStaticPropertyEntity,
+    ChannelVariablePropertyEntity,
 )
 from fastybird_devices_module.entities.device import DeviceEntity
 from fastybird_devices_module.managers.base import BaseManager
@@ -112,7 +112,7 @@ class ChannelPropertiesManager(BaseManager[ChannelPropertyEntity]):
         self,
         data: Dict,
         property_type: Type[
-            Union[ChannelDynamicPropertyEntity, ChannelStaticPropertyEntity, ChannelMappedPropertyEntity]
+            Union[ChannelDynamicPropertyEntity, ChannelVariablePropertyEntity, ChannelMappedPropertyEntity]
         ],
     ) -> ChannelPropertyEntity:
         """Create new channel property entity"""

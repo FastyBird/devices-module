@@ -29,16 +29,16 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ChannelsManager implements IChannelsManager
+final class ChannelsManager
 {
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Channels\IChannel> */
+	/** @var Crud\IEntityCrud<Entities\Channels\Channel> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\IChannel> $entityCrud
+	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\Channel> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud
@@ -52,8 +52,8 @@ final class ChannelsManager implements IChannelsManager
 	 */
 	public function create(
 		Utils\ArrayHash $values
-	): Entities\Channels\IChannel {
-		/** @var Entities\Channels\IChannel $entity */
+	): Entities\Channels\Channel {
+		/** @var Entities\Channels\Channel $entity */
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
 
 		return $entity;
@@ -63,10 +63,10 @@ final class ChannelsManager implements IChannelsManager
 	 * {@inheritDoc}
 	 */
 	public function update(
-		Entities\Channels\IChannel $entity,
+		Entities\Channels\Channel $entity,
 		Utils\ArrayHash $values
-	): Entities\Channels\IChannel {
-		/** @var Entities\Channels\IChannel $entity */
+	): Entities\Channels\Channel {
+		/** @var Entities\Channels\Channel $entity */
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
 
 		return $entity;
@@ -76,7 +76,7 @@ final class ChannelsManager implements IChannelsManager
 	 * {@inheritDoc}
 	 */
 	public function delete(
-		Entities\Channels\IChannel $entity
+		Entities\Channels\Channel $entity
 	): bool {
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);

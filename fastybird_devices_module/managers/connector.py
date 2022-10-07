@@ -28,7 +28,7 @@ from fastybird_devices_module.entities.connector import (
     ConnectorDynamicPropertyEntity,
     ConnectorEntity,
     ConnectorPropertyEntity,
-    ConnectorStaticPropertyEntity,
+    ConnectorVariablePropertyEntity,
 )
 from fastybird_devices_module.managers.base import BaseManager
 
@@ -108,7 +108,7 @@ class ConnectorPropertiesManager(BaseManager[ConnectorPropertyEntity]):
     def create(
         self,
         data: Dict,
-        property_type: Type[Union[ConnectorDynamicPropertyEntity, ConnectorStaticPropertyEntity]],
+        property_type: Type[Union[ConnectorDynamicPropertyEntity, ConnectorVariablePropertyEntity]],
     ) -> ConnectorPropertyEntity:
         """Create new connector property entity"""
         if "connector_id" in data and "connector" not in data:

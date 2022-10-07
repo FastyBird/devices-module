@@ -22,7 +22,7 @@ final class DeviceEntitiesTest extends DbTestCase
 		/** @var Models\Devices\DevicesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('first-device');
 
 		$parent = $repository->findOneBy($findQuery);
@@ -31,7 +31,7 @@ final class DeviceEntitiesTest extends DbTestCase
 		Assert::type(Entities\Devices\Device::class, $parent);
 		Assert::same('first-device', $parent->getIdentifier());
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->forParent($parent);
 
 		$entity = $repository->findOneBy($findQuery);
@@ -49,7 +49,7 @@ final class DeviceEntitiesTest extends DbTestCase
 		/** @var Models\Devices\DevicesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('first-device');
 
 		$parent = $repository->findOneBy($findQuery);
@@ -59,7 +59,7 @@ final class DeviceEntitiesTest extends DbTestCase
 		Assert::same('first-device', $parent->getIdentifier());
 
 		$child = $manager->create(Utils\ArrayHash::from([
-			'entity'     => Entities\Devices\BlankDevice::class,
+			'entity'     => Entities\Devices\Blank::class,
 			'identifier' => 'new-child-device',
 			'connector'  => $parent->getConnector(),
 			'name'       => 'New child device',
@@ -82,7 +82,7 @@ final class DeviceEntitiesTest extends DbTestCase
 		/** @var Models\Devices\DevicesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('first-device');
 
 		$parent = $repository->findOneBy($findQuery);
@@ -93,14 +93,14 @@ final class DeviceEntitiesTest extends DbTestCase
 
 		$manager->delete($parent);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('first-device');
 
 		$parent = $repository->findOneBy($findQuery);
 
 		Assert::false(is_object($parent));
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('child-device');
 
 		$entity = $repository->findOneBy($findQuery);
@@ -116,7 +116,7 @@ final class DeviceEntitiesTest extends DbTestCase
 		/** @var Models\Devices\DevicesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('child-device');
 
 		$child = $repository->findOneBy($findQuery);
@@ -127,7 +127,7 @@ final class DeviceEntitiesTest extends DbTestCase
 
 		$manager->delete($child);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('first-device');
 
 		$parent = $repository->findOneBy($findQuery);

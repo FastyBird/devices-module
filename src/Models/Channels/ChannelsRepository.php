@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ChannelsRepository implements IChannelsRepository
+final class ChannelsRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Channels\IChannel>|null */
+	/** @var ORM\EntityRepository<Entities\Channels\Channel>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,48 +52,52 @@ final class ChannelsRepository implements IChannelsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindChannels $queryObject
+	 *
+	 * @return Entities\Channels\Channel|null
 	 */
-	public function findOneBy(Queries\FindChannelsQuery $queryObject): ?Entities\Channels\IChannel
+	public function findOneBy(Queries\FindChannels $queryObject): ?Entities\Channels\Channel
 	{
-		/** @var Entities\Channels\IChannel|null $channel */
+		/** @var Entities\Channels\Channel|null $channel */
 		$channel = $queryObject->fetchOne($this->getRepository());
 
 		return $channel;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindChannels $queryObject
+	 *
+	 * @return Entities\Channels\Channel[]
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindChannelsQuery $queryObject): array
+	public function findAllBy(Queries\FindChannels $queryObject): array
 	{
-		/** @var Array<Entities\Channels\IChannel>|DoctrineOrmQuery\ResultSet<Entities\Channels\IChannel> $result */
+		/** @var Array<Entities\Channels\Channel>|DoctrineOrmQuery\ResultSet<Entities\Channels\Channel> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Channels\IChannel[] $data */
+		/** @var Entities\Channels\Channel[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindChannels $queryObject
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Channel>
 	 */
 	public function getResultSet(
-		Queries\FindChannelsQuery $queryObject
+		Queries\FindChannels $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -102,16 +106,16 @@ final class ChannelsRepository implements IChannelsRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Channels\IChannel>
+	 * @return ORM\EntityRepository<Entities\Channels\Channel>
 	 */
 	private function getRepository(string $type = Entities\Channels\Channel::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			/** @var ORM\EntityRepository<Entities\Channels\IChannel> $repository */
+			/** @var ORM\EntityRepository<Entities\Channels\Channel> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository = $repository;

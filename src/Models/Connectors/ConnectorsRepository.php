@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ConnectorsRepository implements IConnectorsRepository
+final class ConnectorsRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Connectors\IConnector>[] */
+	/** @var ORM\EntityRepository<Entities\Connectors\Connector>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,53 +52,60 @@ final class ConnectorsRepository implements IConnectorsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectors $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Connectors\Connector|null
 	 */
 	public function findOneBy(
-		Queries\FindConnectorsQuery $queryObject,
+		Queries\FindConnectors $queryObject,
 		string $type = Entities\Connectors\Connector::class
-	): ?Entities\Connectors\IConnector {
-		/** @var Entities\Connectors\IConnector|null $connector */
+	): ?Entities\Connectors\Connector {
+		/** @var Entities\Connectors\Connector|null $connector */
 		$connector = $queryObject->fetchOne($this->getRepository($type));
 
 		return $connector;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectors $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Connectors\Connector[]
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
-		Queries\FindConnectorsQuery $queryObject,
+		Queries\FindConnectors $queryObject,
 		string $type = Entities\Connectors\Connector::class
 	): array {
-		/** @var Array<Entities\Connectors\IConnector>|DoctrineOrmQuery\ResultSet<Entities\Connectors\IConnector> $result */
+		/** @var Array<Entities\Connectors\Connector>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Connectors\IConnector[] $data */
+		/** @var Entities\Connectors\Connector[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectors $queryObject
+	 * @param class-string $type
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector>
 	 */
 	public function getResultSet(
-		Queries\FindConnectorsQuery $queryObject,
+		Queries\FindConnectors $queryObject,
 		string $type = Entities\Connectors\Connector::class
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -107,16 +114,16 @@ final class ConnectorsRepository implements IConnectorsRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Connectors\IConnector>
+	 * @return ORM\EntityRepository<Entities\Connectors\Connector>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
-			/** @var ORM\EntityRepository<Entities\Connectors\IConnector> $repository */
+			/** @var ORM\EntityRepository<Entities\Connectors\Connector> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository[$type] = $repository;

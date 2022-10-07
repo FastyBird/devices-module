@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ControlsRepository implements IControlsRepository
+final class ControlsRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Connectors\Controls\IControl>|null */
+	/** @var ORM\EntityRepository<Entities\Connectors\Controls\Control>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,48 +52,52 @@ final class ControlsRepository implements IControlsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectorControls $queryObject
+	 *
+	 * @return Entities\Connectors\Controls\Control|null
 	 */
-	public function findOneBy(Queries\FindConnectorControlsQuery $queryObject): ?Entities\Connectors\Controls\IControl
+	public function findOneBy(Queries\FindConnectorControls $queryObject): ?Entities\Connectors\Controls\Control
 	{
-		/** @var Entities\Connectors\Controls\IControl|null $control */
+		/** @var Entities\Connectors\Controls\Control|null $control */
 		$control = $queryObject->fetchOne($this->getRepository());
 
 		return $control;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectorControls $queryObject
+	 *
+	 * @return Entities\Connectors\Controls\Control[]
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindConnectorControlsQuery $queryObject): array
+	public function findAllBy(Queries\FindConnectorControls $queryObject): array
 	{
-		/** @var Array<Entities\Connectors\Controls\IControl>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\IControl> $result */
+		/** @var Array<Entities\Connectors\Controls\Control>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\Control> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Connectors\Controls\IControl[] $data */
+		/** @var Entities\Connectors\Controls\Control[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectorControls $queryObject
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\Control>
 	 */
 	public function getResultSet(
-		Queries\FindConnectorControlsQuery $queryObject
+		Queries\FindConnectorControls $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -102,16 +106,16 @@ final class ControlsRepository implements IControlsRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Connectors\Controls\IControl>
+	 * @return ORM\EntityRepository<Entities\Connectors\Controls\Control>
 	 */
 	private function getRepository(string $type = Entities\Connectors\Controls\Control::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			/** @var ORM\EntityRepository<Entities\Connectors\Controls\IControl> $repository */
+			/** @var ORM\EntityRepository<Entities\Connectors\Controls\Control> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository = $repository;

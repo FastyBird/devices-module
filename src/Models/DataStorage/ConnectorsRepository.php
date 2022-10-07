@@ -15,8 +15,10 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
+use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
+use IteratorAggregate;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
@@ -29,8 +31,10 @@ use RecursiveArrayIterator;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorEntity>
  */
-final class ConnectorsRepository implements IConnectorsRepository
+final class ConnectorsRepository implements Countable, IteratorAggregate
 {
 
 	use Nette\SmartObject;
@@ -57,7 +61,9 @@ final class ConnectorsRepository implements IConnectorsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -71,7 +77,9 @@ final class ConnectorsRepository implements IConnectorsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param string $identifier
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -90,7 +98,10 @@ final class ConnectorsRepository implements IConnectorsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -111,7 +122,9 @@ final class ConnectorsRepository implements IConnectorsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
+	 *
+	 * @return void
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{

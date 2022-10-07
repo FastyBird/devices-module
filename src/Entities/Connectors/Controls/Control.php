@@ -39,7 +39,8 @@ use Throwable;
  *     }
  * )
  */
-class Control implements IControl
+class Control implements Entities\Entity,
+	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 
 	use Entities\TEntity;
@@ -64,21 +65,21 @@ class Control implements IControl
 	private string $name;
 
 	/**
-	 * @var Entities\Connectors\IConnector
+	 * @var Entities\Connectors\Connector
 	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="controls")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
 	 */
-	private Entities\Connectors\IConnector $connector;
+	private Entities\Connectors\Connector $connector;
 
 	/**
 	 * @param string $name
-	 * @param Entities\Connectors\IConnector $connector
+	 * @param Entities\Connectors\Connector $connector
 	 *
 	 * @throws Throwable
 	 */
-	public function __construct(string $name, Entities\Connectors\IConnector $connector)
+	public function __construct(string $name, Entities\Connectors\Connector $connector)
 	{
 		$this->id = Uuid\Uuid::uuid4();
 
@@ -114,7 +115,7 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConnector(): Entities\Connectors\IConnector
+	public function getConnector(): Entities\Connectors\Connector
 	{
 		return $this->connector;
 	}

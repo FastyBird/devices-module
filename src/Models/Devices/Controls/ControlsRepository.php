@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ControlsRepository implements IControlsRepository
+final class ControlsRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Devices\Controls\IControl>|null */
+	/** @var ORM\EntityRepository<Entities\Devices\Controls\Control>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,48 +52,52 @@ final class ControlsRepository implements IControlsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceControls $queryObject
+	 *
+	 * @return Entities\Devices\Controls\Control|null
 	 */
-	public function findOneBy(Queries\FindDeviceControlsQuery $queryObject): ?Entities\Devices\Controls\IControl
+	public function findOneBy(Queries\FindDeviceControls $queryObject): ?Entities\Devices\Controls\Control
 	{
-		/** @var Entities\Devices\Controls\IControl|null $control */
+		/** @var Entities\Devices\Controls\Control|null $control */
 		$control = $queryObject->fetchOne($this->getRepository());
 
 		return $control;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceControls $queryObject
+	 *
+	 * @return Entities\Devices\Controls\Control[]
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindDeviceControlsQuery $queryObject): array
+	public function findAllBy(Queries\FindDeviceControls $queryObject): array
 	{
-		/** @var Array<Entities\Devices\Controls\IControl>|DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\IControl> $result */
+		/** @var Array<Entities\Devices\Controls\Control>|DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\Control> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Devices\Controls\IControl[] $data */
+		/** @var Entities\Devices\Controls\Control[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceControls $queryObject
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\Control>
 	 */
 	public function getResultSet(
-		Queries\FindDeviceControlsQuery $queryObject
+		Queries\FindDeviceControls $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -102,16 +106,16 @@ final class ControlsRepository implements IControlsRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Devices\Controls\IControl>
+	 * @return ORM\EntityRepository<Entities\Devices\Controls\Control>
 	 */
 	private function getRepository(string $type = Entities\Devices\Controls\Control::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			/** @var ORM\EntityRepository<Entities\Devices\Controls\IControl> $repository */
+			/** @var ORM\EntityRepository<Entities\Devices\Controls\Control> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository = $repository;

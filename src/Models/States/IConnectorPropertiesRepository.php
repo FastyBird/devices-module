@@ -28,25 +28,25 @@ use Ramsey\Uuid;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IConnectorPropertiesRepository extends IPropertiesRepository
+interface IConnectorPropertiesRepository
 {
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
 	 *
-	 * @return States\IConnectorProperty|null
+	 * @return States\ConnectorProperty|null
 	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
-	): ?States\IConnectorProperty;
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
+	): ?States\ConnectorProperty;
 
 	/**
 	 * @param Uuid\UuidInterface $id
 	 *
-	 * @return States\IConnectorProperty|null
+	 * @return States\ConnectorProperty|null
 	 */
 	public function findOneById(
 		Uuid\UuidInterface $id
-	): ?States\IConnectorProperty;
+	): ?States\ConnectorProperty;
 
 }

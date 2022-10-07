@@ -3,10 +3,10 @@
 namespace Tests\Tools;
 
 use FastyBird\DevicesModule\Connectors;
-use FastyBird\DevicesModule\Connectors\IConnector;
+use FastyBird\DevicesModule\Connectors\Connector;
 use FastyBird\Metadata\Entities as MetadataEntities;
 
-class DummyConnectorFactory implements Connectors\IConnectorFactory
+class DummyConnectorFactory implements Connectors\ConnectorFactory
 {
 
 	public function getType(): string
@@ -14,7 +14,7 @@ class DummyConnectorFactory implements Connectors\IConnectorFactory
 		return 'dummy';
 	}
 
-	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): IConnector
+	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): Connector
 	{
 		return new DummyConnector();
 	}

@@ -49,7 +49,11 @@ use Throwable;
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
+abstract class Device implements Entities\Entity,
+	Entities\EntityParams,
+	SimpleAuthEntities\IEntityOwner,
+	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated,
+	DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
 {
 
 	use Entities\TEntity;
@@ -76,7 +80,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected string $identifier;
 
 	/**
-	 * @var Common\Collections\Collection<int, IDevice>
+	 * @var Common\Collections\Collection<int, Device>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="children")
@@ -89,7 +93,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected Common\Collections\Collection $parents;
 
 	/**
-	 * @var Common\Collections\Collection<int, IDevice>
+	 * @var Common\Collections\Collection<int, Device>
 	 *
 	 * @ORM\ManyToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="parents", cascade={"remove"}, orphanRemoval=true)
 	 */
@@ -112,7 +116,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected ?string $comment = null;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Channels\IChannel>
+	 * @var Common\Collections\Collection<int, Entities\Channels\Channel>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -120,7 +124,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected Common\Collections\Collection $channels;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Devices\Controls\IControl>
+	 * @var Common\Collections\Collection<int, Entities\Devices\Controls\Control>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Controls\Control", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -128,7 +132,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected Common\Collections\Collection $controls;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Devices\Properties\IProperty>
+	 * @var Common\Collections\Collection<int, Entities\Devices\Properties\Property>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Properties\Property", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -136,7 +140,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected Common\Collections\Collection $properties;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Devices\Attributes\IAttribute>
+	 * @var Common\Collections\Collection<int, Entities\Devices\Attributes\Attribute>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Attributes\Attribute", mappedBy="device", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -144,17 +148,17 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	protected Common\Collections\Collection $attributes;
 
 	/**
-	 * @var Entities\Connectors\IConnector
+	 * @var Entities\Connectors\Connector
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="devices")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
 	 */
-	protected Entities\Connectors\IConnector $connector;
+	protected Entities\Connectors\Connector $connector;
 
 	/**
 	 * @param string $identifier
-	 * @param Entities\Connectors\IConnector $connector
+	 * @param Entities\Connectors\Connector $connector
 	 * @param string|null $name
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -162,7 +166,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	 */
 	public function __construct(
 		string $identifier,
-		Entities\Connectors\IConnector $connector,
+		Entities\Connectors\Connector $connector,
 		?string $name = null,
 		?Uuid\UuidInterface $id = null
 	) {
@@ -181,8 +185,10 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 		$this->attributes = new Common\Collections\ArrayCollection();
 	}
 
+	abstract public function getType(): string;
+
 	/**
-	 * {@inheritDoc}
+	 * @return Device[]
 	 */
 	public function getParents(): array
 	{
@@ -190,16 +196,17 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Device[] $parents
+	 *
+	 * @return void
 	 */
 	public function setParents(array $parents): void
 	{
 		$this->parents = new Common\Collections\ArrayCollection();
 
 		// Process all passed entities...
-		/** @var IDevice $entity */
 		foreach ($parents as $entity) {
-			if (!$this->parents->contains($entity)) {
+			if ($this->parents->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->parents->add($entity);
 			}
@@ -209,7 +216,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addParent(IDevice $device): void
+	public function addParent(Device $device): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->parents->contains($device)) {
@@ -221,13 +228,13 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeParent(IDevice $parent): void
+	public function removeParent(Device $parent): void
 	{
 		$this->parents->removeElement($parent);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Device[]
 	 */
 	public function getChildren(): array
 	{
@@ -235,16 +242,17 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Device[] $children
+	 *
+	 * @return void
 	 */
 	public function setChildren(array $children): void
 	{
 		$this->children = new Common\Collections\ArrayCollection();
 
 		// Process all passed entities...
-		/** @var IDevice $entity */
 		foreach ($children as $entity) {
-			if (!$this->children->contains($entity)) {
+			if ($this->children->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->children->add($entity);
 			}
@@ -254,7 +262,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addChild(IDevice $child): void
+	public function addChild(Device $child): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->children->contains($child)) {
@@ -266,7 +274,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeChild(IDevice $child): void
+	public function removeChild(Device $child): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->children->contains($child)) {
@@ -276,7 +284,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Channels\Channel[]
 	 */
 	public function getChannels(): array
 	{
@@ -284,16 +292,17 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Channels\Channel[] $channels
+	 *
+	 * @return void
 	 */
 	public function setChannels(array $channels = []): void
 	{
 		$this->channels = new Common\Collections\ArrayCollection();
 
 		// Process all passed entities...
-		/** @var Entities\Channels\IChannel $entity */
 		foreach ($channels as $entity) {
-			if (!$this->channels->contains($entity)) {
+			if ($this->channels->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->channels->add($entity);
 			}
@@ -303,7 +312,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addChannel(Entities\Channels\IChannel $channel): void
+	public function addChannel(Entities\Channels\Channel $channel): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->channels->contains($channel)) {
@@ -315,33 +324,33 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(string $id): ?Entities\Channels\IChannel
+	public function getChannel(string $id): ?Entities\Channels\Channel
 	{
 		$found = $this->channels
-			->filter(function (Entities\Channels\IChannel $row) use ($id): bool {
+			->filter(function (Entities\Channels\Channel $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findChannel(string $identifier): ?Entities\Channels\IChannel
+	public function findChannel(string $identifier): ?Entities\Channels\Channel
 	{
 		$found = $this->channels
-			->filter(function (Entities\Channels\IChannel $row) use ($identifier): bool {
+			->filter(function (Entities\Channels\Channel $row) use ($identifier): bool {
 				return $identifier === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeChannel(Entities\Channels\IChannel $channel): void
+	public function removeChannel(Entities\Channels\Channel $channel): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->channels->contains($channel)) {
@@ -351,7 +360,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Devices\Controls\Control[]
 	 */
 	public function getControls(): array
 	{
@@ -359,7 +368,9 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Devices\Controls\Control[] $controls
+	 *
+	 * @return void
 	 */
 	public function setControls(array $controls = []): void
 	{
@@ -367,7 +378,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 
 		// Process all passed entities...
 		foreach ($controls as $entity) {
-			if (!$this->controls->contains($entity)) {
+			if ($this->controls->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->controls->add($entity);
 			}
@@ -377,7 +388,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addControl(Entities\Devices\Controls\IControl $control): void
+	public function addControl(Entities\Devices\Controls\Control $control): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->controls->contains($control)) {
@@ -389,33 +400,33 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getControl(string $id): ?Entities\Devices\Controls\IControl
+	public function getControl(string $id): ?Entities\Devices\Controls\Control
 	{
 		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\IControl $row) use ($id): bool {
+			->filter(function (Entities\Devices\Controls\Control $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findControl(string $name): ?Entities\Devices\Controls\IControl
+	public function findControl(string $name): ?Entities\Devices\Controls\Control
 	{
 		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\IControl $row) use ($name): bool {
+			->filter(function (Entities\Devices\Controls\Control $row) use ($name): bool {
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeControl(Entities\Devices\Controls\IControl $control): void
+	public function removeControl(Entities\Devices\Controls\Control $control): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->controls->contains($control)) {
@@ -425,7 +436,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Devices\Properties\Property[]
 	 */
 	public function getProperties(): array
 	{
@@ -433,7 +444,9 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Devices\Properties\Property[] $properties
+	 *
+	 * @return void
 	 */
 	public function setProperties(array $properties = []): void
 	{
@@ -441,7 +454,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 
 		// Process all passed entities...
 		foreach ($properties as $entity) {
-			if (!$this->properties->contains($entity)) {
+			if ($this->properties->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->properties->add($entity);
 			}
@@ -451,7 +464,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addProperty(Entities\Devices\Properties\IProperty $property): void
+	public function addProperty(Entities\Devices\Properties\Property $property): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->properties->contains($property)) {
@@ -463,33 +476,33 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getProperty(string $id): ?Entities\Devices\Properties\IProperty
+	public function getProperty(string $id): ?Entities\Devices\Properties\Property
 	{
 		$found = $this->properties
-			->filter(function (Entities\Devices\Properties\IProperty $row) use ($id): bool {
+			->filter(function (Entities\Devices\Properties\Property $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findProperty(string $identifier): ?Entities\Devices\Properties\IProperty
+	public function findProperty(string $identifier): ?Entities\Devices\Properties\Property
 	{
 		$found = $this->properties
-			->filter(function (Entities\Devices\Properties\IProperty $row) use ($identifier): bool {
+			->filter(function (Entities\Devices\Properties\Property $row) use ($identifier): bool {
 				return $identifier === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeProperty(Entities\Devices\Properties\IProperty $property): void
+	public function removeProperty(Entities\Devices\Properties\Property $property): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->properties->contains($property)) {
@@ -499,7 +512,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Devices\Attributes\Attribute[]
 	 */
 	public function getAttributes(): array
 	{
@@ -507,7 +520,9 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Devices\Attributes\Attribute[] $attributes
+	 *
+	 * @return void
 	 */
 	public function setAttributes(array $attributes = []): void
 	{
@@ -515,7 +530,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 
 		// Process all passed entities...
 		foreach ($attributes as $entity) {
-			if (!$this->attributes->contains($entity)) {
+			if ($this->attributes->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->attributes->add($entity);
 			}
@@ -525,7 +540,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addAttribute(Entities\Devices\Attributes\IAttribute $attribute): void
+	public function addAttribute(Entities\Devices\Attributes\Attribute $attribute): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->attributes->contains($attribute)) {
@@ -537,33 +552,33 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getAttribute(string $id): ?Entities\Devices\Attributes\IAttribute
+	public function getAttribute(string $id): ?Entities\Devices\Attributes\Attribute
 	{
 		$found = $this->attributes
-			->filter(function (Entities\Devices\Attributes\IAttribute $row) use ($id): bool {
+			->filter(function (Entities\Devices\Attributes\Attribute $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\IAttribute
+	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\Attribute
 	{
 		$found = $this->attributes
-			->filter(function (Entities\Devices\Attributes\IAttribute $row) use ($identifier): bool {
+			->filter(function (Entities\Devices\Attributes\Attribute $row) use ($identifier): bool {
 				return $identifier === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeAttribute(Entities\Devices\Attributes\IAttribute $attribute): void
+	public function removeAttribute(Entities\Devices\Attributes\Attribute $attribute): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->attributes->contains($attribute)) {
@@ -615,7 +630,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConnector(): Entities\Connectors\IConnector
+	public function getConnector(): Entities\Connectors\Connector
 	{
 		return $this->connector;
 	}
@@ -623,7 +638,7 @@ abstract class Device implements IDevice, DoctrineDynamicDiscriminatorMapEntitie
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setConnector(Entities\Connectors\IConnector $connector): void
+	public function setConnector(Entities\Connectors\Connector $connector): void
 	{
 		$this->connector = $connector;
 	}

@@ -502,7 +502,7 @@ class ChannelDynamicPropertyEntity(ChannelPropertyEntity):
         return PropertyType.DYNAMIC
 
 
-class ChannelStaticPropertyEntity(ChannelPropertyEntity):
+class ChannelVariablePropertyEntity(ChannelPropertyEntity):
     """
     Channel property entity
 
@@ -512,14 +512,14 @@ class ChannelStaticPropertyEntity(ChannelPropertyEntity):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __mapper_args__ = {"polymorphic_identity": "static"}
+    __mapper_args__ = {"polymorphic_identity": "variable"}
 
     # -----------------------------------------------------------------------------
 
     @property
     def type(self) -> PropertyType:
         """Property type"""
-        return PropertyType.STATIC
+        return PropertyType.VARIABLE
 
     # -----------------------------------------------------------------------------
 
@@ -539,7 +539,7 @@ class ChannelStaticPropertyEntity(ChannelPropertyEntity):
         if self.parent is not None:
             raise AttributeError("Value setter is allowed only for parent")
 
-        super(ChannelStaticPropertyEntity, type(self)).value.fset(self, value)  # type: ignore[attr-defined]
+        super(ChannelVariablePropertyEntity, type(self)).value.fset(self, value)  # type: ignore[attr-defined]
 
     # -----------------------------------------------------------------------------
 
@@ -613,7 +613,7 @@ class ChannelMappedPropertyEntity(ChannelPropertyEntity):
         ],
     ]:
         """Transform entity to dictionary"""
-        if isinstance(self.parent, ChannelStaticPropertyEntity):
+        if isinstance(self.parent, ChannelVariablePropertyEntity):
             return {
                 **super().to_dict(),
                 **{

@@ -49,7 +49,7 @@
           },
           "3134ba8e-f134-4bf2-9c80-c977c4deb0fb" : {
             "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
-            "type" : "static",
+            "type" : "variable",
             "identifier" : "password",
             "name" : "password",
             "settable" : false,
@@ -68,7 +68,7 @@
           },
           "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa" : {
             "id" : "3ff0029f-7fe3-405e-a3ef-edaad08e2ffa",
-            "type" : "static",
+            "type" : "variable",
             "identifier" : "status_led",
             "name" : "status_led",
             "settable" : false,
@@ -107,7 +107,7 @@
           },
           "c747cfdd-654c-4e50-9715-6d14dbf20552" : {
             "id" : "c747cfdd-654c-4e50-9715-6d14dbf20552",
-            "type" : "static",
+            "type" : "variable",
             "identifier" : "username",
             "name" : "username",
             "settable" : false,

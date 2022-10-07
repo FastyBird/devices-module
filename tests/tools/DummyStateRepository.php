@@ -2,15 +2,14 @@
 
 namespace Tests\Tools;
 
-use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
 use Ramsey\Uuid;
 use RuntimeException;
 
-class DummyStateRepository implements Models\States\IPropertiesRepository
+class DummyStateRepository
 {
 
-	public function findOne(Uuid\UuidInterface $id): ?States\IProperty
+	public function findOne(Uuid\UuidInterface $id): ?States\Property
 	{
 		throw new RuntimeException('Thi is dummy service');
 	}

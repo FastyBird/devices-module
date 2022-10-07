@@ -28,25 +28,25 @@ use Ramsey\Uuid;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IChannelPropertiesRepository extends IPropertiesRepository
+interface IChannelPropertiesRepository
 {
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
 	 *
-	 * @return States\IChannelProperty|null
+	 * @return States\ChannelProperty|null
 	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
-	): ?States\IChannelProperty;
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
+	): ?States\ChannelProperty;
 
 	/**
 	 * @param Uuid\UuidInterface $id
 	 *
-	 * @return States\IChannelProperty|null
+	 * @return States\ChannelProperty|null
 	 */
 	public function findOneById(
 		Uuid\UuidInterface $id
-	): ?States\IChannelProperty;
+	): ?States\ChannelProperty;
 
 }

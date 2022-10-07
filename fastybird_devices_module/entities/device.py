@@ -615,7 +615,7 @@ class DeviceDynamicPropertyEntity(DevicePropertyEntity):
         return PropertyType.DYNAMIC
 
 
-class DeviceStaticPropertyEntity(DevicePropertyEntity):
+class DeviceVariablePropertyEntity(DevicePropertyEntity):
     """
     Device property entity
 
@@ -625,14 +625,14 @@ class DeviceStaticPropertyEntity(DevicePropertyEntity):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __mapper_args__ = {"polymorphic_identity": "static"}
+    __mapper_args__ = {"polymorphic_identity": "variable"}
 
     # -----------------------------------------------------------------------------
 
     @property
     def type(self) -> PropertyType:
         """Property type"""
-        return PropertyType.STATIC
+        return PropertyType.VARIABLE
 
     # -----------------------------------------------------------------------------
 
@@ -652,7 +652,7 @@ class DeviceStaticPropertyEntity(DevicePropertyEntity):
         if self.parent is not None:
             raise AttributeError("Value setter is allowed only for parent")
 
-        super(DeviceStaticPropertyEntity, type(self)).value.fset(self, value)  # type: ignore[attr-defined]
+        super(DeviceVariablePropertyEntity, type(self)).value.fset(self, value)  # type: ignore[attr-defined]
 
     # -----------------------------------------------------------------------------
 
@@ -726,7 +726,7 @@ class DeviceMappedPropertyEntity(DevicePropertyEntity):
         ],
     ]:
         """Transform entity to dictionary"""
-        if isinstance(self.parent, DeviceStaticPropertyEntity):
+        if isinstance(self.parent, DeviceVariablePropertyEntity):
             return {
                 **super().to_dict(),
                 **{

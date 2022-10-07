@@ -48,15 +48,15 @@ final class ConnectorPropertiesRepository
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
 	 *
-	 * @return States\IConnectorProperty|null
+	 * @return States\ConnectorProperty|null
 	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
-	): ?States\IConnectorProperty {
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
+	): ?States\ConnectorProperty {
 		if ($this->repository === null) {
-			throw new Exceptions\NotImplementedException('Connector properties state repository is not registered');
+			throw new Exceptions\NotImplemented('Connector properties state repository is not registered');
 		}
 
 		return $this->repository->findOne($property);
@@ -65,13 +65,13 @@ final class ConnectorPropertiesRepository
 	/**
 	 * @param Uuid\UuidInterface $id
 	 *
-	 * @return States\IConnectorProperty|null
+	 * @return States\ConnectorProperty|null
 	 */
 	public function findOneById(
 		Uuid\UuidInterface $id
-	): ?States\IConnectorProperty {
+	): ?States\ConnectorProperty {
 		if ($this->repository === null) {
-			throw new Exceptions\NotImplementedException('Connector properties state repository is not registered');
+			throw new Exceptions\NotImplemented('Connector properties state repository is not registered');
 		}
 
 		return $this->repository->findOneById($id);

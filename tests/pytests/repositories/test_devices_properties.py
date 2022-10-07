@@ -23,7 +23,7 @@ from fastybird_metadata.routing import RoutingKey
 from kink import inject
 
 # Library libs
-from fastybird_devices_module.entities.device import DeviceStaticPropertyEntity
+from fastybird_devices_module.entities.device import DeviceVariablePropertyEntity
 from fastybird_devices_module.repositories.device import DevicePropertiesRepository
 
 # Tests libs
@@ -41,7 +41,7 @@ class TestDevicePropertiesRepository(DbTestCase):
     def test_get_item(self, property_repository: DevicePropertiesRepository) -> None:
         entity = property_repository.get_by_id(property_id=uuid.UUID("3134ba8e-f134-4bf2-9c80-c977c4deb0fb", version=4))
 
-        self.assertIsInstance(entity, DeviceStaticPropertyEntity)
+        self.assertIsInstance(entity, DeviceVariablePropertyEntity)
 
     # -----------------------------------------------------------------------------
 
@@ -49,11 +49,11 @@ class TestDevicePropertiesRepository(DbTestCase):
     def test_transform_to_dict(self, property_repository: DevicePropertiesRepository) -> None:
         entity = property_repository.get_by_id(property_id=uuid.UUID("3134ba8e-f134-4bf2-9c80-c977c4deb0fb", version=4))
 
-        self.assertIsInstance(entity, DeviceStaticPropertyEntity)
+        self.assertIsInstance(entity, DeviceVariablePropertyEntity)
         self.assertEqual(
             {
                 "id": "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
-                "type": PropertyType.STATIC.value,
+                "type": PropertyType.VARIABLE.value,
                 "name": "password",
                 "identifier": "password",
                 "device": "69786d15-fd0c-4d9f-9378-33287c2009fa",

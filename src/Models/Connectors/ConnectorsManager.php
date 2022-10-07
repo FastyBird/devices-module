@@ -29,16 +29,16 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ConnectorsManager implements IConnectorsManager
+final class ConnectorsManager
 {
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Connectors\IConnector> */
+	/** @var Crud\IEntityCrud<Entities\Connectors\Connector> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @param Crud\IEntityCrud<Entities\Connectors\IConnector> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Connectors\Connector> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud
@@ -52,8 +52,8 @@ final class ConnectorsManager implements IConnectorsManager
 	 */
 	public function create(
 		Utils\ArrayHash $values
-	): Entities\Connectors\IConnector {
-		/** @var Entities\Connectors\IConnector $entity */
+	): Entities\Connectors\Connector {
+		/** @var Entities\Connectors\Connector $entity */
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
 
 		return $entity;
@@ -63,10 +63,10 @@ final class ConnectorsManager implements IConnectorsManager
 	 * {@inheritDoc}
 	 */
 	public function update(
-		Entities\Connectors\IConnector $entity,
+		Entities\Connectors\Connector $entity,
 		Utils\ArrayHash $values
-	): Entities\Connectors\IConnector {
-		/** @var Entities\Connectors\IConnector $entity */
+	): Entities\Connectors\Connector {
+		/** @var Entities\Connectors\Connector $entity */
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
 
 		return $entity;
@@ -76,7 +76,7 @@ final class ConnectorsManager implements IConnectorsManager
 	 * {@inheritDoc}
 	 */
 	public function delete(
-		Entities\Connectors\IConnector $entity
+		Entities\Connectors\Connector $entity
 	): bool {
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);

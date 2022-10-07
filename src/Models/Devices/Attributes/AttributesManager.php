@@ -29,16 +29,16 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class AttributesManager implements IAttributesManager
+final class AttributesManager
 {
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Devices\Attributes\IAttribute> */
+	/** @var Crud\IEntityCrud<Entities\Devices\Attributes\Attribute> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @param Crud\IEntityCrud<Entities\Devices\Attributes\IAttribute> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Devices\Attributes\Attribute> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud
@@ -52,8 +52,8 @@ final class AttributesManager implements IAttributesManager
 	 */
 	public function create(
 		Utils\ArrayHash $values
-	): Entities\Devices\Attributes\IAttribute {
-		/** @var Entities\Devices\Attributes\IAttribute $entity */
+	): Entities\Devices\Attributes\Attribute {
+		/** @var Entities\Devices\Attributes\Attribute $entity */
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
 
 		return $entity;
@@ -63,10 +63,10 @@ final class AttributesManager implements IAttributesManager
 	 * {@inheritDoc}
 	 */
 	public function update(
-		Entities\Devices\Attributes\IAttribute $entity,
+		Entities\Devices\Attributes\Attribute $entity,
 		Utils\ArrayHash $values
-	): Entities\Devices\Attributes\IAttribute {
-		/** @var Entities\Devices\Attributes\IAttribute $entity */
+	): Entities\Devices\Attributes\Attribute {
+		/** @var Entities\Devices\Attributes\Attribute $entity */
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
 
 		return $entity;
@@ -76,7 +76,7 @@ final class AttributesManager implements IAttributesManager
 	 * {@inheritDoc}
 	 */
 	public function delete(
-		Entities\Devices\Attributes\IAttribute $entity
+		Entities\Devices\Attributes\Attribute $entity
 	): bool {
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);

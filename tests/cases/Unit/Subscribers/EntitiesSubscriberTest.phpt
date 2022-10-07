@@ -35,21 +35,21 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
 		$connectorPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
 
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
@@ -59,7 +59,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$configurationWriter
 			->shouldReceive('write');
 
-		$subscriber = new Subscribers\EntitiesSubscriber(
+		$subscriber = new Subscribers\ModuleEntities(
 			$entityManager,
 			$devicePropertiesStateRepository,
 			$devicePropertiesStateManager,
@@ -111,21 +111,21 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
 		$connectorPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
 
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
@@ -152,7 +152,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$configurationWriter
 			->shouldReceive('write');
 
-		$subscriber = new Subscribers\EntitiesSubscriber(
+		$subscriber = new Subscribers\ModuleEntities(
 			$entityManager,
 			$devicePropertiesStateRepository,
 			$devicePropertiesStateManager,
@@ -165,9 +165,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$connectorEntity = new Entities\Connectors\BlankConnector('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+		$connectorEntity = new Entities\Connectors\Blank('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
-		$entity = new Entities\Devices\BlankDevice('device-name', $connectorEntity, 'device-name');
+		$entity = new Entities\Devices\Blank('device-name', $connectorEntity, 'device-name');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -212,21 +212,21 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
 		$connectorPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
 
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
@@ -253,7 +253,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$configurationWriter
 			->shouldReceive('write');
 
-		$subscriber = new Subscribers\EntitiesSubscriber(
+		$subscriber = new Subscribers\ModuleEntities(
 			$entityManager,
 			$devicePropertiesStateRepository,
 			$devicePropertiesStateManager,
@@ -266,9 +266,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$publisher
 		);
 
-		$connectorEntity = new Entities\Connectors\BlankConnector('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+		$connectorEntity = new Entities\Connectors\Blank('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
-		$entity = new Entities\Devices\BlankDevice('device-name', $connectorEntity, 'device-name');
+		$entity = new Entities\Devices\Blank('device-name', $connectorEntity, 'device-name');
 		$entity->setName('Device custom name');
 
 		$eventArgs = Mockery::mock(ORM\Event\LifecycleEventArgs::class);
@@ -307,9 +307,9 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			})
 			->times(1);
 
-		$connectorEntity = new Entities\Connectors\BlankConnector('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
+		$connectorEntity = new Entities\Connectors\Blank('blank-connector-name', Uuid\Uuid::fromString('dd6aa4bc-2611-40c3-84ef-0a438cf51e67'));
 
-		$entity = new Entities\Devices\BlankDevice('device-name', $connectorEntity, 'device-name');
+		$entity = new Entities\Devices\Blank('device-name', $connectorEntity, 'device-name');
 		$entity->setName('Device custom name');
 
 		$entityManager = $this->getEntityManager();
@@ -317,21 +317,21 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$connectorPropertiesStateRepository = Mockery::mock(Models\States\ConnectorPropertiesRepository::class);
 		$connectorPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$connectorPropertiesStateManager = Mockery::mock(Models\States\ConnectorPropertiesManager::class);
 
 		$devicePropertiesStateRepository = Mockery::mock(Models\States\DevicePropertiesRepository::class);
 		$devicePropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$devicePropertiesStateManager = Mockery::mock(Models\States\DevicePropertiesManager::class);
 
 		$channelPropertiesStateRepository = Mockery::mock(Models\States\ChannelPropertiesRepository::class);
 		$channelPropertiesStateRepository
 			->shouldReceive('findOne')
-			->andThrow(Exceptions\NotImplementedException::class);
+			->andThrow(Exceptions\NotImplemented::class);
 
 		$channelPropertiesStateManager = Mockery::mock(Models\States\ChannelPropertiesManager::class);
 
@@ -358,7 +358,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$configurationWriter
 			->shouldReceive('write');
 
-		$subscriber = new Subscribers\EntitiesSubscriber(
+		$subscriber = new Subscribers\ModuleEntities(
 			$entityManager,
 			$devicePropertiesStateRepository,
 			$devicePropertiesStateManager,

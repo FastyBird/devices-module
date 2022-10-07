@@ -39,7 +39,8 @@ use Throwable;
  *     }
  * )
  */
-class Control implements IControl
+class Control implements Entities\Entity,
+	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 
 	use Entities\TEntity;
@@ -64,21 +65,21 @@ class Control implements IControl
 	private string $name;
 
 	/**
-	 * @var Entities\Channels\IChannel
+	 * @var Entities\Channels\Channel
 	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", inversedBy="controls")
 	 * @ORM\JoinColumn(name="channel_id", referencedColumnName="channel_id", onDelete="CASCADE", nullable=false)
 	 */
-	private Entities\Channels\IChannel $channel;
+	private Entities\Channels\Channel $channel;
 
 	/**
 	 * @param string $name
-	 * @param Entities\Channels\IChannel $channel
+	 * @param Entities\Channels\Channel $channel
 	 *
 	 * @throws Throwable
 	 */
-	public function __construct(string $name, Entities\Channels\IChannel $channel)
+	public function __construct(string $name, Entities\Channels\Channel $channel)
 	{
 		$this->id = Uuid\Uuid::uuid4();
 
@@ -114,7 +115,7 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
+	public function getChannel(): Entities\Channels\Channel
 	{
 		return $this->channel;
 	}

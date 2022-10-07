@@ -88,7 +88,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		// Http router
 		$builder->addDefinition($this->prefix('middleware.access'), new DI\Definitions\ServiceDefinition())
-			->setType(Middleware\AccessMiddleware::class);
+			->setType(Middleware\Access::class);
 
 		$builder->addDefinition($this->prefix('router.routes'), new DI\Definitions\ServiceDefinition())
 			->setType(Router\Routes::class)
@@ -171,152 +171,152 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		// Events subscribers
 		$builder->addDefinition($this->prefix('subscribers.entities'), new DI\Definitions\ServiceDefinition())
-			->setType(Subscribers\EntitiesSubscriber::class);
+			->setType(Subscribers\ModuleEntities::class);
 
 		$builder->addDefinition($this->prefix('subscribers.states'), new DI\Definitions\ServiceDefinition())
-			->setType(Subscribers\StatesSubscriber::class);
+			->setType(Subscribers\DynamicProperties::class);
 
 		$builder->addDefinition($this->prefix('subscribers.dataStorage'), new DI\Definitions\ServiceDefinition())
-			->setType(Subscribers\DataStorageSubscriber::class);
+			->setType(Subscribers\DataStorages::class);
 
 		// API controllers
 		$builder->addDefinition($this->prefix('controllers.devices'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DevicesV1Controller::class)
+			->setType(Controllers\DevicesV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.deviceChildren'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DeviceChildrenV1Controller::class)
+			->setType(Controllers\DeviceChildrenV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.deviceParents'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DeviceParentsV1Controller::class)
+			->setType(Controllers\DeviceParentsV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.deviceProperties'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DevicePropertiesV1Controller::class)
+			->setType(Controllers\DevicePropertiesV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.devicePropertyChildren'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DevicePropertyChildrenV1Controller::class)
+			->setType(Controllers\DevicePropertyChildrenV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.deviceControls'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DeviceControlsV1Controller::class)
+			->setType(Controllers\DeviceControlsV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.deviceAttributes'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\DeviceAttributesV1Controller::class)
+			->setType(Controllers\DeviceAttributesV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.channels'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ChannelsV1Controller::class)
+			->setType(Controllers\ChannelsV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.channelProperties'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ChannelPropertiesV1Controller::class)
+			->setType(Controllers\ChannelPropertiesV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.channelPropertyChildren'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ChannelPropertyChildrenV1Controller::class)
+			->setType(Controllers\ChannelPropertyChildrenV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.channelControls'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ChannelControlsV1Controller::class)
+			->setType(Controllers\ChannelControlsV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.connectors'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ConnectorsV1Controller::class)
+			->setType(Controllers\ConnectorsV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.connectorProperties'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ConnectorPropertiesV1Controller::class)
+			->setType(Controllers\ConnectorPropertiesV1::class)
 			->addTag('nette.inject');
 
 		$builder->addDefinition($this->prefix('controllers.connectorsControls'), new DI\Definitions\ServiceDefinition())
-			->setType(Controllers\ConnectorControlsV1Controller::class)
+			->setType(Controllers\ConnectorControlsV1::class)
 			->addTag('nette.inject');
 
 		// API schemas
 		$builder->addDefinition($this->prefix('schemas.device.blank'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\BlankDeviceSchema::class);
+			->setType(Schemas\Devices\Blank::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Properties\DynamicPropertySchema::class);
+			->setType(Schemas\Devices\Properties\Dynamic::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.property.static'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Properties\StaticPropertySchema::class);
+			->setType(Schemas\Devices\Properties\Variable::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.property.mapped'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Properties\MappedPropertySchema::class);
+			->setType(Schemas\Devices\Properties\Mapped::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.control'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Controls\ControlSchema::class);
+			->setType(Schemas\Devices\Controls\Control::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.attribute'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Devices\Attributes\AttributeSchema::class);
+			->setType(Schemas\Devices\Attributes\Attribute::class);
 
 		$builder->addDefinition($this->prefix('schemas.channel'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Channels\ChannelSchema::class);
+			->setType(Schemas\Channels\Channel::class);
 
 		$builder->addDefinition($this->prefix('schemas.channel.property.dynamic'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Channels\Properties\DynamicPropertySchema::class);
+			->setType(Schemas\Channels\Properties\Dynamic::class);
 
 		$builder->addDefinition($this->prefix('schemas.channel.property.static'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Channels\Properties\StaticPropertySchema::class);
+			->setType(Schemas\Channels\Properties\Variable::class);
 
 		$builder->addDefinition($this->prefix('schemas.channel.property.mapped'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Channels\Properties\MappedPropertySchema::class);
+			->setType(Schemas\Channels\Properties\Mapped::class);
 
 		$builder->addDefinition($this->prefix('schemas.control'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Channels\Controls\ControlSchema::class);
+			->setType(Schemas\Channels\Controls\Control::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector.blank'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\BlankConnectorSchema::class);
+			->setType(Schemas\Connectors\Blank::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector.property.dynamic'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\Properties\DynamicPropertySchema::class);
+			->setType(Schemas\Connectors\Properties\Dynamic::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector.property.static'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\Properties\StaticPropertySchema::class);
+			->setType(Schemas\Connectors\Properties\Variable::class);
 
 		$builder->addDefinition($this->prefix('schemas.connector.controls'), new DI\Definitions\ServiceDefinition())
-			->setType(Schemas\Connectors\Controls\ControlSchema::class);
+			->setType(Schemas\Connectors\Controls\Control::class);
 
 		// API hydrators
 		$builder->addDefinition($this->prefix('hydrators.device.blank'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Devices\BlankDeviceHydrator::class);
+			->setType(Hydrators\Devices\Blank::class);
 
 		$builder->addDefinition($this->prefix('hydrators.device.property.dynamic'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\DeviceDynamicPropertyHydrator::class);
+			->setType(Hydrators\Properties\DeviceDynamic::class);
 
 		$builder->addDefinition($this->prefix('hydrators.device.property.static'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\DeviceStaticPropertyHydrator::class);
+			->setType(Hydrators\Properties\DeviceVariable::class);
 
 		$builder->addDefinition($this->prefix('hydrators.device.property.mapped'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\DeviceMappedPropertyHydrator::class);
+			->setType(Hydrators\Properties\DeviceMapped::class);
 
 		$builder->addDefinition($this->prefix('hydrators.channel'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Channels\ChannelHydrator::class);
+			->setType(Hydrators\Channels\Channel::class);
 
 		$builder->addDefinition($this->prefix('hydrators.channel.property.dynamic'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\ChannelDynamicPropertyHydrator::class);
+			->setType(Hydrators\Properties\ChannelDynamic::class);
 
 		$builder->addDefinition($this->prefix('hydrators.channel.property.static'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\ChannelStaticPropertyHydrator::class);
+			->setType(Hydrators\Properties\ChannelVariable::class);
 
 		$builder->addDefinition($this->prefix('hydrators.channel.property.mapped'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\ChannelMappedPropertyHydrator::class);
+			->setType(Hydrators\Properties\ChannelMapped::class);
 
 		$builder->addDefinition($this->prefix('hydrators.connectors.blank'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Connectors\BlankConnectorHydrator::class);
+			->setType(Hydrators\Connectors\Blank::class);
 
 		$builder->addDefinition($this->prefix('hydrators.connector.property.dynamic'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\ConnectorDynamicPropertyHydrator::class);
+			->setType(Hydrators\Properties\ConnectorDynamic::class);
 
 		$builder->addDefinition($this->prefix('hydrators.connector.property.static'), new DI\Definitions\ServiceDefinition())
-			->setType(Hydrators\Properties\ConnectorStaticPropertyHydrator::class);
+			->setType(Hydrators\Properties\ConnectorVariable::class);
 
-		// States repositories
+		// DynamicProperties repositories
 		$builder->addDefinition($this->prefix('states.repositories.connectors.properties'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\States\ConnectorPropertiesRepository::class);
 
@@ -326,7 +326,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		$builder->addDefinition($this->prefix('states.repositories.channels.properties'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\States\ChannelPropertiesRepository::class);
 
-		// States managers
+		// DynamicProperties managers
 		$builder->addDefinition($this->prefix('states.managers.connectors.properties'), new DI\Definitions\ServiceDefinition())
 			->setType(Models\States\ConnectorPropertiesManager::class);
 
@@ -389,15 +389,15 @@ class DevicesModuleExtension extends DI\CompilerExtension
 
 		// Consumers
 		$builder->addDefinition($this->prefix('consumer.connector'), new DI\Definitions\ServiceDefinition())
-			->setType(Consumers\ConnectorConsumer::class)
+			->setType(Consumers\Connector::class)
 			->setAutowired(false);
 
 		// Console commands
 		$builder->addDefinition($this->prefix('commands.initialize'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\InitializeCommand::class);
+			->setType(Commands\Initialize::class);
 
 		$builder->addDefinition($this->prefix('commands.service'), new DI\Definitions\ServiceDefinition())
-			->setType(Commands\ConnectorCommand::class)
+			->setType(Commands\Connector::class)
 			->setArguments([
 				'connectorConsumer' => '@' . $this->prefix('consumer.connector'),
 			]);
@@ -448,10 +448,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		 * Connectors
 		 */
 
-		$connectorCommand = $builder->getDefinitionByType(Commands\ConnectorCommand::class);
+		$connectorCommand = $builder->getDefinitionByType(Commands\Connector::class);
 
 		if ($connectorCommand instanceof DI\Definitions\ServiceDefinition) {
-			$connectorsExecutorsFactoriesServices = $builder->findByType(Connectors\IConnectorFactory::class);
+			$connectorsExecutorsFactoriesServices = $builder->findByType(Connectors\ConnectorFactory::class);
 
 			foreach ($connectorsExecutorsFactoriesServices as $connectorExecutorFactoryService) {
 				if (is_string($connectorExecutorFactoryService->getTag(self::CONNECTOR_TYPE_TAG))) {

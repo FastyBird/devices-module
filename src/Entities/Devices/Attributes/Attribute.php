@@ -44,7 +44,8 @@ use Throwable;
  *     }
  * )
  */
-class Attribute implements IAttribute
+class Attribute implements Entities\Entity,
+	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 
 	use Entities\TEntity;
@@ -85,21 +86,21 @@ class Attribute implements IAttribute
 	protected ?string $content = null;
 
 	/**
-	 * @var Entities\Devices\IDevice
+	 * @var Entities\Devices\Device
 	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="attributes")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
 	 */
-	private Entities\Devices\IDevice $device;
+	private Entities\Devices\Device $device;
 
 	/**
 	 * @param string $identifier
-	 * @param Entities\Devices\IDevice $device
+	 * @param Entities\Devices\Device $device
 	 *
 	 * @throws Throwable
 	 */
-	public function __construct(string $identifier, Entities\Devices\IDevice $device)
+	public function __construct(string $identifier, Entities\Devices\Device $device)
 	{
 		$this->id = Uuid\Uuid::uuid4();
 
@@ -232,7 +233,7 @@ class Attribute implements IAttribute
 				&& preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', (string) $content) === 0
 				&& preg_match('/^([0-9A-Fa-f]{12})$/', (string) $content) === 0
 			) {
-				throw new Exceptions\InvalidArgumentException('Provided mac address is not in valid format.');
+				throw new Exceptions\InvalidArgument('Provided mac address is not in valid format.');
 			}
 
 			$this->content = $content !== null ? Utils\Strings::lower(str_replace([
@@ -253,7 +254,7 @@ class Attribute implements IAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
+	public function getDevice(): Entities\Devices\Device
 	{
 		return $this->device;
 	}

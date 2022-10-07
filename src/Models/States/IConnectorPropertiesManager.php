@@ -28,42 +28,42 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IConnectorPropertiesManager extends IPropertiesManager
+interface IConnectorPropertiesManager
 {
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IConnectorProperty
+	 * @return States\ConnectorProperty
 	 */
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
 		Utils\ArrayHash $values
-	): States\IConnectorProperty;
+	): States\ConnectorProperty;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
-	 * @param States\IConnectorProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
+	 * @param States\ConnectorProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IConnectorProperty
+	 * @return States\ConnectorProperty
 	 */
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property,
-		States\IConnectorProperty $state,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
+		States\ConnectorProperty $state,
 		Utils\ArrayHash $values
-	): States\IConnectorProperty;
+	): States\ConnectorProperty;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
-	 * @param States\IConnectorProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
+	 * @param States\ConnectorProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property,
-		States\IConnectorProperty $state
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
+		States\ConnectorProperty $state
 	): bool;
 
 }

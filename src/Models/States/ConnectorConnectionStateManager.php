@@ -7,7 +7,7 @@
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
- * @subpackage     States
+ * @subpackage     DynamicProperties
  * @since          0.73.0
  *
  * @date           19.07.22
@@ -30,7 +30,7 @@ use Psr\Log;
  * Connector connection states manager
  *
  * @package        FastyBird:DevicesModule!
- * @subpackage     States
+ * @subpackage     DynamicProperties
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
@@ -39,14 +39,14 @@ final class ConnectorConnectionStateManager
 
 	use Nette\SmartObject;
 
-	/** @var Models\Connectors\IConnectorsRepository */
-	private Models\Connectors\IConnectorsRepository $connectorsRepository;
+	/** @var Models\Connectors\ConnectorsRepository */
+	private Models\Connectors\ConnectorsRepository $connectorsRepository;
 
-	/** @var Models\Connectors\Properties\IPropertiesManager */
-	private Models\Connectors\Properties\IPropertiesManager $manager;
+	/** @var Models\Connectors\Properties\PropertiesManager */
+	private Models\Connectors\Properties\PropertiesManager $manager;
 
-	/** @var Models\DataStorage\IConnectorPropertiesRepository */
-	private Models\DataStorage\IConnectorPropertiesRepository $dataStorageRepository;
+	/** @var Models\DataStorage\ConnectorPropertiesRepository */
+	private Models\DataStorage\ConnectorPropertiesRepository $dataStorageRepository;
 
 	/** @var Models\States\ConnectorPropertiesRepository */
 	private Models\States\ConnectorPropertiesRepository $statesRepository;
@@ -58,17 +58,17 @@ final class ConnectorConnectionStateManager
 	private Log\LoggerInterface $logger;
 
 	/**
-	 * @param Models\Connectors\IConnectorsRepository $connectorsRepository
-	 * @param Models\DataStorage\IConnectorPropertiesRepository $repository
-	 * @param Models\Connectors\Properties\IPropertiesManager $manager
+	 * @param Models\Connectors\ConnectorsRepository $connectorsRepository
+	 * @param Models\DataStorage\ConnectorPropertiesRepository $repository
+	 * @param Models\Connectors\Properties\PropertiesManager $manager
 	 * @param ConnectorPropertiesRepository $statesRepository
 	 * @param ConnectorPropertiesManager $statesManager
 	 * @param Log\LoggerInterface|null $logger
 	 */
 	public function __construct(
-		Models\Connectors\IConnectorsRepository $connectorsRepository,
-		Models\DataStorage\IConnectorPropertiesRepository $repository,
-		Models\Connectors\Properties\IPropertiesManager $manager,
+		Models\Connectors\ConnectorsRepository $connectorsRepository,
+		Models\DataStorage\ConnectorPropertiesRepository $repository,
+		Models\Connectors\Properties\PropertiesManager $manager,
 		Models\States\ConnectorPropertiesRepository $statesRepository,
 		Models\States\ConnectorPropertiesManager $statesManager,
 		?Log\LoggerInterface $logger = null
@@ -83,13 +83,13 @@ final class ConnectorConnectionStateManager
 	}
 
 	/**
-	 * @param Entities\Connectors\IConnector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 * @param Entities\Connectors\Connector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
 	 * @param MetadataTypes\ConnectionStateType $state
 	 *
 	 * @return bool
 	 */
 	public function setState(
-		Entities\Connectors\IConnector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
+		Entities\Connectors\Connector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
 		MetadataTypes\ConnectionStateType $state
 	): bool {
 		$stateProperty = $this->dataStorageRepository->findByIdentifier(
@@ -98,20 +98,20 @@ final class ConnectorConnectionStateManager
 		);
 
 		if ($stateProperty === null) {
-			if (!$connector instanceof Entities\Connectors\IConnector) {
-				$findConnectorQuery = new Queries\FindConnectorsQuery();
+			if (!$connector instanceof Entities\Connectors\Connector) {
+				$findConnectorQuery = new Queries\FindConnectors();
 				$findConnectorQuery->byId($connector->getId());
 
 				$connector = $this->connectorsRepository->findOneBy($findConnectorQuery);
 
 				if ($connector === null) {
-					throw new Exceptions\InvalidStateException('Connector could not be loaded');
+					throw new Exceptions\InvalidState('Connector could not be loaded');
 				}
 			}
 
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
 				'connector'  => $connector,
-				'entity'     => Entities\Connectors\Properties\DynamicProperty::class,
+				'entity'     => Entities\Connectors\Properties\Dynamic::class,
 				'identifier' => MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
 				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
 				'unit'       => null,
@@ -129,14 +129,14 @@ final class ConnectorConnectionStateManager
 
 		if (
 			$stateProperty instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-			|| $stateProperty instanceof Entities\Connectors\Properties\IDynamicProperty
+			|| $stateProperty instanceof Entities\Connectors\Properties\Dynamic
 		) {
 			try {
 				$statePropertyState = $this->statesRepository->findOne($stateProperty);
 
-			} catch (Exceptions\NotImplementedException $ex) {
+			} catch (Exceptions\NotImplemented $ex) {
 				$this->logger->warning(
-					'States repository is not configured. State could not be fetched',
+					'DynamicProperties repository is not configured. State could not be fetched',
 					[
 						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 						'type'   => 'connector-connection-state-manager',
@@ -159,9 +159,9 @@ final class ConnectorConnectionStateManager
 
 					return true;
 
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplemented $ex) {
 					$this->logger->warning(
-						'States manager is not configured. State could not be saved',
+						'DynamicProperties manager is not configured. State could not be saved',
 						[
 							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 							'type'   => 'connector-connection-state-manager',
@@ -183,9 +183,9 @@ final class ConnectorConnectionStateManager
 
 					return true;
 
-				} catch (Exceptions\NotImplementedException $ex) {
+				} catch (Exceptions\NotImplemented $ex) {
 					$this->logger->warning(
-						'States manager is not configured. State could not be saved',
+						'DynamicProperties manager is not configured. State could not be saved',
 						[
 							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 							'type'   => 'connector-connection-state-manager',
@@ -199,12 +199,12 @@ final class ConnectorConnectionStateManager
 	}
 
 	/**
-	 * @param Entities\Connectors\IConnector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+	 * @param Entities\Connectors\Connector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
 	 *
 	 * @return MetadataTypes\ConnectionStateType
 	 */
 	public function getState(
-		Entities\Connectors\IConnector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
+		Entities\Connectors\Connector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
 	): MetadataTypes\ConnectionStateType {
 		$stateProperty = $this->dataStorageRepository->findByIdentifier(
 			$connector->getId(),

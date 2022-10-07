@@ -7,7 +7,7 @@
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
- * @subpackage     States
+ * @subpackage     DynamicProperties
  * @since          0.73.0
  *
  * @date           23.08.22
@@ -35,8 +35,8 @@ final class ChannelPropertyStateManager
 
 	use Nette\SmartObject;
 
-	/** @var DevicesModuleModels\DataStorage\IChannelsRepository */
-	private DevicesModuleModels\DataStorage\IChannelsRepository $channelsRepository;
+	/** @var DevicesModuleModels\DataStorage\ChannelsRepository */
+	private DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository;
 
 	/** @var DevicesModuleModels\States\ChannelPropertiesRepository */
 	private DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository;
@@ -48,13 +48,13 @@ final class ChannelPropertyStateManager
 	private Log\LoggerInterface $logger;
 
 	/**
-	 * @param DevicesModuleModels\DataStorage\IChannelsRepository $channelsRepository
+	 * @param DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository
 	 * @param ChannelPropertiesRepository $channelPropertyStateRepository
 	 * @param ChannelPropertiesManager $channelPropertiesStatesManager
 	 * @param Log\LoggerInterface|null $logger
 	 */
 	public function __construct(
-		DevicesModuleModels\DataStorage\IChannelsRepository $channelsRepository,
+		DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository,
 		DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository,
 		DevicesModuleModels\States\ChannelPropertiesManager $channelPropertiesStatesManager,
 		?Log\LoggerInterface $logger
@@ -79,9 +79,9 @@ final class ChannelPropertyStateManager
 	): void {
 		try {
 			$propertyState = $this->channelPropertyStateRepository->findOne($property);
-		} catch (DevicesModuleExceptions\NotImplementedException) {
+		} catch (DevicesModuleExceptions\NotImplemented) {
 			$this->logger->warning(
-				'States repository is not configured. State could not be fetched',
+				'DynamicProperties repository is not configured. State could not be fetched',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'   => 'channel-property-state-manager',
@@ -146,9 +146,9 @@ final class ChannelPropertyStateManager
 					]
 				);
 			}
-		} catch (DevicesModuleExceptions\NotImplementedException) {
+		} catch (DevicesModuleExceptions\NotImplemented) {
 			$this->logger->warning(
-				'States manager is not configured. State could not be saved',
+				'DynamicProperties manager is not configured. State could not be saved',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type'   => 'channel-property-state-manager',

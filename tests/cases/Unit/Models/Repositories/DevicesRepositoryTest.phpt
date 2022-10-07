@@ -22,7 +22,7 @@ final class DevicesRepositoryTest extends DbTestCase
 		/** @var Models\Devices\DevicesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->byIdentifier('first-device');
 
 		$parent = $repository->findOneBy($findQuery);
@@ -31,7 +31,7 @@ final class DevicesRepositoryTest extends DbTestCase
 		Assert::type(Entities\Devices\Device::class, $parent);
 		Assert::same('first-device', $parent->getIdentifier());
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 		$findQuery->forParent($parent);
 
 		$entity = $repository->findOneBy($findQuery);
@@ -46,7 +46,7 @@ final class DevicesRepositoryTest extends DbTestCase
 		/** @var Models\Devices\DevicesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\DevicesRepository::class);
 
-		$findQuery = new Queries\FindDevicesQuery();
+		$findQuery = new Queries\FindDevices();
 
 		$resultSet = $repository->getResultSet($findQuery);
 

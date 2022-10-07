@@ -45,50 +45,50 @@ class Routes
 	/** @var bool */
 	private bool $usePrefix;
 
-	/** @var Controllers\DevicesV1Controller */
-	private Controllers\DevicesV1Controller $devicesV1Controller;
+	/** @var Controllers\DevicesV1 */
+	private Controllers\DevicesV1 $devicesV1Controller;
 
-	/** @var Controllers\DeviceParentsV1Controller */
-	private Controllers\DeviceParentsV1Controller $deviceParentsV1Controller;
+	/** @var Controllers\DeviceParentsV1 */
+	private Controllers\DeviceParentsV1 $deviceParentsV1Controller;
 
-	/** @var Controllers\DeviceChildrenV1Controller */
-	private Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller;
+	/** @var Controllers\DeviceChildrenV1 */
+	private Controllers\DeviceChildrenV1 $deviceChildrenV1Controller;
 
-	/** @var Controllers\DevicePropertiesV1Controller */
-	private Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller;
+	/** @var Controllers\DevicePropertiesV1 */
+	private Controllers\DevicePropertiesV1 $devicePropertiesV1Controller;
 
-	/** @var Controllers\DevicePropertyChildrenV1Controller */
-	private Controllers\DevicePropertyChildrenV1Controller $devicePropertyChildrenV1Controller;
+	/** @var Controllers\DevicePropertyChildrenV1 */
+	private Controllers\DevicePropertyChildrenV1 $devicePropertyChildrenV1Controller;
 
-	/** @var Controllers\DeviceControlsV1Controller */
-	private Controllers\DeviceControlsV1Controller $deviceControlsV1Controller;
+	/** @var Controllers\DeviceControlsV1 */
+	private Controllers\DeviceControlsV1 $deviceControlsV1Controller;
 
-	/** @var Controllers\DeviceAttributesV1Controller */
-	private Controllers\DeviceAttributesV1Controller $deviceAttributesV1Controller;
+	/** @var Controllers\DeviceAttributesV1 */
+	private Controllers\DeviceAttributesV1 $deviceAttributesV1Controller;
 
-	/** @var Controllers\ChannelsV1Controller */
-	private Controllers\ChannelsV1Controller $channelsV1Controller;
+	/** @var Controllers\ChannelsV1 */
+	private Controllers\ChannelsV1 $channelsV1Controller;
 
-	/** @var Controllers\ChannelPropertiesV1Controller */
-	private Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller;
+	/** @var Controllers\ChannelPropertiesV1 */
+	private Controllers\ChannelPropertiesV1 $channelPropertiesV1Controller;
 
-	/** @var Controllers\ChannelPropertyChildrenV1Controller */
-	private Controllers\ChannelPropertyChildrenV1Controller $channelPropertyChildrenV1Controller;
+	/** @var Controllers\ChannelPropertyChildrenV1 */
+	private Controllers\ChannelPropertyChildrenV1 $channelPropertyChildrenV1Controller;
 
-	/** @var Controllers\ChannelControlsV1Controller */
-	private Controllers\ChannelControlsV1Controller $channelControlsV1Controller;
+	/** @var Controllers\ChannelControlsV1 */
+	private Controllers\ChannelControlsV1 $channelControlsV1Controller;
 
-	/** @var Controllers\ConnectorsV1Controller */
-	private Controllers\ConnectorsV1Controller $connectorsV1Controller;
+	/** @var Controllers\ConnectorsV1 */
+	private Controllers\ConnectorsV1 $connectorsV1Controller;
 
-	/** @var Controllers\ConnectorPropertiesV1Controller */
-	private Controllers\ConnectorPropertiesV1Controller $connectorPropertiesV1Controller;
+	/** @var Controllers\ConnectorPropertiesV1 */
+	private Controllers\ConnectorPropertiesV1 $connectorPropertiesV1Controller;
 
-	/** @var Controllers\ConnectorControlsV1Controller */
-	private Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller;
+	/** @var Controllers\ConnectorControlsV1 */
+	private Controllers\ConnectorControlsV1 $connectorControlsV1Controller;
 
-	/** @var Middleware\AccessMiddleware */
-	private Middleware\AccessMiddleware $devicesAccessControlMiddleware;
+	/** @var Middleware\Access */
+	private Middleware\Access $devicesAccessControlMiddleware;
 
 	/** @var SimpleAuthMiddleware\AccessMiddleware */
 	private SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware;
@@ -98,21 +98,21 @@ class Routes
 
 	public function __construct(
 		bool $usePrefix,
-		Controllers\DevicesV1Controller $devicesV1Controller,
-		Controllers\DeviceParentsV1Controller $deviceParentsV1Controller,
-		Controllers\DeviceChildrenV1Controller $deviceChildrenV1Controller,
-		Controllers\DevicePropertiesV1Controller $devicePropertiesV1Controller,
-		Controllers\DevicePropertyChildrenV1Controller $devicePropertyChildrenV1Controller,
-		Controllers\DeviceControlsV1Controller $deviceControlsV1Controller,
-		Controllers\DeviceAttributesV1Controller $deviceAttributesV1Controller,
-		Controllers\ChannelsV1Controller $channelsV1Controller,
-		Controllers\ChannelPropertiesV1Controller $channelPropertiesV1Controller,
-		Controllers\ChannelPropertyChildrenV1Controller $channelPropertyChildrenV1Controller,
-		Controllers\ChannelControlsV1Controller $channelControlsV1Controller,
-		Controllers\ConnectorsV1Controller $connectorsV1Controller,
-		Controllers\ConnectorPropertiesV1Controller $connectorPropertiesV1Controller,
-		Controllers\ConnectorControlsV1Controller $connectorControlsV1Controller,
-		Middleware\AccessMiddleware $devicesAccessControlMiddleware,
+		Controllers\DevicesV1 $devicesV1Controller,
+		Controllers\DeviceParentsV1 $deviceParentsV1Controller,
+		Controllers\DeviceChildrenV1 $deviceChildrenV1Controller,
+		Controllers\DevicePropertiesV1 $devicePropertiesV1Controller,
+		Controllers\DevicePropertyChildrenV1 $devicePropertyChildrenV1Controller,
+		Controllers\DeviceControlsV1 $deviceControlsV1Controller,
+		Controllers\DeviceAttributesV1 $deviceAttributesV1Controller,
+		Controllers\ChannelsV1 $channelsV1Controller,
+		Controllers\ChannelPropertiesV1 $channelPropertiesV1Controller,
+		Controllers\ChannelPropertyChildrenV1 $channelPropertyChildrenV1Controller,
+		Controllers\ChannelControlsV1 $channelControlsV1Controller,
+		Controllers\ConnectorsV1 $connectorsV1Controller,
+		Controllers\ConnectorPropertiesV1 $connectorPropertiesV1Controller,
+		Controllers\ConnectorControlsV1 $connectorControlsV1Controller,
+		Middleware\Access $devicesAccessControlMiddleware,
 		SimpleAuthMiddleware\AccessMiddleware $accessControlMiddleware,
 		SimpleAuthMiddleware\UserMiddleware $userMiddleware
 	) {

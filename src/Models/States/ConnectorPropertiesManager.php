@@ -58,17 +58,17 @@ final class ConnectorPropertiesManager
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IConnectorProperty
+	 * @return States\ConnectorProperty
 	 */
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
 		Utils\ArrayHash $values
-	): States\IConnectorProperty {
+	): States\ConnectorProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Connector properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Connector properties state manager is not registered');
 		}
 
 		if (
@@ -97,25 +97,25 @@ final class ConnectorPropertiesManager
 
 		$createdState = $this->manager->create($property, $values);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityCreatedEvent($property, $createdState));
+		$this->dispatcher?->dispatch(new Events\StateEntityCreated($property, $createdState));
 
 		return $createdState;
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
-	 * @param States\IConnectorProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
+	 * @param States\ConnectorProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IConnectorProperty
+	 * @return States\ConnectorProperty
 	 */
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property,
-		States\IConnectorProperty $state,
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
+		States\ConnectorProperty $state,
 		Utils\ArrayHash $values
-	): States\IConnectorProperty {
+	): States\ConnectorProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Connector properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Connector properties state manager is not registered');
 		}
 
 		$updatedState = $this->manager->update($property, $state, $values);
@@ -145,28 +145,28 @@ final class ConnectorPropertiesManager
 			);
 		}
 
-		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
+		$this->dispatcher?->dispatch(new Events\StateEntityUpdated($property, $state, $updatedState));
 
 		return $updatedState;
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property
-	 * @param States\IConnectorProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
+	 * @param States\ConnectorProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\IDynamicProperty $property,
-		States\IConnectorProperty $state
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
+		States\ConnectorProperty $state
 	): bool {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Connector properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Connector properties state manager is not registered');
 		}
 
 		$result = $this->manager->delete($property, $state);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityDeletedEvent($property));
+		$this->dispatcher?->dispatch(new Events\StateEntityDeleted($property));
 
 		return $result;
 	}

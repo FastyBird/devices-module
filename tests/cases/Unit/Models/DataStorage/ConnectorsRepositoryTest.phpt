@@ -30,7 +30,7 @@ final class ConnectorsRepositoryTest extends DbTestCase
 
 	public function testReadConfiguration(): void
 	{
-		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\IConnectorsRepository::class);
+		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\ConnectorsRepository::class);
 
 		Assert::count(2, $connectorsRepository);
 

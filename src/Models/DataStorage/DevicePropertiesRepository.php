@@ -15,11 +15,13 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
+use Countable;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
+use IteratorAggregate;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
@@ -32,8 +34,10 @@ use RecursiveArrayIterator;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity>
  */
-final class DevicePropertiesRepository implements IDevicePropertiesRepository
+final class DevicePropertiesRepository implements Countable, IteratorAggregate
 {
 
 	use Nette\SmartObject;
@@ -66,7 +70,9 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -81,7 +87,10 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $device
+	 * @param string $identifier
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -104,7 +113,14 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $device
+	 * @param class-string<T>|null $type
+	 *
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity>
+	 *
+	 * @template T
+	 *
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity> : Array<int, T>)
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -128,7 +144,10 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -149,7 +168,9 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
+	 *
+	 * @return void
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{
@@ -229,7 +250,7 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 			) {
 				$this->entities[$id->toString()] = $entity;
 			} else {
-				throw new Exceptions\InvalidStateException('Device property entity could not be created');
+				throw new Exceptions\InvalidState('Device property entity could not be created');
 			}
 		}
 
@@ -247,7 +268,7 @@ final class DevicePropertiesRepository implements IDevicePropertiesRepository
 			$entityState = $this->statesRepository->findOneById($id);
 
 			return $entityState !== null ? $entityState->toArray() : [];
-		} catch (Exceptions\NotImplementedException $ex) {
+		} catch (Exceptions\NotImplemented $ex) {
 			return [];
 		}
 	}

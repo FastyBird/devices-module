@@ -15,8 +15,10 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
+use Countable;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
+use IteratorAggregate;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
@@ -29,8 +31,10 @@ use RecursiveArrayIterator;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IChannelEntity>
  */
-final class ChannelsRepository implements IChannelsRepository
+final class ChannelsRepository implements Countable, IteratorAggregate
 {
 
 	use Nette\SmartObject;
@@ -57,7 +61,9 @@ final class ChannelsRepository implements IChannelsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IChannelEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -71,7 +77,10 @@ final class ChannelsRepository implements IChannelsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $device
+	 * @param string $identifier
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IChannelEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -94,7 +103,9 @@ final class ChannelsRepository implements IChannelsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $device
+	 *
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IChannelEntity>
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -112,7 +123,10 @@ final class ChannelsRepository implements IChannelsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -133,7 +147,9 @@ final class ChannelsRepository implements IChannelsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
+	 *
+	 * @return void
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{

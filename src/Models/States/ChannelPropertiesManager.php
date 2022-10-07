@@ -65,21 +65,21 @@ final class ChannelPropertiesManager
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IChannelProperty
+	 * @return States\ChannelProperty
 	 */
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property,
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		Utils\ArrayHash $values
-	): States\IChannelProperty {
+	): States\ChannelProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Channel properties state manager is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+			throw new Exceptions\InvalidState('Child property can\'t have state');
 		}
 
 		if (
@@ -108,29 +108,29 @@ final class ChannelPropertiesManager
 
 		$createdState = $this->manager->create($property, $values);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityCreatedEvent($property, $createdState));
+		$this->dispatcher?->dispatch(new Events\StateEntityCreated($property, $createdState));
 
 		return $createdState;
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
-	 * @param States\IChannelProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
+	 * @param States\ChannelProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IChannelProperty
+	 * @return States\ChannelProperty
 	 */
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property,
-		States\IChannelProperty $state,
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+		States\ChannelProperty $state,
 		Utils\ArrayHash $values
-	): States\IChannelProperty {
+	): States\ChannelProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Channel properties state manager is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+			throw new Exceptions\InvalidState('Child property can\'t have state');
 		}
 
 		$updatedState = $this->manager->update($property, $state, $values);
@@ -160,32 +160,32 @@ final class ChannelPropertiesManager
 			);
 		}
 
-		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
+		$this->dispatcher?->dispatch(new Events\StateEntityUpdated($property, $state, $updatedState));
 
 		return $updatedState;
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
-	 * @param States\IChannelProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
+	 * @param States\ChannelProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property,
-		States\IChannelProperty $state
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+		States\ChannelProperty $state
 	): bool {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Channel properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Channel properties state manager is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+			throw new Exceptions\InvalidState('Child property can\'t have state');
 		}
 
 		$result = $this->manager->delete($property, $state);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityDeletedEvent($property));
+		$this->dispatcher?->dispatch(new Events\StateEntityDeleted($property));
 
 		return $result;
 	}

@@ -29,16 +29,16 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ControlsManager implements IControlsManager
+final class ControlsManager
 {
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Connectors\Controls\IControl> */
+	/** @var Crud\IEntityCrud<Entities\Connectors\Controls\Control> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @param Crud\IEntityCrud<Entities\Connectors\Controls\IControl> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Connectors\Controls\Control> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud
@@ -52,8 +52,8 @@ final class ControlsManager implements IControlsManager
 	 */
 	public function create(
 		Utils\ArrayHash $values
-	): Entities\Connectors\Controls\IControl {
-		/** @var Entities\Connectors\Controls\IControl $entity */
+	): Entities\Connectors\Controls\Control {
+		/** @var Entities\Connectors\Controls\Control $entity */
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
 
 		return $entity;
@@ -63,10 +63,10 @@ final class ControlsManager implements IControlsManager
 	 * {@inheritDoc}
 	 */
 	public function update(
-		Entities\Connectors\Controls\IControl $entity,
+		Entities\Connectors\Controls\Control $entity,
 		Utils\ArrayHash $values
-	): Entities\Connectors\Controls\IControl {
-		/** @var Entities\Connectors\Controls\IControl $entity */
+	): Entities\Connectors\Controls\Control {
+		/** @var Entities\Connectors\Controls\Control $entity */
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
 
 		return $entity;
@@ -76,7 +76,7 @@ final class ControlsManager implements IControlsManager
 	 * {@inheritDoc}
 	 */
 	public function delete(
-		Entities\Connectors\Controls\IControl $entity
+		Entities\Connectors\Controls\Control $entity
 	): bool {
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);

@@ -58,21 +58,21 @@ final class DevicePropertiesManager
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IDeviceProperty
+	 * @return States\DeviceProperty
 	 */
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		Utils\ArrayHash $values
-	): States\IDeviceProperty {
+	): States\DeviceProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Device properties state manager is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+			throw new Exceptions\InvalidState('Child property can\'t have state');
 		}
 
 		if (
@@ -101,29 +101,29 @@ final class DevicePropertiesManager
 
 		$createdState = $this->manager->create($property, $values);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityCreatedEvent($property, $createdState));
+		$this->dispatcher?->dispatch(new Events\StateEntityCreated($property, $createdState));
 
 		return $createdState;
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
-	 * @param States\IDeviceProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
+	 * @param States\DeviceProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IDeviceProperty
+	 * @return States\DeviceProperty
 	 */
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
-		States\IDeviceProperty $state,
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		States\DeviceProperty $state,
 		Utils\ArrayHash $values
-	): States\IDeviceProperty {
+	): States\DeviceProperty {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Device properties state manager is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+			throw new Exceptions\InvalidState('Child property can\'t have state');
 		}
 
 		$updatedState = $this->manager->update($property, $state, $values);
@@ -153,32 +153,32 @@ final class DevicePropertiesManager
 			);
 		}
 
-		$this->dispatcher?->dispatch(new Events\StateEntityUpdatedEvent($property, $state, $updatedState));
+		$this->dispatcher?->dispatch(new Events\StateEntityUpdated($property, $state, $updatedState));
 
 		return $updatedState;
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
-	 * @param States\IDeviceProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
+	 * @param States\DeviceProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
-		States\IDeviceProperty $state
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		States\DeviceProperty $state
 	): bool {
 		if ($this->manager === null) {
-			throw new Exceptions\NotImplementedException('Device properties state manager is not registered');
+			throw new Exceptions\NotImplemented('Device properties state manager is not registered');
 		}
 
 		if ($property->getParent() !== null) {
-			throw new Exceptions\InvalidStateException('Child property can\'t have state');
+			throw new Exceptions\InvalidState('Child property can\'t have state');
 		}
 
 		$result = $this->manager->delete($property, $state);
 
-		$this->dispatcher?->dispatch(new Events\StateEntityDeletedEvent($property));
+		$this->dispatcher?->dispatch(new Events\StateEntityDeleted($property));
 
 		return $result;
 	}

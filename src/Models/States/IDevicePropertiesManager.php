@@ -28,42 +28,42 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IDevicePropertiesManager extends IPropertiesManager
+interface IDevicePropertiesManager
 {
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IDeviceProperty
+	 * @return States\DeviceProperty
 	 */
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		Utils\ArrayHash $values
-	): States\IDeviceProperty;
+	): States\DeviceProperty;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
-	 * @param States\IDeviceProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
+	 * @param States\DeviceProperty $state
 	 * @param Utils\ArrayHash $values
 	 *
-	 * @return States\IDeviceProperty
+	 * @return States\DeviceProperty
 	 */
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
-		States\IDeviceProperty $state,
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		States\DeviceProperty $state,
 		Utils\ArrayHash $values
-	): States\IDeviceProperty;
+	): States\DeviceProperty;
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
-	 * @param States\IDeviceProperty $state
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
+	 * @param States\DeviceProperty $state
 	 *
 	 * @return bool
 	 */
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property,
-		States\IDeviceProperty $state
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		States\DeviceProperty $state
 	): bool;
 
 }

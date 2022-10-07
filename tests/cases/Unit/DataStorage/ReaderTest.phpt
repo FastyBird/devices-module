@@ -28,25 +28,25 @@ final class ReaderTest extends DbTestCase
 
 	public function testReadConfiguration(): void
 	{
-		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\IConnectorsRepository::class);
+		$connectorsRepository = $this->getContainer()->getByType(Models\DataStorage\ConnectorsRepository::class);
 		$connectorPropertiesRepository = $this->getContainer()
-			->getByType(Models\DataStorage\IConnectorPropertiesRepository::class);
+			->getByType(Models\DataStorage\ConnectorPropertiesRepository::class);
 		$connectorControlsRepository = $this->getContainer()
-			->getByType(Models\DataStorage\IConnectorControlsRepository::class);
+			->getByType(Models\DataStorage\ConnectorControlsRepository::class);
 
-		$devicesRepository = $this->getContainer()->getByType(Models\DataStorage\IDevicesRepository::class);
+		$devicesRepository = $this->getContainer()->getByType(Models\DataStorage\DevicesRepository::class);
 		$devicePropertiesRepository = $this->getContainer()
-			->getByType(Models\DataStorage\IDevicePropertiesRepository::class);
+			->getByType(Models\DataStorage\DevicePropertiesRepository::class);
 		$deviceControlsRepository = $this->getContainer()
-			->getByType(Models\DataStorage\IDeviceControlsRepository::class);
+			->getByType(Models\DataStorage\DeviceControlsRepository::class);
 		$deviceAttributesRepository = $this->getContainer()
-			->getByType(Models\DataStorage\IDeviceAttributesRepository::class);
+			->getByType(Models\DataStorage\DeviceAttributesRepository::class);
 
-		$channelsRepository = $this->getContainer()->getByType(Models\DataStorage\IChannelsRepository::class);
+		$channelsRepository = $this->getContainer()->getByType(Models\DataStorage\ChannelsRepository::class);
 		$channelPropertiesRepository = $this->getContainer()
-			->getByType(Models\DataStorage\IChannelPropertiesRepository::class);
+			->getByType(Models\DataStorage\ChannelPropertiesRepository::class);
 		$channelControlsRepository = $this->getContainer()
-			->getByType(Models\DataStorage\IChannelControlsRepository::class);
+			->getByType(Models\DataStorage\ChannelControlsRepository::class);
 
 		Assert::count(2, $connectorsRepository);
 		Assert::count(0, $connectorPropertiesRepository);

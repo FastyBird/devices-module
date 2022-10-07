@@ -15,11 +15,13 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
+use Countable;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
+use IteratorAggregate;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
@@ -32,8 +34,10 @@ use RecursiveArrayIterator;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity>
  */
-final class ConnectorPropertiesRepository implements IConnectorPropertiesRepository
+final class ConnectorPropertiesRepository implements Countable, IteratorAggregate
 {
 
 	use Nette\SmartObject;
@@ -66,7 +70,9 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -81,7 +87,10 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $connector
+	 * @param string $identifier
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -104,7 +113,14 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $connector
+	 * @param class-string<T>|null $type
+	 *
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity>
+	 *
+	 * @template T
+	 *
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> : Array<int, T>)
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -128,7 +144,10 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -149,7 +168,9 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
+	 *
+	 * @return void
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{
@@ -229,7 +250,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 			) {
 				$this->entities[$id->toString()] = $entity;
 			} else {
-				throw new Exceptions\InvalidStateException('Connector property entity could not be created');
+				throw new Exceptions\InvalidState('Connector property entity could not be created');
 			}
 		}
 
@@ -247,7 +268,7 @@ final class ConnectorPropertiesRepository implements IConnectorPropertiesReposit
 			$entityState = $this->statesRepository->findOneById($id);
 
 			return $entityState !== null ? $entityState->toArray() : [];
-		} catch (Exceptions\NotImplementedException $ex) {
+		} catch (Exceptions\NotImplemented $ex) {
 			return [];
 		}
 	}

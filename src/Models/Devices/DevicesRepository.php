@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class DevicesRepository implements IDevicesRepository
+final class DevicesRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Devices\IDevice>[] */
+	/** @var ORM\EntityRepository<Entities\Devices\Device>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,53 +52,60 @@ final class DevicesRepository implements IDevicesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDevices $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Devices\Device|null
 	 */
 	public function findOneBy(
-		Queries\FindDevicesQuery $queryObject,
+		Queries\FindDevices $queryObject,
 		string $type = Entities\Devices\Device::class
-	): ?Entities\Devices\IDevice {
-		/** @var Entities\Devices\IDevice|null $device */
+	): ?Entities\Devices\Device {
+		/** @var Entities\Devices\Device|null $device */
 		$device = $queryObject->fetchOne($this->getRepository($type));
 
 		return $device;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDevices $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Devices\Device[]
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
-		Queries\FindDevicesQuery $queryObject,
+		Queries\FindDevices $queryObject,
 		string $type = Entities\Devices\Device::class
 	): array {
-		/** @var Array<Entities\Devices\IDevice>|DoctrineOrmQuery\ResultSet<Entities\Devices\IDevice> $result */
+		/** @var Array<Entities\Devices\Device>|DoctrineOrmQuery\ResultSet<Entities\Devices\Device> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Devices\IDevice[] $data */
+		/** @var Entities\Devices\Device[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDevices $queryObject
+	 * @param class-string $type
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Device>
 	 */
 	public function getResultSet(
-		Queries\FindDevicesQuery $queryObject,
+		Queries\FindDevices $queryObject,
 		string $type = Entities\Devices\Device::class
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -107,16 +114,16 @@ final class DevicesRepository implements IDevicesRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Devices\IDevice>
+	 * @return ORM\EntityRepository<Entities\Devices\Device>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
-			/** @var ORM\EntityRepository<Entities\Devices\IDevice> $repository */
+			/** @var ORM\EntityRepository<Entities\Devices\Device> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository[$type] = $repository;

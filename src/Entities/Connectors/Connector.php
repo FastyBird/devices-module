@@ -50,7 +50,11 @@ use Throwable;
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
+abstract class Connector implements Entities\Entity,
+	Entities\EntityParams,
+	SimpleAuthEntities\IEntityOwner,
+	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated,
+	DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
 {
 
 	use Entities\TEntity;
@@ -101,7 +105,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	protected bool $enabled = true;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Devices\IDevice>
+	 * @var Common\Collections\Collection<int, Entities\Devices\Device>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -109,7 +113,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	protected Common\Collections\Collection $devices;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Connectors\Properties\IProperty>
+	 * @var Common\Collections\Collection<int, Entities\Connectors\Properties\Property>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Properties\Property", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -117,7 +121,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	private Common\Collections\Collection $properties;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Connectors\Controls\IControl>
+	 * @var Common\Collections\Collection<int, Entities\Connectors\Controls\Control>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Controls\Control", mappedBy="connector", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -144,7 +148,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Devices\Device[]
 	 */
 	public function getDevices(): array
 	{
@@ -152,7 +156,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Connectors\Properties\Property[]
 	 */
 	public function getProperties(): array
 	{
@@ -160,7 +164,9 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Connectors\Properties\Property[] $properties
+	 *
+	 * @return void
 	 */
 	public function setProperties(array $properties = []): void
 	{
@@ -168,7 +174,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 
 		// Process all passed entities...
 		foreach ($properties as $entity) {
-			if (!$this->properties->contains($entity)) {
+			if ($this->properties->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->properties->add($entity);
 			}
@@ -178,7 +184,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addProperty(Entities\Connectors\Properties\IProperty $property): void
+	public function addProperty(Entities\Connectors\Properties\Property $property): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->properties->contains($property)) {
@@ -190,20 +196,20 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getProperty(string $id): ?Entities\Connectors\Properties\IProperty
+	public function getProperty(string $id): ?Entities\Connectors\Properties\Property
 	{
 		$found = $this->properties
-			->filter(function (Entities\Connectors\Properties\IProperty $row) use ($id): bool {
+			->filter(function (Entities\Connectors\Properties\Property $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeProperty(Entities\Connectors\Properties\IProperty $property): void
+	public function removeProperty(Entities\Connectors\Properties\Property $property): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->properties->contains($property)) {
@@ -223,18 +229,18 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findProperty(string $property): ?Entities\Connectors\Properties\IProperty
+	public function findProperty(string $property): ?Entities\Connectors\Properties\Property
 	{
 		$found = $this->properties
-			->filter(function (Entities\Connectors\Properties\IProperty $row) use ($property): bool {
+			->filter(function (Entities\Connectors\Properties\Property $row) use ($property): bool {
 				return $property === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Connectors\Controls\Control[]
 	 */
 	public function getControls(): array
 	{
@@ -242,7 +248,9 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Connectors\Controls\Control[] $controls
+	 *
+	 * @return void
 	 */
 	public function setControls(array $controls = []): void
 	{
@@ -250,7 +258,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 
 		// Process all passed entities...
 		foreach ($controls as $entity) {
-			if (!$this->controls->contains($entity)) {
+			if ($this->controls->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->controls->add($entity);
 			}
@@ -260,7 +268,7 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addControl(Entities\Connectors\Controls\IControl $control): void
+	public function addControl(Entities\Connectors\Controls\Control $control): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->controls->contains($control)) {
@@ -272,20 +280,20 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getControl(string $name): ?Entities\Connectors\Controls\IControl
+	public function getControl(string $name): ?Entities\Connectors\Controls\Control
 	{
 		$found = $this->controls
-			->filter(function (Entities\Connectors\Controls\IControl $row) use ($name): bool {
+			->filter(function (Entities\Connectors\Controls\Control $row) use ($name): bool {
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeControl(Entities\Connectors\Controls\IControl $control): void
+	public function removeControl(Entities\Connectors\Controls\Control $control): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->controls->contains($control)) {
@@ -305,14 +313,14 @@ abstract class Connector implements IConnector, DoctrineDynamicDiscriminatorMapE
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findControl(string $name): ?Entities\Connectors\Controls\IControl
+	public function findControl(string $name): ?Entities\Connectors\Controls\Control
 	{
 		$found = $this->controls
-			->filter(function (Entities\Connectors\Controls\IControl $row) use ($name): bool {
+			->filter(function (Entities\Connectors\Controls\Control $row) use ($name): bool {
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**

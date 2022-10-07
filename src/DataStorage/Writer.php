@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * BaseV1Controller.php
+ * Writer.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -37,35 +37,35 @@ final class Writer
 
 	use Nette\SmartObject;
 
-	/** @var Models\Connectors\IConnectorsRepository */
-	private Models\Connectors\IConnectorsRepository $connectorsRepository;
+	/** @var Models\Connectors\ConnectorsRepository */
+	private Models\Connectors\ConnectorsRepository $connectorsRepository;
 
-	/** @var Models\Connectors\Properties\IPropertiesRepository */
-	private Models\Connectors\Properties\IPropertiesRepository $connectorsPropertiesRepository;
+	/** @var Models\Connectors\Properties\PropertiesRepository */
+	private Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository;
 
-	/** @var Models\Connectors\Controls\IControlsRepository */
-	private Models\Connectors\Controls\IControlsRepository $connectorsControlsRepository;
+	/** @var Models\Connectors\Controls\ControlsRepository */
+	private Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository;
 
-	/** @var Models\Devices\IDevicesRepository */
-	private Models\Devices\IDevicesRepository $devicesRepository;
+	/** @var Models\Devices\DevicesRepository */
+	private Models\Devices\DevicesRepository $devicesRepository;
 
-	/** @var Models\Devices\Properties\IPropertiesRepository */
-	private Models\Devices\Properties\IPropertiesRepository $devicesPropertiesRepository;
+	/** @var Models\Devices\Properties\PropertiesRepository */
+	private Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository;
 
-	/** @var Models\Devices\Controls\IControlsRepository */
-	private Models\Devices\Controls\IControlsRepository $devicesControlsRepository;
+	/** @var Models\Devices\Controls\ControlsRepository */
+	private Models\Devices\Controls\ControlsRepository $devicesControlsRepository;
 
-	/** @var Models\Devices\Attributes\IAttributesRepository */
-	private Models\Devices\Attributes\IAttributesRepository $devicesAttributesRepository;
+	/** @var Models\Devices\Attributes\AttributesRepository */
+	private Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository;
 
-	/** @var Models\Channels\IChannelsRepository */
-	private Models\Channels\IChannelsRepository $channelsRepository;
+	/** @var Models\Channels\ChannelsRepository */
+	private Models\Channels\ChannelsRepository $channelsRepository;
 
-	/** @var Models\Channels\Properties\IPropertiesRepository */
-	private Models\Channels\Properties\IPropertiesRepository $channelsPropertiesRepository;
+	/** @var Models\Channels\Properties\PropertiesRepository */
+	private Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository;
 
-	/** @var Models\Channels\Controls\IControlsRepository */
-	private Models\Channels\Controls\IControlsRepository $channelsControlsRepository;
+	/** @var Models\Channels\Controls\ControlsRepository */
+	private Models\Channels\Controls\ControlsRepository $channelsControlsRepository;
 
 	/** @var Flysystem\Filesystem */
 	private Flysystem\Filesystem $filesystem;
@@ -74,30 +74,30 @@ final class Writer
 	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
 
 	/**
-	 * @param Models\Connectors\IConnectorsRepository $connectorsRepository
-	 * @param Models\Connectors\Properties\IPropertiesRepository $connectorsPropertiesRepository
-	 * @param Models\Connectors\Controls\IControlsRepository $connectorsControlsRepository
-	 * @param Models\Devices\IDevicesRepository $devicesRepository
-	 * @param Models\Devices\Properties\IPropertiesRepository $devicesPropertiesRepository
-	 * @param Models\Devices\Controls\IControlsRepository $devicesControlsRepository
-	 * @param Models\Devices\Attributes\IAttributesRepository $devicesAttributesRepository
-	 * @param Models\Channels\IChannelsRepository $channelsRepository
-	 * @param Models\Channels\Properties\IPropertiesRepository $channelsPropertiesRepository
-	 * @param Models\Channels\Controls\IControlsRepository $channelsControlsRepository
+	 * @param Models\Connectors\ConnectorsRepository $connectorsRepository
+	 * @param Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository
+	 * @param Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository
+	 * @param Models\Devices\DevicesRepository $devicesRepository
+	 * @param Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository
+	 * @param Models\Devices\Controls\ControlsRepository $devicesControlsRepository
+	 * @param Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository
+	 * @param Models\Channels\ChannelsRepository $channelsRepository
+	 * @param Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository
+	 * @param Models\Channels\Controls\ControlsRepository $channelsControlsRepository
 	 * @param Flysystem\Filesystem $filesystem
 	 * @param EventDispatcher\EventDispatcherInterface|null $dispatcher
 	 */
 	public function __construct(
-		Models\Connectors\IConnectorsRepository $connectorsRepository,
-		Models\Connectors\Properties\IPropertiesRepository $connectorsPropertiesRepository,
-		Models\Connectors\Controls\IControlsRepository $connectorsControlsRepository,
-		Models\Devices\IDevicesRepository $devicesRepository,
-		Models\Devices\Properties\IPropertiesRepository $devicesPropertiesRepository,
-		Models\Devices\Controls\IControlsRepository $devicesControlsRepository,
-		Models\Devices\Attributes\IAttributesRepository $devicesAttributesRepository,
-		Models\Channels\IChannelsRepository $channelsRepository,
-		Models\Channels\Properties\IPropertiesRepository $channelsPropertiesRepository,
-		Models\Channels\Controls\IControlsRepository $channelsControlsRepository,
+		Models\Connectors\ConnectorsRepository $connectorsRepository,
+		Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository,
+		Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository,
+		Models\Devices\DevicesRepository $devicesRepository,
+		Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository,
+		Models\Devices\Controls\ControlsRepository $devicesControlsRepository,
+		Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository,
+		Models\Channels\ChannelsRepository $channelsRepository,
+		Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository,
+		Models\Channels\Controls\ControlsRepository $channelsControlsRepository,
 		Flysystem\Filesystem $filesystem,
 		?EventDispatcher\EventDispatcherInterface $dispatcher
 	) {
@@ -126,26 +126,26 @@ final class Writer
 	{
 		$data = [];
 
-		$findConnectorsQuery = new Queries\FindConnectorsQuery();
+		$findConnectorsQuery = new Queries\FindConnectors();
 
 		$connectors = $this->connectorsRepository->findAllBy($findConnectorsQuery);
 
 		foreach ($connectors as $connector) {
 			$devices = [];
 
-			$findDevicesQuery = new Queries\FindDevicesQuery();
+			$findDevicesQuery = new Queries\FindDevices();
 			$findDevicesQuery->forConnector($connector);
 
 			foreach ($this->devicesRepository->findAllBy($findDevicesQuery) as $device) {
 				$channels = [];
 
-				$findChannelsQuery = new Queries\FindChannelsQuery();
+				$findChannelsQuery = new Queries\FindChannels();
 				$findChannelsQuery->forDevice($device);
 
 				foreach ($this->channelsRepository->findAllBy($findChannelsQuery) as $channel) {
 					$properties = [];
 
-					$findChannelPropertiesQuery = new Queries\FindChannelPropertiesQuery();
+					$findChannelPropertiesQuery = new Queries\FindChannelProperties();
 					$findChannelPropertiesQuery->forChannel($channel);
 
 					foreach ($this->channelsPropertiesRepository->findAllBy($findChannelPropertiesQuery) as $property) {
@@ -154,7 +154,7 @@ final class Writer
 
 					$controls = [];
 
-					$findChannelControlsQuery = new Queries\FindChannelControlsQuery();
+					$findChannelControlsQuery = new Queries\FindChannelControls();
 					$findChannelControlsQuery->forChannel($channel);
 
 					foreach ($this->channelsControlsRepository->findAllBy($findChannelControlsQuery) as $control) {
@@ -169,7 +169,7 @@ final class Writer
 
 				$properties = [];
 
-				$findDevicePropertiesQuery = new Queries\FindDevicePropertiesQuery();
+				$findDevicePropertiesQuery = new Queries\FindDeviceProperties();
 				$findDevicePropertiesQuery->forDevice($device);
 
 				foreach ($this->devicesPropertiesRepository->findAllBy($findDevicePropertiesQuery) as $property) {
@@ -178,7 +178,7 @@ final class Writer
 
 				$attributes = [];
 
-				$findDeviceAttributesQuery = new Queries\FindDeviceAttributesQuery();
+				$findDeviceAttributesQuery = new Queries\FindDeviceAttributes();
 				$findDeviceAttributesQuery->forDevice($device);
 
 				foreach ($this->devicesAttributesRepository->findAllBy($findDeviceAttributesQuery) as $attribute) {
@@ -187,7 +187,7 @@ final class Writer
 
 				$controls = [];
 
-				$findDeviceControlsQuery = new Queries\FindDeviceControlsQuery();
+				$findDeviceControlsQuery = new Queries\FindDeviceControls();
 				$findDeviceControlsQuery->forDevice($device);
 
 				foreach ($this->devicesControlsRepository->findAllBy($findDeviceControlsQuery) as $control) {
@@ -204,7 +204,7 @@ final class Writer
 
 			$properties = [];
 
-			$findConnectorPropertiesQuery = new Queries\FindConnectorPropertiesQuery();
+			$findConnectorPropertiesQuery = new Queries\FindConnectorProperties();
 			$findConnectorPropertiesQuery->forConnector($connector);
 
 			foreach ($this->connectorsPropertiesRepository->findAllBy($findConnectorPropertiesQuery) as $property) {
@@ -213,7 +213,7 @@ final class Writer
 
 			$controls = [];
 
-			$findConnectorControlsQuery = new Queries\FindConnectorControlsQuery();
+			$findConnectorControlsQuery = new Queries\FindConnectorControls();
 			$findConnectorControlsQuery->forConnector($connector);
 
 			foreach ($this->connectorsControlsRepository->findAllBy($findConnectorControlsQuery) as $control) {
@@ -229,7 +229,7 @@ final class Writer
 
 		$this->filesystem->write(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME, Utils\Json::encode($data));
 
-		$this->dispatcher?->dispatch(new Events\DataStorageWrittenEvent());
+		$this->dispatcher?->dispatch(new Events\DataStorageWritten());
 	}
 
 }

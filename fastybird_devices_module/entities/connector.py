@@ -358,7 +358,7 @@ class ConnectorDynamicPropertyEntity(ConnectorPropertyEntity):
         return PropertyType.DYNAMIC
 
 
-class ConnectorStaticPropertyEntity(ConnectorPropertyEntity):
+class ConnectorVariablePropertyEntity(ConnectorPropertyEntity):
     """
     Connector property entity
 
@@ -368,14 +368,14 @@ class ConnectorStaticPropertyEntity(ConnectorPropertyEntity):
     @author         Adam Kadlec <adam.kadlec@fastybird.com>
     """
 
-    __mapper_args__ = {"polymorphic_identity": "static"}
+    __mapper_args__ = {"polymorphic_identity": "variable"}
 
     # -----------------------------------------------------------------------------
 
     @property
     def type(self) -> PropertyType:
         """Property type"""
-        return PropertyType.STATIC
+        return PropertyType.VARIABLE
 
 
 class ConnectorControlEntity(EntityCreatedMixin, EntityUpdatedMixin, Base):

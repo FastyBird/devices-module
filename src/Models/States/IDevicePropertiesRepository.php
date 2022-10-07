@@ -28,25 +28,25 @@ use Ramsey\Uuid;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IDevicePropertiesRepository extends IPropertiesRepository
+interface IDevicePropertiesRepository
 {
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
 	 *
-	 * @return States\IDeviceProperty|null
+	 * @return States\DeviceProperty|null
 	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\IDynamicProperty|Entities\Devices\Properties\IMappedProperty $property
-	): ?States\IDeviceProperty;
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
+	): ?States\DeviceProperty;
 
 	/**
 	 * @param Uuid\UuidInterface $id
 	 *
-	 * @return States\IDeviceProperty|null
+	 * @return States\DeviceProperty|null
 	 */
 	public function findOneById(
 		Uuid\UuidInterface $id
-	): ?States\IDeviceProperty;
+	): ?States\DeviceProperty;
 
 }

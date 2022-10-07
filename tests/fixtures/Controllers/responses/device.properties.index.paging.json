@@ -16,7 +16,7 @@
   },
   "data" : [
     {
-      "type" : "com.fastybird.devices-module/property/device/static",
+      "type" : "com.fastybird.devices-module/property/device/variable",
       "id" : "3134ba8e-f134-4bf2-9c80-c977c4deb0fb",
       "attributes" : {
         "identifier" : "password",

@@ -15,11 +15,13 @@
 
 namespace FastyBird\DevicesModule\Models\DataStorage;
 
+use Countable;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
+use IteratorAggregate;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
@@ -32,8 +34,10 @@ use RecursiveArrayIterator;
  * @subpackage     Models
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity>
  */
-final class ChannelPropertiesRepository implements IChannelPropertiesRepository
+final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 {
 
 	use Nette\SmartObject;
@@ -66,7 +70,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -81,7 +87,10 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $channel
+	 * @param string $identifier
+	 *
+	 * @return MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -104,7 +113,14 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $channel
+	 * @param class-string<T>|null $type
+	 *
+	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity>
+	 *
+	 * @template T
+	 *
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> : Array<int, T>)
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -128,7 +144,10 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface $id
+	 * @param Array<string, mixed> $data
+	 *
+	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -149,7 +168,9 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
+	 *
+	 * @return void
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{
@@ -229,7 +250,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 			) {
 				$this->entities[$id->toString()] = $entity;
 			} else {
-				throw new Exceptions\InvalidStateException('Channel property entity could not be created');
+				throw new Exceptions\InvalidState('Channel property entity could not be created');
 			}
 		}
 
@@ -247,7 +268,7 @@ final class ChannelPropertiesRepository implements IChannelPropertiesRepository
 			$entityState = $this->statesRepository->findOneById($id);
 
 			return $entityState !== null ? $entityState->toArray() : [];
-		} catch (Exceptions\NotImplementedException $ex) {
+		} catch (Exceptions\NotImplemented $ex) {
 			return [];
 		}
 	}

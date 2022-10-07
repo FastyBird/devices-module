@@ -39,7 +39,8 @@ use Throwable;
  *     }
  * )
  */
-class Control implements IControl
+class Control implements Entities\Entity,
+	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 
 	use Entities\TEntity;
@@ -64,21 +65,21 @@ class Control implements IControl
 	private string $name;
 
 	/**
-	 * @var Entities\Devices\IDevice
+	 * @var Entities\Devices\Device
 	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="controls")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
 	 */
-	private Entities\Devices\IDevice $device;
+	private Entities\Devices\Device $device;
 
 	/**
 	 * @param string $name
-	 * @param Entities\Devices\IDevice $device
+	 * @param Entities\Devices\Device $device
 	 *
 	 * @throws Throwable
 	 */
-	public function __construct(string $name, Entities\Devices\IDevice $device)
+	public function __construct(string $name, Entities\Devices\Device $device)
 	{
 		$this->id = Uuid\Uuid::uuid4();
 
@@ -114,7 +115,7 @@ class Control implements IControl
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
+	public function getDevice(): Entities\Devices\Device
 	{
 		return $this->device;
 	}

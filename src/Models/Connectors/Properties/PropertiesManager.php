@@ -29,16 +29,16 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class PropertiesManager implements IPropertiesManager
+final class PropertiesManager
 {
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Connectors\Properties\IProperty> */
+	/** @var Crud\IEntityCrud<Entities\Connectors\Properties\Property> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @param Crud\IEntityCrud<Entities\Connectors\Properties\IProperty> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Connectors\Properties\Property> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud
@@ -52,8 +52,8 @@ final class PropertiesManager implements IPropertiesManager
 	 */
 	public function create(
 		Utils\ArrayHash $values
-	): Entities\Connectors\Properties\IProperty {
-		/** @var Entities\Connectors\Properties\IProperty $entity */
+	): Entities\Connectors\Properties\Property {
+		/** @var Entities\Connectors\Properties\Property $entity */
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
 
 		return $entity;
@@ -63,10 +63,10 @@ final class PropertiesManager implements IPropertiesManager
 	 * {@inheritDoc}
 	 */
 	public function update(
-		Entities\Connectors\Properties\IProperty $entity,
+		Entities\Connectors\Properties\Property $entity,
 		Utils\ArrayHash $values
-	): Entities\Connectors\Properties\IProperty {
-		/** @var Entities\Connectors\Properties\IProperty $entity */
+	): Entities\Connectors\Properties\Property {
+		/** @var Entities\Connectors\Properties\Property $entity */
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
 
 		return $entity;
@@ -76,7 +76,7 @@ final class PropertiesManager implements IPropertiesManager
 	 * {@inheritDoc}
 	 */
 	public function delete(
-		Entities\Connectors\Properties\IProperty $entity
+		Entities\Connectors\Properties\Property $entity
 	): bool {
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);

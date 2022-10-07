@@ -29,16 +29,16 @@ use Nette\Utils;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ControlsManager implements IControlsManager
+final class ControlsManager
 {
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Devices\Controls\IControl> */
+	/** @var Crud\IEntityCrud<Entities\Devices\Controls\Control> */
 	private Crud\IEntityCrud $entityCrud;
 
 	/**
-	 * @param Crud\IEntityCrud<Entities\Devices\Controls\IControl> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Devices\Controls\Control> $entityCrud
 	 */
 	public function __construct(
 		Crud\IEntityCrud $entityCrud
@@ -52,8 +52,8 @@ final class ControlsManager implements IControlsManager
 	 */
 	public function create(
 		Utils\ArrayHash $values
-	): Entities\Devices\Controls\IControl {
-		/** @var Entities\Devices\Controls\IControl $entity */
+	): Entities\Devices\Controls\Control {
+		/** @var Entities\Devices\Controls\Control $entity */
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
 
 		return $entity;
@@ -63,10 +63,10 @@ final class ControlsManager implements IControlsManager
 	 * {@inheritDoc}
 	 */
 	public function update(
-		Entities\Devices\Controls\IControl $entity,
+		Entities\Devices\Controls\Control $entity,
 		Utils\ArrayHash $values
-	): Entities\Devices\Controls\IControl {
-		/** @var Entities\Devices\Controls\IControl $entity */
+	): Entities\Devices\Controls\Control {
+		/** @var Entities\Devices\Controls\Control $entity */
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
 
 		return $entity;
@@ -76,7 +76,7 @@ final class ControlsManager implements IControlsManager
 	 * {@inheritDoc}
 	 */
 	public function delete(
-		Entities\Devices\Controls\IControl $entity
+		Entities\Devices\Controls\Control $entity
 	): bool {
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);

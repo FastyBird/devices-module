@@ -5,7 +5,7 @@ namespace Tests\Tools;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\Metadata\Types as MetadataTypes;
 
-final class DummyConnectorSchema extends Schemas\Connectors\ConnectorSchema
+final class DummyConnectorSchema extends Schemas\Connectors\Connector
 {
 
 	/**

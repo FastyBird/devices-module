@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class AttributesRepository implements IAttributesRepository
+final class AttributesRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>|null */
+	/** @var ORM\EntityRepository<Entities\Devices\Attributes\Attribute>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,48 +52,52 @@ final class AttributesRepository implements IAttributesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceAttributes $queryObject
+	 *
+	 * @return Entities\Devices\Attributes\Attribute|null
 	 */
-	public function findOneBy(Queries\FindDeviceAttributesQuery $queryObject): ?Entities\Devices\Attributes\IAttribute
+	public function findOneBy(Queries\FindDeviceAttributes $queryObject): ?Entities\Devices\Attributes\Attribute
 	{
-		/** @var Entities\Devices\Attributes\IAttribute|null $attribute */
+		/** @var Entities\Devices\Attributes\Attribute|null $attribute */
 		$attribute = $queryObject->fetchOne($this->getRepository());
 
 		return $attribute;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceAttributes $queryObject
+	 *
+	 * @return Entities\Devices\Attributes\Attribute[]
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindDeviceAttributesQuery $queryObject): array
+	public function findAllBy(Queries\FindDeviceAttributes $queryObject): array
 	{
-		/** @var Array<Entities\Devices\Attributes\IAttribute>|DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\IAttribute> $result */
+		/** @var Array<Entities\Devices\Attributes\Attribute>|DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\Attribute> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Devices\Attributes\IAttribute[] $data */
+		/** @var Entities\Devices\Attributes\Attribute[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceAttributes $queryObject
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\Attribute>
 	 */
 	public function getResultSet(
-		Queries\FindDeviceAttributesQuery $queryObject
+		Queries\FindDeviceAttributes $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -102,16 +106,16 @@ final class AttributesRepository implements IAttributesRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Devices\Attributes\IAttribute>
+	 * @return ORM\EntityRepository<Entities\Devices\Attributes\Attribute>
 	 */
 	private function getRepository(string $type = Entities\Devices\Attributes\Attribute::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			/** @var ORM\EntityRepository<Entities\Devices\Attributes\IAttribute> $repository */
+			/** @var ORM\EntityRepository<Entities\Devices\Attributes\Attribute> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository = $repository;

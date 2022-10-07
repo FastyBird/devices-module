@@ -92,7 +92,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
 
         self.col_identifier = identifier
 
-        if self.type == PropertyType.STATIC:
+        if self.type == PropertyType.VARIABLE:
             self.col_settable = False
             self.col_queryable = False
 
@@ -143,8 +143,8 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     @settable.setter
     def settable(self, settable: bool) -> None:
         """Property settable setter"""
-        if settable and self.type == PropertyType.STATIC:
-            raise InvalidArgumentException("Static type property can not be settable")
+        if settable and self.type == PropertyType.VARIABLE:
+            raise InvalidArgumentException("Variable type property can not be settable")
 
         self.col_settable = settable
 
@@ -160,8 +160,8 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     @queryable.setter
     def queryable(self, queryable: bool) -> None:
         """Property queryable setter"""
-        if queryable and self.type == PropertyType.STATIC:
-            raise InvalidArgumentException("Static type property can not be queryable")
+        if queryable and self.type == PropertyType.VARIABLE:
+            raise InvalidArgumentException("Variable type property can not be queryable")
 
         self.col_queryable = queryable
 
@@ -318,7 +318,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     @property
     def value(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Property value"""
-        if not self.type == PropertyType.STATIC:
+        if not self.type == PropertyType.VARIABLE:
             raise InvalidStateException(f"Value is not allowed for property type: {self.type.value}")
 
         if self.col_value is None:
@@ -336,7 +336,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     @value.setter
     def value(self, value: Optional[str]) -> None:
         """Property value number of decimals setter"""
-        if not self.type == PropertyType.STATIC:
+        if not self.type == PropertyType.VARIABLE:
             raise InvalidStateException(f"Value is not allowed for property type: {self.type.value}")
 
         self.col_value = value
@@ -346,7 +346,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     @property
     def default(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Property default"""
-        if not self.type == PropertyType.STATIC:
+        if not self.type == PropertyType.VARIABLE:
             raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
 
         if self.col_default is None:
@@ -364,7 +364,7 @@ class PropertyMixin:  # pylint: disable=too-many-instance-attributes
     @default.setter
     def default(self, default: Optional[str]) -> None:
         """Property default value setter"""
-        if not self.type == PropertyType.STATIC:
+        if not self.type == PropertyType.VARIABLE:
             raise InvalidStateException(f"Default value is not allowed for property type: {self.type.value}")
 
         self.col_default = default

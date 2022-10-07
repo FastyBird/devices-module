@@ -47,49 +47,49 @@ use Throwable;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="property_type", type="string", length=40)
  * @ORM\DiscriminatorMap({
- *    "static"   = "FastyBird\DevicesModule\Entities\Channels\Properties\StaticProperty",
- *    "dynamic"  = "FastyBird\DevicesModule\Entities\Channels\Properties\DynamicProperty",
- *    "mapped"   = "FastyBird\DevicesModule\Entities\Channels\Properties\MappedProperty"
+ *    "variable" = "FastyBird\DevicesModule\Entities\Channels\Properties\Variable",
+ *    "dynamic"  = "FastyBird\DevicesModule\Entities\Channels\Properties\Dynamic",
+ *    "mapped"   = "FastyBird\DevicesModule\Entities\Channels\Properties\Mapped"
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Property extends Entities\Property implements IProperty
+abstract class Property extends Entities\Property
 {
 
 	/**
-	 * @var Entities\Channels\IChannel
+	 * @var Entities\Channels\Channel
 	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", inversedBy="properties")
 	 * @ORM\JoinColumn(name="channel_id", referencedColumnName="channel_id", onDelete="CASCADE", nullable=false)
 	 */
-	protected Entities\Channels\IChannel $channel;
+	protected Entities\Channels\Channel $channel;
 
 	/**
-	 * @var IProperty|null
+	 * @var Property|null
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Properties\Property", inversedBy="children")
 	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="property_id", nullable=true, onDelete="CASCADE")
 	 */
-	protected ?IProperty $parent = null;
+	protected ?Property $parent = null;
 
 	/**
-	 * @var Common\Collections\Collection<int, IProperty>
+	 * @var Common\Collections\Collection<int, Property>
 	 *
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Properties\Property", mappedBy="parent", cascade={"remove"}, orphanRemoval=true)
 	 */
 	protected Common\Collections\Collection $children;
 
 	/**
-	 * @param Entities\Channels\IChannel $channel
+	 * @param Entities\Channels\Channel $channel
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
-		Entities\Channels\IChannel $channel,
+		Entities\Channels\Channel $channel,
 		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
@@ -105,7 +105,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getParent(): ?IProperty
+	public function getParent(): ?Property
 	{
 		return $this->parent;
 	}
@@ -113,7 +113,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setParent(IProperty $device): void
+	public function setParent(Property $device): void
 	{
 		$this->parent = $device;
 	}
@@ -127,7 +127,7 @@ abstract class Property extends Entities\Property implements IProperty
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Property[]
 	 */
 	public function getChildren(): array
 	{
@@ -135,16 +135,18 @@ abstract class Property extends Entities\Property implements IProperty
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Property[] $children
+	 *
+	 * @return void
 	 */
 	public function setChildren(array $children): void
 	{
 		$this->children = new Common\Collections\ArrayCollection();
 
 		// Process all passed entities...
-		/** @var IProperty $entity */
+		/** @var Property $entity */
 		foreach ($children as $entity) {
-			if (!$this->children->contains($entity)) {
+			if ($this->children->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->children->add($entity);
 			}
@@ -154,7 +156,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addChild(IProperty $child): void
+	public function addChild(Property $child): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->children->contains($child)) {
@@ -166,7 +168,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeChild(IProperty $child): void
+	public function removeChild(Property $child): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->children->contains($child)) {
@@ -178,7 +180,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getChannel(): Entities\Channels\IChannel
+	public function getChannel(): Entities\Channels\Channel
 	{
 		return $this->channel;
 	}
@@ -207,7 +209,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Settable setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Settable setter is allowed only for parent');
 		}
 
 		parent::setSettable($settable);
@@ -237,7 +239,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Queryable setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Queryable setter is allowed only for parent');
 		}
 
 		parent::setQueryable($queryable);
@@ -267,7 +269,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Data type setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Data type setter is allowed only for parent');
 		}
 
 		parent::setDataType($dataType);
@@ -297,7 +299,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Value unit setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Value unit setter is allowed only for parent');
 		}
 
 		parent::setUnit($unit);
@@ -326,7 +328,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Value format setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Value format setter is allowed only for parent');
 		}
 
 		parent::setFormat($format);
@@ -356,7 +358,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Invalid value setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Invalid value setter is allowed only for parent');
 		}
 
 		parent::setInvalid($invalid);
@@ -386,7 +388,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Number of decimals setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Number of decimals setter is allowed only for parent');
 		}
 
 		parent::setNumberOfDecimals($numberOfDecimals);
@@ -416,7 +418,7 @@ abstract class Property extends Entities\Property implements IProperty
 			$this->getParent() !== null && !$this->getType()
 				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
 		) {
-			throw new Exceptions\InvalidStateException('Default value setter is allowed only for parent');
+			throw new Exceptions\InvalidState('Default value setter is allowed only for parent');
 		}
 
 		parent::setDefault($default);

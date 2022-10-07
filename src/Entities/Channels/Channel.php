@@ -40,7 +40,9 @@ use Throwable;
  *     }
  * )
  */
-class Channel implements IChannel
+class Channel implements Entities\Entity,
+	Entities\EntityParams,
+	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 
 	use Entities\TEntity;
@@ -82,7 +84,7 @@ class Channel implements IChannel
 	private ?string $comment = null;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Channels\Properties\IProperty>
+	 * @var Common\Collections\Collection<int, Entities\Channels\Properties\Property>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Properties\Property", mappedBy="channel", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -90,7 +92,7 @@ class Channel implements IChannel
 	private Common\Collections\Collection $properties;
 
 	/**
-	 * @var Common\Collections\Collection<int, Entities\Channels\Controls\IControl>
+	 * @var Common\Collections\Collection<int, Entities\Channels\Controls\Control>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\OneToMany(targetEntity="FastyBird\DevicesModule\Entities\Channels\Controls\Control", mappedBy="channel", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -98,16 +100,16 @@ class Channel implements IChannel
 	private Common\Collections\Collection $controls;
 
 	/**
-	 * @var Entities\Devices\IDevice
+	 * @var Entities\Devices\Device
 	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="channels")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
 	 */
-	private Entities\Devices\IDevice $device;
+	private Entities\Devices\Device $device;
 
 	/**
-	 * @param Entities\Devices\IDevice $device
+	 * @param Entities\Devices\Device $device
 	 * @param string $identifier
 	 * @param string|null $name
 	 * @param Uuid\UuidInterface|null $id
@@ -115,7 +117,7 @@ class Channel implements IChannel
 	 * @throws Throwable
 	 */
 	public function __construct(
-		Entities\Devices\IDevice $device,
+		Entities\Devices\Device $device,
 		string $identifier,
 		?string $name = null,
 		?Uuid\UuidInterface $id = null
@@ -132,7 +134,7 @@ class Channel implements IChannel
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Channels\Properties\Property[]
 	 */
 	public function getProperties(): array
 	{
@@ -140,7 +142,9 @@ class Channel implements IChannel
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Channels\Properties\Property[] $properties
+	 *
+	 * @return void
 	 */
 	public function setProperties(array $properties = []): void
 	{
@@ -148,7 +152,7 @@ class Channel implements IChannel
 
 		// Process all passed entities...
 		foreach ($properties as $entity) {
-			if (!$this->properties->contains($entity)) {
+			if ($this->properties->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->properties->add($entity);
 			}
@@ -158,7 +162,7 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addProperty(Entities\Channels\Properties\IProperty $property): void
+	public function addProperty(Entities\Channels\Properties\Property $property): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->properties->contains($property)) {
@@ -170,33 +174,33 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getProperty(string $id): ?Entities\Channels\Properties\IProperty
+	public function getProperty(string $id): ?Entities\Channels\Properties\Property
 	{
 		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\IProperty $row) use ($id): bool {
+			->filter(function (Entities\Channels\Properties\Property $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findProperty(string $identifier): ?Entities\Channels\Properties\IProperty
+	public function findProperty(string $identifier): ?Entities\Channels\Properties\Property
 	{
 		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\IProperty $row) use ($identifier): bool {
+			->filter(function (Entities\Channels\Properties\Property $row) use ($identifier): bool {
 				return $identifier === $row->getIdentifier();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeProperty(Entities\Channels\Properties\IProperty $property): void
+	public function removeProperty(Entities\Channels\Properties\Property $property): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->properties->contains($property)) {
@@ -206,7 +210,7 @@ class Channel implements IChannel
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Entities\Channels\Controls\Control[]
 	 */
 	public function getControls(): array
 	{
@@ -214,7 +218,9 @@ class Channel implements IChannel
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Entities\Channels\Controls\Control[] $controls
+	 *
+	 * @return void
 	 */
 	public function setControls(array $controls = []): void
 	{
@@ -222,7 +228,7 @@ class Channel implements IChannel
 
 		// Process all passed entities...
 		foreach ($controls as $entity) {
-			if (!$this->controls->contains($entity)) {
+			if ($this->controls->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->controls->add($entity);
 			}
@@ -232,7 +238,7 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addControl(Entities\Channels\Controls\IControl $control): void
+	public function addControl(Entities\Channels\Controls\Control $control): void
 	{
 		// Check if collection does not contain inserting entity
 		if (!$this->controls->contains($control)) {
@@ -244,33 +250,33 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getControl(string $id): ?Entities\Channels\Controls\IControl
+	public function getControl(string $id): ?Entities\Channels\Controls\Control
 	{
 		$found = $this->controls
-			->filter(function (Entities\Channels\Controls\IControl $row) use ($id): bool {
+			->filter(function (Entities\Channels\Controls\Control $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findControl(string $name): ?Entities\Channels\Controls\IControl
+	public function findControl(string $name): ?Entities\Channels\Controls\Control
 	{
 		$found = $this->controls
-			->filter(function (Entities\Channels\Controls\IControl $row) use ($name): bool {
+			->filter(function (Entities\Channels\Controls\Control $row) use ($name): bool {
 				return $name === $row->getName();
 			});
 
-		return $found->isEmpty() ? null : $found->first();
+		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function removeControl(Entities\Channels\Controls\IControl $control): void
+	public function removeControl(Entities\Channels\Controls\Control $control): void
 	{
 		// Check if collection contain removing entity...
 		if ($this->controls->contains($control)) {
@@ -347,7 +353,7 @@ class Channel implements IChannel
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDevice(): Entities\Devices\IDevice
+	public function getDevice(): Entities\Devices\Device
 	{
 		return $this->device;
 	}

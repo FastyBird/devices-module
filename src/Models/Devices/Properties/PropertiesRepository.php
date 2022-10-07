@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class PropertiesRepository implements IPropertiesRepository
+final class PropertiesRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Devices\Properties\IProperty>[] */
+	/** @var ORM\EntityRepository<Entities\Devices\Properties\Property>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,53 +52,60 @@ final class PropertiesRepository implements IPropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceProperties $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Devices\Properties\Property|null
 	 */
 	public function findOneBy(
-		Queries\FindDevicePropertiesQuery $queryObject,
+		Queries\FindDeviceProperties $queryObject,
 		string $type = Entities\Devices\Properties\Property::class
-	): ?Entities\Devices\Properties\IProperty {
-		/** @var Entities\Devices\Properties\IProperty|null $property */
+	): ?Entities\Devices\Properties\Property {
+		/** @var Entities\Devices\Properties\Property|null $property */
 		$property = $queryObject->fetchOne($this->getRepository($type));
 
 		return $property;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceProperties $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Devices\Properties\Property[]
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
-		Queries\FindDevicePropertiesQuery $queryObject,
+		Queries\FindDeviceProperties $queryObject,
 		string $type = Entities\Devices\Properties\Property::class
 	): array {
-		/** @var Array<Entities\Devices\Properties\IProperty>|DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\IProperty> $result */
+		/** @var Array<Entities\Devices\Properties\Property>|DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\Property> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Devices\Properties\IProperty[] $data */
+		/** @var Entities\Devices\Properties\Property[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindDeviceProperties $queryObject
+	 * @param class-string $type
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Properties\Property>
 	 */
 	public function getResultSet(
-		Queries\FindDevicePropertiesQuery $queryObject,
+		Queries\FindDeviceProperties $queryObject,
 		string $type = Entities\Devices\Properties\Property::class
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -107,16 +114,16 @@ final class PropertiesRepository implements IPropertiesRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Devices\Properties\IProperty>
+	 * @return ORM\EntityRepository<Entities\Devices\Properties\Property>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
-			/** @var  ORM\EntityRepository<Entities\Devices\Properties\IProperty> $repository */
+			/** @var  ORM\EntityRepository<Entities\Devices\Properties\Property> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository[$type] = $repository;

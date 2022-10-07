@@ -27,9 +27,9 @@ final class ServicesTest extends BaseTestCase
 	{
 		$container = $this->createContainer();
 
-		Assert::notNull($container->getByType(Commands\InitializeCommand::class));
+		Assert::notNull($container->getByType(Commands\Initialize::class));
 
-		Assert::notNull($container->getByType(Middleware\AccessMiddleware::class));
+		Assert::notNull($container->getByType(Middleware\Access::class));
 
 		Assert::notNull($container->getByType(Models\Devices\DevicesRepository::class));
 		Assert::notNull($container->getByType(Models\Devices\Properties\PropertiesRepository::class));
@@ -57,41 +57,41 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Models\States\DevicePropertiesManager::class));
 		Assert::notNull($container->getByType(Models\States\ChannelPropertiesManager::class));
 
-		Assert::notNull($container->getByType(Controllers\DevicesV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\DeviceChildrenV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\DevicePropertiesV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\DevicePropertyChildrenV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\DeviceControlsV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\ChannelsV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\ChannelPropertiesV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\ChannelPropertyChildrenV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\ChannelControlsV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\ConnectorsV1Controller::class));
-		Assert::notNull($container->getByType(Controllers\ConnectorControlsV1Controller::class));
+		Assert::notNull($container->getByType(Controllers\DevicesV1::class));
+		Assert::notNull($container->getByType(Controllers\DeviceChildrenV1::class));
+		Assert::notNull($container->getByType(Controllers\DevicePropertiesV1::class));
+		Assert::notNull($container->getByType(Controllers\DevicePropertyChildrenV1::class));
+		Assert::notNull($container->getByType(Controllers\DeviceControlsV1::class));
+		Assert::notNull($container->getByType(Controllers\ChannelsV1::class));
+		Assert::notNull($container->getByType(Controllers\ChannelPropertiesV1::class));
+		Assert::notNull($container->getByType(Controllers\ChannelPropertyChildrenV1::class));
+		Assert::notNull($container->getByType(Controllers\ChannelControlsV1::class));
+		Assert::notNull($container->getByType(Controllers\ConnectorsV1::class));
+		Assert::notNull($container->getByType(Controllers\ConnectorControlsV1::class));
 
-		Assert::notNull($container->getByType(Schemas\Devices\BlankDeviceSchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Properties\DynamicPropertySchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Properties\StaticPropertySchema::class));
-		Assert::notNull($container->getByType(Schemas\Devices\Controls\ControlSchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\ChannelSchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\Properties\DynamicPropertySchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\Properties\StaticPropertySchema::class));
-		Assert::notNull($container->getByType(Schemas\Channels\Controls\ControlSchema::class));
-		Assert::notNull($container->getByType(Schemas\Connectors\BlankConnectorSchema::class));
-		Assert::notNull($container->getByType(Schemas\Connectors\Controls\ControlSchema::class));
+		Assert::notNull($container->getByType(Schemas\Devices\Blank::class));
+		Assert::notNull($container->getByType(Schemas\Devices\Properties\Dynamic::class));
+		Assert::notNull($container->getByType(Schemas\Devices\Properties\Variable::class));
+		Assert::notNull($container->getByType(Schemas\Devices\Controls\Control::class));
+		Assert::notNull($container->getByType(Schemas\Channels\Channel::class));
+		Assert::notNull($container->getByType(Schemas\Channels\Properties\Dynamic::class));
+		Assert::notNull($container->getByType(Schemas\Channels\Properties\Variable::class));
+		Assert::notNull($container->getByType(Schemas\Channels\Controls\Control::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\Blank::class));
+		Assert::notNull($container->getByType(Schemas\Connectors\Controls\Control::class));
 
-		Assert::notNull($container->getByType(Hydrators\Devices\BlankDeviceHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Channels\ChannelHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Properties\DeviceDynamicPropertyHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Properties\DeviceStaticPropertyHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Properties\ChannelDynamicPropertyHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Properties\ChannelStaticPropertyHydrator::class));
-		Assert::notNull($container->getByType(Hydrators\Connectors\BlankConnectorHydrator::class));
+		Assert::notNull($container->getByType(Hydrators\Devices\Blank::class));
+		Assert::notNull($container->getByType(Hydrators\Channels\Channel::class));
+		Assert::notNull($container->getByType(Hydrators\Properties\DeviceDynamic::class));
+		Assert::notNull($container->getByType(Hydrators\Properties\DeviceVariable::class));
+		Assert::notNull($container->getByType(Hydrators\Properties\ChannelDynamic::class));
+		Assert::notNull($container->getByType(Hydrators\Properties\ChannelVariable::class));
+		Assert::notNull($container->getByType(Hydrators\Connectors\Blank::class));
 
 		Assert::notNull($container->getByType(Router\Validator::class));
 		Assert::notNull($container->getByType(Router\Routes::class));
 
-		Assert::notNull($container->getByType(Subscribers\EntitiesSubscriber::class));
+		Assert::notNull($container->getByType(Subscribers\ModuleEntities::class));
 	}
 
 	/**

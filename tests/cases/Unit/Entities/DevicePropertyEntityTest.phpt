@@ -25,24 +25,24 @@ final class DevicePropertyEntityTest extends DbTestCase
 		/** @var Models\Devices\Properties\PropertiesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\Properties\PropertiesRepository::class);
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('status_led');
 
 		$parent = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($parent));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $parent);
+		Assert::type(Entities\Devices\Properties\Variable::class, $parent);
 		Assert::same('status_led', $parent->getIdentifier());
 
 		$child = $manager->create(Utils\ArrayHash::from([
-			'entity'     => Entities\Devices\Properties\StaticProperty::class,
+			'entity'     => Entities\Devices\Properties\Variable::class,
 			'identifier' => 'new-child-property',
 			'device'     => $parent->getDevice(),
 			'parent'     => $parent,
 		]));
 
 		Assert::true(is_object($child));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $child);
+		Assert::type(Entities\Devices\Properties\Variable::class, $child);
 		Assert::same('new-child-property', $child->getIdentifier());
 		Assert::same($parent, $child->getParent());
 	}
@@ -55,28 +55,28 @@ final class DevicePropertyEntityTest extends DbTestCase
 		/** @var Models\Devices\Properties\PropertiesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\Properties\PropertiesRepository::class);
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('status_led');
 
 		$parent = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($parent));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $parent);
+		Assert::type(Entities\Devices\Properties\Variable::class, $parent);
 		Assert::same('status_led', $parent->getIdentifier());
 
 		$child = $manager->create(Utils\ArrayHash::from([
-			'entity'     => Entities\Devices\Properties\StaticProperty::class,
+			'entity'     => Entities\Devices\Properties\Variable::class,
 			'identifier' => 'new-child-property',
 			'device'     => $parent->getDevice(),
 			'parent'     => $parent,
 		]));
 
 		Assert::true(is_object($child));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $child);
+		Assert::type(Entities\Devices\Properties\Variable::class, $child);
 		Assert::same('new-child-property', $child->getIdentifier());
 		Assert::same($parent, $child->getParent());
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('status_led');
 
 		$parent = $repository->findOneBy($findQuery);
@@ -85,13 +85,13 @@ final class DevicePropertyEntityTest extends DbTestCase
 
 		$manager->delete($child);
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('status_led');
 
 		$parent = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($parent));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $parent);
+		Assert::type(Entities\Devices\Properties\Variable::class, $parent);
 		Assert::same('status_led', $parent->getIdentifier());
 		Assert::count(0, $parent->getChildren());
 	}
@@ -104,36 +104,36 @@ final class DevicePropertyEntityTest extends DbTestCase
 		/** @var Models\Devices\Properties\PropertiesRepository $repository */
 		$repository = $this->getContainer()->getByType(Models\Devices\Properties\PropertiesRepository::class);
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('status_led');
 
 		$parent = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($parent));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $parent);
+		Assert::type(Entities\Devices\Properties\Variable::class, $parent);
 		Assert::same('status_led', $parent->getIdentifier());
 
 		$child = $manager->create(Utils\ArrayHash::from([
-			'entity'     => Entities\Devices\Properties\StaticProperty::class,
+			'entity'     => Entities\Devices\Properties\Variable::class,
 			'identifier' => 'new-child-property',
 			'device'     => $parent->getDevice(),
 			'parent'     => $parent,
 		]));
 
 		Assert::true(is_object($child));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $child);
+		Assert::type(Entities\Devices\Properties\Variable::class, $child);
 		Assert::same('new-child-property', $child->getIdentifier());
 		Assert::same($parent, $child->getParent());
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('new-child-property');
 
 		$child = $repository->findOneBy($findQuery);
 
 		Assert::true(is_object($child));
-		Assert::type(Entities\Devices\Properties\StaticProperty::class, $child);
+		Assert::type(Entities\Devices\Properties\Variable::class, $child);
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('status_led');
 
 		$parent = $repository->findOneBy($findQuery);
@@ -142,7 +142,7 @@ final class DevicePropertyEntityTest extends DbTestCase
 
 		$manager->delete($parent);
 
-		$findQuery = new Queries\FindDevicePropertiesQuery();
+		$findQuery = new Queries\FindDeviceProperties();
 		$findQuery->byIdentifier('new-child-property');
 
 		$child = $repository->findOneBy($findQuery);

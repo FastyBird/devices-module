@@ -42,32 +42,32 @@ use Throwable;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="property_type", type="string", length=40)
  * @ORM\DiscriminatorMap({
- *    "static"   = "FastyBird\DevicesModule\Entities\Connectors\Properties\StaticProperty",
- *    "dynamic"  = "FastyBird\DevicesModule\Entities\Connectors\Properties\DynamicProperty"
+ *    "variable" = "FastyBird\DevicesModule\Entities\Connectors\Properties\Variable",
+ *    "dynamic"  = "FastyBird\DevicesModule\Entities\Connectors\Properties\Dynamic"
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Property extends Entities\Property implements IProperty
+abstract class Property extends Entities\Property
 {
 
 	/**
-	 * @var Entities\Connectors\IConnector
+	 * @var Entities\Connectors\Connector
 	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="properties")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
 	 */
-	protected Entities\Connectors\IConnector $connector;
+	protected Entities\Connectors\Connector $connector;
 
 	/**
-	 * @param Entities\Connectors\IConnector $connector
+	 * @param Entities\Connectors\Connector $connector
 	 * @param string $identifier
 	 * @param Uuid\UuidInterface|null $id
 	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
-		Entities\Connectors\IConnector $connector,
+		Entities\Connectors\Connector $connector,
 		string $identifier,
 		?Uuid\UuidInterface $id = null
 	) {
@@ -93,7 +93,7 @@ abstract class Property extends Entities\Property implements IProperty
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getConnector(): Entities\Connectors\IConnector
+	public function getConnector(): Entities\Connectors\Connector
 	{
 		return $this->connector;
 	}

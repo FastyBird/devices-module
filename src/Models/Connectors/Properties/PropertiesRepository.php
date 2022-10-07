@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class PropertiesRepository implements IPropertiesRepository
+final class PropertiesRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Connectors\Properties\IProperty>[] */
+	/** @var ORM\EntityRepository<Entities\Connectors\Properties\Property>[] */
 	private array $repository = [];
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,53 +52,60 @@ final class PropertiesRepository implements IPropertiesRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectorProperties $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Connectors\Properties\Property|null
 	 */
 	public function findOneBy(
-		Queries\FindConnectorPropertiesQuery $queryObject,
+		Queries\FindConnectorProperties $queryObject,
 		string $type = Entities\Connectors\Properties\Property::class
-	): ?Entities\Connectors\Properties\IProperty {
-		/** @var Entities\Connectors\Properties\IProperty|null $property */
+	): ?Entities\Connectors\Properties\Property {
+		/** @var Entities\Connectors\Properties\Property|null $property */
 		$property = $queryObject->fetchOne($this->getRepository($type));
 
 		return $property;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectorProperties $queryObject
+	 * @param class-string $type
+	 *
+	 * @return Entities\Connectors\Properties\Property[]
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
-		Queries\FindConnectorPropertiesQuery $queryObject,
+		Queries\FindConnectorProperties $queryObject,
 		string $type = Entities\Connectors\Properties\Property::class
 	): array {
-		/** @var Array<Entities\Connectors\Properties\IProperty>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\IProperty> $result */
+		/** @var Array<Entities\Connectors\Properties\Property>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\Property> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Connectors\Properties\IProperty[] $data */
+		/** @var Entities\Connectors\Properties\Property[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindConnectorProperties $queryObject
+	 * @param class-string $type
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\Property>
 	 */
 	public function getResultSet(
-		Queries\FindConnectorPropertiesQuery $queryObject,
+		Queries\FindConnectorProperties $queryObject,
 		string $type = Entities\Connectors\Properties\Property::class
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -107,16 +114,16 @@ final class PropertiesRepository implements IPropertiesRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Connectors\Properties\IProperty>
+	 * @return ORM\EntityRepository<Entities\Connectors\Properties\Property>
 	 */
 	private function getRepository(string $type): ORM\EntityRepository
 	{
 		if (!isset($this->repository[$type])) {
-			/** @var ORM\EntityRepository<Entities\Connectors\Properties\IProperty> $repository */
+			/** @var ORM\EntityRepository<Entities\Connectors\Properties\Property> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository[$type] = $repository;

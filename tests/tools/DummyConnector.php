@@ -5,7 +5,7 @@ namespace Tests\Tools;
 use FastyBird\DevicesModule\Connectors;
 use Ramsey\Uuid;
 
-class DummyConnector implements Connectors\IConnector
+class DummyConnector implements Connectors\Connector
 {
 
 	/**

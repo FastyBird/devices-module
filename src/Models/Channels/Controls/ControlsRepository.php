@@ -32,12 +32,12 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ControlsRepository implements IControlsRepository
+final class ControlsRepository
 {
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Channels\Controls\IControl>|null */
+	/** @var ORM\EntityRepository<Entities\Channels\Controls\Control>|null */
 	private ?ORM\EntityRepository $repository = null;
 
 	/** @var Persistence\ManagerRegistry */
@@ -52,48 +52,52 @@ final class ControlsRepository implements IControlsRepository
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindChannelControls $queryObject
+	 *
+	 * @return Entities\Channels\Controls\Control|null
 	 */
-	public function findOneBy(Queries\FindChannelControlsQuery $queryObject): ?Entities\Channels\Controls\IControl
+	public function findOneBy(Queries\FindChannelControls $queryObject): ?Entities\Channels\Controls\Control
 	{
-		/** @var Entities\Channels\Controls\IControl|null $control */
+		/** @var Entities\Channels\Controls\Control|null $control */
 		$control = $queryObject->fetchOne($this->getRepository());
 
 		return $control;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindChannelControls $queryObject
+	 *
+	 * @return Entities\Channels\Controls\Control[]
 	 *
 	 * @throws Throwable
 	 */
-	public function findAllBy(Queries\FindChannelControlsQuery $queryObject): array
+	public function findAllBy(Queries\FindChannelControls $queryObject): array
 	{
-		/** @var Array<Entities\Channels\Controls\IControl>|DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\IControl> $result */
+		/** @var Array<Entities\Channels\Controls\Control>|DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\Control> $result */
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (is_array($result)) {
 			return $result;
 		}
 
-		/** @var Entities\Channels\Controls\IControl[] $data */
+		/** @var Entities\Channels\Controls\Control[] $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param Queries\FindChannelControls $queryObject
 	 *
-	 * @throws Throwable
+	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\Control>
 	 */
 	public function getResultSet(
-		Queries\FindChannelControlsQuery $queryObject
+		Queries\FindChannelControls $queryObject
 	): DoctrineOrmQuery\ResultSet {
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidStateException('Result set for given query could not be loaded.');
+			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
 		}
 
 		return $result;
@@ -102,16 +106,16 @@ final class ControlsRepository implements IControlsRepository
 	/**
 	 * @param class-string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Channels\Controls\IControl>
+	 * @return ORM\EntityRepository<Entities\Channels\Controls\Control>
 	 */
 	private function getRepository(string $type = Entities\Channels\Controls\Control::class): ORM\EntityRepository
 	{
 		if ($this->repository === null) {
-			/** @var ORM\EntityRepository<Entities\Channels\Controls\IControl> $repository */
+			/** @var ORM\EntityRepository<Entities\Channels\Controls\Control> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
 
 			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidStateException('Entity repository could not be loaded');
+				throw new Exceptions\InvalidState('Entity repository could not be loaded');
 			}
 
 			$this->repository = $repository;

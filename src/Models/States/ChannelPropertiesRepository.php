@@ -48,23 +48,23 @@ final class ChannelPropertiesRepository
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
+	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
 	 *
-	 * @return States\IChannelProperty|null
+	 * @return States\ChannelProperty|null
 	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\IDynamicProperty|Entities\Channels\Properties\IMappedProperty $property
-	): ?States\IChannelProperty {
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
+	): ?States\ChannelProperty {
 		if ($this->repository === null) {
-			throw new Exceptions\NotImplementedException('Channel properties state repository is not registered');
+			throw new Exceptions\NotImplemented('Channel properties state repository is not registered');
 		}
 
 		if ($property->getParent() !== null) {
 			$parent = $property->getParent();
 
 			if (
-				$parent instanceof Entities\Channels\Properties\IDynamicProperty
-				|| $parent instanceof Entities\Channels\Properties\IMappedProperty
+				$parent instanceof Entities\Channels\Properties\Dynamic
+				|| $parent instanceof Entities\Channels\Properties\Mapped
 			) {
 				return $this->repository->findOne($parent);
 
@@ -82,13 +82,13 @@ final class ChannelPropertiesRepository
 	/**
 	 * @param Uuid\UuidInterface $id
 	 *
-	 * @return States\IChannelProperty|null
+	 * @return States\ChannelProperty|null
 	 */
 	public function findOneById(
 		Uuid\UuidInterface $id
-	): ?States\IChannelProperty {
+	): ?States\ChannelProperty {
 		if ($this->repository === null) {
-			throw new Exceptions\NotImplementedException('Channel properties state repository is not registered');
+			throw new Exceptions\NotImplemented('Channel properties state repository is not registered');
 		}
 
 		return $this->repository->findOneById($id);

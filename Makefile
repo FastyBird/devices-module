@@ -9,13 +9,13 @@ vendor: composer.json composer.lock
 php_qa: php_lint phpstan php_cs
 
 php_lint: vendor
-	vendor/bin/linter src tests
+	vendor/bin/parallel-lint --exclude .git --exclude vendor src tests
 
 php_cs: vendor
-	vendor/bin/codesniffer src tests
+	vendor/bin/phpcs --standard=phpcs.xml src tests
 
 php_csf: vendor
-	vendor/bin/codefixer src tests
+	vendor/bin/phpcbf --standard=phpcs.xml src tests
 
 phpstan: vendor
 	vendor/bin/phpstan analyse -c phpstan.neon src

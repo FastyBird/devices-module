@@ -34,17 +34,19 @@ final class Channel extends JsonApiHydrators\Hydrator
 {
 
 	/** @var Array<string> */
-	protected array $attributes = [
-		'identifier',
-		'name',
-		'comment',
-		'params',
-	];
+	protected array $attributes
+		= [
+			'identifier',
+			'name',
+			'comment',
+			'params',
+		];
 
 	/** @var Array<string> */
-	protected array $relationships = [
-		Schemas\Channels\Channel::RELATIONSHIPS_DEVICE,
-	];
+	protected array $relationships
+		= [
+			Schemas\Channels\Channel::RELATIONSHIPS_DEVICE,
+		];
 
 	public function getEntityName(): string
 	{

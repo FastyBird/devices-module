@@ -32,8 +32,9 @@ abstract class Connector extends Property
 {
 
 	/** @var Array<string> */
-	protected array $relationships = [
-		Schemas\Connectors\Properties\Property::RELATIONSHIPS_CONNECTOR,
-	];
+	protected array $relationships
+		= [
+			Schemas\Connectors\Properties\Property::RELATIONSHIPS_CONNECTOR,
+		];
 
 }

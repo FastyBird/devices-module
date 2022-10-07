@@ -41,19 +41,20 @@ abstract class Property extends JsonApiHydrators\Hydrator
 {
 
 	/** @var Array<string> */
-	protected array $attributes = [
-		0 => 'identifier',
-		1 => 'name',
-		2 => 'settable',
-		3 => 'queryable',
-		4 => 'unit',
-		5 => 'format',
-		6 => 'invalid',
-		7 => 'value',
+	protected array $attributes
+		= [
+			0 => 'identifier',
+			1 => 'name',
+			2 => 'settable',
+			3 => 'queryable',
+			4 => 'unit',
+			5 => 'format',
+			6 => 'invalid',
+			7 => 'value',
 
-		'data_type' => 'dataType',
-		'number_of_decimals' => 'numberOfDecimals',
-	];
+			'data_type' => 'dataType',
+			'number_of_decimals' => 'numberOfDecimals',
+		];
 
 	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{

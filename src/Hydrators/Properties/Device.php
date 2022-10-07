@@ -32,9 +32,10 @@ abstract class Device extends Property
 {
 
 	/** @var Array<string> */
-	protected array $relationships = [
-		Schemas\Devices\Properties\Property::RELATIONSHIPS_DEVICE,
-		Schemas\Devices\Properties\Property::RELATIONSHIPS_PARENT,
-	];
+	protected array $relationships
+		= [
+			Schemas\Devices\Properties\Property::RELATIONSHIPS_DEVICE,
+			Schemas\Devices\Properties\Property::RELATIONSHIPS_PARENT,
+		];
 
 }

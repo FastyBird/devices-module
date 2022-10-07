@@ -35,18 +35,20 @@ abstract class Device extends JsonApiHydrators\Hydrator
 {
 
 	/** @var Array<string> */
-	protected array $attributes = [
-		'identifier',
-		'name',
-		'comment',
-		'params',
-	];
+	protected array $attributes
+		= [
+			'identifier',
+			'name',
+			'comment',
+			'params',
+		];
 
 	/** @var Array<string> */
-	protected array $relationships = [
-		Schemas\Devices\Device::RELATIONSHIPS_CONNECTOR,
-		Schemas\Devices\Device::RELATIONSHIPS_PARENTS,
-	];
+	protected array $relationships
+		= [
+			Schemas\Devices\Device::RELATIONSHIPS_CONNECTOR,
+			Schemas\Devices\Device::RELATIONSHIPS_PARENTS,
+		];
 
 	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{

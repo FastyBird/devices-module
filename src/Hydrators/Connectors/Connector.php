@@ -35,12 +35,13 @@ abstract class Connector extends JsonApiHydrators\Hydrator
 {
 
 	/** @var Array<string> */
-	protected array $attributes = [
-		'identifier',
-		'name',
-		'comment',
-		'enabled',
-	];
+	protected array $attributes
+		= [
+			'identifier',
+			'name',
+			'comment',
+			'enabled',
+		];
 
 	public function getEntityName(): string
 	{

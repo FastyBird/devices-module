@@ -32,9 +32,10 @@ abstract class Channel extends Property
 {
 
 	/** @var Array<string> */
-	protected array $relationships = [
-		Schemas\Channels\Properties\Property::RELATIONSHIPS_CHANNEL,
-		Schemas\Channels\Properties\Property::RELATIONSHIPS_PARENT,
-	];
+	protected array $relationships
+		= [
+			Schemas\Channels\Properties\Property::RELATIONSHIPS_CHANNEL,
+			Schemas\Channels\Properties\Property::RELATIONSHIPS_PARENT,
+		];
 
 }

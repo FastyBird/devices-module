@@ -88,6 +88,8 @@ abstract class Property implements Entity,
 	 * @Enum(class=MetadataTypes\DataTypeType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="property_data_type", length=100, nullable=true, options={"default": "unknown"})
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	protected $dataType;
 
@@ -279,10 +281,10 @@ abstract class Property implements Entity,
 								static fn (string|array|int|float|bool|Utils\ArrayHash|null $part): string => is_array(
 									$part,
 								) || $part instanceof Utils\ArrayHash
-										? implode('|', (array) $part)
-										: ($part !== null ? strval(
-											$part,
-										) : ''),
+									? implode('|', (array) $part)
+									: ($part !== null ? strval(
+										$part,
+									) : ''),
 								(array) $item,
 							),
 						);

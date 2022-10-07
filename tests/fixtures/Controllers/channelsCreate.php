@@ -10,7 +10,7 @@ const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZ
 return [
 	// Valid responses
 	//////////////////
-	'create'          => [
+	'create' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channels.create.json'),
@@ -27,49 +27,49 @@ return [
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/channels.create.missing.required.json',
 	],
-	'notUnique'       => [
+	'notUnique' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channels.create.notUnique.json'),
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/channels.create.notUnique.json',
 	],
-	'invalidType'     => [
+	'invalidType' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channels.create.invalid.type.json'),
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/generic/invalid.type.json',
 	],
-	'missingToken'    => [
+	'missingToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		null,
 		file_get_contents(__DIR__ . '/requests/channels.create.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'invalidToken'    => [
+	'invalidToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		'Bearer ' . INVALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channels.create.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'emptyToken'      => [
+	'emptyToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		'',
 		file_get_contents(__DIR__ . '/requests/channels.create.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'expiredToken'    => [
+	'expiredToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		'Bearer ' . EXPIRED_TOKEN,
 		file_get_contents(__DIR__ . '/requests/channels.create.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'notAllowed'      => [
+	'notAllowed' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/channels',
 		'Bearer ' . VALID_TOKEN_USER,
 		file_get_contents(__DIR__ . '/requests/channels.create.json'),

@@ -10,14 +10,14 @@ const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZ
 return [
 	// Valid responses
 	//////////////////
-	'create'          => [
+	'create' => [
 		'/v1/devices',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.create.json'),
 		StatusCodeInterface::STATUS_CREATED,
 		__DIR__ . '/responses/devices.create.json',
 	],
-	'createChild'     => [
+	'createChild' => [
 		'/v1/devices',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.create.child.json'),
@@ -38,49 +38,49 @@ return [
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/devices.create.missing.required.json',
 	],
-	'notUnique'       => [
+	'notUnique' => [
 		'/v1/devices',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.create.notUnique.json'),
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/devices.create.notUnique.json',
 	],
-	'invalidType'     => [
+	'invalidType' => [
 		'/v1/devices',
 		'Bearer ' . VALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.create.invalid.type.json'),
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/generic/invalid.type.json',
 	],
-	'missingToken'    => [
+	'missingToken' => [
 		'/v1/devices',
 		null,
 		file_get_contents(__DIR__ . '/requests/devices.create.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'invalidToken'    => [
+	'invalidToken' => [
 		'/v1/devices',
 		'Bearer ' . INVALID_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.create.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'emptyToken'      => [
+	'emptyToken' => [
 		'/v1/devices',
 		'',
 		file_get_contents(__DIR__ . '/requests/devices.create.json'),
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'expiredToken'    => [
+	'expiredToken' => [
 		'/v1/devices',
 		'Bearer ' . EXPIRED_TOKEN,
 		file_get_contents(__DIR__ . '/requests/devices.create.json'),
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'notAllowed'      => [
+	'notAllowed' => [
 		'/v1/devices',
 		'Bearer ' . VALID_TOKEN_USER,
 		file_get_contents(__DIR__ . '/requests/devices.create.json'),

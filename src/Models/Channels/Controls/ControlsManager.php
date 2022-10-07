@@ -20,6 +20,7 @@ use FastyBird\DevicesModule\Models;
 use IPub\DoctrineCrud\Crud;
 use Nette;
 use Nette\Utils;
+use function assert;
 
 /**
  * Channels controls entities manager
@@ -34,50 +35,37 @@ final class ControlsManager
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Channels\Controls\Control> */
-	private Crud\IEntityCrud $entityCrud;
-
 	/**
 	 * @param Crud\IEntityCrud<Entities\Channels\Controls\Control> $entityCrud
 	 */
-	public function __construct(
-		Crud\IEntityCrud $entityCrud
-	) {
+	public function __construct(private Crud\IEntityCrud $entityCrud)
+	{
 		// Entity CRUD for handling entities
-		$this->entityCrud = $entityCrud;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function create(
-		Utils\ArrayHash $values
-	): Entities\Channels\Controls\Control {
-		/** @var Entities\Channels\Controls\Control $entity */
+		Utils\ArrayHash $values,
+	): Entities\Channels\Controls\Control
+	{
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
+		assert($entity instanceof Entities\Channels\Controls\Control);
 
 		return $entity;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function update(
 		Entities\Channels\Controls\Control $entity,
-		Utils\ArrayHash $values
-	): Entities\Channels\Controls\Control {
-		/** @var Entities\Channels\Controls\Control $entity */
+		Utils\ArrayHash $values,
+	): Entities\Channels\Controls\Control
+	{
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
+		assert($entity instanceof Entities\Channels\Controls\Control);
 
 		return $entity;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function delete(
-		Entities\Channels\Controls\Control $entity
-	): bool {
+	public function delete(Entities\Channels\Controls\Control $entity): bool
+	{
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);
 	}

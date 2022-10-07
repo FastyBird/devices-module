@@ -31,22 +31,12 @@ use Ramsey\Uuid;
 interface IChannelPropertiesRepository
 {
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
-	 *
-	 * @return States\ChannelProperty|null
-	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
-	): ?States\ChannelProperty;
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+	): States\ChannelProperty|null;
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return States\ChannelProperty|null
-	 */
 	public function findOneById(
-		Uuid\UuidInterface $id
-	): ?States\ChannelProperty;
+		Uuid\UuidInterface $id,
+	): States\ChannelProperty|null;
 
 }

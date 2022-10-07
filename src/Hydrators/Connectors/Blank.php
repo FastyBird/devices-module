@@ -20,19 +20,15 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Blank connector entity hydrator
  *
+ * @phpstan-extends Connector<Entities\Connectors\Blank>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Connector<Entities\Connectors\Blank>
  */
 final class Blank extends Connector
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityName(): string
 	{
 		return Entities\Connectors\Blank::class;

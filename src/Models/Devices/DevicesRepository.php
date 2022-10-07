@@ -23,6 +23,8 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function assert;
+use function is_array;
 
 /**
  * Device repository
@@ -37,48 +39,40 @@ final class DevicesRepository
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Devices\Device>[] */
+	/** @var Array<ORM\EntityRepository<Entities\Devices\Device>> */
 	private array $repository = [];
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
 	}
 
 	/**
-	 * @param Queries\FindDevices $queryObject
 	 * @param class-string $type
-	 *
-	 * @return Entities\Devices\Device|null
 	 */
 	public function findOneBy(
 		Queries\FindDevices $queryObject,
-		string $type = Entities\Devices\Device::class
-	): ?Entities\Devices\Device {
-		/** @var Entities\Devices\Device|null $device */
+		string $type = Entities\Devices\Device::class,
+	): Entities\Devices\Device|null
+	{
+		/** @var mixed $device */
 		$device = $queryObject->fetchOne($this->getRepository($type));
+		assert($device instanceof Entities\Devices\Device || $device === null);
 
 		return $device;
 	}
 
 	/**
-	 * @param Queries\FindDevices $queryObject
 	 * @param class-string $type
 	 *
-	 * @return Entities\Devices\Device[]
+	 * @return Array<Entities\Devices\Device>
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
 		Queries\FindDevices $queryObject,
-		string $type = Entities\Devices\Device::class
-	): array {
+		string $type = Entities\Devices\Device::class,
+	): array
+	{
 		/** @var Array<Entities\Devices\Device>|DoctrineOrmQuery\ResultSet<Entities\Devices\Device> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -86,22 +80,22 @@ final class DevicesRepository
 			return $result;
 		}
 
-		/** @var Entities\Devices\Device[] $data */
+		/** @var Array<Entities\Devices\Device> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindDevices $queryObject
 	 * @param class-string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Device>
 	 */
 	public function getResultSet(
 		Queries\FindDevices $queryObject,
-		string $type = Entities\Devices\Device::class
-	): DoctrineOrmQuery\ResultSet {
+		string $type = Entities\Devices\Device::class,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

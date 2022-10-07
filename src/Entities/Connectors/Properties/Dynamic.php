@@ -24,9 +24,6 @@ use FastyBird\Metadata\Types as MetadataTypes;
 class Dynamic extends Property
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getType(): MetadataTypes\PropertyTypeType
 	{
 		return MetadataTypes\PropertyTypeType::get(MetadataTypes\PropertyTypeType::TYPE_DYNAMIC);

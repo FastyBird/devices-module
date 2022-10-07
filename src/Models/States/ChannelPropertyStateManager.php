@@ -21,6 +21,7 @@ use FastyBird\Metadata;
 use Nette;
 use Nette\Utils;
 use Psr\Log;
+use function is_array;
 
 /**
  * Useful channel dynamic property state helpers
@@ -35,48 +36,23 @@ final class ChannelPropertyStateManager
 
 	use Nette\SmartObject;
 
-	/** @var DevicesModuleModels\DataStorage\ChannelsRepository */
-	private DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository;
-
-	/** @var DevicesModuleModels\States\ChannelPropertiesRepository */
-	private DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository;
-
-	/** @var DevicesModuleModels\States\ChannelPropertiesManager */
-	private DevicesModuleModels\States\ChannelPropertiesManager $channelPropertiesStatesManager;
-
-	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
-	/**
-	 * @param DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository
-	 * @param ChannelPropertiesRepository $channelPropertyStateRepository
-	 * @param ChannelPropertiesManager $channelPropertiesStatesManager
-	 * @param Log\LoggerInterface|null $logger
-	 */
 	public function __construct(
-		DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository,
-		DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository,
-		DevicesModuleModels\States\ChannelPropertiesManager $channelPropertiesStatesManager,
-		?Log\LoggerInterface $logger
-	) {
-		$this->channelsRepository = $channelsRepository;
-
-		$this->channelPropertyStateRepository = $channelPropertyStateRepository;
-		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
-
+		private DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository,
+		private DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository,
+		private DevicesModuleModels\States\ChannelPropertiesManager $channelPropertiesStatesManager,
+		Log\LoggerInterface|null $logger,
+	)
+	{
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
-	/**
-	 * @param Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity $property
-	 * @param Utils\ArrayHash $data
-	 *
-	 * @return void
-	 */
 	public function setValue(
 		Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity $property,
-		Utils\ArrayHash $data
-	): void {
+		Utils\ArrayHash $data,
+	): void
+	{
 		try {
 			$propertyState = $this->channelPropertyStateRepository->findOne($property);
 		} catch (DevicesModuleExceptions\NotImplemented) {
@@ -84,8 +60,8 @@ final class ChannelPropertyStateManager
 				'DynamicProperties repository is not configured. State could not be fetched',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'   => 'channel-property-state-manager',
-				]
+					'type' => 'channel-property-state-manager',
+				],
 			);
 
 			return;
@@ -97,7 +73,7 @@ final class ChannelPropertyStateManager
 				// ...create state in storage
 				$propertyState = $this->channelPropertiesStatesManager->create(
 					$property,
-					$data
+					$data,
 				);
 
 				$channel = $this->channelsRepository->findById($property->getChannel());
@@ -105,25 +81,25 @@ final class ChannelPropertyStateManager
 				$this->logger->debug(
 					'Channel property state was created',
 					[
-						'source'   => Metadata\Constants::MODULE_DEVICES_SOURCE,
-						'type'     => 'channel-property-state-manager',
-						'device'   => [
+						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+						'type' => 'channel-property-state-manager',
+						'device' => [
 							'id' => $channel?->getDevice()->toString(),
 						],
-						'channel'  => [
+						'channel' => [
 							'id' => $property->getChannel()->toString(),
 						],
 						'property' => [
-							'id'    => $property->getId()->toString(),
+							'id' => $property->getId()->toString(),
 							'state' => $propertyState->toArray(),
 						],
-					]
+					],
 				);
 			} else {
 				$propertyState = $this->channelPropertiesStatesManager->update(
 					$property,
 					$propertyState,
-					$data
+					$data,
 				);
 
 				$channel = $this->channelsRepository->findById($property->getChannel());
@@ -131,19 +107,19 @@ final class ChannelPropertyStateManager
 				$this->logger->debug(
 					'Channel property state was updated',
 					[
-						'source'   => Metadata\Constants::MODULE_DEVICES_SOURCE,
-						'type'     => 'channel-property-state-manager',
-						'device'   => [
+						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+						'type' => 'channel-property-state-manager',
+						'device' => [
 							'id' => $channel?->getDevice()->toString(),
 						],
-						'channel'  => [
+						'channel' => [
 							'id' => $property->getChannel()->toString(),
 						],
 						'property' => [
-							'id'    => $property->getId()->toString(),
+							'id' => $property->getId()->toString(),
 							'state' => $propertyState->toArray(),
 						],
-					]
+					],
 				);
 			}
 		} catch (DevicesModuleExceptions\NotImplemented) {
@@ -151,22 +127,20 @@ final class ChannelPropertyStateManager
 				'DynamicProperties manager is not configured. State could not be saved',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'   => 'channel-property-state-manager',
-				]
+					'type' => 'channel-property-state-manager',
+				],
 			);
 		}
 	}
 
 	/**
-	 * @param Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity[] $property
-	 * @param bool $state
-	 *
-	 * @return void
+	 * @param Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Array<Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity> $property
 	 */
 	public function setValidState(
 		Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity|array $property,
-		bool $state
-	): void {
+		bool $state,
+	): void
+	{
 		if (is_array($property)) {
 			foreach ($property as $item) {
 				$this->setValue($item, Utils\ArrayHash::from([

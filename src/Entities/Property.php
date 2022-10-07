@@ -28,6 +28,18 @@ use IPub\DoctrineTimestampable;
 use Nette\Utils;
 use Ramsey\Uuid;
 use Throwable;
+use function array_map;
+use function array_merge;
+use function floatval;
+use function implode;
+use function in_array;
+use function intval;
+use function is_array;
+use function is_numeric;
+use function is_string;
+use function preg_match;
+use function sprintf;
+use function strval;
 
 abstract class Property implements Entity,
 	EntityParams,
@@ -40,8 +52,6 @@ abstract class Property implements Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="property_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -49,32 +59,24 @@ abstract class Property implements Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="property_identifier", length=50, nullable=false)
 	 */
 	protected string $identifier;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_name", nullable=true, options={"default": null})
 	 */
-	protected ?string $name = null;
+	protected string|null $name = null;
 
 	/**
-	 * @var bool
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="property_settable", nullable=false, options={"default": false})
 	 */
 	protected bool $settable = false;
 
 	/**
-	 * @var bool
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="property_queryable", nullable=false, options={"default": false})
 	 */
@@ -90,63 +92,49 @@ abstract class Property implements Entity,
 	protected $dataType;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_unit", length=20, nullable=true, options={"default": null})
 	 */
-	protected ?string $unit = null;
+	protected string|null $unit = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_format", nullable=true, options={"default": null})
 	 */
-	protected ?string $format = null;
+	protected string|null $format = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_invalid", nullable=true, options={"default": null})
 	 */
-	protected ?string $invalid = null;
+	protected string|null $invalid = null;
 
 	/**
-	 * @var int|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="integer", name="property_number_of_decimals", nullable=true, options={"default": null})
 	 */
-	protected ?int $numberOfDecimals = null;
+	protected int|null $numberOfDecimals = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_value", nullable=true, options={"default": null})
 	 */
-	protected ?string $value = null;
+	protected string|null $value = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="property_default", nullable=true, options={"default": null})
 	 */
-	protected ?string $default = null;
+	protected string|null $default = null;
 
 	/**
-	 * @param string $identifier
-	 * @param Uuid\UuidInterface|null $id
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		string $identifier,
-		?Uuid\UuidInterface $id = null
-	) {
+		Uuid\UuidInterface|null $id = null,
+	)
+	{
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->identifier = $identifier;
@@ -160,50 +148,28 @@ abstract class Property implements Entity,
 		}
 	}
 
-	/**
-	 * @return MetadataTypes\PropertyTypeType
-	 */
 	abstract public function getType(): MetadataTypes\PropertyTypeType;
 
-	/**
-	 * @return string
-	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
 	}
 
-	/**
-	 * @return string|null
-	 */
-	public function getName(): ?string
+	public function getName(): string|null
 	{
 		return $this->name;
 	}
 
-	/**
-	 * @param string|null $name
-	 *
-	 * @return void
-	 */
-	public function setName(?string $name): void
+	public function setName(string|null $name): void
 	{
 		$this->name = $name;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isSettable(): bool
 	{
 		return $this->settable;
 	}
 
-	/**
-	 * @param bool $settable
-	 *
-	 * @return void
-	 */
 	public function setSettable(bool $settable): void
 	{
 		if ($settable && $this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
@@ -213,19 +179,11 @@ abstract class Property implements Entity,
 		$this->settable = $settable;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isQueryable(): bool
 	{
 		return $this->queryable;
 	}
 
-	/**
-	 * @param bool $queryable
-	 *
-	 * @return void
-	 */
 	public function setQueryable(bool $queryable): void
 	{
 		if ($queryable && $this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
@@ -235,45 +193,26 @@ abstract class Property implements Entity,
 		$this->queryable = $queryable;
 	}
 
-	/**
-	 * @return MetadataTypes\DataTypeType
-	 */
 	public function getDataType(): MetadataTypes\DataTypeType
 	{
 		return $this->dataType;
 	}
 
-	/**
-	 * @param MetadataTypes\DataTypeType $dataType
-	 *
-	 * @return void
-	 */
 	public function setDataType(MetadataTypes\DataTypeType $dataType): void
 	{
 		$this->dataType = $dataType;
 	}
 
-	/**
-	 * @return string|null
-	 */
-	public function getUnit(): ?string
+	public function getUnit(): string|null
 	{
 		return $this->unit;
 	}
 
-	/**
-	 * @param string|null $unit
-	 *
-	 * @return void
-	 */
-	public function setUnit(?string $unit): void
+	public function setUnit(string|null $unit): void
 	{
 		$this->unit = $unit;
 	}
 
-	/**
-	 * @return MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
-	 */
 	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	{
 		return $this->buildFormat($this->format);
@@ -281,8 +220,6 @@ abstract class Property implements Entity,
 
 	/**
 	 * @param string|Array<int, string>|Array<int, string|int|float|Array<int, string|int|float>|Utils\ArrayHash|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|Utils\ArrayHash|null>>|null $format
-	 *
-	 * @return void
 	 */
 	public function setFormat(array|string|null $format): void
 	{
@@ -294,7 +231,6 @@ abstract class Property implements Entity,
 			$this->format = $format;
 
 			return;
-
 		} elseif (is_array($format)) {
 			if (
 				in_array($this->dataType->getValue(), [
@@ -307,11 +243,15 @@ abstract class Property implements Entity,
 					MetadataTypes\DataTypeType::DATA_TYPE_FLOAT,
 				], true)
 			) {
-				$plainFormat = implode(':', array_map(function ($item): string {
+				$plainFormat = implode(':', array_map(static function ($item): string {
 					if (is_array($item) || $item instanceof Utils\ArrayHash) {
-						return implode('|', array_map(function ($part): string|int|float {
-							return is_array($part) ? strval($part) : $part;
-						}, (array) $item));
+						return implode(
+							'|',
+							array_map(
+								static fn ($part): string|int|float => is_array($part) ? strval($part) : $part,
+								(array) $item,
+							),
+						);
 					}
 
 					return strval($item);
@@ -324,7 +264,6 @@ abstract class Property implements Entity,
 				}
 
 				throw new Exceptions\InvalidArgument('Provided property format is not valid');
-
 			} elseif (
 				in_array($this->dataType->getValue(), [
 					MetadataTypes\DataTypeType::DATA_TYPE_ENUM,
@@ -332,11 +271,21 @@ abstract class Property implements Entity,
 					MetadataTypes\DataTypeType::DATA_TYPE_SWITCH,
 				], true)
 			) {
-				$plainFormat = implode(',', array_map(function ($item): string {
+				$plainFormat = implode(',', array_map(static function ($item): string {
 					if (is_array($item) || $item instanceof Utils\ArrayHash) {
-						return implode(':', array_map(function (string|array|int|float|bool|Utils\ArrayHash|null $part): string {
-							return is_array($part) || $part instanceof Utils\ArrayHash ? implode('|', (array) $part) : ($part !== null ? strval($part) : '');
-						}, (array) $item));
+						return implode(
+							':',
+							array_map(
+								static fn (string|array|int|float|bool|Utils\ArrayHash|null $part): string => is_array(
+									$part,
+								) || $part instanceof Utils\ArrayHash
+										? implode('|', (array) $part)
+										: ($part !== null ? strval(
+											$part,
+										) : ''),
+								(array) $item,
+							),
+						);
 					}
 
 					return strval($item);
@@ -358,9 +307,6 @@ abstract class Property implements Entity,
 		$this->format = null;
 	}
 
-	/**
-	 * @return string|int|float|null
-	 */
 	public function getInvalid(): float|int|string|null
 	{
 		if ($this->invalid === null) {
@@ -391,89 +337,78 @@ abstract class Property implements Entity,
 		return strval($this->invalid);
 	}
 
-	/**
-	 * @param string|null $invalid
-	 *
-	 * @return void
-	 */
-	public function setInvalid(?string $invalid): void
+	public function setInvalid(string|null $invalid): void
 	{
 		$this->invalid = $invalid;
 	}
 
-	/**
-	 * @return int|null
-	 */
-	public function getNumberOfDecimals(): ?int
+	public function getNumberOfDecimals(): int|null
 	{
 		return $this->numberOfDecimals;
 	}
 
-	/**
-	 * @param int|null $numberOfDecimals
-	 *
-	 * @return void
-	 */
-	public function setNumberOfDecimals(?int $numberOfDecimals): void
+	public function setNumberOfDecimals(int|null $numberOfDecimals): void
 	{
 		$this->numberOfDecimals = $numberOfDecimals;
 	}
 
-	/**
-	 * @return bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
-	 */
 	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidState(sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())));
+			throw new Exceptions\InvalidState(
+				sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())),
+			);
 		}
 
 		if ($this->value === null) {
 			return null;
 		}
 
-		return Utilities\ValueHelper::normalizeValue($this->getDataType(), $this->value, $this->getFormat(), $this->getInvalid());
+		return Utilities\ValueHelper::normalizeValue(
+			$this->getDataType(),
+			$this->value,
+			$this->getFormat(),
+			$this->getInvalid(),
+		);
 	}
 
-	/**
-	 * @param string|null $value
-	 *
-	 * @return void
-	 */
-	public function setValue(?string $value): void
+	public function setValue(string|null $value): void
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidState(sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())));
+			throw new Exceptions\InvalidState(
+				sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())),
+			);
 		}
 
 		$this->value = $value;
 	}
 
-	/**
-	 * @return bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
-	 */
 	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidState(sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())));
+			throw new Exceptions\InvalidState(
+				sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())),
+			);
 		}
 
 		if ($this->default === null) {
 			return null;
 		}
 
-		return Utilities\ValueHelper::normalizeValue($this->getDataType(), $this->default, $this->getFormat(), $this->getInvalid());
+		return Utilities\ValueHelper::normalizeValue(
+			$this->getDataType(),
+			$this->default,
+			$this->getFormat(),
+			$this->getInvalid(),
+		);
 	}
 
-	/**
-	 * @param string|null $default
-	 *
-	 * @return void
-	 */
-	public function setDefault(?string $default): void
+	public function setDefault(string|null $default): void
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidState(sprintf('Default value is not allowed for property type: %s', strval($this->getType()->getValue())));
+			throw new Exceptions\InvalidState(
+				sprintf('Default value is not allowed for property type: %s', strval($this->getType()->getValue())),
+			);
 		}
 
 		$this->default = $default;
@@ -485,37 +420,33 @@ abstract class Property implements Entity,
 	public function toArray(): array
 	{
 		$data = [
-			'id'                 => $this->getPlainId(),
-			'type'               => $this->getType()->getValue(),
-			'identifier'         => $this->getIdentifier(),
-			'name'               => $this->getName(),
-			'settable'           => $this->isSettable(),
-			'queryable'          => $this->isQueryable(),
-			'data_type'          => $this->getDataType()->getValue(),
-			'unit'               => $this->getUnit(),
-			'format'             => $this->getFormat()?->toArray(),
-			'invalid'            => $this->getInvalid(),
+			'id' => $this->getPlainId(),
+			'type' => $this->getType()->getValue(),
+			'identifier' => $this->getIdentifier(),
+			'name' => $this->getName(),
+			'settable' => $this->isSettable(),
+			'queryable' => $this->isQueryable(),
+			'data_type' => $this->getDataType()->getValue(),
+			'unit' => $this->getUnit(),
+			'format' => $this->getFormat()?->toArray(),
+			'invalid' => $this->getInvalid(),
 			'number_of_decimals' => $this->getNumberOfDecimals(),
 		];
 
 		if ($this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
 			return array_merge($data, [
 				'default' => Utilities\ValueHelper::flattenValue($this->getDefault()),
-				'value'   => Utilities\ValueHelper::flattenValue($this->getValue()),
+				'value' => Utilities\ValueHelper::flattenValue($this->getValue()),
 			]);
 		}
 
 		return $data;
 	}
 
-	/**
-	 * @param string|null $format
-	 *
-	 * @return MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
-	 */
 	private function buildFormat(
-		?string $format
-	): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null {
+		string|null $format,
+	): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
+	{
 		if ($format === null) {
 			return null;
 		}
@@ -543,7 +474,6 @@ abstract class Property implements Entity,
 		) {
 			if (preg_match(Metadata\Constants::VALUE_FORMAT_STRING_ENUM, $format) === 1) {
 				return new MetadataValueObjects\StringEnumFormat($format);
-
 			} elseif (preg_match(Metadata\Constants::VALUE_FORMAT_COMBINED_ENUM, $format) === 1) {
 				return new MetadataValueObjects\CombinedEnumFormat($format);
 			}

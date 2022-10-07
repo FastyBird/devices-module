@@ -31,39 +31,20 @@ use Nette\Utils;
 interface IChannelPropertiesManager
 {
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\ChannelProperty
-	 */
 	public function create(
 		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
 	): States\ChannelProperty;
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
-	 * @param States\ChannelProperty $state
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\ChannelProperty
-	 */
 	public function update(
 		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		States\ChannelProperty $state,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
 	): States\ChannelProperty;
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
-	 * @param States\ChannelProperty $state
-	 *
-	 * @return bool
-	 */
 	public function delete(
 		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
-		States\ChannelProperty $state
+		States\ChannelProperty $state,
 	): bool;
 
 }

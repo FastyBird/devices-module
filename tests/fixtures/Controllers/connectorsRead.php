@@ -10,19 +10,19 @@ const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZ
 return [
 	// Valid responses
 	//////////////////
-	'readAll'                  => [
+	'readAll' => [
 		'/v1/connectors',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_OK,
 		__DIR__ . '/responses/connectors.index.json',
 	],
-	'readAllPaging'            => [
+	'readAllPaging' => [
 		'/v1/connectors?page[offset]=1&page[limit]=1',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_OK,
 		__DIR__ . '/responses/connectors.index.paging.json',
 	],
-	'readOne'                  => [
+	'readOne' => [
 		'/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_OK,
@@ -37,7 +37,7 @@ return [
 
 	// Invalid responses
 	////////////////////
-	'readOneUnknown'           => [
+	'readOneUnknown' => [
 		'/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5ae5',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_NOT_FOUND,
@@ -49,49 +49,49 @@ return [
 		StatusCodeInterface::STATUS_NOT_FOUND,
 		__DIR__ . '/responses/generic/relation.unknown.json',
 	],
-	'readAllMissingToken'      => [
+	'readAllMissingToken' => [
 		'/v1/connectors',
 		null,
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'readOneMissingToken'      => [
+	'readOneMissingToken' => [
 		'/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e',
 		null,
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'readAllEmptyToken'        => [
+	'readAllEmptyToken' => [
 		'/v1/connectors',
 		'',
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'readOneEmptyToken'        => [
+	'readOneEmptyToken' => [
 		'/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e',
 		'',
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'readAllInvalidToken'      => [
+	'readAllInvalidToken' => [
 		'/v1/connectors',
 		'Bearer ' . INVALID_TOKEN,
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'readOneInvalidToken'      => [
+	'readOneInvalidToken' => [
 		'/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e',
 		'Bearer ' . INVALID_TOKEN,
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'readAllExpiredToken'      => [
+	'readAllExpiredToken' => [
 		'/v1/connectors',
 		'Bearer ' . EXPIRED_TOKEN,
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'readOneExpiredToken'      => [
+	'readOneExpiredToken' => [
 		'/v1/connectors/17c59dfa-2edd-438e-8c49-faa4e38e5a5e',
 		'Bearer ' . EXPIRED_TOKEN,
 		StatusCodeInterface::STATUS_UNAUTHORIZED,

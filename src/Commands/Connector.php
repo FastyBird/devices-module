@@ -35,6 +35,12 @@ use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Style;
 use Throwable;
+use function array_search;
+use function array_values;
+use function assert;
+use function count;
+use function is_string;
+use const SIGINT;
 
 /**
  * Module connector command
@@ -54,107 +60,27 @@ class Connector extends Console\Command\Command
 	/** @var SplObjectStorage<Connectors\ConnectorFactory, string> */
 	private SplObjectStorage $factories;
 
-	/** @var Models\DataStorage\ConnectorsRepository */
-	private Models\DataStorage\ConnectorsRepository $connectorsRepository;
-
-	/** @var Models\DataStorage\DevicesRepository */
-	private Models\DataStorage\DevicesRepository $devicesRepository;
-
-	/** @var Models\DataStorage\DevicePropertiesRepository */
-	private Models\DataStorage\DevicePropertiesRepository $devicesPropertiesRepository;
-
-	/** @var Models\DataStorage\ChannelsRepository */
-	private Models\DataStorage\ChannelsRepository $channelsRepository;
-
-	/** @var Models\DataStorage\ChannelPropertiesRepository */
-	private Models\DataStorage\ChannelPropertiesRepository $channelsPropertiesRepository;
-
-	/** @var Models\States\DeviceConnectionStateManager */
-	private Models\States\DeviceConnectionStateManager $deviceConnectionStateManager;
-
-	/** @var Models\States\DevicePropertyStateManager */
-	private Models\States\DevicePropertyStateManager $devicePropertyStateManager;
-
-	/** @var Models\States\ChannelPropertyStateManager */
-	private Models\States\ChannelPropertyStateManager $channelPropertyStateManager;
-
-	/** @var Consumers\Connector */
-	private Consumers\Connector $connectorConsumer;
-
-	/** @var ExchangeConsumer\Consumer */
-	private ExchangeConsumer\Consumer $consumer;
-
-	/** @var Models\States\ConnectorConnectionStateManager */
-	private Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager;
-
-	/** @var DateTimeFactory\DateTimeFactory */
-	private DateTimeFactory\DateTimeFactory $dateTimeFactory;
-
-	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
-	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
-	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
-
-	/** @var EventLoop\LoopInterface */
-	private EventLoop\LoopInterface $eventLoop;
-
-	/**
-	 * @param Models\DataStorage\ConnectorsRepository $connectorsRepository
-	 * @param Models\DataStorage\DevicesRepository $devicesRepository
-	 * @param Models\DataStorage\DevicePropertiesRepository $devicesPropertiesRepository
-	 * @param Models\DataStorage\ChannelsRepository $channelsRepository
-	 * @param Models\DataStorage\ChannelPropertiesRepository $channelsPropertiesRepository
-	 * @param Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager
-	 * @param Models\States\DeviceConnectionStateManager $deviceConnectionStateManager
-	 * @param Models\States\DevicePropertyStateManager $devicePropertyStateManager
-	 * @param Models\States\ChannelPropertyStateManager $channelPropertyStateManager
-	 * @param Consumers\Connector $connectorConsumer
-	 * @param ExchangeConsumer\Consumer $consumer
-	 * @param DateTimeFactory\DateTimeFactory $dateTimeFactory
-	 * @param EventLoop\LoopInterface $eventLoop
-	 * @param PsrEventDispatcher\EventDispatcherInterface|null $dispatcher
-	 * @param Log\LoggerInterface|null $logger
-	 * @param string|null $name
-	 */
 	public function __construct(
-		Models\DataStorage\ConnectorsRepository $connectorsRepository,
-		Models\DataStorage\DevicesRepository $devicesRepository,
-		Models\DataStorage\DevicePropertiesRepository $devicesPropertiesRepository,
-		Models\DataStorage\ChannelsRepository $channelsRepository,
-		Models\DataStorage\ChannelPropertiesRepository $channelsPropertiesRepository,
-		Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager,
-		Models\States\DeviceConnectionStateManager $deviceConnectionStateManager,
-		Models\States\DevicePropertyStateManager $devicePropertyStateManager,
-		Models\States\ChannelPropertyStateManager $channelPropertyStateManager,
-		Consumers\Connector $connectorConsumer,
-		ExchangeConsumer\Consumer $consumer,
-		DateTimeFactory\DateTimeFactory $dateTimeFactory,
-		EventLoop\LoopInterface $eventLoop,
-		?PsrEventDispatcher\EventDispatcherInterface $dispatcher,
-		?Log\LoggerInterface $logger = null,
-		?string $name = null
-	) {
-		$this->connectorsRepository = $connectorsRepository;
-		$this->devicesRepository = $devicesRepository;
-		$this->devicesPropertiesRepository = $devicesPropertiesRepository;
-		$this->channelsRepository = $channelsRepository;
-		$this->channelsPropertiesRepository = $channelsPropertiesRepository;
-
-		$this->connectorConnectionStateManager = $connectorConnectionStateManager;
-		$this->deviceConnectionStateManager = $deviceConnectionStateManager;
-
-		$this->devicePropertyStateManager = $devicePropertyStateManager;
-		$this->channelPropertyStateManager = $channelPropertyStateManager;
-
-		$this->connectorConsumer = $connectorConsumer;
-		$this->consumer = $consumer;
-
-		$this->dateTimeFactory = $dateTimeFactory;
-
-		$this->eventLoop = $eventLoop;
-		$this->dispatcher = $dispatcher;
-
+		private Models\DataStorage\ConnectorsRepository $connectorsRepository,
+		private Models\DataStorage\DevicesRepository $devicesRepository,
+		private Models\DataStorage\DevicePropertiesRepository $devicesPropertiesRepository,
+		private Models\DataStorage\ChannelsRepository $channelsRepository,
+		private Models\DataStorage\ChannelPropertiesRepository $channelsPropertiesRepository,
+		private Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager,
+		private Models\States\DeviceConnectionStateManager $deviceConnectionStateManager,
+		private Models\States\DevicePropertyStateManager $devicePropertyStateManager,
+		private Models\States\ChannelPropertyStateManager $channelPropertyStateManager,
+		private Consumers\Connector $connectorConsumer,
+		private ExchangeConsumer\Consumer $consumer,
+		private DateTimeFactory\DateTimeFactory $dateTimeFactory,
+		private EventLoop\LoopInterface $eventLoop,
+		private PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
+		Log\LoggerInterface|null $logger = null,
+		string|null $name = null,
+	)
+	{
 		$this->logger = $logger ?? new Log\NullLogger();
 
 		$this->factories = new SplObjectStorage();
@@ -162,20 +88,11 @@ class Connector extends Console\Command\Command
 		parent::__construct($name);
 	}
 
-	/**
-	 * @param Connectors\ConnectorFactory $factory
-	 * @param string $type
-	 *
-	 * @return void
-	 */
 	public function attach(Connectors\ConnectorFactory $factory, string $type): void
 	{
 		$this->factories->attach($factory, $type);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	protected function configure(): void
 	{
 		$this
@@ -183,16 +100,23 @@ class Connector extends Console\Command\Command
 			->setDescription('Devices module connector')
 			->setDefinition(
 				new Input\InputDefinition([
-					new Input\InputOption('connector', 'c', Input\InputOption::VALUE_REQUIRED, 'Run devices module connector'),
-					new Input\InputOption('no-confirm', null, Input\InputOption::VALUE_NONE, 'Do not ask for any confirmation'),
+					new Input\InputOption(
+						'connector',
+						'c',
+						Input\InputOption::VALUE_REQUIRED,
+						'Run devices module connector',
+					),
+					new Input\InputOption(
+						'no-confirm',
+						null,
+						Input\InputOption::VALUE_NONE,
+						'Do not ask for any confirmation',
+					),
 					new Input\InputOption('quiet', 'q', Input\InputOption::VALUE_NONE, 'Do not output any message'),
-				])
+				]),
 			);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$io = new Style\SymfonyStyle($input, $output);
@@ -206,7 +130,7 @@ class Connector extends Console\Command\Command
 		if (!$input->getOption('no-confirm')) {
 			$question = new Console\Question\ConfirmationQuestion(
 				'Would you like to continue?',
-				false
+				false,
 			);
 
 			$continue = $io->askQuestion($question);
@@ -222,35 +146,27 @@ class Connector extends Console\Command\Command
 			$this->eventLoop->run();
 
 			return Console\Command\Command::SUCCESS;
-
 		} catch (Exceptions\Terminate $ex) {
-			var_dump($ex->getMessage());
-			var_dump($ex->getFile());
-			var_dump($ex->getLine());
 			$this->logger->debug('Stopping connector', [
-				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'      => 'service-cmd',
+				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+				'type' => 'service-cmd',
 				'exception' => [
 					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
+					'code' => $ex->getCode(),
 				],
 			]);
 
 			$this->eventLoop->stop();
 
 			return Console\Command\Command::SUCCESS;
-
 		} catch (Throwable $ex) {
-			var_dump($ex->getMessage());
-			var_dump($ex->getFile());
-			var_dump($ex->getLine());
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'      => 'service-cmd',
+				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+				'type' => 'service-cmd',
 				'exception' => [
 					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
+					'code' => $ex->getCode(),
 				],
 			]);
 
@@ -263,11 +179,6 @@ class Connector extends Console\Command\Command
 	}
 
 	/**
-	 * @param Style\SymfonyStyle $io
-	 * @param Input\InputInterface $input
-	 *
-	 * @return void
-	 *
 	 * @throws Exceptions\Terminate
 	 */
 	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
@@ -285,11 +196,9 @@ class Connector extends Console\Command\Command
 		) {
 			$connectorId = $input->getOption('connector');
 
-			if (Uuid\Uuid::isValid($connectorId)) {
-				$connector = $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId));
-			} else {
-				$connector = $this->connectorsRepository->findByIdentifier($connectorId);
-			}
+			$connector = Uuid\Uuid::isValid($connectorId)
+				? $this->connectorsRepository->findById(Uuid\Uuid::fromString($connectorId))
+				: $this->connectorsRepository->findByIdentifier($connectorId);
 
 			if ($connector === null) {
 				if (!$input->getOption('quiet')) {
@@ -302,7 +211,9 @@ class Connector extends Console\Command\Command
 			$connectors = [];
 
 			foreach ($this->connectorsRepository as $connector) {
-				$connectors[$connector->getIdentifier()] = $connector->getIdentifier() . $connector->getName() ? ' [' . $connector->getName() . ']' : '';
+				$connectors[$connector->getIdentifier()] = $connector->getIdentifier() . $connector->getName()
+					? ' [' . $connector->getName() . ']'
+					: '';
 			}
 
 			if (count($connectors) === 0) {
@@ -315,12 +226,12 @@ class Connector extends Console\Command\Command
 
 			$question = new Console\Question\ChoiceQuestion(
 				'Please select connector to execute',
-				array_values($connectors)
+				array_values($connectors),
 			);
 
 			$question->setErrorMessage('Selected connector: %s is not valid.');
 
-			$connectorIdentifierKey = array_search($io->askQuestion($question), $connectors);
+			$connectorIdentifierKey = array_search($io->askQuestion($question), $connectors, true);
 
 			if ($connectorIdentifierKey === false) {
 				if (!$input->getOption('quiet')) {
@@ -329,7 +240,7 @@ class Connector extends Console\Command\Command
 
 				$this->logger->error('Connector identifier was not able to get from answer', [
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'   => 'service-cmd',
+					'type' => 'service-cmd',
 				]);
 
 				return;
@@ -344,7 +255,7 @@ class Connector extends Console\Command\Command
 
 				$this->logger->error('Connector was not found', [
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'   => 'service-cmd',
+					'type' => 'service-cmd',
 				]);
 
 				return;
@@ -365,8 +276,8 @@ class Connector extends Console\Command\Command
 
 		$service = null;
 
-		/** @var Connectors\ConnectorFactory $factory */
 		foreach ($this->factories as $factory) {
+			assert($factory instanceof Connectors\ConnectorFactory);
 			if ($connector->getType() === $this->factories[$factory]) {
 				$service = $factory->create($connector);
 			}
@@ -381,13 +292,13 @@ class Connector extends Console\Command\Command
 
 			$this->logger->info('Starting connector...', [
 				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'   => 'service-cmd',
+				'type' => 'service-cmd',
 			]);
 
 			try {
 				$this->resetConnectorDevices(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN)
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN),
 				);
 
 				// Start connector service
@@ -395,12 +306,9 @@ class Connector extends Console\Command\Command
 
 				$this->connectorConnectionStateManager->setState(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING)
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING),
 				);
 			} catch (Throwable $ex) {
-				var_dump($ex->getMessage());
-				var_dump($ex->getFile());
-				var_dump($ex->getLine());
 				throw new Exceptions\Terminate('Connector can\'t be started', $ex->getCode(), $ex);
 			}
 
@@ -410,7 +318,7 @@ class Connector extends Console\Command\Command
 		$this->eventLoop->addSignal(SIGINT, function (int $signal) use ($connector, $service): void {
 			$this->logger->info('Stopping connector...', [
 				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'   => 'service-cmd',
+				'type' => 'service-cmd',
 			]);
 
 			try {
@@ -420,7 +328,7 @@ class Connector extends Console\Command\Command
 
 				$this->resetConnectorDevices(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_DISCONNECTED)
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_DISCONNECTED),
 				);
 
 				$now = $this->dateTimeFactory->getNow();
@@ -443,61 +351,50 @@ class Connector extends Console\Command\Command
 
 				$this->connectorConnectionStateManager->setState(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_STOPPED)
+					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_STOPPED),
 				);
 
 				$this->eventLoop->stop();
 			} catch (Throwable $ex) {
-				var_dump($ex->getMessage());
-				var_dump($ex->getFile());
-				var_dump($ex->getLine());
 				$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
-					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'      => 'service-cmd',
+					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+					'type' => 'service-cmd',
 					'exception' => [
 						'message' => $ex->getMessage(),
-						'code'    => $ex->getCode(),
+						'code' => $ex->getCode(),
 					],
 				]);
 
 				throw new Exceptions\Terminate(
 					'Error during connector termination process',
 					$ex->getCode(),
-					$ex
+					$ex,
 				);
 			}
 		});
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
-	 * @param MetadataTypes\ConnectionStateType $state
-	 *
-	 * @return void
-	 */
 	private function resetConnectorDevices(
 		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
-		MetadataTypes\ConnectionStateType $state
-	): void {
+		MetadataTypes\ConnectionStateType $state,
+	): void
+	{
 		foreach ($this->devicesRepository->findAllByConnector($connector->getId()) as $device) {
-			$this->deviceConnectionStateManager->setState(
-				$device,
-				$state
-			);
+			$this->deviceConnectionStateManager->setState($device, $state);
 
-			/** @var MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity[] $properties */
+			/** @var Array<MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity> $properties */
 			$properties = $this->devicesPropertiesRepository->findAllByDevice(
 				$device->getId(),
-				MetadataEntities\Modules\DevicesModule\DeviceDynamicPropertyEntity::class
+				MetadataEntities\Modules\DevicesModule\DeviceDynamicPropertyEntity::class,
 			);
 
 			$this->devicePropertyStateManager->setValidState($properties, false);
 
 			foreach ($this->channelsRepository->findAllByDevice($device->getId()) as $channel) {
-				/** @var MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity[] $properties */
+				/** @var Array<MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity> $properties */
 				$properties = $this->channelsPropertiesRepository->findAllByChannel(
 					$channel->getId(),
-					MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity::class
+					MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity::class,
 				);
 
 				$this->channelPropertyStateManager->setValidState($properties, false);

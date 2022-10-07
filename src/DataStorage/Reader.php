@@ -23,6 +23,9 @@ use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher;
 use Ramsey\Uuid\Uuid;
+use function array_key_exists;
+use function is_array;
+use function is_string;
 
 /**
  * Data storage configuration reader
@@ -37,89 +40,24 @@ final class Reader
 
 	use Nette\SmartObject;
 
-	/** @var Models\DataStorage\ConnectorsRepository */
-	private Models\DataStorage\ConnectorsRepository $connectorsRepository;
-
-	/** @var Models\DataStorage\ConnectorPropertiesRepository */
-	private Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository;
-
-	/** @var Models\DataStorage\ConnectorControlsRepository */
-	private Models\DataStorage\ConnectorControlsRepository $connectorControlsRepository;
-
-	/** @var Models\DataStorage\DevicesRepository */
-	private Models\DataStorage\DevicesRepository $devicesRepository;
-
-	/** @var Models\DataStorage\DevicePropertiesRepository */
-	private Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository;
-
-	/** @var Models\DataStorage\DeviceControlsRepository */
-	private Models\DataStorage\DeviceControlsRepository $deviceControlsRepository;
-
-	/** @var Models\DataStorage\DeviceAttributesRepository */
-	private Models\DataStorage\DeviceAttributesRepository $deviceAttributesRepository;
-
-	/** @var Models\DataStorage\ChannelsRepository */
-	private Models\DataStorage\ChannelsRepository $channelsRepository;
-
-	/** @var Models\DataStorage\ChannelPropertiesRepository */
-	private Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository;
-
-	/** @var Models\DataStorage\ChannelControlsRepository */
-	private Models\DataStorage\ChannelControlsRepository $channelControlsRepository;
-
-	/** @var Flysystem\Filesystem */
-	private Flysystem\Filesystem $filesystem;
-
-	/** @var EventDispatcher\EventDispatcherInterface|null */
-	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
-
-	/**
-	 * @param Models\DataStorage\ConnectorsRepository $connectorsRepository
-	 * @param Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository
-	 * @param Models\DataStorage\ConnectorControlsRepository $connectorControlsRepository
-	 * @param Models\DataStorage\DevicesRepository $devicesRepository
-	 * @param Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository
-	 * @param Models\DataStorage\DeviceControlsRepository $deviceControlsRepository
-	 * @param Models\DataStorage\DeviceAttributesRepository $deviceAttributesRepository
-	 * @param Models\DataStorage\ChannelsRepository $channelsRepository
-	 * @param Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository
-	 * @param Models\DataStorage\ChannelControlsRepository $channelControlsRepository
-	 * @param Flysystem\Filesystem $filesystem
-	 * @param EventDispatcher\EventDispatcherInterface|null $dispatcher
-	 */
 	public function __construct(
-		Models\DataStorage\ConnectorsRepository $connectorsRepository,
-		Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
-		Models\DataStorage\ConnectorControlsRepository $connectorControlsRepository,
-		Models\DataStorage\DevicesRepository $devicesRepository,
-		Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
-		Models\DataStorage\DeviceControlsRepository $deviceControlsRepository,
-		Models\DataStorage\DeviceAttributesRepository $deviceAttributesRepository,
-		Models\DataStorage\ChannelsRepository $channelsRepository,
-		Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
-		Models\DataStorage\ChannelControlsRepository $channelControlsRepository,
-		Flysystem\Filesystem $filesystem,
-		?EventDispatcher\EventDispatcherInterface $dispatcher
-	) {
-		$this->connectorsRepository = $connectorsRepository;
-		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
-		$this->connectorControlsRepository = $connectorControlsRepository;
-		$this->devicesRepository = $devicesRepository;
-		$this->devicePropertiesRepository = $devicePropertiesRepository;
-		$this->deviceControlsRepository = $deviceControlsRepository;
-		$this->deviceAttributesRepository = $deviceAttributesRepository;
-		$this->channelsRepository = $channelsRepository;
-		$this->channelPropertiesRepository = $channelPropertiesRepository;
-		$this->channelControlsRepository = $channelControlsRepository;
-
-		$this->filesystem = $filesystem;
-
-		$this->dispatcher = $dispatcher;
+		private Models\DataStorage\ConnectorsRepository $connectorsRepository,
+		private Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
+		private Models\DataStorage\ConnectorControlsRepository $connectorControlsRepository,
+		private Models\DataStorage\DevicesRepository $devicesRepository,
+		private Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
+		private Models\DataStorage\DeviceControlsRepository $deviceControlsRepository,
+		private Models\DataStorage\DeviceAttributesRepository $deviceAttributesRepository,
+		private Models\DataStorage\ChannelsRepository $channelsRepository,
+		private Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
+		private Models\DataStorage\ChannelControlsRepository $channelControlsRepository,
+		private Flysystem\Filesystem $filesystem,
+		private EventDispatcher\EventDispatcherInterface|null $dispatcher,
+	)
+	{
 	}
 
 	/**
-	 * @return void
-	 *
 	 * @throws Flysystem\FilesystemException
 	 * @throws Utils\JsonException
 	 */
@@ -128,7 +66,7 @@ final class Reader
 		try {
 			$dataConfiguration = $this->filesystem->read(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME);
 
-		} catch (Flysystem\UnableToReadFile $ex) {
+		} catch (Flysystem\UnableToReadFile) {
 			return;
 		}
 
@@ -313,7 +251,7 @@ final class Reader
 			$this->connectorsRepository->append(Uuid::fromString($connectorId), $connectorData);
 		}
 
-		$this->dispatcher?->dispatch(new Events\DataStorageReaded());
+		$this->dispatcher?->dispatch(new Events\DataStorageRead());
 	}
 
 }

@@ -23,16 +23,16 @@ use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
+use function array_merge;
 
 /**
  * Device property entity schema
  *
+ * @phpstan-extends Property<Entities\Devices\Properties\Dynamic>
+ *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
- *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Property<Entities\Devices\Properties\Dynamic>
  */
 final class Dynamic extends Property
 {
@@ -42,64 +42,63 @@ final class Dynamic extends Property
 	 */
 	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/property/device/' . MetadataTypes\PropertyTypeType::TYPE_DYNAMIC;
 
-	/** @var Models\States\DevicePropertiesRepository */
-	private Models\States\DevicePropertiesRepository $propertiesStatesRepository;
-
-	/**
-	 * @param Routing\IRouter $router
-	 * @param Models\Devices\Properties\PropertiesRepository $propertiesRepository
-	 * @param Models\States\DevicePropertiesRepository $propertiesStatesRepository
-	 */
 	public function __construct(
 		Routing\IRouter $router,
 		Models\Devices\Properties\PropertiesRepository $propertiesRepository,
-		Models\States\DevicePropertiesRepository $propertiesStatesRepository
-	) {
+		private Models\States\DevicePropertiesRepository $propertiesStatesRepository,
+	)
+	{
 		parent::__construct($router, $propertiesRepository);
-
-		$this->propertiesStatesRepository = $propertiesStatesRepository;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityClass(): string
 	{
 		return Entities\Devices\Properties\Dynamic::class;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getType(): string
 	{
 		return self::SCHEMA_TYPE;
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\Dynamic $property
-	 * @param JsonApi\Contracts\Schema\ContextInterface $context
-	 *
-	 * @return iterable<string, string|bool|int|float|string[]|Array<int, int|float|Array<int, string|int|float|null>|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|null>>|null>
+	 * @return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
+	public function getAttributes(
+		$property,
+		JsonApi\Contracts\Schema\ContextInterface $context,
+	): iterable
 	{
 		try {
 			$state = $this->propertiesStatesRepository->findOne($property);
 
-		} catch (Exceptions\NotImplemented $ex) {
+		} catch (Exceptions\NotImplemented) {
 			$state = null;
 		}
 
-		$actualValue = $state !== null ? Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getActualValue(), $property->getFormat(), $property->getInvalid()) : null;
-		$expectedValue = $state !== null ? Utilities\ValueHelper::normalizeValue($property->getDataType(), $state->getExpectedValue(), $property->getFormat(), $property->getInvalid()) : null;
+		$actualValue = $state !== null
+			? Utilities\ValueHelper::normalizeValue(
+				$property->getDataType(),
+				$state->getActualValue(),
+				$property->getFormat(),
+				$property->getInvalid(),
+			)
+			: null;
+		$expectedValue = $state !== null
+			? Utilities\ValueHelper::normalizeValue(
+				$property->getDataType(),
+				$state->getExpectedValue(),
+				$property->getFormat(),
+				$property->getInvalid(),
+			)
+			: null;
 
 		return array_merge((array) parent::getAttributes($property, $context), [
-			'actual_value'   => Utilities\ValueHelper::flattenValue($actualValue),
+			'actual_value' => Utilities\ValueHelper::flattenValue($actualValue),
 			'expected_value' => Utilities\ValueHelper::flattenValue($expectedValue),
-			'pending'        => $state !== null && $state->isPending(),
+			'pending' => $state !== null && $state->isPending(),
 		]);
 	}
 

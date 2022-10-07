@@ -26,17 +26,11 @@ class Blank extends Entities\Devices\Device
 
 	public const DEVICE_TYPE = 'blank';
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getType(): string
 	{
 		return self::DEVICE_TYPE;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDiscriminatorName(): string
 	{
 		return self::DEVICE_TYPE;

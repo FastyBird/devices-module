@@ -23,6 +23,7 @@ use FastyBird\Metadata\Types as MetadataTypes;
 use League\Flysystem;
 use Nette;
 use Nette\Utils;
+use function strval;
 
 /**
  * Exchange consumer for connectors
@@ -37,16 +38,8 @@ final class Connector implements ExchangeConsumer\IConsumer
 
 	use Nette\SmartObject;
 
-	/** @var DataStorage\Reader */
-	private DataStorage\Reader $reader;
-
-	/**
-	 * @param DataStorage\Reader $reader
-	 */
-	public function __construct(
-		DataStorage\Reader $reader
-	) {
-		$this->reader = $reader;
+	public function __construct(private DataStorage\Reader $reader)
+	{
 	}
 
 	/**
@@ -58,14 +51,24 @@ final class Connector implements ExchangeConsumer\IConsumer
 	public function consume(
 		MetadataTypes\ModuleSourceType|MetadataTypes\PluginSourceType|MetadataTypes\ConnectorSourceType $source,
 		MetadataTypes\RoutingKeyType $routingKey,
-		?MetadataEntities\IEntity $entity
-	): void {
+		MetadataEntities\IEntity|null $entity,
+	): void
+	{
 		if (
 			Utils\Strings::startsWith(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_PREFIX_KEY)
 			&& (
-				Utils\Strings::contains(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_CREATED_KEY)
-				|| Utils\Strings::contains(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_UPDATED_KEY)
-				|| Utils\Strings::contains(strval($routingKey->getValue()), MetadataConstants::MESSAGE_BUS_ENTITY_DELETED_KEY)
+				Utils\Strings::contains(
+					strval($routingKey->getValue()),
+					MetadataConstants::MESSAGE_BUS_ENTITY_CREATED_KEY,
+				)
+				|| Utils\Strings::contains(
+					strval($routingKey->getValue()),
+					MetadataConstants::MESSAGE_BUS_ENTITY_UPDATED_KEY,
+				)
+				|| Utils\Strings::contains(
+					strval($routingKey->getValue()),
+					MetadataConstants::MESSAGE_BUS_ENTITY_DELETED_KEY,
+				)
 			)
 		) {
 			$this->reader->read();

@@ -20,19 +20,15 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Blank device entity hydrator
  *
+ * @phpstan-extends Device<Entities\Devices\Blank>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Device<Entities\Devices\Blank>
  */
 final class Blank extends Device
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityName(): string
 	{
 		return Entities\Devices\Blank::class;

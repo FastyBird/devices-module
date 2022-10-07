@@ -51,8 +51,6 @@ class Channel implements Entities\Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="channel_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -60,28 +58,22 @@ class Channel implements Entities\Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="channel_identifier", length=50, nullable=false)
 	 */
 	private string $identifier;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="channel_name", nullable=true, options={"default": null})
 	 */
-	private ?string $name = null;
+	private string|null $name = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="text", name="channel_comment", nullable=true, options={"default": null})
 	 */
-	private ?string $comment = null;
+	private string|null $comment = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\Properties\Property>
@@ -100,8 +92,6 @@ class Channel implements Entities\Entity,
 	private Common\Collections\Collection $controls;
 
 	/**
-	 * @var Entities\Devices\Device
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="channels")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
@@ -109,19 +99,15 @@ class Channel implements Entities\Entity,
 	private Entities\Devices\Device $device;
 
 	/**
-	 * @param Entities\Devices\Device $device
-	 * @param string $identifier
-	 * @param string|null $name
-	 * @param Uuid\UuidInterface|null $id
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		Entities\Devices\Device $device,
 		string $identifier,
-		?string $name = null,
-		?Uuid\UuidInterface $id = null
-	) {
+		string|null $name = null,
+		Uuid\UuidInterface|null $id = null,
+	)
+	{
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->device = $device;
@@ -133,8 +119,43 @@ class Channel implements Entities\Entity,
 		$this->controls = new Common\Collections\ArrayCollection();
 	}
 
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	public function setIdentifier(string $identifier): void
+	{
+		$this->identifier = $identifier;
+	}
+
+	public function getName(): string|null
+	{
+		return $this->name;
+	}
+
+	public function setName(string|null $name): void
+	{
+		$this->name = $name;
+	}
+
+	public function getComment(): string|null
+	{
+		return $this->comment;
+	}
+
+	public function setComment(string|null $comment = null): void
+	{
+		$this->comment = $comment;
+	}
+
+	public function getDevice(): Entities\Devices\Device
+	{
+		return $this->device;
+	}
+
 	/**
-	 * @return Entities\Channels\Properties\Property[]
+	 * @return Array<Entities\Channels\Properties\Property>
 	 */
 	public function getProperties(): array
 	{
@@ -142,9 +163,7 @@ class Channel implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Channels\Properties\Property[] $properties
-	 *
-	 * @return void
+	 * @param Array<Entities\Channels\Properties\Property> $properties
 	 */
 	public function setProperties(array $properties = []): void
 	{
@@ -159,9 +178,6 @@ class Channel implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addProperty(Entities\Channels\Properties\Property $property): void
 	{
 		// Check if collection does not contain inserting entity
@@ -171,35 +187,24 @@ class Channel implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getProperty(string $id): ?Entities\Channels\Properties\Property
+	public function getProperty(string $id): Entities\Channels\Properties\Property|null
 	{
 		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\Property $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
+			->filter(static fn (Entities\Channels\Properties\Property $row): bool => $id === $row->getPlainId());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findProperty(string $identifier): ?Entities\Channels\Properties\Property
+	public function findProperty(string $identifier): Entities\Channels\Properties\Property|null
 	{
 		$found = $this->properties
-			->filter(function (Entities\Channels\Properties\Property $row) use ($identifier): bool {
-				return $identifier === $row->getIdentifier();
-			});
+			->filter(
+				static fn (Entities\Channels\Properties\Property $row): bool => $identifier === $row->getIdentifier()
+			);
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeProperty(Entities\Channels\Properties\Property $property): void
 	{
 		// Check if collection contain removing entity...
@@ -210,7 +215,7 @@ class Channel implements Entities\Entity,
 	}
 
 	/**
-	 * @return Entities\Channels\Controls\Control[]
+	 * @return Array<Entities\Channels\Controls\Control>
 	 */
 	public function getControls(): array
 	{
@@ -218,9 +223,7 @@ class Channel implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Channels\Controls\Control[] $controls
-	 *
-	 * @return void
+	 * @param Array<Entities\Channels\Controls\Control> $controls
 	 */
 	public function setControls(array $controls = []): void
 	{
@@ -235,9 +238,6 @@ class Channel implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addControl(Entities\Channels\Controls\Control $control): void
 	{
 		// Check if collection does not contain inserting entity
@@ -247,35 +247,22 @@ class Channel implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getControl(string $id): ?Entities\Channels\Controls\Control
+	public function getControl(string $id): Entities\Channels\Controls\Control|null
 	{
 		$found = $this->controls
-			->filter(function (Entities\Channels\Controls\Control $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
+			->filter(static fn (Entities\Channels\Controls\Control $row): bool => $id === $row->getPlainId());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Channels\Controls\Control
+	public function findControl(string $name): Entities\Channels\Controls\Control|null
 	{
 		$found = $this->controls
-			->filter(function (Entities\Channels\Controls\Control $row) use ($name): bool {
-				return $name === $row->getName();
-			});
+			->filter(static fn (Entities\Channels\Controls\Control $row): bool => $name === $row->getName());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeControl(Entities\Channels\Controls\Control $control): void
 	{
 		// Check if collection contain removing entity...
@@ -291,71 +278,15 @@ class Channel implements Entities\Entity,
 	public function toArray(): array
 	{
 		return [
-			'id'         => $this->getPlainId(),
+			'id' => $this->getPlainId(),
 			'identifier' => $this->getIdentifier(),
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
+			'name' => $this->getName(),
+			'comment' => $this->getComment(),
 
 			'device' => $this->getDevice()->getPlainId(),
 
 			'owner' => $this->getDevice()->getOwnerId(),
 		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getIdentifier(): string
-	{
-		return $this->identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setIdentifier(string $identifier): void
-	{
-		$this->identifier = $identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment = null): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getDevice(): Entities\Devices\Device
-	{
-		return $this->device;
 	}
 
 }

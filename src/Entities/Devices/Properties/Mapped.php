@@ -22,6 +22,7 @@ use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Ramsey\Uuid;
 use Throwable;
+use function array_merge;
 
 /**
  * @ORM\Entity
@@ -30,27 +31,25 @@ class Mapped extends Property
 {
 
 	/**
-	 * @param Entities\Devices\Device $device
-	 * @param Entities\Devices\Properties\Property $parent
-	 * @param string $identifier
-	 * @param Uuid\UuidInterface|null $id
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		Entities\Devices\Device $device,
 		Entities\Devices\Properties\Property $parent,
 		string $identifier,
-		?Uuid\UuidInterface $id = null
-	) {
+		Uuid\UuidInterface|null $id = null,
+	)
+	{
 		parent::__construct($device, $identifier, $id);
 
 		$this->parent = $parent;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	public function getType(): MetadataTypes\PropertyTypeType
+	{
+		return MetadataTypes\PropertyTypeType::get(MetadataTypes\PropertyTypeType::TYPE_MAPPED);
+	}
+
 	public function getParent(): Property
 	{
 		if ($this->parent === null) {
@@ -63,20 +62,12 @@ class Mapped extends Property
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getType(): MetadataTypes\PropertyTypeType
-	{
-		return MetadataTypes\PropertyTypeType::get(MetadataTypes\PropertyTypeType::TYPE_MAPPED);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function toArray(): array
 	{
 		if ($this->getParent() instanceof Entities\Devices\Properties\Variable) {
 			return array_merge(parent::toArray(), [
 				'default' => Utilities\ValueHelper::flattenValue($this->getDefault()),
-				'value'   => Utilities\ValueHelper::flattenValue($this->getValue()),
+				'value' => Utilities\ValueHelper::flattenValue($this->getValue()),
 			]);
 		}
 

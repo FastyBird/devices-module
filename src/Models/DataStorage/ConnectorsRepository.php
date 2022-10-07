@@ -23,16 +23,18 @@ use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
+use function array_key_exists;
+use function count;
+use function strval;
 
 /**
  * Data storage connectors repository
  *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorEntity>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorEntity>
  */
 final class ConnectorsRepository implements Countable, IteratorAggregate
 {
@@ -45,29 +47,18 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorEntity> */
 	private array $entities;
 
-	/** @var MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory;
-
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory
-	 */
 	public function __construct(
-		MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory
-	) {
-		$this->entityFactory = $entityFactory;
-
+		private MetadataEntities\Modules\DevicesModule\ConnectorEntityFactory $entityFactory,
+	)
+	{
 		$this->rawData = [];
 		$this->entities = [];
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity|null
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IConnectorEntity|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -77,13 +68,9 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param string $identifier
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity|null
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function findByIdentifier(string $identifier): ?MetadataEntities\Modules\DevicesModule\IConnectorEntity
+	public function findByIdentifier(string $identifier): MetadataEntities\Modules\DevicesModule\IConnectorEntity|null
 	{
 		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
@@ -98,10 +85,7 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
 	 * @param Array<string, mixed> $data
-	 *
-	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -112,9 +96,6 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function clear(): void
 	{
 		$this->rawData = [];
@@ -122,9 +103,7 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
-	 *
-	 * @return void
+	 * @param Uuid\UuidInterface|Array<Uuid\UuidInterface> $id
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{
@@ -143,9 +122,6 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function count(): int
 	{
 		return count($this->rawData);
@@ -171,17 +147,15 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
 	 * @param Array<string, mixed> $data
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
-		array $data
-	): MetadataEntities\Modules\DevicesModule\IConnectorEntity {
+		array $data,
+	): MetadataEntities\Modules\DevicesModule\IConnectorEntity
+	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$this->entities[$id->toString()] = $this->entityFactory->create($data);
 		}

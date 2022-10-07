@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function is_array;
 
 /**
  * Device control structure repository
@@ -38,36 +39,19 @@ final class ControlsRepository
 	use Nette\SmartObject;
 
 	/** @var ORM\EntityRepository<Entities\Devices\Controls\Control>|null */
-	private ?ORM\EntityRepository $repository = null;
+	private ORM\EntityRepository|null $repository = null;
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
+	}
+
+	public function findOneBy(Queries\FindDeviceControls $queryObject): Entities\Devices\Controls\Control|null
+	{
+		return $queryObject->fetchOne($this->getRepository());
 	}
 
 	/**
-	 * @param Queries\FindDeviceControls $queryObject
-	 *
-	 * @return Entities\Devices\Controls\Control|null
-	 */
-	public function findOneBy(Queries\FindDeviceControls $queryObject): ?Entities\Devices\Controls\Control
-	{
-		/** @var Entities\Devices\Controls\Control|null $control */
-		$control = $queryObject->fetchOne($this->getRepository());
-
-		return $control;
-	}
-
-	/**
-	 * @param Queries\FindDeviceControls $queryObject
-	 *
-	 * @return Entities\Devices\Controls\Control[]
+	 * @return Array<Entities\Devices\Controls\Control>
 	 *
 	 * @throws Throwable
 	 */
@@ -80,20 +64,19 @@ final class ControlsRepository
 			return $result;
 		}
 
-		/** @var Entities\Devices\Controls\Control[] $data */
+		/** @var Array<Entities\Devices\Controls\Control> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindDeviceControls $queryObject
-	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\Control>
 	 */
 	public function getResultSet(
-		Queries\FindDeviceControls $queryObject
-	): DoctrineOrmQuery\ResultSet {
+		Queries\FindDeviceControls $queryObject,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

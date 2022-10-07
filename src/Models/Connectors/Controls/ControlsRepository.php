@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function is_array;
 
 /**
  * Connector control structure repository
@@ -38,36 +39,19 @@ final class ControlsRepository
 	use Nette\SmartObject;
 
 	/** @var ORM\EntityRepository<Entities\Connectors\Controls\Control>|null */
-	private ?ORM\EntityRepository $repository = null;
+	private ORM\EntityRepository|null $repository = null;
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
+	}
+
+	public function findOneBy(Queries\FindConnectorControls $queryObject): Entities\Connectors\Controls\Control|null
+	{
+		return $queryObject->fetchOne($this->getRepository());
 	}
 
 	/**
-	 * @param Queries\FindConnectorControls $queryObject
-	 *
-	 * @return Entities\Connectors\Controls\Control|null
-	 */
-	public function findOneBy(Queries\FindConnectorControls $queryObject): ?Entities\Connectors\Controls\Control
-	{
-		/** @var Entities\Connectors\Controls\Control|null $control */
-		$control = $queryObject->fetchOne($this->getRepository());
-
-		return $control;
-	}
-
-	/**
-	 * @param Queries\FindConnectorControls $queryObject
-	 *
-	 * @return Entities\Connectors\Controls\Control[]
+	 * @return Array<Entities\Connectors\Controls\Control>
 	 *
 	 * @throws Throwable
 	 */
@@ -80,20 +64,19 @@ final class ControlsRepository
 			return $result;
 		}
 
-		/** @var Entities\Connectors\Controls\Control[] $data */
+		/** @var Array<Entities\Connectors\Controls\Control> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindConnectorControls $queryObject
-	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\Control>
 	 */
 	public function getResultSet(
-		Queries\FindConnectorControls $queryObject
-	): DoctrineOrmQuery\ResultSet {
+		Queries\FindConnectorControls $queryObject,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

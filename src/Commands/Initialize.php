@@ -37,32 +37,19 @@ class Initialize extends Console\Command\Command
 
 	public const NAME = 'fb:devices-module:initialize';
 
-	/** @var DataStorage\Writer */
-	private DataStorage\Writer $writer;
-
-	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
-	/**
-	 * @param DataStorage\Writer $writer
-	 * @param Log\LoggerInterface|null $logger
-	 * @param string|null $name
-	 */
 	public function __construct(
-		DataStorage\Writer $writer,
-		?Log\LoggerInterface $logger = null,
-		?string $name = null
-	) {
-		$this->writer = $writer;
-
+		private DataStorage\Writer $writer,
+		Log\LoggerInterface|null $logger = null,
+		string|null $name = null,
+	)
+	{
 		$this->logger = $logger ?? new Log\NullLogger();
 
 		parent::__construct($name);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	protected function configure(): void
 	{
 		$this
@@ -71,16 +58,23 @@ class Initialize extends Console\Command\Command
 			->setDefinition(
 				new Input\InputDefinition([
 					new Input\InputOption('database', 'd', Input\InputOption::VALUE_NONE, 'Initialize module database'),
-					new Input\InputOption('data-storage', 's', Input\InputOption::VALUE_NONE, 'Initialize module data storage'),
-					new Input\InputOption('no-confirm', null, Input\InputOption::VALUE_NONE, 'Do not ask for any confirmation'),
+					new Input\InputOption(
+						'data-storage',
+						's',
+						Input\InputOption::VALUE_NONE,
+						'Initialize module data storage',
+					),
+					new Input\InputOption(
+						'no-confirm',
+						null,
+						Input\InputOption::VALUE_NONE,
+						'Do not ask for any confirmation',
+					),
 					new Input\InputOption('quiet', 'q', Input\InputOption::VALUE_NONE, 'Do not output any message'),
-				])
+				]),
 			);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();
@@ -100,7 +94,7 @@ class Initialize extends Console\Command\Command
 		if (!$input->getOption('no-confirm')) {
 			$question = new Console\Question\ConfirmationQuestion(
 				'Would you like to continue?',
-				false
+				false,
 			);
 
 			$continue = $io->askQuestion($question);
@@ -124,15 +118,14 @@ class Initialize extends Console\Command\Command
 			}
 
 			return Console\Command\Command::SUCCESS;
-
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'      => 'initialize-cmd',
+				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+				'type' => 'initialize-cmd',
 				'exception' => [
 					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
+					'code' => $ex->getCode(),
 				],
 			]);
 
@@ -145,19 +138,14 @@ class Initialize extends Console\Command\Command
 	}
 
 	/**
-	 * @param Style\SymfonyStyle $io
-	 * @param Input\InputInterface $input
-	 * @param Output\OutputInterface $output
-	 *
-	 * @return void
-	 *
 	 * @throws Console\Exception\ExceptionInterface
 	 */
 	private function initializeDatabase(
 		Style\SymfonyStyle $io,
 		Input\InputInterface $input,
-		Output\OutputInterface $output
-	): void {
+		Output\OutputInterface $output,
+	): void
+	{
 		$symfonyApp = $this->getApplication();
 
 		if ($symfonyApp === null) {
@@ -201,12 +189,6 @@ class Initialize extends Console\Command\Command
 		}
 	}
 
-	/**
-	 * @param Style\SymfonyStyle $io
-	 * @param Input\InputInterface $input
-	 *
-	 * @return void
-	 */
 	private function initializeDataStorage(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
 		if (!$input->getOption('quiet')) {
@@ -221,20 +203,21 @@ class Initialize extends Console\Command\Command
 			}
 
 			return;
-
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'      => 'initialize-cmd',
+				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+				'type' => 'initialize-cmd',
 				'exception' => [
 					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
+					'code' => $ex->getCode(),
 				],
 			]);
 
 			if (!$input->getOption('quiet')) {
-				$io->error('Something went wrong, data storage initialization could not be finished. Error was logged.');
+				$io->error(
+					'Something went wrong, data storage initialization could not be finished. Error was logged.',
+				);
 			}
 
 			return;

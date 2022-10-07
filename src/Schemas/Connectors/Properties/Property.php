@@ -22,17 +22,17 @@ use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
+use function strval;
 
 /**
  * Connector property entity schema
  *
- * @package         FastyBird:DevicesModule!
- * @subpackage      Schemas
- *
- * @author          Adam Kadlec <adam.kadlec@fastybird.com>
- *
  * @phpstan-template T of Entities\Connectors\Properties\Property
  * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
+ *
+ * @package         FastyBird:DevicesModule!
+ * @subpackage      Schemas
+ * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
 abstract class Property extends JsonApiSchemas\JsonApiSchema
 {
@@ -42,53 +42,43 @@ abstract class Property extends JsonApiSchemas\JsonApiSchema
 	 */
 	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
-	/** @var Routing\IRouter */
-	private Routing\IRouter $router;
-
-	/**
-	 * @param Routing\IRouter $router
-	 */
-	public function __construct(
-		Routing\IRouter $router
-	) {
-		$this->router = $router;
+	public function __construct(private Routing\IRouter $router)
+	{
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\Property $property
-	 * @param JsonApi\Contracts\Schema\ContextInterface $context
-	 *
-	 * @return iterable<string, string|bool|int|float|string[]|Array<int, int|float|Array<int, string|int|float|null>|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|null>>|null>
+	 * @return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
 	 *
 	 * @phpstan-param T $property
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getAttributes($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
+	public function getAttributes(
+		$property,
+		JsonApi\Contracts\Schema\ContextInterface $context,
+	): iterable
 	{
 		return [
-			'identifier'         => $property->getIdentifier(),
-			'name'               => $property->getName(),
-			'settable'           => $property->isSettable(),
-			'queryable'          => $property->isQueryable(),
-			'data_type'          => strval($property->getDataType()->getValue()),
-			'unit'               => $property->getUnit(),
-			'format'             => $property->getFormat()?->toArray(),
-			'invalid'            => $property->getInvalid(),
+			'identifier' => $property->getIdentifier(),
+			'name' => $property->getName(),
+			'settable' => $property->isSettable(),
+			'queryable' => $property->isQueryable(),
+			'data_type' => strval($property->getDataType()->getValue()),
+			'unit' => $property->getUnit(),
+			'format' => $property->getFormat()?->toArray(),
+			'invalid' => $property->getInvalid(),
 			'number_of_decimals' => $property->getNumberOfDecimals(),
 		];
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\Property $property
-	 *
-	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
 	 * @phpstan-param T $property
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getSelfLink($property): JsonApi\Contracts\Schema\LinkInterface
+	public function getSelfLink(
+		$property,
+	): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
 			false,
@@ -96,45 +86,43 @@ abstract class Property extends JsonApiSchemas\JsonApiSchema
 				DevicesModule\Constants::ROUTE_NAME_CONNECTOR_PROPERTY,
 				[
 					Router\Routes::URL_CONNECTOR_ID => $property->getConnector()->getPlainId(),
-					Router\Routes::URL_ITEM_ID      => $property->getPlainId(),
-				]
+					Router\Routes::URL_ITEM_ID => $property->getPlainId(),
+				],
 			),
-			false
+			false,
 		);
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\Property $property
-	 * @param JsonApi\Contracts\Schema\ContextInterface $context
-	 *
 	 * @return iterable<string, mixed>
 	 *
 	 * @phpstan-param T $property
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getRelationships($property, JsonApi\Contracts\Schema\ContextInterface $context): iterable
+	public function getRelationships(
+		$property,
+		JsonApi\Contracts\Schema\ContextInterface $context,
+	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_CONNECTOR => [
-				self::RELATIONSHIP_DATA          => $property->getConnector(),
-				self::RELATIONSHIP_LINKS_SELF    => false,
+				self::RELATIONSHIP_DATA => $property->getConnector(),
+				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 		];
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\Property $property
-	 * @param string $name
-	 *
-	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
 	 * @phpstan-param T $property
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getRelationshipRelatedLink($property, string $name): JsonApi\Contracts\Schema\LinkInterface
+	public function getRelationshipRelatedLink(
+		$property,
+		string $name,
+	): JsonApi\Contracts\Schema\LinkInterface
 	{
 		if ($name === self::RELATIONSHIPS_CONNECTOR) {
 			return new JsonApi\Schema\Link(
@@ -143,9 +131,9 @@ abstract class Property extends JsonApiSchemas\JsonApiSchema
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 					[
 						Router\Routes::URL_ITEM_ID => $property->getConnector()->getPlainId(),
-					]
+					],
 				),
-				false
+				false,
 			);
 		}
 

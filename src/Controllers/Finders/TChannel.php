@@ -31,17 +31,13 @@ trait TChannel
 {
 
 	/**
-	 * @param string $id
-	 * @param Entities\Devices\Device $device
-	 *
-	 * @return Entities\Channels\Channel
-	 *
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	protected function findChannel(
 		string $id,
-		Entities\Devices\Device $device
-	): Entities\Channels\Channel {
+		Entities\Devices\Device $device,
+	): Entities\Channels\Channel
+	{
 		try {
 			$findQuery = new Queries\FindChannels();
 			$findQuery->byId(Uuid\Uuid::fromString($id));
@@ -53,14 +49,14 @@ trait TChannel
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
+					$this->translator->translate('//devices-module.base.messages.notFound.message'),
 				);
 			}
 		} catch (Uuid\Exception\InvalidUuidStringException) {
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
+				$this->translator->translate('//devices-module.base.messages.notFound.message'),
 			);
 		}
 

@@ -20,19 +20,15 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Connector property entity hydrator
  *
+ * @phpstan-extends Connector<Entities\Connectors\Properties\Variable>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Connector<Entities\Connectors\Properties\Variable>
  */
 final class ConnectorVariable extends Connector
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityName(): string
 	{
 		return Entities\Connectors\Properties\Variable::class;

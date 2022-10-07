@@ -10,7 +10,7 @@ const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZ
 return [
 	// Valid responses
 	//////////////////
-	'delete'       => [
+	'delete' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_NO_CONTENT,
@@ -19,7 +19,7 @@ return [
 
 	// Invalid responses
 	////////////////////
-	'unknown'      => [
+	'unknown' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/9f5e5560-72f2-487a-a382-d73d842ba538',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_NOT_FOUND,
@@ -37,7 +37,7 @@ return [
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'emptyToken'   => [
+	'emptyToken' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c',
 		'',
 		StatusCodeInterface::STATUS_FORBIDDEN,
@@ -49,7 +49,7 @@ return [
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'notAllowed'   => [
+	'notAllowed' => [
 		'/v1/devices/69786d15-fd0c-4d9f-9378-33287c2009fa/properties/28bc0d38-2f7c-4a71-aa74-27b102f8df4c',
 		'Bearer ' . VALID_TOKEN_USER,
 		StatusCodeInterface::STATUS_FORBIDDEN,

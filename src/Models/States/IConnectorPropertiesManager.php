@@ -31,39 +31,20 @@ use Nette\Utils;
 interface IConnectorPropertiesManager
 {
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\ConnectorProperty
-	 */
 	public function create(
 		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
 	): States\ConnectorProperty;
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
-	 * @param States\ConnectorProperty $state
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\ConnectorProperty
-	 */
 	public function update(
 		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
 		States\ConnectorProperty $state,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
 	): States\ConnectorProperty;
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
-	 * @param States\ConnectorProperty $state
-	 *
-	 * @return bool
-	 */
 	public function delete(
 		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
-		States\ConnectorProperty $state
+		States\ConnectorProperty $state,
 	): bool;
 
 }

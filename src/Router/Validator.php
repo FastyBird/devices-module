@@ -22,6 +22,7 @@ use FastRoute\RouteParser\Std;
 use Fig\Http\Message\RequestMethodInterface;
 use IPub\SlimRouter\Routing as SlimRouterRouting;
 use Nette\DI;
+use function assert;
 
 /**
  * Route validator
@@ -34,27 +35,13 @@ use Nette\DI;
 class Validator
 {
 
-	/** @var DI\Container */
-	private DI\Container $container;
+	private SlimRouterRouting\FastRouteDispatcher|null $routerDispatcher = null;
 
-	/** @var SlimRouterRouting\FastRouteDispatcher|null */
-	private ?SlimRouterRouting\FastRouteDispatcher $routerDispatcher = null;
-
-	/**
-	 * @param DI\Container $container
-	 */
-	public function __construct(
-		DI\Container $container
-	) {
-		$this->container = $container;
+	public function __construct(private DI\Container $container)
+	{
 	}
 
 	/**
-	 * @param string $link
-	 * @param string $method
-	 *
-	 * @return bool
-	 *
 	 * @throws Exception
 	 */
 	public function validate(string $link, string $method = RequestMethodInterface::METHOD_GET): bool
@@ -66,8 +53,6 @@ class Validator
 	}
 
 	/**
-	 * @return SlimRouterRouting\FastRouteDispatcher
-	 *
 	 * @throws Exception
 	 */
 	private function getRouterDispatcher(): SlimRouterRouting\FastRouteDispatcher
@@ -78,20 +63,20 @@ class Validator
 
 		$router = $this->container->getByType(SlimRouterRouting\IRouter::class);
 
-		$routeDefinitionCallback = function (FastRouteCollector $r) use ($router): void {
+		$routeDefinitionCallback = static function (FastRouteCollector $r) use ($router): void {
 			$basePath = $router->getBasePath();
 
-			/** @var SlimRouterRouting\IRoute $route */
 			foreach ($router->getIterator() as $route) {
+				assert($route instanceof SlimRouterRouting\IRoute);
 				$r->addRoute($route->getMethods(), $basePath . $route->getPattern(), $route->getIdentifier());
 			}
 		};
 
-		/** @var SlimRouterRouting\FastRouteDispatcher $dispatcher */
 		$dispatcher = FastRoute\simpleDispatcher($routeDefinitionCallback, [
-			'dispatcher'  => SlimRouterRouting\FastRouteDispatcher::class,
+			'dispatcher' => SlimRouterRouting\FastRouteDispatcher::class,
 			'routeParser' => new Std(),
 		]);
+		assert($dispatcher instanceof SlimRouterRouting\FastRouteDispatcher);
 
 		$this->routerDispatcher = $dispatcher;
 

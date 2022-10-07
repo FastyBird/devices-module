@@ -24,6 +24,7 @@ use IPub\DoctrineDynamicDiscriminatorMap\Entities as DoctrineDynamicDiscriminato
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
 use Throwable;
+use function strval;
 
 /**
  * @ORM\Entity
@@ -63,8 +64,6 @@ abstract class Device implements Entities\Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="device_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -72,8 +71,6 @@ abstract class Device implements Entities\Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="device_identifier", length=50, nullable=false)
 	 */
@@ -100,20 +97,16 @@ abstract class Device implements Entities\Entity,
 	protected Common\Collections\Collection $children;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="device_name", nullable=true, options={"default": null})
 	 */
-	protected ?string $name = null;
+	protected string|null $name = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="text", name="device_comment", nullable=true, options={"default": null})
 	 */
-	protected ?string $comment = null;
+	protected string|null $comment = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, Entities\Channels\Channel>
@@ -148,8 +141,6 @@ abstract class Device implements Entities\Entity,
 	protected Common\Collections\Collection $attributes;
 
 	/**
-	 * @var Entities\Connectors\Connector
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="devices")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
@@ -157,19 +148,15 @@ abstract class Device implements Entities\Entity,
 	protected Entities\Connectors\Connector $connector;
 
 	/**
-	 * @param string $identifier
-	 * @param Entities\Connectors\Connector $connector
-	 * @param string|null $name
-	 * @param Uuid\UuidInterface|null $id
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		string $identifier,
 		Entities\Connectors\Connector $connector,
-		?string $name = null,
-		?Uuid\UuidInterface $id = null
-	) {
+		string|null $name = null,
+		Uuid\UuidInterface|null $id = null,
+	)
+	{
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->identifier = $identifier;
@@ -187,8 +174,48 @@ abstract class Device implements Entities\Entity,
 
 	abstract public function getType(): string;
 
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	public function getName(): string|null
+	{
+		return $this->name;
+	}
+
+	public function setName(string|null $name): void
+	{
+		$this->name = $name;
+	}
+
+	public function getComment(): string|null
+	{
+		return $this->comment;
+	}
+
+	public function setComment(string|null $comment = null): void
+	{
+		$this->comment = $comment;
+	}
+
+	public function getConnector(): Entities\Connectors\Connector
+	{
+		return $this->connector;
+	}
+
+	public function setConnector(Entities\Connectors\Connector $connector): void
+	{
+		$this->connector = $connector;
+	}
+
+	public function getOwnerId(): string|null
+	{
+		return $this->owner !== null ? strval($this->owner) : null;
+	}
+
 	/**
-	 * @return Device[]
+	 * @return Array<Device>
 	 */
 	public function getParents(): array
 	{
@@ -196,9 +223,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @param Device[] $parents
-	 *
-	 * @return void
+	 * @param Array<Device> $parents
 	 */
 	public function setParents(array $parents): void
 	{
@@ -213,9 +238,6 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addParent(Device $device): void
 	{
 		// Check if collection does not contain inserting entity
@@ -225,16 +247,13 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeParent(Device $parent): void
 	{
 		$this->parents->removeElement($parent);
 	}
 
 	/**
-	 * @return Device[]
+	 * @return Array<Device>
 	 */
 	public function getChildren(): array
 	{
@@ -242,9 +261,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @param Device[] $children
-	 *
-	 * @return void
+	 * @param Array<Device> $children
 	 */
 	public function setChildren(array $children): void
 	{
@@ -259,9 +276,6 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addChild(Device $child): void
 	{
 		// Check if collection does not contain inserting entity
@@ -271,9 +285,6 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeChild(Device $child): void
 	{
 		// Check if collection contain removing entity...
@@ -284,7 +295,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @return Entities\Channels\Channel[]
+	 * @return Array<Entities\Channels\Channel>
 	 */
 	public function getChannels(): array
 	{
@@ -292,9 +303,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Channels\Channel[] $channels
-	 *
-	 * @return void
+	 * @param Array<Entities\Channels\Channel> $channels
 	 */
 	public function setChannels(array $channels = []): void
 	{
@@ -309,9 +318,6 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addChannel(Entities\Channels\Channel $channel): void
 	{
 		// Check if collection does not contain inserting entity
@@ -321,35 +327,22 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getChannel(string $id): ?Entities\Channels\Channel
+	public function getChannel(string $id): Entities\Channels\Channel|null
 	{
 		$found = $this->channels
-			->filter(function (Entities\Channels\Channel $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
+			->filter(static fn (Entities\Channels\Channel $row): bool => $id === $row->getPlainId());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findChannel(string $identifier): ?Entities\Channels\Channel
+	public function findChannel(string $identifier): Entities\Channels\Channel|null
 	{
 		$found = $this->channels
-			->filter(function (Entities\Channels\Channel $row) use ($identifier): bool {
-				return $identifier === $row->getIdentifier();
-			});
+			->filter(static fn (Entities\Channels\Channel $row): bool => $identifier === $row->getIdentifier());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeChannel(Entities\Channels\Channel $channel): void
 	{
 		// Check if collection contain removing entity...
@@ -360,7 +353,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @return Entities\Devices\Controls\Control[]
+	 * @return Array<Entities\Devices\Controls\Control>
 	 */
 	public function getControls(): array
 	{
@@ -368,9 +361,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Devices\Controls\Control[] $controls
-	 *
-	 * @return void
+	 * @param Array<Entities\Devices\Controls\Control> $controls
 	 */
 	public function setControls(array $controls = []): void
 	{
@@ -385,9 +376,6 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addControl(Entities\Devices\Controls\Control $control): void
 	{
 		// Check if collection does not contain inserting entity
@@ -397,35 +385,22 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getControl(string $id): ?Entities\Devices\Controls\Control
+	public function getControl(string $id): Entities\Devices\Controls\Control|null
 	{
 		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\Control $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
+			->filter(static fn (Entities\Devices\Controls\Control $row): bool => $id === $row->getPlainId());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Devices\Controls\Control
+	public function findControl(string $name): Entities\Devices\Controls\Control|null
 	{
 		$found = $this->controls
-			->filter(function (Entities\Devices\Controls\Control $row) use ($name): bool {
-				return $name === $row->getName();
-			});
+			->filter(static fn (Entities\Devices\Controls\Control $row): bool => $name === $row->getName());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeControl(Entities\Devices\Controls\Control $control): void
 	{
 		// Check if collection contain removing entity...
@@ -436,7 +411,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @return Entities\Devices\Properties\Property[]
+	 * @return Array<Entities\Devices\Properties\Property>
 	 */
 	public function getProperties(): array
 	{
@@ -444,9 +419,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Devices\Properties\Property[] $properties
-	 *
-	 * @return void
+	 * @param Array<Entities\Devices\Properties\Property> $properties
 	 */
 	public function setProperties(array $properties = []): void
 	{
@@ -461,9 +434,6 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addProperty(Entities\Devices\Properties\Property $property): void
 	{
 		// Check if collection does not contain inserting entity
@@ -473,35 +443,24 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getProperty(string $id): ?Entities\Devices\Properties\Property
+	public function getProperty(string $id): Entities\Devices\Properties\Property|null
 	{
 		$found = $this->properties
-			->filter(function (Entities\Devices\Properties\Property $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
+			->filter(static fn (Entities\Devices\Properties\Property $row): bool => $id === $row->getPlainId());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findProperty(string $identifier): ?Entities\Devices\Properties\Property
+	public function findProperty(string $identifier): Entities\Devices\Properties\Property|null
 	{
 		$found = $this->properties
-			->filter(function (Entities\Devices\Properties\Property $row) use ($identifier): bool {
-				return $identifier === $row->getIdentifier();
-			});
+			->filter(
+				static fn (Entities\Devices\Properties\Property $row): bool => $identifier === $row->getIdentifier()
+			);
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeProperty(Entities\Devices\Properties\Property $property): void
 	{
 		// Check if collection contain removing entity...
@@ -512,7 +471,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @return Entities\Devices\Attributes\Attribute[]
+	 * @return Array<Entities\Devices\Attributes\Attribute>
 	 */
 	public function getAttributes(): array
 	{
@@ -520,9 +479,7 @@ abstract class Device implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Devices\Attributes\Attribute[] $attributes
-	 *
-	 * @return void
+	 * @param Array<Entities\Devices\Attributes\Attribute> $attributes
 	 */
 	public function setAttributes(array $attributes = []): void
 	{
@@ -537,9 +494,6 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addAttribute(Entities\Devices\Attributes\Attribute $attribute): void
 	{
 		// Check if collection does not contain inserting entity
@@ -549,35 +503,24 @@ abstract class Device implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getAttribute(string $id): ?Entities\Devices\Attributes\Attribute
+	public function getAttribute(string $id): Entities\Devices\Attributes\Attribute|null
 	{
 		$found = $this->attributes
-			->filter(function (Entities\Devices\Attributes\Attribute $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
+			->filter(static fn (Entities\Devices\Attributes\Attribute $row): bool => $id === $row->getPlainId());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findAttribute(string $identifier): ?Entities\Devices\Attributes\Attribute
+	public function findAttribute(string $identifier): Entities\Devices\Attributes\Attribute|null
 	{
 		$found = $this->attributes
-			->filter(function (Entities\Devices\Attributes\Attribute $row) use ($identifier): bool {
-				return $identifier === $row->getIdentifier();
-			});
+			->filter(
+				static fn (Entities\Devices\Attributes\Attribute $row): bool => $identifier === $row->getIdentifier()
+			);
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeAttribute(Entities\Devices\Attributes\Attribute $attribute): void
 	{
 		// Check if collection contain removing entity...
@@ -585,70 +528,6 @@ abstract class Device implements Entities\Entity,
 			// ...and remove it from collection
 			$this->attributes->removeElement($attribute);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getIdentifier(): string
-	{
-		return $this->identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment = null): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConnector(): Entities\Connectors\Connector
-	{
-		return $this->connector;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setConnector(Entities\Connectors\Connector $connector): void
-	{
-		$this->connector = $connector;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getOwnerId(): ?string
-	{
-		return $this->owner !== null ? strval($this->owner) : null;
 	}
 
 	/**
@@ -669,15 +548,15 @@ abstract class Device implements Entities\Entity,
 		}
 
 		return [
-			'id'         => $this->getPlainId(),
-			'type'       => $this->getType(),
+			'id' => $this->getPlainId(),
+			'type' => $this->getType(),
 			'identifier' => $this->getIdentifier(),
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
+			'name' => $this->getName(),
+			'comment' => $this->getComment(),
 
 			'connector' => $this->getConnector()->getPlainId(),
 
-			'parents'  => $parents,
+			'parents' => $parents,
 			'children' => $children,
 
 			'owner' => $this->getOwnerId(),

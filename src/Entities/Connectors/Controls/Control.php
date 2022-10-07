@@ -48,8 +48,6 @@ class Control implements Entities\Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="control_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -57,16 +55,12 @@ class Control implements Entities\Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="control_name", length=100, nullable=false)
 	 */
 	private string $name;
 
 	/**
-	 * @var Entities\Connectors\Connector
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="controls")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
@@ -74,9 +68,6 @@ class Control implements Entities\Entity,
 	private Entities\Connectors\Connector $connector;
 
 	/**
-	 * @param string $name
-	 * @param Entities\Connectors\Connector $connector
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(string $name, Entities\Connectors\Connector $connector)
@@ -89,35 +80,29 @@ class Control implements Entities\Entity,
 		$connector->addControl($this);
 	}
 
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+	public function getConnector(): Entities\Connectors\Connector
+	{
+		return $this->connector;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public function toArray(): array
 	{
 		return [
-			'id'   => $this->getPlainId(),
+			'id' => $this->getPlainId(),
 			'name' => $this->getName(),
 
 			'connector' => $this->getConnector()->getPlainId(),
 
 			'owner' => $this->getConnector()->getOwnerId(),
 		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConnector(): Entities\Connectors\Connector
-	{
-		return $this->connector;
 	}
 
 }

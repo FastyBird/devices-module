@@ -64,8 +64,6 @@ abstract class Connector implements Entities\Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="connector_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -73,32 +71,24 @@ abstract class Connector implements Entities\Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="connector_identifier", length=50, nullable=false)
 	 */
 	protected string $identifier;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="connector_name", nullable=true, options={"default": null})
 	 */
-	protected ?string $name = null;
+	protected string|null $name = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="text", name="connector_comment", nullable=true, options={"default": null})
 	 */
-	protected ?string $comment = null;
+	protected string|null $comment = null;
 
 	/**
-	 * @var bool
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="boolean", name="connector_enabled", length=1, nullable=false, options={"default": true})
 	 */
@@ -129,15 +119,13 @@ abstract class Connector implements Entities\Entity,
 	protected Common\Collections\Collection $controls;
 
 	/**
-	 * @param string $identifier
-	 * @param Uuid\UuidInterface|null $id
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		string $identifier,
-		?Uuid\UuidInterface $id = null
-	) {
+		Uuid\UuidInterface|null $id = null,
+	)
+	{
 		$this->id = $id ?? Uuid\Uuid::uuid4();
 
 		$this->identifier = $identifier;
@@ -147,8 +135,45 @@ abstract class Connector implements Entities\Entity,
 		$this->controls = new Common\Collections\ArrayCollection();
 	}
 
+	abstract public function getType(): string;
+
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
+	}
+
+	public function getName(): string|null
+	{
+		return $this->name;
+	}
+
+	public function setName(string|null $name): void
+	{
+		$this->name = $name;
+	}
+
+	public function getComment(): string|null
+	{
+		return $this->comment;
+	}
+
+	public function setComment(string|null $comment = null): void
+	{
+		$this->comment = $comment;
+	}
+
+	public function isEnabled(): bool
+	{
+		return $this->enabled;
+	}
+
+	public function setEnabled(bool $enabled): void
+	{
+		$this->enabled = $enabled;
+	}
+
 	/**
-	 * @return Entities\Devices\Device[]
+	 * @return Array<Entities\Devices\Device>
 	 */
 	public function getDevices(): array
 	{
@@ -156,7 +181,7 @@ abstract class Connector implements Entities\Entity,
 	}
 
 	/**
-	 * @return Entities\Connectors\Properties\Property[]
+	 * @return Array<Entities\Connectors\Properties\Property>
 	 */
 	public function getProperties(): array
 	{
@@ -164,9 +189,7 @@ abstract class Connector implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Connectors\Properties\Property[] $properties
-	 *
-	 * @return void
+	 * @param Array<Entities\Connectors\Properties\Property> $properties
 	 */
 	public function setProperties(array $properties = []): void
 	{
@@ -181,9 +204,6 @@ abstract class Connector implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addProperty(Entities\Connectors\Properties\Property $property): void
 	{
 		// Check if collection does not contain inserting entity
@@ -193,22 +213,14 @@ abstract class Connector implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getProperty(string $id): ?Entities\Connectors\Properties\Property
+	public function getProperty(string $id): Entities\Connectors\Properties\Property|null
 	{
 		$found = $this->properties
-			->filter(function (Entities\Connectors\Properties\Property $row) use ($id): bool {
-				return $id === $row->getPlainId();
-			});
+			->filter(static fn (Entities\Connectors\Properties\Property $row): bool => $id === $row->getPlainId());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeProperty(Entities\Connectors\Properties\Property $property): void
 	{
 		// Check if collection contain removing entity...
@@ -218,29 +230,23 @@ abstract class Connector implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function hasProperty(string $property): bool
 	{
 		return $this->findProperty($property) !== null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findProperty(string $property): ?Entities\Connectors\Properties\Property
+	public function findProperty(string $property): Entities\Connectors\Properties\Property|null
 	{
 		$found = $this->properties
-			->filter(function (Entities\Connectors\Properties\Property $row) use ($property): bool {
-				return $property === $row->getIdentifier();
-			});
+			->filter(
+				static fn (Entities\Connectors\Properties\Property $row): bool => $property === $row->getIdentifier()
+			);
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
 	/**
-	 * @return Entities\Connectors\Controls\Control[]
+	 * @return Array<Entities\Connectors\Controls\Control>
 	 */
 	public function getControls(): array
 	{
@@ -248,9 +254,7 @@ abstract class Connector implements Entities\Entity,
 	}
 
 	/**
-	 * @param Entities\Connectors\Controls\Control[] $controls
-	 *
-	 * @return void
+	 * @param Array<Entities\Connectors\Controls\Control> $controls
 	 */
 	public function setControls(array $controls = []): void
 	{
@@ -265,9 +269,6 @@ abstract class Connector implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addControl(Entities\Connectors\Controls\Control $control): void
 	{
 		// Check if collection does not contain inserting entity
@@ -277,22 +278,14 @@ abstract class Connector implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getControl(string $name): ?Entities\Connectors\Controls\Control
+	public function getControl(string $name): Entities\Connectors\Controls\Control|null
 	{
 		$found = $this->controls
-			->filter(function (Entities\Connectors\Controls\Control $row) use ($name): bool {
-				return $name === $row->getName();
-			});
+			->filter(static fn (Entities\Connectors\Controls\Control $row): bool => $name === $row->getName());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeControl(Entities\Connectors\Controls\Control $control): void
 	{
 		// Check if collection contain removing entity...
@@ -302,23 +295,15 @@ abstract class Connector implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function hasControl(string $name): bool
 	{
 		return $this->findControl($name) !== null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findControl(string $name): ?Entities\Connectors\Controls\Control
+	public function findControl(string $name): Entities\Connectors\Controls\Control|null
 	{
 		$found = $this->controls
-			->filter(function (Entities\Connectors\Controls\Control $row) use ($name): bool {
-				return $name === $row->getName();
-			});
+			->filter(static fn (Entities\Connectors\Controls\Control $row): bool => $name === $row->getName());
 
 		return $found->isEmpty() === true || $found->first() === false ? null : $found->first();
 	}
@@ -329,76 +314,15 @@ abstract class Connector implements Entities\Entity,
 	public function toArray(): array
 	{
 		return [
-			'id'         => $this->getPlainId(),
-			'type'       => $this->getType(),
+			'id' => $this->getPlainId(),
+			'type' => $this->getType(),
 			'identifier' => $this->getIdentifier(),
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
-			'enabled'    => $this->isEnabled(),
+			'name' => $this->getName(),
+			'comment' => $this->getComment(),
+			'enabled' => $this->isEnabled(),
 
 			'owner' => $this->getOwnerId(),
 		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	abstract public function getType(): string;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getIdentifier(): string
-	{
-		return $this->identifier;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setComment(?string $comment = null): void
-	{
-		$this->comment = $comment;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isEnabled(): bool
-	{
-		return $this->enabled;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setEnabled(bool $enabled): void
-	{
-		$this->enabled = $enabled;
 	}
 
 }

@@ -20,19 +20,15 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Device property entity hydrator
  *
+ * @phpstan-extends Device<Entities\Devices\Properties\Dynamic>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Device<Entities\Devices\Properties\Dynamic>
  */
 final class DeviceMapped extends Device
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityName(): string
 	{
 		return Entities\Devices\Properties\Dynamic::class;

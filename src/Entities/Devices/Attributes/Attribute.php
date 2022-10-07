@@ -24,6 +24,13 @@ use IPub\DoctrineTimestampable;
 use Nette\Utils;
 use Ramsey\Uuid;
 use Throwable;
+use function implode;
+use function is_scalar;
+use function is_string;
+use function preg_match;
+use function str_replace;
+use function str_split;
+use function strval;
 
 /**
  * @ORM\Entity
@@ -53,8 +60,6 @@ class Attribute implements Entities\Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="attribute_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -62,32 +67,24 @@ class Attribute implements Entities\Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="attribute_identifier", length=50, nullable=false)
 	 */
 	protected string $identifier;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="attribute_name", nullable=true, options={"default": null})
 	 */
-	protected ?string $name = null;
+	protected string|null $name = null;
 
 	/**
-	 * @var string|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="attribute_content", nullable=true, options={"default": null})
 	 */
-	protected ?string $content = null;
+	protected string|null $content = null;
 
 	/**
-	 * @var Entities\Devices\Device
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="attributes")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
@@ -95,9 +92,6 @@ class Attribute implements Entities\Entity,
 	private Entities\Devices\Device $device;
 
 	/**
-	 * @param string $identifier
-	 * @param Entities\Devices\Device $device
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(string $identifier, Entities\Devices\Device $device)
@@ -110,51 +104,24 @@ class Attribute implements Entities\Entity,
 		$device->addAttribute($this);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toArray(): array
-	{
-		return [
-			'id' => $this->getPlainId(),
-			'identifier' => $this->getIdentifier(),
-			'name' => $this->getName(),
-			'content' => is_scalar($this->getContent()) || $this->getContent() === null ? $this->getContent() : (string) $this->getContent(),
-
-			'device' => $this->getDevice()->getPlainId(),
-
-			'owner' => $this->getDevice()->getOwnerId(),
-		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): ?string
+	public function getName(): string|null
 	{
 		return $this->name;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setName(?string $name): void
+	public function setName(string|null $name): void
 	{
 		$this->name = $name;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getContent(bool $plain = false): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
+	public function getContent(
+		bool $plain = false,
+	): string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null
 	{
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MANUFACTURER) {
 			if ($this->content !== null && MetadataTypes\HardwareManufacturerType::isValidValue($this->content)) {
@@ -165,7 +132,9 @@ class Attribute implements Entities\Entity,
 				return $this->content;
 			}
 
-			return MetadataTypes\HardwareManufacturerType::get(MetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC);
+			return MetadataTypes\HardwareManufacturerType::get(
+				MetadataTypes\HardwareManufacturerType::MANUFACTURER_GENERIC,
+			);
 		}
 
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MODEL) {
@@ -188,7 +157,10 @@ class Attribute implements Entities\Entity,
 					|| preg_match('/^([0-9A-Fa-f]{12})$/', (string) $this->content) !== 0
 				)
 			) {
-				return implode(':', str_split(Utils\Strings::lower(str_replace([':', '-'], '', (string) $this->content)), 2));
+				return implode(
+					':',
+					str_split(Utils\Strings::lower(str_replace([':', '-'], '', (string) $this->content)), 2),
+				);
 			}
 
 			return null;
@@ -203,18 +175,18 @@ class Attribute implements Entities\Entity,
 				return $this->content;
 			}
 
-			return MetadataTypes\FirmwareManufacturerType::get(MetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC);
+			return MetadataTypes\FirmwareManufacturerType::get(
+				MetadataTypes\FirmwareManufacturerType::MANUFACTURER_GENERIC,
+			);
 		}
 
 		return $this->content;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function setContent(
-		string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content
-	): void {
+		string|MetadataTypes\HardwareManufacturerType|MetadataTypes\FirmwareManufacturerType|MetadataTypes\DeviceModelType|null $content,
+	): void
+	{
 		if ($this->getIdentifier() === MetadataTypes\DeviceAttributeIdentifierType::IDENTIFIER_HARDWARE_MANUFACTURER) {
 			if ($content instanceof MetadataTypes\HardwareManufacturerType) {
 				$this->content = strval($content->getValue());
@@ -251,12 +223,28 @@ class Attribute implements Entities\Entity,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDevice(): Entities\Devices\Device
 	{
 		return $this->device;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id' => $this->getPlainId(),
+			'identifier' => $this->getIdentifier(),
+			'name' => $this->getName(),
+			'content' => is_scalar(
+				$this->getContent(),
+			) || $this->getContent() === null ? $this->getContent() : (string) $this->getContent(),
+
+			'device' => $this->getDevice()->getPlainId(),
+
+			'owner' => $this->getDevice()->getOwnerId(),
+		];
 	}
 
 }

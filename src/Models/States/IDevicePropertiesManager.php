@@ -31,39 +31,20 @@ use Nette\Utils;
 interface IDevicePropertiesManager
 {
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\DeviceProperty
-	 */
 	public function create(
 		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
 	): States\DeviceProperty;
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 * @param States\DeviceProperty $state
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\DeviceProperty
-	 */
 	public function update(
 		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		States\DeviceProperty $state,
-		Utils\ArrayHash $values
+		Utils\ArrayHash $values,
 	): States\DeviceProperty;
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 * @param States\DeviceProperty $state
-	 *
-	 * @return bool
-	 */
 	public function delete(
 		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
-		States\DeviceProperty $state
+		States\DeviceProperty $state,
 	): bool;
 
 }

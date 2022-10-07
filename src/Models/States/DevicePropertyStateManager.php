@@ -21,6 +21,7 @@ use FastyBird\Metadata;
 use Nette;
 use Nette\Utils;
 use Psr\Log;
+use function is_array;
 
 /**
  * Useful device dynamic property state helpers
@@ -35,41 +36,22 @@ final class DevicePropertyStateManager
 
 	use Nette\SmartObject;
 
-	/** @var DevicesModuleModels\States\DevicePropertiesRepository */
-	private DevicesModuleModels\States\DevicePropertiesRepository $devicePropertyStateRepository;
-
-	/** @var DevicesModuleModels\States\DevicePropertiesManager */
-	private DevicesModuleModels\States\DevicePropertiesManager $devicePropertiesStatesManager;
-
-	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
-	/**
-	 * @param DevicePropertiesRepository $devicePropertyStateRepository
-	 * @param DevicePropertiesManager $devicePropertiesStatesManager
-	 * @param Log\LoggerInterface|null $logger
-	 */
 	public function __construct(
-		DevicesModuleModels\States\DevicePropertiesRepository $devicePropertyStateRepository,
-		DevicesModuleModels\States\DevicePropertiesManager $devicePropertiesStatesManager,
-		?Log\LoggerInterface $logger
-	) {
-		$this->devicePropertyStateRepository = $devicePropertyStateRepository;
-		$this->devicePropertiesStatesManager = $devicePropertiesStatesManager;
-
+		private DevicesModuleModels\States\DevicePropertiesRepository $devicePropertyStateRepository,
+		private DevicesModuleModels\States\DevicePropertiesManager $devicePropertiesStatesManager,
+		Log\LoggerInterface|null $logger,
+	)
+	{
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
-	/**
-	 * @param Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity $property
-	 * @param Utils\ArrayHash $data
-	 *
-	 * @return void
-	 */
 	public function setValue(
 		Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity $property,
-		Utils\ArrayHash $data
-	): void {
+		Utils\ArrayHash $data,
+	): void
+	{
 		try {
 			$propertyState = $this->devicePropertyStateRepository->findOne($property);
 		} catch (DevicesModuleExceptions\NotImplemented) {
@@ -77,8 +59,8 @@ final class DevicePropertyStateManager
 				'DynamicProperties repository is not configured. State could not be fetched',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'   => 'device-property-state-manager',
-				]
+					'type' => 'device-property-state-manager',
+				],
 			);
 
 			return;
@@ -90,43 +72,43 @@ final class DevicePropertyStateManager
 				// ...create state in storage
 				$propertyState = $this->devicePropertiesStatesManager->create(
 					$property,
-					$data
+					$data,
 				);
 
 				$this->logger->debug(
 					'Device property state was created',
 					[
-						'source'   => Metadata\Constants::MODULE_DEVICES_SOURCE,
-						'type'     => 'device-property-state-manager',
-						'device'   => [
+						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+						'type' => 'device-property-state-manager',
+						'device' => [
 							'id' => $property->getDevice()->toString(),
 						],
 						'property' => [
-							'id'    => $property->getId()->toString(),
+							'id' => $property->getId()->toString(),
 							'state' => $propertyState->toArray(),
 						],
-					]
+					],
 				);
 			} else {
 				$propertyState = $this->devicePropertiesStatesManager->update(
 					$property,
 					$propertyState,
-					$data
+					$data,
 				);
 
 				$this->logger->debug(
 					'Device property state was updated',
 					[
-						'source'   => Metadata\Constants::MODULE_DEVICES_SOURCE,
-						'type'     => 'device-property-state-manager',
-						'device'   => [
+						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+						'type' => 'device-property-state-manager',
+						'device' => [
 							'id' => $property->getDevice()->toString(),
 						],
 						'property' => [
-							'id'    => $property->getId()->toString(),
+							'id' => $property->getId()->toString(),
 							'state' => $propertyState->toArray(),
 						],
-					]
+					],
 				);
 			}
 		} catch (DevicesModuleExceptions\NotImplemented) {
@@ -134,22 +116,20 @@ final class DevicePropertyStateManager
 				'DynamicProperties manager is not configured. State could not be saved',
 				[
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'   => 'device-property-state-manager',
-				]
+					'type' => 'device-property-state-manager',
+				],
 			);
 		}
 	}
 
 	/**
-	 * @param Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity[] $property
-	 * @param bool $state
-	 *
-	 * @return void
+	 * @param Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Array<Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity> $property
 	 */
 	public function setValidState(
 		Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|array $property,
-		bool $state
-	): void {
+		bool $state,
+	): void
+	{
 		if (is_array($property)) {
 			foreach ($property as $item) {
 				$this->setValue($item, Utils\ArrayHash::from([

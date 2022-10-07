@@ -30,14 +30,8 @@ use Ramsey\Uuid;
 interface Entity extends DoctrineCrud\Entities\IEntity
 {
 
-	/**
-	 * @return Uuid\UuidInterface
-	 */
 	public function getId(): Uuid\UuidInterface;
 
-	/**
-	 * @return string
-	 */
 	public function getPlainId(): string;
 
 	/**
@@ -45,9 +39,6 @@ interface Entity extends DoctrineCrud\Entities\IEntity
 	 */
 	public function toArray(): array;
 
-	/**
-	 * @return MetadataTypes\ModuleSourceType|MetadataTypes\ConnectorSourceType|MetadataTypes\PluginSourceType
-	 */
 	public function getSource(): MetadataTypes\ModuleSourceType|MetadataTypes\PluginSourceType|MetadataTypes\ConnectorSourceType;
 
 }

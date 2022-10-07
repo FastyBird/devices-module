@@ -27,6 +27,7 @@ use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
 use Symfony\Component\EventDispatcher;
+use function array_merge;
 
 /**
  * Doctrine entities events
@@ -41,42 +42,14 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 
 	use Nette\SmartObject;
 
-	/** @var Models\DataStorage\ConnectorPropertiesRepository */
-	private Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository;
-
-	/** @var Models\DataStorage\DevicePropertiesRepository */
-	private Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository;
-
-	/** @var Models\DataStorage\ChannelPropertiesRepository */
-	private Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository;
-
-	/** @var ExchangeEntities\EntityFactory */
-	private ExchangeEntities\EntityFactory $entityFactory;
-
-	/** @var ExchangePublisher\IPublisher|null */
-	private ?ExchangePublisher\IPublisher $publisher;
-
-	/**
-	 * @param Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository
-	 * @param Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository
-	 * @param Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository
-	 * @param ExchangeEntities\EntityFactory $entityFactory
-	 * @param ExchangePublisher\IPublisher|null $publisher
-	 */
 	public function __construct(
-		Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
-		Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
-		Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
-		ExchangeEntities\EntityFactory $entityFactory,
-		?ExchangePublisher\IPublisher $publisher = null
-	) {
-		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
-		$this->devicePropertiesRepository = $devicePropertiesRepository;
-		$this->channelPropertiesRepository = $channelPropertiesRepository;
-
-		$this->entityFactory = $entityFactory;
-
-		$this->publisher = $publisher;
+		private Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
+		private Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
+		private Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
+		private ExchangeEntities\EntityFactory $entityFactory,
+		private ExchangePublisher\IPublisher|null $publisher = null,
+	)
+	{
 	}
 
 	/**
@@ -92,10 +65,6 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @param Events\StateEntityCreated $event
-	 *
-	 * @return void
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 */
@@ -115,10 +84,6 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @param Events\StateEntityUpdated $event
-	 *
-	 * @return void
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 */
@@ -142,10 +107,6 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @param Events\StateEntityDeleted $event
-	 *
-	 * @return void
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 */
@@ -165,18 +126,14 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property
-	 * @param States\ConnectorProperty|States\DeviceProperty|States\ChannelProperty|null $state
-	 *
-	 * @return void
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 */
 	private function publishEntity(
 		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property,
-		States\ConnectorProperty|States\ChannelProperty|States\DeviceProperty|null $state = null
-	): void {
+		States\ConnectorProperty|States\ChannelProperty|States\DeviceProperty|null $state = null,
+	): void
+	{
 		if ($this->publisher === null) {
 			return;
 		}
@@ -186,21 +143,27 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
 			|| $property instanceof Entities\Connectors\Properties\Property
 		) {
-			$routingKey = MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED);
+			$routingKey = MetadataTypes\RoutingKeyType::get(
+				MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED,
+			);
 
 		} elseif (
 			$property instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
 			|| $property instanceof Entities\Devices\Properties\Property
 		) {
-			$routingKey = MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ENTITY_REPORTED);
+			$routingKey = MetadataTypes\RoutingKeyType::get(
+				MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ENTITY_REPORTED,
+			);
 
 		} elseif (
 			$property instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
 			|| $property instanceof Entities\Channels\Properties\Property
 		) {
-			$routingKey = MetadataTypes\RoutingKeyType::get(MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ENTITY_REPORTED);
+			$routingKey = MetadataTypes\RoutingKeyType::get(
+				MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ENTITY_REPORTED,
+			);
 
 		} else {
 			return;
@@ -213,22 +176,18 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 				Utils\Json::encode(
 					array_merge(
 						$property->toArray(),
-						$state ? $state->toArray() : []
-					)
+						$state ? $state->toArray() : [],
+					),
 				),
-				$routingKey
-			)
+				$routingKey,
+			),
 		);
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property|null
-	 */
 	private function findParent(
-		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property
-	): MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property|null {
+		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property,
+	): MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property|null
+	{
 		if (
 			$property instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
@@ -264,14 +223,10 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 		return null;
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property
-	 *
-	 * @return void
-	 */
 	private function refreshRepository(
-		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property
-	): void {
+		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property,
+	): void
+	{
 		if (
 			$property instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
 			|| $property instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity

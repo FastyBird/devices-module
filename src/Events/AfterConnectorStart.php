@@ -29,21 +29,12 @@ use Symfony\Contracts\EventDispatcher;
 class AfterConnectorStart extends EventDispatcher\Event
 {
 
-	/** @var MetadataEntities\Modules\DevicesModule\IConnectorEntity */
-	private MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector;
-
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
-	 */
 	public function __construct(
-		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector
-	) {
-		$this->connector = $connector;
+		private MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
+	)
+	{
 	}
 
-	/**
-	 * @return MetadataEntities\Modules\DevicesModule\IConnectorEntity
-	 */
 	public function getConnector(): MetadataEntities\Modules\DevicesModule\IConnectorEntity
 	{
 		return $this->connector;

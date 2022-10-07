@@ -31,22 +31,12 @@ use Ramsey\Uuid;
 interface IConnectorPropertiesRepository
 {
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
-	 *
-	 * @return States\ConnectorProperty|null
-	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
-	): ?States\ConnectorProperty;
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
+	): States\ConnectorProperty|null;
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return States\ConnectorProperty|null
-	 */
 	public function findOneById(
-		Uuid\UuidInterface $id
-	): ?States\ConnectorProperty;
+		Uuid\UuidInterface $id,
+	): States\ConnectorProperty|null;
 
 }

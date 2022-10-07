@@ -22,16 +22,17 @@ use IteratorAggregate;
 use Nette;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
+use function array_key_exists;
+use function count;
 
 /**
  * Data storage device controls repository
  *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceControlEntity>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceControlEntity>
  */
 final class DeviceControlsRepository implements Countable, IteratorAggregate
 {
@@ -44,29 +45,18 @@ final class DeviceControlsRepository implements Countable, IteratorAggregate
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceControlEntity> */
 	private array $entities;
 
-	/** @var MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory;
-
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory
-	 */
 	public function __construct(
-		MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory
-	) {
-		$this->entityFactory = $entityFactory;
-
+		private MetadataEntities\Modules\DevicesModule\DeviceControlEntityFactory $entityFactory,
+	)
+	{
 		$this->rawData = [];
 		$this->entities = [];
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDeviceControlEntity|null
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IDeviceControlEntity|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -76,8 +66,6 @@ final class DeviceControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $device
-	 *
 	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceControlEntity>
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
@@ -96,10 +84,7 @@ final class DeviceControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
 	 * @param Array<string, mixed> $data
-	 *
-	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -110,9 +95,6 @@ final class DeviceControlsRepository implements Countable, IteratorAggregate
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function clear(): void
 	{
 		$this->rawData = [];
@@ -120,9 +102,7 @@ final class DeviceControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
-	 *
-	 * @return void
+	 * @param Uuid\UuidInterface|Array<Uuid\UuidInterface> $id
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{
@@ -141,9 +121,6 @@ final class DeviceControlsRepository implements Countable, IteratorAggregate
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function count(): int
 	{
 		return count($this->rawData);
@@ -169,17 +146,15 @@ final class DeviceControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
 	 * @param Array<string, mixed> $data
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
-		array $data
-	): MetadataEntities\Modules\DevicesModule\IDeviceControlEntity {
+		array $data,
+	): MetadataEntities\Modules\DevicesModule\IDeviceControlEntity
+	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$this->entities[$id->toString()] = $this->entityFactory->create($data);
 		}

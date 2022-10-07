@@ -20,6 +20,7 @@ use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
+use function array_merge;
 
 /**
  * @ORM\Entity
@@ -51,8 +52,6 @@ abstract class Property extends Entities\Property
 {
 
 	/**
-	 * @var Entities\Connectors\Connector
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Connectors\Connector", inversedBy="properties")
 	 * @ORM\JoinColumn(name="connector_id", referencedColumnName="connector_id", onDelete="CASCADE", nullable=false)
@@ -60,22 +59,24 @@ abstract class Property extends Entities\Property
 	protected Entities\Connectors\Connector $connector;
 
 	/**
-	 * @param Entities\Connectors\Connector $connector
-	 * @param string $identifier
-	 * @param Uuid\UuidInterface|null $id
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		Entities\Connectors\Connector $connector,
 		string $identifier,
-		?Uuid\UuidInterface $id = null
-	) {
+		Uuid\UuidInterface|null $id = null,
+	)
+	{
 		parent::__construct($identifier, $id);
 
 		$this->connector = $connector;
 
 		$connector->addProperty($this);
+	}
+
+	public function getConnector(): Entities\Connectors\Connector
+	{
+		return $this->connector;
 	}
 
 	/**
@@ -88,14 +89,6 @@ abstract class Property extends Entities\Property
 
 			'owner' => $this->getConnector()->getOwnerId(),
 		]);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConnector(): Entities\Connectors\Connector
-	{
-		return $this->connector;
 	}
 
 }

@@ -23,6 +23,7 @@ use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher;
+use function array_merge;
 
 /**
  * Data storage configuration writer
@@ -37,88 +38,25 @@ final class Writer
 
 	use Nette\SmartObject;
 
-	/** @var Models\Connectors\ConnectorsRepository */
-	private Models\Connectors\ConnectorsRepository $connectorsRepository;
-
-	/** @var Models\Connectors\Properties\PropertiesRepository */
-	private Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository;
-
-	/** @var Models\Connectors\Controls\ControlsRepository */
-	private Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository;
-
-	/** @var Models\Devices\DevicesRepository */
-	private Models\Devices\DevicesRepository $devicesRepository;
-
-	/** @var Models\Devices\Properties\PropertiesRepository */
-	private Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository;
-
-	/** @var Models\Devices\Controls\ControlsRepository */
-	private Models\Devices\Controls\ControlsRepository $devicesControlsRepository;
-
-	/** @var Models\Devices\Attributes\AttributesRepository */
-	private Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository;
-
-	/** @var Models\Channels\ChannelsRepository */
-	private Models\Channels\ChannelsRepository $channelsRepository;
-
-	/** @var Models\Channels\Properties\PropertiesRepository */
-	private Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository;
-
-	/** @var Models\Channels\Controls\ControlsRepository */
-	private Models\Channels\Controls\ControlsRepository $channelsControlsRepository;
-
-	/** @var Flysystem\Filesystem */
-	private Flysystem\Filesystem $filesystem;
-
-	/** @var EventDispatcher\EventDispatcherInterface|null */
-	private ?EventDispatcher\EventDispatcherInterface $dispatcher;
-
-	/**
-	 * @param Models\Connectors\ConnectorsRepository $connectorsRepository
-	 * @param Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository
-	 * @param Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository
-	 * @param Models\Devices\DevicesRepository $devicesRepository
-	 * @param Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository
-	 * @param Models\Devices\Controls\ControlsRepository $devicesControlsRepository
-	 * @param Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository
-	 * @param Models\Channels\ChannelsRepository $channelsRepository
-	 * @param Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository
-	 * @param Models\Channels\Controls\ControlsRepository $channelsControlsRepository
-	 * @param Flysystem\Filesystem $filesystem
-	 * @param EventDispatcher\EventDispatcherInterface|null $dispatcher
-	 */
 	public function __construct(
-		Models\Connectors\ConnectorsRepository $connectorsRepository,
-		Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository,
-		Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository,
-		Models\Devices\DevicesRepository $devicesRepository,
-		Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository,
-		Models\Devices\Controls\ControlsRepository $devicesControlsRepository,
-		Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository,
-		Models\Channels\ChannelsRepository $channelsRepository,
-		Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository,
-		Models\Channels\Controls\ControlsRepository $channelsControlsRepository,
-		Flysystem\Filesystem $filesystem,
-		?EventDispatcher\EventDispatcherInterface $dispatcher
-	) {
-		$this->connectorsRepository = $connectorsRepository;
-		$this->connectorsPropertiesRepository = $connectorsPropertiesRepository;
-		$this->connectorsControlsRepository = $connectorsControlsRepository;
-		$this->devicesRepository = $devicesRepository;
-		$this->devicesPropertiesRepository = $devicesPropertiesRepository;
-		$this->devicesControlsRepository = $devicesControlsRepository;
-		$this->devicesAttributesRepository = $devicesAttributesRepository;
-		$this->channelsRepository = $channelsRepository;
-		$this->channelsPropertiesRepository = $channelsPropertiesRepository;
-		$this->channelsControlsRepository = $channelsControlsRepository;
-
-		$this->filesystem = $filesystem;
-		$this->dispatcher = $dispatcher;
+		private Models\Connectors\ConnectorsRepository $connectorsRepository,
+		private Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository,
+		private Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository,
+		private Models\Devices\DevicesRepository $devicesRepository,
+		private Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository,
+		private Models\Devices\Controls\ControlsRepository $devicesControlsRepository,
+		private Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository,
+		private Models\Channels\ChannelsRepository $channelsRepository,
+		private Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository,
+		private Models\Channels\Controls\ControlsRepository $channelsControlsRepository,
+		private Reader $reader,
+		private Flysystem\Filesystem $filesystem,
+		private EventDispatcher\EventDispatcherInterface|null $dispatcher,
+	)
+	{
 	}
 
 	/**
-	 * @return void
-	 *
 	 * @throws Flysystem\FilesystemException
 	 * @throws Utils\JsonException
 	 */
@@ -163,7 +101,7 @@ final class Writer
 
 					$channels[$channel->getPlainId()] = array_merge($channel->toArray(), [
 						DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY => $properties,
-						DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY   => $controls,
+						DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY => $controls,
 					]);
 				}
 
@@ -197,8 +135,8 @@ final class Writer
 				$devices[$device->getPlainId()] = array_merge($device->toArray(), [
 					DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY => $properties,
 					DevicesModule\Constants::DATA_STORAGE_ATTRIBUTES_KEY => $attributes,
-					DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY   => $controls,
-					DevicesModule\Constants::DATA_STORAGE_CHANNELS_KEY   => $channels,
+					DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY => $controls,
+					DevicesModule\Constants::DATA_STORAGE_CHANNELS_KEY => $channels,
 				]);
 			}
 
@@ -222,12 +160,14 @@ final class Writer
 
 			$data[$connector->getPlainId()] = array_merge($connector->toArray(), [
 				DevicesModule\Constants::DATA_STORAGE_PROPERTIES_KEY => $properties,
-				DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY   => $controls,
-				DevicesModule\Constants::DATA_STORAGE_DEVICES_KEY    => $devices,
+				DevicesModule\Constants::DATA_STORAGE_CONTROLS_KEY => $controls,
+				DevicesModule\Constants::DATA_STORAGE_DEVICES_KEY => $devices,
 			]);
 		}
 
 		$this->filesystem->write(DevicesModule\Constants::CONFIGURATION_FILE_FILENAME, Utils\Json::encode($data));
+
+		$this->reader->read();
 
 		$this->dispatcher?->dispatch(new Events\DataStorageWritten());
 	}

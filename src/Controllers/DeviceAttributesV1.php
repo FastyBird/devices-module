@@ -26,6 +26,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
+use function strval;
 
 /**
  * Device attributes API controller
@@ -43,37 +44,22 @@ final class DeviceAttributesV1 extends BaseV1
 
 	use Controllers\Finders\TDevice;
 
-	/** @var Models\Devices\DevicesRepository */
-	protected Models\Devices\DevicesRepository $devicesRepository;
-
-	/** @var Models\Devices\Attributes\AttributesRepository */
-	private Models\Devices\Attributes\AttributesRepository $deviceAttributesRepository;
-
-	/**
-	 * @param Models\Devices\DevicesRepository $devicesRepository
-	 * @param Models\Devices\Attributes\AttributesRepository $deviceAttributesRepository
-	 */
 	public function __construct(
-		Models\Devices\DevicesRepository $devicesRepository,
-		Models\Devices\Attributes\AttributesRepository $deviceAttributesRepository
-	) {
-		$this->devicesRepository = $devicesRepository;
-		$this->deviceAttributesRepository = $deviceAttributesRepository;
+		protected Models\Devices\DevicesRepository $devicesRepository,
+		private Models\Devices\Attributes\AttributesRepository $deviceAttributesRepository,
+	)
+	{
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -87,18 +73,14 @@ final class DeviceAttributesV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -118,23 +100,19 @@ final class DeviceAttributesV1 extends BaseV1
 		throw new JsonApiExceptions\JsonApiErrorException(
 			StatusCodeInterface::STATUS_NOT_FOUND,
 			$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-			$this->translator->translate('//devices-module.base.messages.notFound.message')
+			$this->translator->translate('//devices-module.base.messages.notFound.message'),
 		);
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -157,7 +135,7 @@ final class DeviceAttributesV1 extends BaseV1
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
+					$this->translator->translate('//devices-module.base.messages.notFound.message'),
 				);
 			}
 		}

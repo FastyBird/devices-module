@@ -23,16 +23,18 @@ use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
 use RecursiveArrayIterator;
+use function array_key_exists;
+use function count;
+use function strval;
 
 /**
  * Data storage devices repository
  *
+ * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceEntity>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceEntity>
  */
 final class DevicesRepository implements Countable, IteratorAggregate
 {
@@ -45,29 +47,18 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceEntity> */
 	private array $entities;
 
-	/** @var MetadataEntities\Modules\DevicesModule\DeviceEntityFactory */
-	private MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory;
-
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory
-	 */
 	public function __construct(
-		MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory
-	) {
-		$this->entityFactory = $entityFactory;
-
+		private MetadataEntities\Modules\DevicesModule\DeviceEntityFactory $entityFactory,
+	)
+	{
 		$this->rawData = [];
 		$this->entities = [];
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDeviceEntity|null
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
-	public function findById(Uuid\UuidInterface $id): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IDeviceEntity|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -77,17 +68,13 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $connector
-	 * @param string $identifier
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDeviceEntity|null
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $connector,
-		string $identifier
-	): ?MetadataEntities\Modules\DevicesModule\IDeviceEntity {
+		string $identifier,
+	): MetadataEntities\Modules\DevicesModule\IDeviceEntity|null
+	{
 		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
 				array_key_exists('connector', $rawDataRow)
@@ -103,8 +90,6 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $connector
-	 *
 	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceEntity>
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
@@ -123,10 +108,7 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
 	 * @param Array<string, mixed> $data
-	 *
-	 * @return void
 	 */
 	public function append(Uuid\UuidInterface $id, array $data): void
 	{
@@ -137,9 +119,6 @@ final class DevicesRepository implements Countable, IteratorAggregate
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function clear(): void
 	{
 		$this->rawData = [];
@@ -147,9 +126,7 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface|Uuid\UuidInterface[] $id
-	 *
-	 * @return void
+	 * @param Uuid\UuidInterface|Array<Uuid\UuidInterface> $id
 	 */
 	public function reset(Uuid\UuidInterface|array $id): void
 	{
@@ -168,9 +145,6 @@ final class DevicesRepository implements Countable, IteratorAggregate
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function count(): int
 	{
 		return count($this->rawData);
@@ -196,17 +170,15 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @param Uuid\UuidInterface $id
 	 * @param Array<string, mixed> $data
-	 *
-	 * @return MetadataEntities\Modules\DevicesModule\IDeviceEntity
 	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
-		array $data
-	): MetadataEntities\Modules\DevicesModule\IDeviceEntity {
+		array $data,
+	): MetadataEntities\Modules\DevicesModule\IDeviceEntity
+	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$this->entities[$id->toString()] = $this->entityFactory->create($data);
 		}

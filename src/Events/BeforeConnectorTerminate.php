@@ -29,21 +29,10 @@ use Symfony\Contracts\EventDispatcher;
 class BeforeConnectorTerminate extends EventDispatcher\Event
 {
 
-	/** @var Connectors\Connector */
-	private Connectors\Connector $connector;
-
-	/**
-	 * @param Connectors\Connector $connector
-	 */
-	public function __construct(
-		Connectors\Connector $connector
-	) {
-		$this->connector = $connector;
+	public function __construct(private Connectors\Connector $connector)
+	{
 	}
 
-	/**
-	 * @return Connectors\Connector
-	 */
 	public function getConnector(): Connectors\Connector
 	{
 		return $this->connector;

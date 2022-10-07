@@ -26,6 +26,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
+use function strval;
 
 /**
  * Device channel controls API controller
@@ -44,43 +45,23 @@ final class ChannelControlsV1 extends BaseV1
 	use Controllers\Finders\TDevice;
 	use Controllers\Finders\TChannel;
 
-	/** @var Models\Devices\DevicesRepository */
-	protected Models\Devices\DevicesRepository $devicesRepository;
-
-	/** @var Models\Channels\ChannelsRepository */
-	protected Models\Channels\ChannelsRepository $channelsRepository;
-
-	/** @var Models\Channels\Controls\ControlsRepository */
-	protected Models\Channels\Controls\ControlsRepository $channelControlsRepository;
-
-	/**
-	 * @param Models\Devices\DevicesRepository $devicesRepository
-	 * @param Models\Channels\ChannelsRepository $channelsRepository
-	 * @param Models\Channels\Controls\ControlsRepository $channelControlsRepository
-	 */
 	public function __construct(
-		Models\Devices\DevicesRepository $devicesRepository,
-		Models\Channels\ChannelsRepository $channelsRepository,
-		Models\Channels\Controls\ControlsRepository $channelControlsRepository
-	) {
-		$this->devicesRepository = $devicesRepository;
-		$this->channelsRepository = $channelsRepository;
-		$this->channelControlsRepository = $channelControlsRepository;
+		protected Models\Devices\DevicesRepository $devicesRepository,
+		protected Models\Channels\ChannelsRepository $channelsRepository,
+		protected Models\Channels\Controls\ControlsRepository $channelControlsRepository,
+	)
+	{
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -97,18 +78,14 @@ final class ChannelControlsV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -131,23 +108,19 @@ final class ChannelControlsV1 extends BaseV1
 		throw new JsonApiExceptions\JsonApiErrorException(
 			StatusCodeInterface::STATUS_NOT_FOUND,
 			$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-			$this->translator->translate('//devices-module.base.messages.notFound.message')
+			$this->translator->translate('//devices-module.base.messages.notFound.message'),
 		);
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -173,7 +146,7 @@ final class ChannelControlsV1 extends BaseV1
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
+					$this->translator->translate('//devices-module.base.messages.notFound.message'),
 				);
 			}
 		}

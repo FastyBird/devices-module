@@ -23,6 +23,8 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function assert;
+use function is_array;
 
 /**
  * Channel repository
@@ -38,36 +40,23 @@ final class ChannelsRepository
 	use Nette\SmartObject;
 
 	/** @var ORM\EntityRepository<Entities\Channels\Channel>|null */
-	private ?ORM\EntityRepository $repository = null;
+	private ORM\EntityRepository|null $repository = null;
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
 	}
 
-	/**
-	 * @param Queries\FindChannels $queryObject
-	 *
-	 * @return Entities\Channels\Channel|null
-	 */
-	public function findOneBy(Queries\FindChannels $queryObject): ?Entities\Channels\Channel
+	public function findOneBy(Queries\FindChannels $queryObject): Entities\Channels\Channel|null
 	{
-		/** @var Entities\Channels\Channel|null $channel */
+		/** @var mixed $channel */
 		$channel = $queryObject->fetchOne($this->getRepository());
+		assert($channel instanceof Entities\Channels\Channel || $channel === null);
 
 		return $channel;
 	}
 
 	/**
-	 * @param Queries\FindChannels $queryObject
-	 *
-	 * @return Entities\Channels\Channel[]
+	 * @return Array<Entities\Channels\Channel>
 	 *
 	 * @throws Throwable
 	 */
@@ -80,20 +69,19 @@ final class ChannelsRepository
 			return $result;
 		}
 
-		/** @var Entities\Channels\Channel[] $data */
+		/** @var Array<Entities\Channels\Channel> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindChannels $queryObject
-	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Channel>
 	 */
 	public function getResultSet(
-		Queries\FindChannels $queryObject
-	): DoctrineOrmQuery\ResultSet {
+		Queries\FindChannels $queryObject,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

@@ -29,6 +29,11 @@ use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette\Utils;
 use Psr\Http\Message;
 use Throwable;
+use function end;
+use function explode;
+use function is_string;
+use function preg_match;
+use function strval;
 
 /**
  * Device channels API controller
@@ -45,43 +50,23 @@ final class ChannelsV1 extends BaseV1
 	use Controllers\Finders\TDevice;
 	use Controllers\Finders\TChannel;
 
-	/** @var Models\Devices\DevicesRepository */
-	protected Models\Devices\DevicesRepository $devicesRepository;
-
-	/** @var Models\Channels\ChannelsManager */
-	protected Models\Channels\ChannelsManager $channelsManager;
-
-	/** @var Models\Channels\ChannelsRepository */
-	protected Models\Channels\ChannelsRepository $channelsRepository;
-
-	/**
-	 * @param Models\Devices\DevicesRepository $devicesRepository
-	 * @param Models\Channels\ChannelsRepository $channelsRepository
-	 * @param Models\Channels\ChannelsManager $channelsManager
-	 */
 	public function __construct(
-		Models\Devices\DevicesRepository $devicesRepository,
-		Models\Channels\ChannelsRepository $channelsRepository,
-		Models\Channels\ChannelsManager $channelsManager
-	) {
-		$this->devicesRepository = $devicesRepository;
-		$this->channelsRepository = $channelsRepository;
-		$this->channelsManager = $channelsManager;
+		protected Models\Devices\DevicesRepository $devicesRepository,
+		protected Models\Channels\ChannelsRepository $channelsRepository,
+		protected Models\Channels\ChannelsManager $channelsManager,
+	)
+	{
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -95,18 +80,14 @@ final class ChannelsV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
@@ -116,11 +97,6 @@ final class ChannelsV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
@@ -131,8 +107,9 @@ final class ChannelsV1 extends BaseV1
 	 */
 	public function create(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 
@@ -152,7 +129,6 @@ final class ChannelsV1 extends BaseV1
 
 			} catch (JsonApiExceptions\IJsonApiException $ex) {
 				throw $ex;
-
 			} catch (DoctrineCrudExceptions\MissingRequiredFieldException $ex) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -160,9 +136,8 @@ final class ChannelsV1 extends BaseV1
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
 					[
 						'pointer' => 'data/attributes/' . $ex->getField(),
-					]
+					],
 				);
-
 			} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -170,9 +145,8 @@ final class ChannelsV1 extends BaseV1
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
 					[
 						'pointer' => 'data/attributes/' . $ex->getField(),
-					]
+					],
 				);
-
 			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
 				if (preg_match("%PRIMARY'%", $ex->getMessage(), $match) === 1) {
 					throw new JsonApiExceptions\JsonApiErrorException(
@@ -181,9 +155,8 @@ final class ChannelsV1 extends BaseV1
 						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.message'),
 						[
 							'pointer' => '/data/id',
-						]
+						],
 					);
-
 				} elseif (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) === 1) {
 					$columnParts = explode('.', $match['key']);
 					$columnKey = end($columnParts);
@@ -195,7 +168,7 @@ final class ChannelsV1 extends BaseV1
 							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
 							[
 								'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
-							]
+							],
 						);
 					}
 				}
@@ -203,26 +176,24 @@ final class ChannelsV1 extends BaseV1
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
-					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message')
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
 				);
-
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'      => 'channels-controller',
+					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+					'type' => 'channels-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
-						'code'    => $ex->getCode(),
+						'code' => $ex->getCode(),
 					],
 				]);
 
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notCreated.heading'),
-					$this->translator->translate('//devices-module.base.messages.notCreated.message')
+					$this->translator->translate('//devices-module.base.messages.notCreated.message'),
 				);
-
 			} finally {
 				// Revert all changes when error occur
 				if ($this->getOrmConnection()->isTransactionActive()) {
@@ -231,6 +202,7 @@ final class ChannelsV1 extends BaseV1
 			}
 
 			$response = $this->buildResponse($request, $response, $channel);
+
 			return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
 		}
 
@@ -240,16 +212,11 @@ final class ChannelsV1 extends BaseV1
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 			[
 				'pointer' => '/data/type',
-			]
+			],
 		);
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
@@ -260,8 +227,9 @@ final class ChannelsV1 extends BaseV1
 	 */
 	public function update(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
@@ -285,24 +253,22 @@ final class ChannelsV1 extends BaseV1
 
 			} catch (JsonApiExceptions\IJsonApiException $ex) {
 				throw $ex;
-
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'      => 'channels-controller',
+					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+					'type' => 'channels-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
-						'code'    => $ex->getCode(),
+						'code' => $ex->getCode(),
 					],
 				]);
 
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
-					$this->translator->translate('//devices-module.base.messages.notUpdated.message')
+					$this->translator->translate('//devices-module.base.messages.notUpdated.message'),
 				);
-
 			} finally {
 				// Revert all changes when error occur
 				if ($this->getOrmConnection()->isTransactionActive()) {
@@ -319,16 +285,11 @@ final class ChannelsV1 extends BaseV1
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 			[
 				'pointer' => '/data/type',
-			]
+			],
 		);
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
@@ -338,8 +299,9 @@ final class ChannelsV1 extends BaseV1
 	 */
 	public function delete(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
@@ -358,20 +320,19 @@ final class ChannelsV1 extends BaseV1
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'      => 'channels-controller',
+				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+				'type' => 'channels-controller',
 				'exception' => [
 					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
+					'code' => $ex->getCode(),
 				],
 			]);
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//devices-module.base.messages.notDeleted.heading'),
-				$this->translator->translate('//devices-module.base.messages.notDeleted.message')
+				$this->translator->translate('//devices-module.base.messages.notDeleted.message'),
 			);
-
 		} finally {
 			// Revert all changes when error occur
 			if ($this->getOrmConnection()->isTransactionActive()) {
@@ -383,18 +344,14 @@ final class ChannelsV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & channel
@@ -404,7 +361,6 @@ final class ChannelsV1 extends BaseV1
 
 		if ($relationEntity === Schemas\Channels\Channel::RELATIONSHIPS_PROPERTIES) {
 			return $this->buildResponse($request, $response, $channel->getProperties());
-
 		} elseif ($relationEntity === Schemas\Channels\Channel::RELATIONSHIPS_CONTROLS) {
 			return $this->buildResponse($request, $response, $channel->getControls());
 		}

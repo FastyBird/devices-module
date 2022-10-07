@@ -31,22 +31,10 @@ use Ramsey\Uuid;
 interface IDevicePropertiesRepository
 {
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 *
-	 * @return States\DeviceProperty|null
-	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	): ?States\DeviceProperty;
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+	): States\DeviceProperty|null;
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return States\DeviceProperty|null
-	 */
-	public function findOneById(
-		Uuid\UuidInterface $id
-	): ?States\DeviceProperty;
+	public function findOneById(Uuid\UuidInterface $id): States\DeviceProperty|null;
 
 }

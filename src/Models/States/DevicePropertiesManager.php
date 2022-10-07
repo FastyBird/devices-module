@@ -25,6 +25,7 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
+use function strval;
 
 /**
  * Device property states manager
@@ -39,34 +40,18 @@ final class DevicePropertiesManager
 
 	use Nette\SmartObject;
 
-	/** @var IDevicePropertiesManager|null */
-	protected ?IDevicePropertiesManager $manager;
-
-	/** @var PsrEventDispatcher\EventDispatcherInterface|null */
-	private ?PsrEventDispatcher\EventDispatcherInterface $dispatcher;
-
-	/**
-	 * @param IDevicePropertiesManager|null $manager
-	 * @param PsrEventDispatcher\EventDispatcherInterface|null $dispatcher
-	 */
 	public function __construct(
-		?IDevicePropertiesManager $manager,
-		?PsrEventDispatcher\EventDispatcherInterface $dispatcher
-	) {
-		$this->manager = $manager;
-		$this->dispatcher = $dispatcher;
+		protected IDevicePropertiesManager|null $manager,
+		private PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
+	)
+	{
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\DeviceProperty
-	 */
 	public function create(
 		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
-		Utils\ArrayHash $values
-	): States\DeviceProperty {
+		Utils\ArrayHash $values,
+	): States\DeviceProperty
+	{
 		if ($this->manager === null) {
 			throw new Exceptions\NotImplemented('Device properties state manager is not registered');
 		}
@@ -83,14 +68,14 @@ final class DevicePropertiesManager
 				$property->getDataType(),
 				strval($values->offsetGet('actualValue')),
 				$property->getFormat(),
-				$property->getInvalid()
+				$property->getInvalid(),
 			);
 
 			$expectedValue = Utilities\ValueHelper::normalizeValue(
 				$property->getDataType(),
 				strval($values->offsetGet('expectedValue')),
 				$property->getFormat(),
-				$property->getInvalid()
+				$property->getInvalid(),
 			);
 
 			if ($expectedValue === $actualValue) {
@@ -106,18 +91,12 @@ final class DevicePropertiesManager
 		return $createdState;
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 * @param States\DeviceProperty $state
-	 * @param Utils\ArrayHash $values
-	 *
-	 * @return States\DeviceProperty
-	 */
 	public function update(
 		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		States\DeviceProperty $state,
-		Utils\ArrayHash $values
-	): States\DeviceProperty {
+		Utils\ArrayHash $values,
+	): States\DeviceProperty
+	{
 		if ($this->manager === null) {
 			throw new Exceptions\NotImplemented('Device properties state manager is not registered');
 		}
@@ -132,14 +111,14 @@ final class DevicePropertiesManager
 			$property->getDataType(),
 			$updatedState->getActualValue(),
 			$property->getFormat(),
-			$property->getInvalid()
+			$property->getInvalid(),
 		);
 
 		$expectedValue = Utilities\ValueHelper::normalizeValue(
 			$property->getDataType(),
 			$updatedState->getExpectedValue(),
 			$property->getFormat(),
-			$property->getInvalid()
+			$property->getInvalid(),
 		);
 
 		if ($expectedValue === $actualValue) {
@@ -148,8 +127,8 @@ final class DevicePropertiesManager
 				$updatedState,
 				Utils\ArrayHash::from([
 					'expectedValue' => null,
-					'pending'       => null,
-				])
+					'pending' => null,
+				]),
 			);
 		}
 
@@ -158,16 +137,11 @@ final class DevicePropertiesManager
 		return $updatedState;
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 * @param States\DeviceProperty $state
-	 *
-	 * @return bool
-	 */
 	public function delete(
 		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
-		States\DeviceProperty $state
-	): bool {
+		States\DeviceProperty $state,
+	): bool
+	{
 		if ($this->manager === null) {
 			throw new Exceptions\NotImplemented('Device properties state manager is not registered');
 		}

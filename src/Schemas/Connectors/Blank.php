@@ -22,12 +22,11 @@ use FastyBird\Metadata\Types as MetadataTypes;
 /**
  * Modbus connector entity schema
  *
+ * @phpstan-extends Connector<Entities\Connectors\Blank>
+ *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
- *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Connector<Entities\Connectors\Blank>
  */
 final class Blank extends Connector
 {
@@ -37,17 +36,11 @@ final class Blank extends Connector
 	 */
 	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/connector/' . Entities\Connectors\Blank::CONNECTOR_TYPE;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityClass(): string
 	{
 		return Entities\Connectors\Blank::class;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getType(): string
 	{
 		return self::SCHEMA_TYPE;

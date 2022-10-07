@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function is_array;
 
 /**
  * Connector channel property structure repository
@@ -37,48 +38,36 @@ final class PropertiesRepository
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Connectors\Properties\Property>[] */
+	/** @var Array<ORM\EntityRepository<Entities\Connectors\Properties\Property>> */
 	private array $repository = [];
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
 	}
 
 	/**
-	 * @param Queries\FindConnectorProperties $queryObject
 	 * @param class-string $type
-	 *
-	 * @return Entities\Connectors\Properties\Property|null
 	 */
 	public function findOneBy(
 		Queries\FindConnectorProperties $queryObject,
-		string $type = Entities\Connectors\Properties\Property::class
-	): ?Entities\Connectors\Properties\Property {
-		/** @var Entities\Connectors\Properties\Property|null $property */
-		$property = $queryObject->fetchOne($this->getRepository($type));
-
-		return $property;
+		string $type = Entities\Connectors\Properties\Property::class,
+	): Entities\Connectors\Properties\Property|null
+	{
+		return $queryObject->fetchOne($this->getRepository($type));
 	}
 
 	/**
-	 * @param Queries\FindConnectorProperties $queryObject
 	 * @param class-string $type
 	 *
-	 * @return Entities\Connectors\Properties\Property[]
+	 * @return Array<Entities\Connectors\Properties\Property>
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
 		Queries\FindConnectorProperties $queryObject,
-		string $type = Entities\Connectors\Properties\Property::class
-	): array {
+		string $type = Entities\Connectors\Properties\Property::class,
+	): array
+	{
 		/** @var Array<Entities\Connectors\Properties\Property>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\Property> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -86,22 +75,22 @@ final class PropertiesRepository
 			return $result;
 		}
 
-		/** @var Entities\Connectors\Properties\Property[] $data */
+		/** @var Array<Entities\Connectors\Properties\Property> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindConnectorProperties $queryObject
 	 * @param class-string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Properties\Property>
 	 */
 	public function getResultSet(
 		Queries\FindConnectorProperties $queryObject,
-		string $type = Entities\Connectors\Properties\Property::class
-	): DoctrineOrmQuery\ResultSet {
+		string $type = Entities\Connectors\Properties\Property::class,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

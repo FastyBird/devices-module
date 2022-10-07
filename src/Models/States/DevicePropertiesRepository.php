@@ -35,26 +35,14 @@ final class DevicePropertiesRepository
 
 	use Nette\SmartObject;
 
-	/** @var IDevicePropertiesRepository|null */
-	protected ?IDevicePropertiesRepository $repository;
-
-	/**
-	 * @param IDevicePropertiesRepository|null $repository
-	 */
-	public function __construct(
-		?IDevicePropertiesRepository $repository
-	) {
-		$this->repository = $repository;
+	public function __construct(protected IDevicePropertiesRepository|null $repository)
+	{
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	 *
-	 * @return States\DeviceProperty|null
-	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property
-	): ?States\DeviceProperty {
+		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+	): States\DeviceProperty|null
+	{
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplemented('Device properties state repository is not registered');
 		}
@@ -67,10 +55,8 @@ final class DevicePropertiesRepository
 				|| $parent instanceof Entities\Devices\Properties\Mapped
 			) {
 				return $this->repository->findOne($parent);
-
 			} elseif ($parent instanceof Uuid\UuidInterface) {
 				return $this->repository->findOneById($parent);
-
 			} else {
 				return null;
 			}
@@ -79,14 +65,8 @@ final class DevicePropertiesRepository
 		return $this->repository->findOne($property);
 	}
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return States\DeviceProperty|null
-	 */
-	public function findOneById(
-		Uuid\UuidInterface $id
-	): ?States\DeviceProperty {
+	public function findOneById(Uuid\UuidInterface $id): States\DeviceProperty|null
+	{
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplemented('Device properties state repository is not registered');
 		}

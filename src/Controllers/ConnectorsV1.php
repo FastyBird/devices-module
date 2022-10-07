@@ -29,6 +29,7 @@ use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 use Throwable;
+use function strval;
 
 /**
  * API connectors controller
@@ -44,32 +45,21 @@ use Throwable;
 class ConnectorsV1 extends BaseV1
 {
 
-	/** @var Models\Connectors\ConnectorsManager */
-	private Models\Connectors\ConnectorsManager $connectorsManager;
-
-	/** @var Models\Connectors\ConnectorsRepository */
-	private Models\Connectors\ConnectorsRepository $connectorsRepository;
-
 	public function __construct(
-		Models\Connectors\ConnectorsRepository $connectorsRepository,
-		Models\Connectors\ConnectorsManager $connectorsManager
-	) {
-		$this->connectorsRepository = $connectorsRepository;
-		$this->connectorsManager = $connectorsManager;
+		private Models\Connectors\ConnectorsRepository $connectorsRepository,
+		private Models\Connectors\ConnectorsManager $connectorsManager,
+	)
+	{
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		$findQuery = new Queries\FindConnectors();
 
 		$connectors = $this->connectorsRepository->getResultSet($findQuery);
@@ -79,62 +69,20 @@ class ConnectorsV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		return $this->buildResponse($request, $response, $connector);
 	}
 
 	/**
-	 * @param string $id
-	 *
-	 * @return Entities\Connectors\Connector
-	 *
-	 * @throws JsonApiExceptions\IJsonApiException
-	 */
-	protected function findConnector(string $id): Entities\Connectors\Connector
-	{
-		try {
-			$findQuery = new Queries\FindConnectors();
-			$findQuery->byId(Uuid\Uuid::fromString($id));
-
-			$connector = $this->connectorsRepository->findOneBy($findQuery);
-
-			if ($connector === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
-					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
-				);
-			}
-		} catch (Uuid\Exception\InvalidUuidStringException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
-		}
-
-		return $connector;
-	}
-
-	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
@@ -145,8 +93,9 @@ class ConnectorsV1 extends BaseV1
 	 */
 	public function update(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		$document = $this->createDocument($request);
@@ -167,24 +116,22 @@ class ConnectorsV1 extends BaseV1
 
 			} catch (JsonApiExceptions\IJsonApiException $ex) {
 				throw $ex;
-
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'      => 'connectors-controller',
+					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+					'type' => 'connectors-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
-						'code'    => $ex->getCode(),
+						'code' => $ex->getCode(),
 					],
 				]);
 
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
-					$this->translator->translate('//devices-module.base.messages.notUpdated.message')
+					$this->translator->translate('//devices-module.base.messages.notUpdated.message'),
 				);
-
 			} finally {
 				// Revert all changes when error occur
 				if ($this->getOrmConnection()->isTransactionActive()) {
@@ -201,38 +148,61 @@ class ConnectorsV1 extends BaseV1
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 			[
 				'pointer' => '/data/type',
-			]
+			],
 		);
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_ITEM_ID)));
 
 		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
 		if ($relationEntity === Schemas\Connectors\Connector::RELATIONSHIPS_DEVICES) {
 			return $this->buildResponse($request, $response, $connector->getDevices());
-
 		} elseif ($relationEntity === Schemas\Connectors\Connector::RELATIONSHIPS_PROPERTIES) {
 			return $this->buildResponse($request, $response, $connector->getProperties());
-
 		} elseif ($relationEntity === Schemas\Connectors\Connector::RELATIONSHIPS_CONTROLS) {
 			return $this->buildResponse($request, $response, $connector->getControls());
 		}
 
 		return parent::readRelationship($request, $response);
+	}
+
+	/**
+	 * @throws JsonApiExceptions\IJsonApiException
+	 */
+	protected function findConnector(string $id): Entities\Connectors\Connector
+	{
+		try {
+			$findQuery = new Queries\FindConnectors();
+			$findQuery->byId(Uuid\Uuid::fromString($id));
+
+			$connector = $this->connectorsRepository->findOneBy($findQuery);
+
+			if ($connector === null) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_NOT_FOUND,
+					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+					$this->translator->translate('//devices-module.base.messages.notFound.message'),
+				);
+			}
+		} catch (Uuid\Exception\InvalidUuidStringException) {
+			throw new JsonApiExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_NOT_FOUND,
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message'),
+			);
+		}
+
+		return $connector;
 	}
 
 }

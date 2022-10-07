@@ -26,17 +26,11 @@ class Blank extends Entities\Connectors\Connector
 
 	public const CONNECTOR_TYPE = 'blank';
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getType(): string
 	{
 		return self::CONNECTOR_TYPE;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDiscriminatorName(): string
 	{
 		return self::CONNECTOR_TYPE;

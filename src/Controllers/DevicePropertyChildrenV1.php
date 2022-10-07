@@ -22,6 +22,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use Psr\Http\Message;
+use function strval;
 
 /**
  * Device property children API controller
@@ -40,37 +41,22 @@ final class DevicePropertyChildrenV1 extends BaseV1
 	use Controllers\Finders\TDevice;
 	use Controllers\Finders\TDeviceProperty;
 
-	/** @var Models\Devices\DevicesRepository */
-	protected Models\Devices\DevicesRepository $devicesRepository;
-
-	/** @var Models\Devices\Properties\PropertiesRepository */
-	private Models\Devices\Properties\PropertiesRepository $devicePropertiesRepository;
-
-	/**
-	 * @param Models\Devices\DevicesRepository $devicesRepository
-	 * @param Models\Devices\Properties\PropertiesRepository $devicePropertiesRepository
-	 */
 	public function __construct(
-		Models\Devices\DevicesRepository $devicesRepository,
-		Models\Devices\Properties\PropertiesRepository $devicePropertiesRepository
-	) {
-		$this->devicesRepository = $devicesRepository;
-		$this->devicePropertiesRepository = $devicePropertiesRepository;
+		protected Models\Devices\DevicesRepository $devicesRepository,
+		private Models\Devices\Properties\PropertiesRepository $devicePropertiesRepository,
+	)
+	{
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load device
 		$device = $this->findDevice(strval($request->getAttribute(Router\Routes::URL_DEVICE_ID)));
 		// & property

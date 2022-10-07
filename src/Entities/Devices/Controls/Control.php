@@ -48,8 +48,6 @@ class Control implements Entities\Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="control_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -57,16 +55,12 @@ class Control implements Entities\Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="control_name", length=100, nullable=false)
 	 */
 	private string $name;
 
 	/**
-	 * @var Entities\Devices\Device
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Devices\Device", inversedBy="controls")
 	 * @ORM\JoinColumn(name="device_id", referencedColumnName="device_id", onDelete="CASCADE", nullable=false)
@@ -74,9 +68,6 @@ class Control implements Entities\Entity,
 	private Entities\Devices\Device $device;
 
 	/**
-	 * @param string $name
-	 * @param Entities\Devices\Device $device
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(string $name, Entities\Devices\Device $device)
@@ -89,35 +80,29 @@ class Control implements Entities\Entity,
 		$device->addControl($this);
 	}
 
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+	public function getDevice(): Entities\Devices\Device
+	{
+		return $this->device;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public function toArray(): array
 	{
 		return [
-			'id'   => $this->getPlainId(),
+			'id' => $this->getPlainId(),
 			'name' => $this->getName(),
 
 			'device' => $this->getDevice()->getPlainId(),
 
 			'owner' => $this->getDevice()->getOwnerId(),
 		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getDevice(): Entities\Devices\Device
-	{
-		return $this->device;
 	}
 
 }

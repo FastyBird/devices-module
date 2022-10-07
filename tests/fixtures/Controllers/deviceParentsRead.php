@@ -10,13 +10,13 @@ const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZ
 return [
 	// Valid responses
 	//////////////////
-	'readAll'                        => [
+	'readAll' => [
 		'/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/parents',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_OK,
 		__DIR__ . '/responses/device.parents.index.json',
 	],
-	'readAllPaging'                  => [
+	'readAllPaging' => [
 		'/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/parents?page[offset]=1&page[limit]=1',
 		'Bearer ' . VALID_TOKEN,
 		StatusCodeInterface::STATUS_OK,
@@ -31,25 +31,25 @@ return [
 		StatusCodeInterface::STATUS_NOT_FOUND,
 		__DIR__ . '/responses/generic/notFound.json',
 	],
-	'readAllMissingToken'            => [
+	'readAllMissingToken' => [
 		'/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/parents',
 		null,
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'readAllEmptyToken'              => [
+	'readAllEmptyToken' => [
 		'/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/parents',
 		'',
 		StatusCodeInterface::STATUS_FORBIDDEN,
 		__DIR__ . '/responses/generic/forbidden.json',
 	],
-	'readAllInvalidToken'            => [
+	'readAllInvalidToken' => [
 		'/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/parents',
 		'Bearer ' . INVALID_TOKEN,
 		StatusCodeInterface::STATUS_UNAUTHORIZED,
 		__DIR__ . '/responses/generic/unauthorized.json',
 	],
-	'readAllExpiredToken'            => [
+	'readAllExpiredToken' => [
 		'/v1/devices/a1036ff8-6ee8-4405-aaed-58bae0814596/parents',
 		'Bearer ' . EXPIRED_TOKEN,
 		StatusCodeInterface::STATUS_UNAUTHORIZED,

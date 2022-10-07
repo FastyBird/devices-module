@@ -35,26 +35,14 @@ final class ChannelPropertiesRepository
 
 	use Nette\SmartObject;
 
-	/** @var IChannelPropertiesRepository|null */
-	private ?IChannelPropertiesRepository $repository;
-
-	/**
-	 * @param IChannelPropertiesRepository|null $repository
-	 */
-	public function __construct(
-		?IChannelPropertiesRepository $repository
-	) {
-		$this->repository = $repository;
+	public function __construct(private IChannelPropertiesRepository|null $repository)
+	{
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
-	 *
-	 * @return States\ChannelProperty|null
-	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property
-	): ?States\ChannelProperty {
+		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+	): States\ChannelProperty|null
+	{
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplemented('Channel properties state repository is not registered');
 		}
@@ -67,10 +55,8 @@ final class ChannelPropertiesRepository
 				|| $parent instanceof Entities\Channels\Properties\Mapped
 			) {
 				return $this->repository->findOne($parent);
-
 			} elseif ($parent instanceof Uuid\UuidInterface) {
 				return $this->repository->findOneById($parent);
-
 			} else {
 				return null;
 			}
@@ -79,14 +65,8 @@ final class ChannelPropertiesRepository
 		return $this->repository->findOne($property);
 	}
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return States\ChannelProperty|null
-	 */
-	public function findOneById(
-		Uuid\UuidInterface $id
-	): ?States\ChannelProperty {
+	public function findOneById(Uuid\UuidInterface $id): States\ChannelProperty|null
+	{
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplemented('Channel properties state repository is not registered');
 		}

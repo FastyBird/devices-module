@@ -19,21 +19,21 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use IPub\JsonAPIDocument;
+use function is_scalar;
 
 /**
  * Device channel entity hydrator
  *
+ * @phpstan-extends JsonApiHydrators\Hydrator<Entities\Channels\Channel>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends JsonApiHydrators\Hydrator<Entities\Channels\Channel>
  */
 final class Channel extends JsonApiHydrators\Hydrator
 {
 
-	/** @var string[] */
+	/** @var Array<string> */
 	protected array $attributes = [
 		'identifier',
 		'name',
@@ -41,25 +41,17 @@ final class Channel extends JsonApiHydrators\Hydrator
 		'params',
 	];
 
-	/** @var string[] */
+	/** @var Array<string> */
 	protected array $relationships = [
 		Schemas\Channels\Channel::RELATIONSHIPS_DEVICE,
 	];
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityName(): string
 	{
 		return Entities\Channels\Channel::class;
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return string|null
-	 */
-	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{
 		if (
 			!is_scalar($attributes->get('name'))
@@ -71,12 +63,7 @@ final class Channel extends JsonApiHydrators\Hydrator
 		return (string) $attributes->get('name');
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return string|null
-	 */
-	protected function hydrateCommentAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	protected function hydrateCommentAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{
 		if (
 			!is_scalar($attributes->get('comment'))

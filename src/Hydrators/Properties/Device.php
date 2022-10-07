@@ -21,18 +21,17 @@ use FastyBird\DevicesModule\Schemas;
 /**
  * Device property entity hydrator
  *
- * @package        FastyBird:DevicesModule!
- * @subpackage     Hydrators
- *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
  * @phpstan-template TEntityClass of Entities\Devices\Properties\Property
  * @phpstan-extends  Property<TEntityClass>
+ *
+ * @package        FastyBird:DevicesModule!
+ * @subpackage     Hydrators
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
 abstract class Device extends Property
 {
 
-	/** @var string[] */
+	/** @var Array<string> */
 	protected array $relationships = [
 		Schemas\Devices\Properties\Property::RELATIONSHIPS_DEVICE,
 		Schemas\Devices\Properties\Property::RELATIONSHIPS_PARENT,

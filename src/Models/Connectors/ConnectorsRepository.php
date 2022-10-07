@@ -23,6 +23,8 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function assert;
+use function is_array;
 
 /**
  * Connector repository
@@ -37,48 +39,40 @@ final class ConnectorsRepository
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Connectors\Connector>[] */
+	/** @var Array<ORM\EntityRepository<Entities\Connectors\Connector>> */
 	private array $repository = [];
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
 	}
 
 	/**
-	 * @param Queries\FindConnectors $queryObject
 	 * @param class-string $type
-	 *
-	 * @return Entities\Connectors\Connector|null
 	 */
 	public function findOneBy(
 		Queries\FindConnectors $queryObject,
-		string $type = Entities\Connectors\Connector::class
-	): ?Entities\Connectors\Connector {
-		/** @var Entities\Connectors\Connector|null $connector */
+		string $type = Entities\Connectors\Connector::class,
+	): Entities\Connectors\Connector|null
+	{
+		/** @var mixed $connector */
 		$connector = $queryObject->fetchOne($this->getRepository($type));
+		assert($connector instanceof Entities\Connectors\Connector || $connector === null);
 
 		return $connector;
 	}
 
 	/**
-	 * @param Queries\FindConnectors $queryObject
 	 * @param class-string $type
 	 *
-	 * @return Entities\Connectors\Connector[]
+	 * @return Array<Entities\Connectors\Connector>
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
 		Queries\FindConnectors $queryObject,
-		string $type = Entities\Connectors\Connector::class
-	): array {
+		string $type = Entities\Connectors\Connector::class,
+	): array
+	{
 		/** @var Array<Entities\Connectors\Connector>|DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -86,22 +80,22 @@ final class ConnectorsRepository
 			return $result;
 		}
 
-		/** @var Entities\Connectors\Connector[] $data */
+		/** @var Array<Entities\Connectors\Connector> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindConnectors $queryObject
 	 * @param class-string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector>
 	 */
 	public function getResultSet(
 		Queries\FindConnectors $queryObject,
-		string $type = Entities\Connectors\Connector::class
-	): DoctrineOrmQuery\ResultSet {
+		string $type = Entities\Connectors\Connector::class,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

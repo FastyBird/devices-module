@@ -25,6 +25,8 @@ use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
+use function array_merge;
+use function assert;
 
 /**
  * @ORM\Entity
@@ -57,8 +59,6 @@ abstract class Property extends Entities\Property
 {
 
 	/**
-	 * @var Entities\Channels\Channel
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", inversedBy="properties")
 	 * @ORM\JoinColumn(name="channel_id", referencedColumnName="channel_id", onDelete="CASCADE", nullable=false)
@@ -66,13 +66,11 @@ abstract class Property extends Entities\Property
 	protected Entities\Channels\Channel $channel;
 
 	/**
-	 * @var Property|null
-	 *
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Properties\Property", inversedBy="children")
 	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="property_id", nullable=true, onDelete="CASCADE")
 	 */
-	protected ?Property $parent = null;
+	protected Property|null $parent = null;
 
 	/**
 	 * @var Common\Collections\Collection<int, Property>
@@ -82,17 +80,14 @@ abstract class Property extends Entities\Property
 	protected Common\Collections\Collection $children;
 
 	/**
-	 * @param Entities\Channels\Channel $channel
-	 * @param string $identifier
-	 * @param Uuid\UuidInterface|null $id
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(
 		Entities\Channels\Channel $channel,
 		string $identifier,
-		?Uuid\UuidInterface $id = null
-	) {
+		Uuid\UuidInterface|null $id = null,
+	)
+	{
 		parent::__construct($identifier, $id);
 
 		$this->channel = $channel;
@@ -102,32 +97,23 @@ abstract class Property extends Entities\Property
 		$this->children = new Common\Collections\ArrayCollection();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getParent(): ?Property
+	public function getParent(): Property|null
 	{
 		return $this->parent;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function setParent(Property $device): void
 	{
 		$this->parent = $device;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeParent(): void
 	{
 		$this->parent = null;
 	}
 
 	/**
-	 * @return Property[]
+	 * @return Array<Property>
 	 */
 	public function getChildren(): array
 	{
@@ -135,17 +121,14 @@ abstract class Property extends Entities\Property
 	}
 
 	/**
-	 * @param Property[] $children
-	 *
-	 * @return void
+	 * @param Array<Property> $children
 	 */
 	public function setChildren(array $children): void
 	{
 		$this->children = new Common\Collections\ArrayCollection();
 
-		// Process all passed entities...
-		/** @var Property $entity */
 		foreach ($children as $entity) {
+			assert($entity instanceof Property);
 			if ($this->children->contains($entity) === false) {
 				// ...and assign them to collection
 				$this->children->add($entity);
@@ -153,9 +136,6 @@ abstract class Property extends Entities\Property
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function addChild(Property $child): void
 	{
 		// Check if collection does not contain inserting entity
@@ -165,9 +145,6 @@ abstract class Property extends Entities\Property
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function removeChild(Property $child): void
 	{
 		// Check if collection contain removing entity...
@@ -177,17 +154,11 @@ abstract class Property extends Entities\Property
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getChannel(): Entities\Channels\Channel
 	{
 		return $this->channel;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isSettable(): bool
 	{
 		if (
@@ -200,9 +171,6 @@ abstract class Property extends Entities\Property
 		return parent::isSettable();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function setSettable(bool $settable): void
 	{
 		if (
@@ -215,9 +183,6 @@ abstract class Property extends Entities\Property
 		parent::setSettable($settable);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isQueryable(): bool
 	{
 		if (
@@ -230,9 +195,6 @@ abstract class Property extends Entities\Property
 		return parent::isQueryable();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function setQueryable(bool $queryable): void
 	{
 		if (
@@ -245,9 +207,6 @@ abstract class Property extends Entities\Property
 		parent::setQueryable($queryable);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDataType(): MetadataTypes\DataTypeType
 	{
 		if (
@@ -260,9 +219,6 @@ abstract class Property extends Entities\Property
 		return parent::getDataType();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function setDataType(MetadataTypes\DataTypeType $dataType): void
 	{
 		if (
@@ -275,10 +231,7 @@ abstract class Property extends Entities\Property
 		parent::setDataType($dataType);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getUnit(): ?string
+	public function getUnit(): string|null
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
@@ -290,10 +243,7 @@ abstract class Property extends Entities\Property
 		return parent::getUnit();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setUnit(?string $unit): void
+	public function setUnit(string|null $unit): void
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
@@ -305,9 +255,6 @@ abstract class Property extends Entities\Property
 		parent::setUnit($unit);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	{
 		if (
@@ -319,9 +266,6 @@ abstract class Property extends Entities\Property
 		return parent::getFormat();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function setFormat(array|string|null $format): void
 	{
 		if (
@@ -334,9 +278,6 @@ abstract class Property extends Entities\Property
 		parent::setFormat($format);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getInvalid(): float|int|string|null
 	{
 		if (
@@ -349,10 +290,7 @@ abstract class Property extends Entities\Property
 		return parent::getInvalid();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setInvalid(?string $invalid): void
+	public function setInvalid(string|null $invalid): void
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
@@ -364,10 +302,7 @@ abstract class Property extends Entities\Property
 		parent::setInvalid($invalid);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getNumberOfDecimals(): ?int
+	public function getNumberOfDecimals(): int|null
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
@@ -379,10 +314,7 @@ abstract class Property extends Entities\Property
 		return parent::getNumberOfDecimals();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setNumberOfDecimals(?int $numberOfDecimals): void
+	public function setNumberOfDecimals(int|null $numberOfDecimals): void
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
@@ -394,9 +326,6 @@ abstract class Property extends Entities\Property
 		parent::setNumberOfDecimals($numberOfDecimals);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if (
@@ -409,10 +338,7 @@ abstract class Property extends Entities\Property
 		return parent::getDefault();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setDefault(?string $default): void
+	public function setDefault(string|null $default): void
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
@@ -436,8 +362,8 @@ abstract class Property extends Entities\Property
 		}
 
 		return array_merge(parent::toArray(), [
-			'channel'  => $this->getChannel()->getPlainId(),
-			'parent'   => $this->getParent() !== null ? $this->getParent()->getPlainId() : null,
+			'channel' => $this->getChannel()->getPlainId(),
+			'parent' => $this->getParent()?->getPlainId(),
 			'children' => $children,
 
 			'owner' => $this->getChannel()->getDevice()->getOwnerId(),

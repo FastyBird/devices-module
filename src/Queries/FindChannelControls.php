@@ -22,98 +22,68 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use IPub\DoctrineOrmQuery;
 use Ramsey\Uuid;
+use function in_array;
 
 /**
  * Find channel controls entities query
  *
+ * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Controls\Control>
+ *
  * @package          FastyBird:DevicesModule!
  * @subpackage       Queries
- *
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Controls\Control>
  */
 class FindChannelControls extends DoctrineOrmQuery\QueryObject
 {
 
-	/** @var Closure[] */
+	/** @var Array<Closure> */
 	private array $filter = [];
 
-	/** @var Closure[] */
+	/** @var Array<Closure> */
 	private array $select = [];
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return void
-	 */
 	public function byId(Uuid\UuidInterface $id): void
 	{
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($id): void {
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($id): void {
 			$qb->andWhere('c.id = :id')->setParameter('id', $id, Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
-	/**
-	 * @param string $name
-	 *
-	 * @return void
-	 */
 	public function byName(string $name): void
 	{
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($name): void {
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($name): void {
 			$qb->andWhere('c.name = :name')->setParameter('name', $name);
 		};
 	}
 
-	/**
-	 * @param Entities\Channels\Channel $channel
-	 *
-	 * @return void
-	 */
 	public function forChannel(Entities\Channels\Channel $channel): void
 	{
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($channel): void {
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($channel): void {
 			$qb->andWhere('channel.id = :channel')
 				->setParameter('channel', $channel->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
-	/**
-	 * @param Uuid\UuidInterface $channelId
-	 *
-	 * @return void
-	 */
 	public function byChannelId(Uuid\UuidInterface $channelId): void
 	{
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($channelId): void {
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($channelId): void {
 			$qb->andWhere('channel.id = :channel')
 				->setParameter('channel', $channelId, Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
-	/**
-	 * @param string $sortBy
-	 * @param string $sortDir
-	 *
-	 * @return void
-	 */
 	public function sortBy(string $sortBy, string $sortDir = Common\Collections\Criteria::ASC): void
 	{
 		if (!in_array($sortDir, [Common\Collections\Criteria::ASC, Common\Collections\Criteria::DESC], true)) {
 			throw new Exceptions\InvalidArgument('Provided sortDir value is not valid.');
 		}
 
-		$this->filter[] = function (ORM\QueryBuilder $qb) use ($sortBy, $sortDir): void {
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($sortBy, $sortDir): void {
 			$qb->addOrderBy($sortBy, $sortDir);
 		};
 	}
 
 	/**
-	 * @param ORM\EntityRepository $repository
-	 *
-	 * @return ORM\QueryBuilder
-	 *
 	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Controls\Control> $repository
 	 */
 	protected function doCreateQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
@@ -128,10 +98,6 @@ class FindChannelControls extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository $repository
-	 *
-	 * @return ORM\QueryBuilder
-	 *
 	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Controls\Control> $repository
 	 */
 	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
@@ -148,10 +114,6 @@ class FindChannelControls extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository $repository
-	 *
-	 * @return ORM\QueryBuilder
-	 *
 	 * @phpstan-param ORM\EntityRepository<Entities\Channels\Controls\Control> $repository
 	 */
 	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder

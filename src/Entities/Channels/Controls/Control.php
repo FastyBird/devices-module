@@ -48,8 +48,6 @@ class Control implements Entities\Entity,
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
 	/**
-	 * @var Uuid\UuidInterface
-	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="uuid_binary", name="control_id")
 	 * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
@@ -57,16 +55,12 @@ class Control implements Entities\Entity,
 	protected Uuid\UuidInterface $id;
 
 	/**
-	 * @var string
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="control_name", length=100, nullable=false)
 	 */
 	private string $name;
 
 	/**
-	 * @var Entities\Channels\Channel
-	 *
 	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\DevicesModule\Entities\Channels\Channel", inversedBy="controls")
 	 * @ORM\JoinColumn(name="channel_id", referencedColumnName="channel_id", onDelete="CASCADE", nullable=false)
@@ -74,9 +68,6 @@ class Control implements Entities\Entity,
 	private Entities\Channels\Channel $channel;
 
 	/**
-	 * @param string $name
-	 * @param Entities\Channels\Channel $channel
-	 *
 	 * @throws Throwable
 	 */
 	public function __construct(string $name, Entities\Channels\Channel $channel)
@@ -89,35 +80,29 @@ class Control implements Entities\Entity,
 		$channel->addControl($this);
 	}
 
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+	public function getChannel(): Entities\Channels\Channel
+	{
+		return $this->channel;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public function toArray(): array
 	{
 		return [
-			'id'   => $this->getPlainId(),
+			'id' => $this->getPlainId(),
 			'name' => $this->getName(),
 
 			'channel' => $this->getChannel()->getPlainId(),
 
 			'owner' => $this->getChannel()->getDevice()->getOwnerId(),
 		];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getChannel(): Entities\Channels\Channel
-	{
-		return $this->channel;
 	}
 
 }

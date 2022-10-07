@@ -13,17 +13,11 @@ class DummyConnectorEntity extends Entities\Connectors\Connector
 
 	public const CONNECTOR_TYPE = 'blank';
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getType(): string
 	{
 		return 'dummy';
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDiscriminatorName(): string
 	{
 		return 'dummy';

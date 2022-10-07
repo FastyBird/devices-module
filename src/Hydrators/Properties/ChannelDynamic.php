@@ -20,19 +20,15 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Channel property entity hydrator
  *
+ * @phpstan-extends Channel<Entities\Channels\Properties\Dynamic>
+ *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators
- *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Channel<Entities\Channels\Properties\Dynamic>
  */
 final class ChannelDynamic extends Channel
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityName(): string
 	{
 		return Entities\Channels\Properties\Dynamic::class;

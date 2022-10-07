@@ -8,6 +8,9 @@
 
         <exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectLinesCountBetweenDifferentAnnotationsTypes"/>
         <exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectAnnotationsGroup"/>
+
+        <!-- Should be fixed and removed -->
+        <exclude name="SlevomatCodingStandard.Files.LineLength.LineTooLong"/>
     </rule>
 
     <!-- Configure PSR-4 rule -->

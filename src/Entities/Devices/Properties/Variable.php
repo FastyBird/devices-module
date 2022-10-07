@@ -26,17 +26,11 @@ use FastyBird\Metadata\Types as MetadataTypes;
 class Variable extends Property
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getType(): MetadataTypes\PropertyTypeType
 	{
 		return MetadataTypes\PropertyTypeType::get(MetadataTypes\PropertyTypeType::TYPE_STATIC);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
 	{
 		if ($this->getParent() !== null) {
@@ -46,10 +40,7 @@ class Variable extends Property
 		return parent::getValue();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setValue(?string $value): void
+	public function setValue(string|null $value): void
 	{
 		if ($this->getParent() !== null) {
 			throw new Exceptions\InvalidState('Value setter is allowed only for parent');

@@ -22,12 +22,11 @@ use FastyBird\Metadata\Types as MetadataTypes;
 /**
  * Blank device entity schema
  *
+ * @phpstan-extends Device<Entities\Devices\Blank>
+ *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
- *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends Device<Entities\Devices\Blank>
  */
 final class Blank extends Device
 {
@@ -37,17 +36,11 @@ final class Blank extends Device
 	 */
 	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/device/' . Entities\Devices\Blank::DEVICE_TYPE;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityClass(): string
 	{
 		return Entities\Devices\Blank::class;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getType(): string
 	{
 		return self::SCHEMA_TYPE;

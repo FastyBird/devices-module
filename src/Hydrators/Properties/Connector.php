@@ -21,18 +21,17 @@ use FastyBird\DevicesModule\Schemas;
 /**
  * Connector property entity hydrator
  *
- * @package        FastyBird:DevicesModule!
- * @subpackage     Hydrators
- *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
  * @phpstan-template TEntityClass of Entities\Connectors\Properties\Property
  * @phpstan-extends  Property<TEntityClass>
+ *
+ * @package        FastyBird:DevicesModule!
+ * @subpackage     Hydrators
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
 abstract class Connector extends Property
 {
 
-	/** @var string[] */
+	/** @var Array<string> */
 	protected array $relationships = [
 		Schemas\Connectors\Properties\Property::RELATIONSHIPS_CONNECTOR,
 	];

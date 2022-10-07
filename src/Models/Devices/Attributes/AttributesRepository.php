@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function is_array;
 
 /**
  * Device attribute structure repository
@@ -38,36 +39,19 @@ final class AttributesRepository
 	use Nette\SmartObject;
 
 	/** @var ORM\EntityRepository<Entities\Devices\Attributes\Attribute>|null */
-	private ?ORM\EntityRepository $repository = null;
+	private ORM\EntityRepository|null $repository = null;
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
+	}
+
+	public function findOneBy(Queries\FindDeviceAttributes $queryObject): Entities\Devices\Attributes\Attribute|null
+	{
+		return $queryObject->fetchOne($this->getRepository());
 	}
 
 	/**
-	 * @param Queries\FindDeviceAttributes $queryObject
-	 *
-	 * @return Entities\Devices\Attributes\Attribute|null
-	 */
-	public function findOneBy(Queries\FindDeviceAttributes $queryObject): ?Entities\Devices\Attributes\Attribute
-	{
-		/** @var Entities\Devices\Attributes\Attribute|null $attribute */
-		$attribute = $queryObject->fetchOne($this->getRepository());
-
-		return $attribute;
-	}
-
-	/**
-	 * @param Queries\FindDeviceAttributes $queryObject
-	 *
-	 * @return Entities\Devices\Attributes\Attribute[]
+	 * @return Array<Entities\Devices\Attributes\Attribute>
 	 *
 	 * @throws Throwable
 	 */
@@ -80,20 +64,19 @@ final class AttributesRepository
 			return $result;
 		}
 
-		/** @var Entities\Devices\Attributes\Attribute[] $data */
+		/** @var Array<Entities\Devices\Attributes\Attribute> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindDeviceAttributes $queryObject
-	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\Attribute>
 	 */
 	public function getResultSet(
-		Queries\FindDeviceAttributes $queryObject
-	): DoctrineOrmQuery\ResultSet {
+		Queries\FindDeviceAttributes $queryObject,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository());
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

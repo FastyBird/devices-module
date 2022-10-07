@@ -39,62 +39,28 @@ final class DeviceConnectionStateManager
 
 	use Nette\SmartObject;
 
-	/** @var Models\Devices\DevicesRepository */
-	private Models\Devices\DevicesRepository $devicesRepository;
-
-	/** @var Models\Devices\Properties\PropertiesManager */
-	private Models\Devices\Properties\PropertiesManager $manager;
-
-	/** @var Models\DataStorage\DevicePropertiesRepository */
-	private Models\DataStorage\DevicePropertiesRepository $repository;
-
-	/** @var Models\States\DevicePropertiesRepository */
-	private Models\States\DevicePropertiesRepository $statesRepository;
-
-	/** @var Models\States\DevicePropertiesManager */
-	private Models\States\DevicePropertiesManager $statesManager;
-
-	/** @var Log\LoggerInterface */
 	private Log\LoggerInterface $logger;
 
-	/**
-	 * @param Models\Devices\DevicesRepository $devicesRepository
-	 * @param Models\DataStorage\DevicePropertiesRepository $repository
-	 * @param Models\Devices\Properties\PropertiesManager $manager
-	 * @param DevicePropertiesRepository $statesRepository
-	 * @param DevicePropertiesManager $statesManager
-	 * @param Log\LoggerInterface|null $logger
-	 */
 	public function __construct(
-		Models\Devices\DevicesRepository $devicesRepository,
-		Models\DataStorage\DevicePropertiesRepository $repository,
-		Models\Devices\Properties\PropertiesManager $manager,
-		Models\States\DevicePropertiesRepository $statesRepository,
-		Models\States\DevicePropertiesManager $statesManager,
-		?Log\LoggerInterface $logger = null
-	) {
-		$this->devicesRepository = $devicesRepository;
-		$this->repository = $repository;
-		$this->manager = $manager;
-		$this->statesRepository = $statesRepository;
-		$this->statesManager = $statesManager;
-
+		private Models\Devices\DevicesRepository $devicesRepository,
+		private Models\DataStorage\DevicePropertiesRepository $repository,
+		private Models\Devices\Properties\PropertiesManager $manager,
+		private Models\States\DevicePropertiesRepository $statesRepository,
+		private Models\States\DevicePropertiesManager $statesManager,
+		Log\LoggerInterface|null $logger = null,
+	)
+	{
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
-	/**
-	 * @param Entities\Devices\Device|MetadataEntities\Modules\DevicesModule\IDeviceEntity $device
-	 * @param MetadataTypes\ConnectionStateType $state
-	 *
-	 * @return bool
-	 */
 	public function setState(
 		Entities\Devices\Device|MetadataEntities\Modules\DevicesModule\IDeviceEntity $device,
-		MetadataTypes\ConnectionStateType $state
-	): bool {
+		MetadataTypes\ConnectionStateType $state,
+	): bool
+	{
 		$stateProperty = $this->repository->findByIdentifier(
 			$device->getId(),
-			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE
+			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE,
 		);
 
 		if ($stateProperty === null) {
@@ -110,12 +76,12 @@ final class DeviceConnectionStateManager
 			}
 
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
-				'device'     => $device,
-				'entity'     => Entities\Devices\Properties\Dynamic::class,
+				'device' => $device,
+				'entity' => Entities\Devices\Properties\Dynamic::class,
 				'identifier' => MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
-				'dataType'   => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
-				'unit'       => null,
-				'format'     => [
+				'dataType' => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
+				'unit' => null,
+				'format' => [
 					MetadataTypes\ConnectionStateType::STATE_CONNECTED,
 					MetadataTypes\ConnectionStateType::STATE_DISCONNECTED,
 					MetadataTypes\ConnectionStateType::STATE_INIT,
@@ -127,8 +93,8 @@ final class DeviceConnectionStateManager
 					MetadataTypes\ConnectionStateType::STATE_ALERT,
 					MetadataTypes\ConnectionStateType::STATE_UNKNOWN,
 				],
-				'settable'   => false,
-				'queryable'  => false,
+				'settable' => false,
+				'queryable' => false,
 			]));
 		}
 
@@ -139,13 +105,13 @@ final class DeviceConnectionStateManager
 			try {
 				$statePropertyState = $this->statesRepository->findOne($stateProperty);
 
-			} catch (Exceptions\NotImplemented $ex) {
+			} catch (Exceptions\NotImplemented) {
 				$this->logger->warning(
 					'DynamicProperties repository is not configured. State could not be fetched',
 					[
 						'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-						'type'   => 'device-connection-state-manager',
-					]
+						'type' => 'device-connection-state-manager',
+					],
 				);
 
 				MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN);
@@ -156,21 +122,20 @@ final class DeviceConnectionStateManager
 			if ($statePropertyState === null) {
 				try {
 					$this->statesManager->create($stateProperty, Utils\ArrayHash::from([
-						'actualValue'   => $state->getValue(),
+						'actualValue' => $state->getValue(),
 						'expectedValue' => null,
-						'pending'       => false,
-						'valid'         => true,
+						'pending' => false,
+						'valid' => true,
 					]));
 
 					return true;
-
-				} catch (Exceptions\NotImplemented $ex) {
+				} catch (Exceptions\NotImplemented) {
 					$this->logger->warning(
 						'DynamicProperties manager is not configured. State could not be saved',
 						[
 							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-							'type'   => 'device-connection-state-manager',
-						]
+							'type' => 'device-connection-state-manager',
+						],
 					);
 				}
 			} else {
@@ -179,22 +144,21 @@ final class DeviceConnectionStateManager
 						$stateProperty,
 						$statePropertyState,
 						Utils\ArrayHash::from([
-							'actualValue'   => $state->getValue(),
+							'actualValue' => $state->getValue(),
 							'expectedValue' => null,
-							'pending'       => false,
-							'valid'         => true,
-						])
+							'pending' => false,
+							'valid' => true,
+						]),
 					);
 
 					return true;
-
-				} catch (Exceptions\NotImplemented $ex) {
+				} catch (Exceptions\NotImplemented) {
 					$this->logger->warning(
 						'DynamicProperties manager is not configured. State could not be saved',
 						[
 							'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
-							'type'   => 'device-connection-state-manager',
-						]
+							'type' => 'device-connection-state-manager',
+						],
 					);
 				}
 			}
@@ -203,17 +167,13 @@ final class DeviceConnectionStateManager
 		return false;
 	}
 
-	/**
-	 * @param Entities\Devices\Device|MetadataEntities\Modules\DevicesModule\IDeviceEntity $device
-	 *
-	 * @return MetadataTypes\ConnectionStateType
-	 */
 	public function getState(
-		Entities\Devices\Device|MetadataEntities\Modules\DevicesModule\IDeviceEntity $device
-	): MetadataTypes\ConnectionStateType {
+		Entities\Devices\Device|MetadataEntities\Modules\DevicesModule\IDeviceEntity $device,
+	): MetadataTypes\ConnectionStateType
+	{
 		$stateProperty = $this->repository->findByIdentifier(
 			$device->getId(),
-			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE
+			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE,
 		);
 
 		if (

@@ -35,26 +35,14 @@ final class ConnectorPropertiesRepository
 
 	use Nette\SmartObject;
 
-	/** @var IConnectorPropertiesRepository|null */
-	protected ?IConnectorPropertiesRepository $repository;
-
-	/**
-	 * @param IConnectorPropertiesRepository|null $repository
-	 */
-	public function __construct(
-		?IConnectorPropertiesRepository $repository
-	) {
-		$this->repository = $repository;
+	public function __construct(protected IConnectorPropertiesRepository|null $repository)
+	{
 	}
 
-	/**
-	 * @param MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
-	 *
-	 * @return States\ConnectorProperty|null
-	 */
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property
-	): ?States\ConnectorProperty {
+		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
+	): States\ConnectorProperty|null
+	{
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplemented('Connector properties state repository is not registered');
 		}
@@ -62,14 +50,10 @@ final class ConnectorPropertiesRepository
 		return $this->repository->findOne($property);
 	}
 
-	/**
-	 * @param Uuid\UuidInterface $id
-	 *
-	 * @return States\ConnectorProperty|null
-	 */
 	public function findOneById(
-		Uuid\UuidInterface $id
-	): ?States\ConnectorProperty {
+		Uuid\UuidInterface $id,
+	): States\ConnectorProperty|null
+	{
 		if ($this->repository === null) {
 			throw new Exceptions\NotImplemented('Connector properties state repository is not registered');
 		}

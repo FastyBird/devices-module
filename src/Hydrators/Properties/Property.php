@@ -19,22 +19,28 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\JsonApi\Hydrators as JsonApiHydrators;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\JsonAPIDocument;
+use function array_map;
+use function boolval;
+use function count;
+use function implode;
+use function is_array;
+use function is_scalar;
+use function strval;
 
 /**
  * Property entity hydrator
  *
- * @package        FastyBird:DevicesModule!
- * @subpackage     Hydrators
- *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
- *
  * @phpstan-template TEntityClass of Entities\Property
  * @phpstan-extends  JsonApiHydrators\Hydrator<TEntityClass>
+ *
+ * @package        FastyBird:DevicesModule!
+ * @subpackage     Hydrators
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
 abstract class Property extends JsonApiHydrators\Hydrator
 {
 
-	/** @var string[] */
+	/** @var Array<string> */
 	protected array $attributes = [
 		0 => 'identifier',
 		1 => 'name',
@@ -45,16 +51,11 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		6 => 'invalid',
 		7 => 'value',
 
-		'data_type'          => 'dataType',
+		'data_type' => 'dataType',
 		'number_of_decimals' => 'numberOfDecimals',
 	];
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return string|null
-	 */
-	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	protected function hydrateNameAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{
 		if (
 			!is_scalar($attributes->get('name'))
@@ -66,34 +67,20 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		return (string) $attributes->get('name');
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return bool
-	 */
 	protected function hydrateSettableAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
 	{
 		return is_scalar($attributes->get('settable')) && boolval($attributes->get('settable'));
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return bool
-	 */
 	protected function hydrateQueryableAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
 	{
 		return is_scalar($attributes->get('queryable')) && boolval($attributes->get('queryable'));
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return MetadataTypes\DataTypeType|null
-	 */
 	protected function hydrateDataTypeAttribute(
-		JsonAPIDocument\Objects\IStandardObject $attributes
-	): ?MetadataTypes\DataTypeType {
+		JsonAPIDocument\Objects\IStandardObject $attributes,
+	): MetadataTypes\DataTypeType|null
+	{
 		if (
 			!is_scalar($attributes->get('data_type'))
 			|| (string) $attributes->get('data_type') === ''
@@ -105,12 +92,7 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		return MetadataTypes\DataTypeType::get((string) $attributes->get('data_type'));
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return string|null
-	 */
-	protected function hydrateUnitAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	protected function hydrateUnitAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{
 		if (
 			!is_scalar($attributes->get('unit'))
@@ -122,12 +104,7 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		return (string) $attributes->get('unit');
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return string|null
-	 */
-	protected function hydrateFormatAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	protected function hydrateFormatAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{
 		$rawFormat = $attributes->get('format');
 		$rawDataType = $attributes->get('data_type');
@@ -144,9 +121,13 @@ abstract class Property extends JsonApiHydrators\Hydrator
 					|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
 					|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
 				) {
-					return implode(',', array_map(function ($item): string {
-						return is_array($item) ? implode(':', $item) : strval($item);
-					}, $rawFormat));
+					return implode(
+						',',
+						array_map(
+							static fn ($item): string => is_array($item) ? implode(':', $item) : strval($item),
+							$rawFormat,
+						),
+					);
 				}
 
 				if (count($rawFormat) === 2) {
@@ -155,7 +136,6 @@ abstract class Property extends JsonApiHydrators\Hydrator
 			}
 
 			return null;
-
 		} elseif (!is_scalar($rawFormat) || (string) $rawFormat === '') {
 			return null;
 		}
@@ -163,12 +143,7 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		return (string) $rawFormat;
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return string|null
-	 */
-	protected function hydrateInvalidAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	protected function hydrateInvalidAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{
 		if (
 			!is_scalar($attributes->get('invalid'))
@@ -180,12 +155,7 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		return (string) $attributes->get('invalid');
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return int|null
-	 */
-	protected function hydrateNumberOfDecimalsAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?int
+	protected function hydrateNumberOfDecimalsAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): int|null
 	{
 		if (
 			!is_scalar($attributes->get('number_of_decimals'))
@@ -197,12 +167,7 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		return (int) $attributes->get('number_of_decimals');
 	}
 
-	/**
-	 * @param JsonAPIDocument\Objects\IStandardObject $attributes
-	 *
-	 * @return string|null
-	 */
-	protected function hydrateValueAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): ?string
+	protected function hydrateValueAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
 	{
 		if (
 			!is_scalar($attributes->get('value'))

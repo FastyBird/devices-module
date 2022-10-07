@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
 use Nette;
 use Throwable;
+use function is_array;
 
 /**
  * Device channel property structure repository
@@ -37,48 +38,36 @@ final class PropertiesRepository
 
 	use Nette\SmartObject;
 
-	/** @var ORM\EntityRepository<Entities\Channels\Properties\Property>[] */
+	/** @var Array<ORM\EntityRepository<Entities\Channels\Properties\Property>> */
 	private array $repository = [];
 
-	/** @var Persistence\ManagerRegistry */
-	private Persistence\ManagerRegistry $managerRegistry;
-
-	/**
-	 * @param Persistence\ManagerRegistry $managerRegistry
-	 */
-	public function __construct(Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
 	{
-		$this->managerRegistry = $managerRegistry;
 	}
 
 	/**
-	 * @param Queries\FindChannelProperties $queryObject
 	 * @param class-string $type
-	 *
-	 * @return Entities\Channels\Properties\Property|null
 	 */
 	public function findOneBy(
 		Queries\FindChannelProperties $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
-	): ?Entities\Channels\Properties\Property {
-		/** @var Entities\Channels\Properties\Property|null $property */
-		$property = $queryObject->fetchOne($this->getRepository($type));
-
-		return $property;
+		string $type = Entities\Channels\Properties\Property::class,
+	): Entities\Channels\Properties\Property|null
+	{
+		return $queryObject->fetchOne($this->getRepository($type));
 	}
 
 	/**
-	 * @param Queries\FindChannelProperties $queryObject
 	 * @param class-string $type
 	 *
-	 * @return Entities\Channels\Properties\Property[]
+	 * @return Array<Entities\Channels\Properties\Property>
 	 *
 	 * @throws Throwable
 	 */
 	public function findAllBy(
 		Queries\FindChannelProperties $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
-	): array {
+		string $type = Entities\Channels\Properties\Property::class,
+	): array
+	{
 		/** @var Array<Entities\Channels\Properties\Property>|DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
 
@@ -86,22 +75,22 @@ final class PropertiesRepository
 			return $result;
 		}
 
-		/** @var Entities\Channels\Properties\Property[] $data */
+		/** @var Array<Entities\Channels\Properties\Property> $data */
 		$data = $result->toArray();
 
 		return $data;
 	}
 
 	/**
-	 * @param Queries\FindChannelProperties $queryObject
 	 * @param class-string $type
 	 *
 	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property>
 	 */
 	public function getResultSet(
 		Queries\FindChannelProperties $queryObject,
-		string $type = Entities\Channels\Properties\Property::class
-	): DoctrineOrmQuery\ResultSet {
+		string $type = Entities\Channels\Properties\Property::class,
+	): DoctrineOrmQuery\ResultSet
+	{
 		$result = $queryObject->fetch($this->getRepository($type));
 
 		if (!$result instanceof DoctrineOrmQuery\ResultSet) {

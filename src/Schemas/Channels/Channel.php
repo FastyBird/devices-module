@@ -23,16 +23,17 @@ use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
+use function assert;
+use function count;
 
 /**
  * Channel entity schema
  *
+ * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Channels\Channel>
+ *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
- *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
- *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Channels\Channel>
  */
 final class Channel extends JsonApiSchemas\JsonApiSchema
 {
@@ -48,57 +49,43 @@ final class Channel extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_DEVICE = 'device';
 
 	public const RELATIONSHIPS_PROPERTIES = 'properties';
+
 	public const RELATIONSHIPS_CONTROLS = 'controls';
 
-	/** @var Routing\IRouter */
-	private Routing\IRouter $router;
-
-	/**
-	 * @param Routing\IRouter $router
-	 */
-	public function __construct(Routing\IRouter $router)
+	public function __construct(private Routing\IRouter $router)
 	{
-		$this->router = $router;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getEntityClass(): string
 	{
 		return Entities\Channels\Channel::class;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getType(): string
 	{
 		return self::SCHEMA_TYPE;
 	}
 
 	/**
-	 * @param Entities\Channels\Channel $channel
-	 * @param JsonApi\Contracts\Schema\ContextInterface $context
-	 *
-	 * @return iterable<string, string|string[]|null>
+	 * @return iterable<string, (string|Array<string>|null)>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getAttributes($channel, JsonApi\Contracts\Schema\ContextInterface $context): iterable
+	public function getAttributes(
+		$channel,
+		JsonApi\Contracts\Schema\ContextInterface $context,
+	): iterable
 	{
+		assert($channel instanceof Entities\Channels\Channel);
+
 		return [
 			'identifier' => $channel->getIdentifier(),
-			'name'       => $channel->getName(),
-			'comment'    => $channel->getComment(),
+			'name' => $channel->getName(),
+			'comment' => $channel->getComment(),
 		];
 	}
 
 	/**
-	 * @param Entities\Channels\Channel $channel
-	 *
-	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getSelfLink($channel): JsonApi\Contracts\Schema\LinkInterface
@@ -109,51 +96,49 @@ final class Channel extends JsonApiSchemas\JsonApiSchema
 				DevicesModule\Constants::ROUTE_NAME_CHANNEL,
 				[
 					Router\Routes::URL_DEVICE_ID => $channel->getDevice()->getPlainId(),
-					Router\Routes::URL_ITEM_ID   => $channel->getPlainId(),
-				]
+					Router\Routes::URL_ITEM_ID => $channel->getPlainId(),
+				],
 			),
-			false
+			false,
 		);
 	}
 
 	/**
-	 * @param Entities\Channels\Channel $channel
-	 * @param JsonApi\Contracts\Schema\ContextInterface $context
-	 *
 	 * @return iterable<string, mixed>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getRelationships($channel, JsonApi\Contracts\Schema\ContextInterface $context): iterable
+	public function getRelationships(
+		$channel,
+		JsonApi\Contracts\Schema\ContextInterface $context,
+	): iterable
 	{
 		return [
-			self::RELATIONSHIPS_DEVICE     => [
-				self::RELATIONSHIP_DATA          => $channel->getDevice(),
-				self::RELATIONSHIP_LINKS_SELF    => false,
+			self::RELATIONSHIPS_DEVICE => [
+				self::RELATIONSHIP_DATA => $channel->getDevice(),
+				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_PROPERTIES => [
-				self::RELATIONSHIP_DATA          => $channel->getProperties(),
-				self::RELATIONSHIP_LINKS_SELF    => true,
+				self::RELATIONSHIP_DATA => $channel->getProperties(),
+				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-			self::RELATIONSHIPS_CONTROLS   => [
-				self::RELATIONSHIP_DATA          => $channel->getControls(),
-				self::RELATIONSHIP_LINKS_SELF    => true,
+			self::RELATIONSHIPS_CONTROLS => [
+				self::RELATIONSHIP_DATA => $channel->getControls(),
+				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 		];
 	}
 
 	/**
-	 * @param Entities\Channels\Channel $channel
-	 * @param string $name
-	 *
-	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getRelationshipRelatedLink($channel, string $name): JsonApi\Contracts\Schema\LinkInterface
+	public function getRelationshipRelatedLink(
+		$channel,
+		string $name,
+	): JsonApi\Contracts\Schema\LinkInterface
 	{
 		if ($name === self::RELATIONSHIPS_PROPERTIES) {
 			return new JsonApi\Schema\Link(
@@ -161,32 +146,30 @@ final class Channel extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTIES,
 					[
-						Router\Routes::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $channel->getDevice()->getPlainId(),
 						Router\Routes::URL_CHANNEL_ID => $channel->getPlainId(),
-					]
+					],
 				),
 				true,
 				[
 					'count' => count($channel->getProperties()),
-				]
+				],
 			);
-
 		} elseif ($name === self::RELATIONSHIPS_CONTROLS) {
 			return new JsonApi\Schema\Link(
 				false,
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROLS,
 					[
-						Router\Routes::URL_DEVICE_ID  => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $channel->getDevice()->getPlainId(),
 						Router\Routes::URL_CHANNEL_ID => $channel->getPlainId(),
-					]
+					],
 				),
 				true,
 				[
 					'count' => count($channel->getControls()),
-				]
+				],
 			);
-
 		} elseif ($name === self::RELATIONSHIPS_DEVICE) {
 			return new JsonApi\Schema\Link(
 				false,
@@ -194,9 +177,9 @@ final class Channel extends JsonApiSchemas\JsonApiSchema
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
 						Router\Routes::URL_ITEM_ID => $channel->getDevice()->getPlainId(),
-					]
+					],
 				),
-				false
+				false,
 			);
 		}
 
@@ -204,14 +187,12 @@ final class Channel extends JsonApiSchemas\JsonApiSchema
 	}
 
 	/**
-	 * @param Entities\Channels\Channel $channel
-	 * @param string $name
-	 *
-	 * @return JsonApi\Contracts\Schema\LinkInterface
-	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getRelationshipSelfLink($channel, string $name): JsonApi\Contracts\Schema\LinkInterface
+	public function getRelationshipSelfLink(
+		$channel,
+		string $name,
+	): JsonApi\Contracts\Schema\LinkInterface
 	{
 		if (
 			$name === self::RELATIONSHIPS_PROPERTIES
@@ -222,12 +203,12 @@ final class Channel extends JsonApiSchemas\JsonApiSchema
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_RELATIONSHIP,
 					[
-						Router\Routes::URL_DEVICE_ID   => $channel->getDevice()->getPlainId(),
-						Router\Routes::URL_ITEM_ID     => $channel->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $channel->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $channel->getPlainId(),
 						Router\Routes::RELATION_ENTITY => $name,
-					]
+					],
 				),
-				false
+				false,
 			);
 		}
 

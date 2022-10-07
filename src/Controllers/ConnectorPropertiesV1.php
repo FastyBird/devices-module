@@ -31,6 +31,11 @@ use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 use Throwable;
+use function end;
+use function explode;
+use function is_string;
+use function preg_match;
+use function strval;
 
 /**
  * Connector properties API controller
@@ -49,43 +54,23 @@ final class ConnectorPropertiesV1 extends BaseV1
 	use Controllers\Finders\TDevice;
 	use Controllers\Finders\TConnector;
 
-	/** @var Models\Connectors\ConnectorsRepository */
-	protected Models\Connectors\ConnectorsRepository $connectorsRepository;
-
-	/** @var Models\Connectors\Properties\PropertiesRepository */
-	protected Models\Connectors\Properties\PropertiesRepository $connectorPropertiesRepository;
-
-	/** @var Models\Connectors\Properties\PropertiesManager */
-	protected Models\Connectors\Properties\PropertiesManager $connectorPropertiesManager;
-
-	/**
-	 * @param Models\Connectors\ConnectorsRepository $connectorsRepository
-	 * @param Models\Connectors\Properties\PropertiesRepository $connectorPropertiesRepository
-	 * @param Models\Connectors\Properties\PropertiesManager $connectorPropertiesManager
-	 */
 	public function __construct(
-		Models\Connectors\ConnectorsRepository $connectorsRepository,
-		Models\Connectors\Properties\PropertiesRepository $connectorPropertiesRepository,
-		Models\Connectors\Properties\PropertiesManager $connectorPropertiesManager
-	) {
-		$this->connectorsRepository = $connectorsRepository;
-		$this->connectorPropertiesRepository = $connectorPropertiesRepository;
-		$this->connectorPropertiesManager = $connectorPropertiesManager;
+		protected Models\Connectors\ConnectorsRepository $connectorsRepository,
+		protected Models\Connectors\Properties\PropertiesRepository $connectorPropertiesRepository,
+		protected Models\Connectors\Properties\PropertiesManager $connectorPropertiesManager,
+	)
+	{
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load connector
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 
@@ -99,18 +84,14 @@ final class ConnectorPropertiesV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load connector
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 		// & property
@@ -120,48 +101,6 @@ final class ConnectorPropertiesV1 extends BaseV1
 	}
 
 	/**
-	 * @param string $id
-	 * @param Entities\Connectors\Connector $connector
-	 *
-	 * @return Entities\Connectors\Properties\Property
-	 *
-	 * @throws JsonApiExceptions\IJsonApiException
-	 */
-	private function findProperty(
-		string $id,
-		Entities\Connectors\Connector $connector
-	): Entities\Connectors\Properties\Property {
-		try {
-			$findQuery = new Queries\FindConnectorProperties();
-			$findQuery->forConnector($connector);
-			$findQuery->byId(Uuid\Uuid::fromString($id));
-
-			$property = $this->connectorPropertiesRepository->findOneBy($findQuery);
-
-			if ($property === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
-					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-					$this->translator->translate('//devices-module.base.messages.notFound.message')
-				);
-			}
-		} catch (Uuid\Exception\InvalidUuidStringException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
-				$this->translator->translate('//devices-module.base.messages.notFound.message')
-			);
-		}
-
-		return $property;
-	}
-
-	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
@@ -172,8 +111,9 @@ final class ConnectorPropertiesV1 extends BaseV1
 	 */
 	public function create(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load connector
 		$this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 
@@ -193,7 +133,6 @@ final class ConnectorPropertiesV1 extends BaseV1
 
 			} catch (JsonApiExceptions\IJsonApiException $ex) {
 				throw $ex;
-
 			} catch (DoctrineCrudExceptions\MissingRequiredFieldException $ex) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -201,9 +140,8 @@ final class ConnectorPropertiesV1 extends BaseV1
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
 					[
 						'pointer' => 'data/attributes/' . $ex->getField(),
-					]
+					],
 				);
-
 			} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -211,9 +149,8 @@ final class ConnectorPropertiesV1 extends BaseV1
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
 					[
 						'pointer' => 'data/attributes/' . $ex->getField(),
-					]
+					],
 				);
-
 			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
 				if (preg_match("%PRIMARY'%", $ex->getMessage(), $match) === 1) {
 					throw new JsonApiExceptions\JsonApiErrorException(
@@ -222,9 +159,8 @@ final class ConnectorPropertiesV1 extends BaseV1
 						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.message'),
 						[
 							'pointer' => '/data/id',
-						]
+						],
 					);
-
 				} elseif (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) === 1) {
 					$columnParts = explode('.', $match['key']);
 					$columnKey = end($columnParts);
@@ -236,7 +172,7 @@ final class ConnectorPropertiesV1 extends BaseV1
 							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
 							[
 								'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
-							]
+							],
 						);
 					}
 				}
@@ -244,26 +180,24 @@ final class ConnectorPropertiesV1 extends BaseV1
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
-					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message')
+					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
 				);
-
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'      => 'connector-properties-controller',
+					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+					'type' => 'connector-properties-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
-						'code'    => $ex->getCode(),
+						'code' => $ex->getCode(),
 					],
 				]);
 
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notCreated.heading'),
-					$this->translator->translate('//devices-module.base.messages.notCreated.message')
+					$this->translator->translate('//devices-module.base.messages.notCreated.message'),
 				);
-
 			} finally {
 				// Revert all changes when error occur
 				if ($this->getOrmConnection()->isTransactionActive()) {
@@ -282,16 +216,11 @@ final class ConnectorPropertiesV1 extends BaseV1
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 			[
 				'pointer' => '/data/type',
-			]
+			],
 		);
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
@@ -302,8 +231,9 @@ final class ConnectorPropertiesV1 extends BaseV1
 	 */
 	public function update(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load connector
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 		// & property
@@ -320,31 +250,32 @@ final class ConnectorPropertiesV1 extends BaseV1
 				// Start transaction connection to the database
 				$this->getOrmConnection()->beginTransaction();
 
-				$property = $this->connectorPropertiesManager->update($property, $hydrator->hydrate($document, $property));
+				$property = $this->connectorPropertiesManager->update(
+					$property,
+					$hydrator->hydrate($document, $property),
+				);
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
 
 			} catch (JsonApiExceptions\IJsonApiException $ex) {
 				throw $ex;
-
 			} catch (Throwable $ex) {
 				// Log caught exception
 				$this->logger->error('An unhandled error occurred', [
-					'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-					'type'      => 'connector-properties-controller',
+					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+					'type' => 'connector-properties-controller',
 					'exception' => [
 						'message' => $ex->getMessage(),
-						'code'    => $ex->getCode(),
+						'code' => $ex->getCode(),
 					],
 				]);
 
 				throw new JsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
-					$this->translator->translate('//devices-module.base.messages.notUpdated.message')
+					$this->translator->translate('//devices-module.base.messages.notUpdated.message'),
 				);
-
 			} finally {
 				// Revert all changes when error occur
 				if ($this->getOrmConnection()->isTransactionActive()) {
@@ -361,16 +292,11 @@ final class ConnectorPropertiesV1 extends BaseV1
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
 			[
 				'pointer' => '/data/type',
-			]
+			],
 		);
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 * @throws JsonApiExceptions\JsonApiErrorException
@@ -380,8 +306,9 @@ final class ConnectorPropertiesV1 extends BaseV1
 	 */
 	public function delete(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load connector
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 		// & property
@@ -400,20 +327,19 @@ final class ConnectorPropertiesV1 extends BaseV1
 		} catch (Throwable $ex) {
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
-				'source'    => Metadata\Constants::MODULE_DEVICES_SOURCE,
-				'type'      => 'connector-properties-controller',
+				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
+				'type' => 'connector-properties-controller',
 				'exception' => [
 					'message' => $ex->getMessage(),
-					'code'    => $ex->getCode(),
+					'code' => $ex->getCode(),
 				],
 			]);
 
 			throw new JsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//devices-module.base.messages.notDeleted.heading'),
-				$this->translator->translate('//devices-module.base.messages.notDeleted.message')
+				$this->translator->translate('//devices-module.base.messages.notDeleted.message'),
 			);
-
 		} finally {
 			// Revert all changes when error occur
 			if ($this->getOrmConnection()->isTransactionActive()) {
@@ -425,18 +351,14 @@ final class ConnectorPropertiesV1 extends BaseV1
 	}
 
 	/**
-	 * @param Message\ServerRequestInterface $request
-	 * @param Message\ResponseInterface $response
-	 *
-	 * @return Message\ResponseInterface
-	 *
 	 * @throws Exception
 	 * @throws JsonApiExceptions\IJsonApiException
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
-		Message\ResponseInterface $response
-	): Message\ResponseInterface {
+		Message\ResponseInterface $response,
+	): Message\ResponseInterface
+	{
 		// At first, try to load connector
 		$connector = $this->findConnector(strval($request->getAttribute(Router\Routes::URL_CONNECTOR_ID)));
 
@@ -453,6 +375,39 @@ final class ConnectorPropertiesV1 extends BaseV1
 		}
 
 		return parent::readRelationship($request, $response);
+	}
+
+	/**
+	 * @throws JsonApiExceptions\IJsonApiException
+	 */
+	private function findProperty(
+		string $id,
+		Entities\Connectors\Connector $connector,
+	): Entities\Connectors\Properties\Property
+	{
+		try {
+			$findQuery = new Queries\FindConnectorProperties();
+			$findQuery->forConnector($connector);
+			$findQuery->byId(Uuid\Uuid::fromString($id));
+
+			$property = $this->connectorPropertiesRepository->findOneBy($findQuery);
+
+			if ($property === null) {
+				throw new JsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_NOT_FOUND,
+					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+					$this->translator->translate('//devices-module.base.messages.notFound.message'),
+				);
+			}
+		} catch (Uuid\Exception\InvalidUuidStringException) {
+			throw new JsonApiExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_NOT_FOUND,
+				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
+				$this->translator->translate('//devices-module.base.messages.notFound.message'),
+			);
+		}
+
+		return $property;
 	}
 
 }

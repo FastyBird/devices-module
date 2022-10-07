@@ -20,6 +20,7 @@ use FastyBird\DevicesModule\Models;
 use IPub\DoctrineCrud\Crud;
 use Nette;
 use Nette\Utils;
+use function assert;
 
 /**
  * Connectors properties entities manager
@@ -34,50 +35,39 @@ final class PropertiesManager
 
 	use Nette\SmartObject;
 
-	/** @var Crud\IEntityCrud<Entities\Connectors\Properties\Property> */
-	private Crud\IEntityCrud $entityCrud;
-
 	/**
 	 * @param Crud\IEntityCrud<Entities\Connectors\Properties\Property> $entityCrud
 	 */
-	public function __construct(
-		Crud\IEntityCrud $entityCrud
-	) {
+	public function __construct(private Crud\IEntityCrud $entityCrud)
+	{
 		// Entity CRUD for handling entities
-		$this->entityCrud = $entityCrud;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function create(
-		Utils\ArrayHash $values
-	): Entities\Connectors\Properties\Property {
-		/** @var Entities\Connectors\Properties\Property $entity */
+		Utils\ArrayHash $values,
+	): Entities\Connectors\Properties\Property
+	{
 		$entity = $this->entityCrud->getEntityCreator()->create($values);
+		assert($entity instanceof Entities\Connectors\Properties\Property);
 
 		return $entity;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function update(
 		Entities\Connectors\Properties\Property $entity,
-		Utils\ArrayHash $values
-	): Entities\Connectors\Properties\Property {
-		/** @var Entities\Connectors\Properties\Property $entity */
+		Utils\ArrayHash $values,
+	): Entities\Connectors\Properties\Property
+	{
 		$entity = $this->entityCrud->getEntityUpdater()->update($values, $entity);
+		assert($entity instanceof Entities\Connectors\Properties\Property);
 
 		return $entity;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function delete(
-		Entities\Connectors\Properties\Property $entity
-	): bool {
+		Entities\Connectors\Properties\Property $entity,
+	): bool
+	{
 		// Delete entity from database
 		return $this->entityCrud->getEntityDeleter()->delete($entity);
 	}

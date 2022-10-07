@@ -9,7 +9,7 @@ use RuntimeException;
 class DummyStateRepository
 {
 
-	public function findOne(Uuid\UuidInterface $id): ?States\Property
+	public function findOne(Uuid\UuidInterface $id): States\Property|null
 	{
 		throw new RuntimeException('Thi is dummy service');
 	}

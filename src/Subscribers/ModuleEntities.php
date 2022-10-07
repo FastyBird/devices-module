@@ -30,6 +30,10 @@ use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use ReflectionClass;
+use function array_merge;
+use function count;
+use function is_a;
+use function str_starts_with;
 
 /**
  * Doctrine entities events
@@ -42,79 +46,27 @@ use ReflectionClass;
 final class ModuleEntities implements Common\EventSubscriber
 {
 
-	private const ACTION_CREATED = 'created';
-	private const ACTION_UPDATED = 'updated';
-	private const ACTION_DELETED = 'deleted';
-
 	use Nette\SmartObject;
 
-	/** @var Models\States\DevicePropertiesRepository */
-	private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository;
+	private const ACTION_CREATED = 'created';
 
-	/** @var Models\States\DevicePropertiesManager */
-	private Models\States\DevicePropertiesManager $devicePropertiesStatesManager;
+	private const ACTION_UPDATED = 'updated';
 
-	/** @var Models\States\ChannelPropertiesRepository */
-	private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository;
+	private const ACTION_DELETED = 'deleted';
 
-	/** @var Models\States\ChannelPropertiesManager */
-	private Models\States\ChannelPropertiesManager $channelPropertiesStatesManager;
-
-	/** @var Models\States\ConnectorPropertiesRepository */
-	private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository;
-
-	/** @var Models\States\ConnectorPropertiesManager */
-	private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager;
-
-	/** @var DataStorage\Writer */
-	private DataStorage\Writer $configurationDataWriter;
-
-	/** @var ExchangeEntities\EntityFactory */
-	private ExchangeEntities\EntityFactory $entityFactory;
-
-	/** @var ExchangePublisher\Publisher|null */
-	private ?ExchangePublisher\Publisher $publisher;
-
-	/** @var ORM\EntityManagerInterface */
-	private ORM\EntityManagerInterface $entityManager;
-
-	/**
-	 * @param ORM\EntityManagerInterface $entityManager
-	 * @param Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository
-	 * @param Models\States\DevicePropertiesManager $devicePropertiesStatesManager
-	 * @param Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository
-	 * @param Models\States\ChannelPropertiesManager $channelPropertiesStatesManager
-	 * @param Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository
-	 * @param Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager
-	 * @param DataStorage\Writer $configurationDataWriter
-	 * @param ExchangeEntities\EntityFactory $entityFactory
-	 * @param ExchangePublisher\Publisher|null $publisher
-	 */
 	public function __construct(
-		ORM\EntityManagerInterface $entityManager,
-		Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
-		Models\States\DevicePropertiesManager $devicePropertiesStatesManager,
-		Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
-		Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
-		Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
-		Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
-		DataStorage\Writer $configurationDataWriter,
-		ExchangeEntities\EntityFactory $entityFactory,
-		?ExchangePublisher\Publisher $publisher = null
-	) {
-		$this->devicePropertiesStatesRepository = $devicePropertiesStatesRepository;
-		$this->devicePropertiesStatesManager = $devicePropertiesStatesManager;
-		$this->channelPropertiesStatesRepository = $channelPropertiesStatesRepository;
-		$this->channelPropertiesStatesManager = $channelPropertiesStatesManager;
-		$this->connectorPropertiesStatesRepository = $connectorPropertiesStatesRepository;
-		$this->connectorPropertiesStatesManager = $connectorPropertiesStatesManager;
-
-		$this->configurationDataWriter = $configurationDataWriter;
-
-		$this->entityFactory = $entityFactory;
-		$this->publisher = $publisher;
-
-		$this->entityManager = $entityManager;
+		private ORM\EntityManagerInterface $entityManager,
+		private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
+		private Models\States\DevicePropertiesManager $devicePropertiesStatesManager,
+		private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
+		private Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
+		private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
+		private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
+		private DataStorage\Writer $configurationDataWriter,
+		private ExchangeEntities\EntityFactory $entityFactory,
+		private ExchangePublisher\Publisher|null $publisher = null,
+	)
+	{
 	}
 
 	/**
@@ -130,10 +82,6 @@ final class ModuleEntities implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 * @throws Flysystem\FilesystemException
@@ -154,10 +102,6 @@ final class ModuleEntities implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 *
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
 	 * @throws Flysystem\FilesystemException
@@ -192,10 +136,6 @@ final class ModuleEntities implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param ORM\Event\LifecycleEventArgs $eventArgs
-	 *
-	 * @return void
-	 *
 	 * @throws Flysystem\FilesystemException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 * @throws Utils\JsonException
@@ -249,11 +189,6 @@ final class ModuleEntities implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param Entities\Entity $entity
-	 * @param string $action
-	 *
-	 * @return void
-	 *
 	 * @throws Utils\JsonException
 	 * @throws MetadataExceptions\FileNotFoundException
 	 */
@@ -274,7 +209,6 @@ final class ModuleEntities implements Common\EventSubscriber
 				}
 
 				break;
-
 			case self::ACTION_UPDATED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if (is_a($entity, $class)) {
@@ -283,7 +217,6 @@ final class ModuleEntities implements Common\EventSubscriber
 				}
 
 				break;
-
 			case self::ACTION_DELETED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if (is_a($entity, $class)) {
@@ -306,18 +239,18 @@ final class ModuleEntities implements Common\EventSubscriber
 							Utils\Json::encode(
 								array_merge(
 									$entity->toArray(),
-									$state !== null ? $state->toArray() : []
-								)
+									$state?->toArray() ?? [],
+								),
 							),
-							$publishRoutingKey
-						)
+							$publishRoutingKey,
+						),
 					);
 
 				} catch (Exceptions\NotImplemented) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
-						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
+						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 					);
 				}
 			} elseif ($entity instanceof Entities\Channels\Properties\Dynamic) {
@@ -331,18 +264,18 @@ final class ModuleEntities implements Common\EventSubscriber
 							Utils\Json::encode(
 								array_merge(
 									$entity->toArray(),
-									$state !== null ? $state->toArray() : []
-								)
+									$state?->toArray() ?? [],
+								),
 							),
-							$publishRoutingKey
-						)
+							$publishRoutingKey,
+						),
 					);
 
 				} catch (Exceptions\NotImplemented) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
-						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
+						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 					);
 				}
 			} elseif ($entity instanceof Entities\Connectors\Properties\Dynamic) {
@@ -356,35 +289,30 @@ final class ModuleEntities implements Common\EventSubscriber
 							Utils\Json::encode(
 								array_merge(
 									$entity->toArray(),
-									$state !== null ? $state->toArray() : []
-								)
+									$state?->toArray() ?? [],
+								),
 							),
-							$publishRoutingKey
-						)
+							$publishRoutingKey,
+						),
 					);
 
 				} catch (Exceptions\NotImplemented) {
 					$this->publisher->publish(
 						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
-						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
+						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 					);
 				}
 			} else {
 				$this->publisher->publish(
 					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
 					$publishRoutingKey,
-					$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey)
+					$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 				);
 			}
 		}
 	}
 
-	/**
-	 * @param object $entity
-	 *
-	 * @return bool
-	 */
 	private function validateNamespace(object $entity): bool
 	{
 		$rc = new ReflectionClass($entity);

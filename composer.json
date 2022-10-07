@@ -38,37 +38,37 @@
   "minimum-stability" : "stable",
 
   "require" : {
-    "php" : ">=8.0.0|>=8.1.0",
-    "ext-bcmath": "*",
-    "ext-pcntl": "*",
-    "contributte/flysystem": "^0.3.0",
-    "cweagans/composer-patches": "^1.7",
+    "php" : ">=8.1.0",
+    "ext-bcmath" : "*",
+    "ext-pcntl" : "*",
+    "contributte/flysystem" : "^0.3.0",
+    "cweagans/composer-patches" : "^1.7",
     "fastybird/exchange" : "^0.59",
     "fastybird/json-api" : "^0.11",
     "fastybird/metadata" : "^0.76",
     "fastybird/simple-auth" : "^0.4",
-    "ipub/doctrine-dynamic-discriminator-map": "^1.4",
-    "ipub/doctrine-timestampable": "^1.5",
-    "ipub/slim-router": "^0.2",
-    "nettrine/orm": "^0.8",
-    "react/event-loop": "^1.3",
-    "symfony/console": "^5.0"
+    "ipub/doctrine-dynamic-discriminator-map" : "^1.4",
+    "ipub/doctrine-timestampable" : "^1.5",
+    "ipub/slim-router" : "^0.2",
+    "nettrine/orm" : "^0.8",
+    "react/event-loop" : "^1.3",
+    "symfony/console" : "^5.0"
   },
 
   "require-dev" : {
-    "contributte/translation": "^0.9",
-    "mockery/mockery": "^1.4",
-    "ninjify/nunjuck": "^0.3",
+    "contributte/translation" : "^0.9",
+    "mockery/mockery" : "^1.4",
+    "ninjify/nunjuck" : "^0.3",
     "orisai/coding-standard" : "^3.2",
-    "pds/skeleton": "^1.0",
+    "pds/skeleton" : "^1.0",
     "php-parallel-lint/php-parallel-lint" : "^1.3",
     "phpstan/extension-installer" : "^1.1",
     "phpstan/phpstan" : "^1.8",
     "phpstan/phpstan-deprecation-rules" : "^1.0",
     "phpstan/phpstan-doctrine" : "^1.3",
     "phpstan/phpstan-nette" : "^1.0",
-    "react/http": "^1.6",
-    "tracy/tracy": "^2.9"
+    "react/http" : "^1.6",
+    "tracy/tracy" : "^2.9"
   },
 
   "autoload" : {
@@ -87,10 +87,10 @@
 
   "config" : {
     "sort-packages" : true,
-    "allow-plugins": {
-      "cweagans/composer-patches": true,
-      "dealerdirect/phpcodesniffer-composer-installer": true,
-      "phpstan/extension-installer": true
+    "allow-plugins" : {
+      "cweagans/composer-patches" : true,
+      "dealerdirect/phpcodesniffer-composer-installer" : true,
+      "phpstan/extension-installer" : true
     }
   },
 

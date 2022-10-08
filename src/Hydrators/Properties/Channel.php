@@ -21,8 +21,8 @@ use FastyBird\DevicesModule\Schemas;
 /**
  * Channel property entity hydrator
  *
- * @phpstan-template TEntityClass of Entities\Channels\Properties\Property
- * @phpstan-extends  Property<TEntityClass>
+ * @template TEntityClass of Entities\Channels\Properties\Property
+ * @extends  Property<TEntityClass>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators

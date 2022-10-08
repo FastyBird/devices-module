@@ -31,7 +31,7 @@ use function strval;
 use const DATE_ATOM;
 
 /**
- * Value helpers
+ * Value helpersphpstan-param
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Helpers

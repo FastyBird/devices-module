@@ -71,7 +71,7 @@ final class AttributesRepository
 	}
 
 	/**
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\Attribute>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Attributes\Attribute>
 	 */
 	public function getResultSet(
 		Queries\FindDeviceAttributes $queryObject,

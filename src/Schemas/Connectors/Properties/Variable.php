@@ -25,7 +25,7 @@ use function array_merge;
 /**
  * Connector property entity schema
  *
- * @phpstan-extends Property<Entities\Connectors\Properties\Variable>
+ * @extends Property<Entities\Connectors\Properties\Variable>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

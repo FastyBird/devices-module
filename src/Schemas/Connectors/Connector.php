@@ -27,8 +27,8 @@ use function count;
 /**
  * Connector entity schema
  *
- * @phpstan-template T of Entities\Connectors\Connector
- * @phpstan-extends  JsonApiSchemas\JsonApi<T>
+ * @template T of Entities\Connectors\Connector
+ * @extends  JsonApiSchemas\JsonApi<T>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

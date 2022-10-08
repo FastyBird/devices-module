@@ -87,9 +87,9 @@ final class DevicesRepository
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Device>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Device>
 	 */
 	public function getResultSet(
 		Queries\FindDevices $queryObject,

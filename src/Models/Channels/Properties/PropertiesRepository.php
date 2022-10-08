@@ -82,9 +82,9 @@ final class PropertiesRepository
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param  class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property>
 	 */
 	public function getResultSet(
 		Queries\FindChannelProperties $queryObject,

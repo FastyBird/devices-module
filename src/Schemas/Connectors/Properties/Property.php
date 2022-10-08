@@ -27,8 +27,8 @@ use function strval;
 /**
  * Connector property entity schema
  *
- * @phpstan-template T of Entities\Connectors\Properties\Property
- * @phpstan-extends  JsonApiSchemas\JsonApi<T>
+ * @template T of Entities\Connectors\Properties\Property
+ * @extends  JsonApiSchemas\JsonApi<T>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

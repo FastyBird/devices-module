@@ -87,9 +87,9 @@ final class ConnectorsRepository
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param class-string $type
 	 *
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector>
 	 */
 	public function getResultSet(
 		Queries\FindConnectors $queryObject,

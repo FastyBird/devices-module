@@ -28,7 +28,7 @@ use function array_merge;
 /**
  * Channel property entity schema
  *
- * @phpstan-extends Property<Entities\Channels\Properties\Mapped>
+ * @extends Property<Entities\Channels\Properties\Mapped>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

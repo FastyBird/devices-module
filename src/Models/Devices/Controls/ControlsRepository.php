@@ -71,7 +71,7 @@ final class ControlsRepository
 	}
 
 	/**
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\Control>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\Control>
 	 */
 	public function getResultSet(
 		Queries\FindDeviceControls $queryObject,

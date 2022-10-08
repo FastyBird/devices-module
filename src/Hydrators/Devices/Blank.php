@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Blank device entity hydrator
  *
- * @phpstan-extends Device<Entities\Devices\Blank>
+ * @extends Device<Entities\Devices\Blank>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators

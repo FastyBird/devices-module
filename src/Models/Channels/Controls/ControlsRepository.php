@@ -71,7 +71,7 @@ final class ControlsRepository
 	}
 
 	/**
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\Control>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Controls\Control>
 	 */
 	public function getResultSet(
 		Queries\FindChannelControls $queryObject,

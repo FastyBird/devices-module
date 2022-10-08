@@ -24,8 +24,8 @@ use function is_scalar;
 /**
  * Device entity hydrator
  *
- * @phpstan-template  TEntityClass of Entities\Devices\Device
- * @phpstan-extends   JsonApiHydrators\Hydrator<TEntityClass>
+ * @template  TEntityClass of Entities\Devices\Device
+ * @extends   JsonApiHydrators\Hydrator<TEntityClass>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators

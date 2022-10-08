@@ -22,7 +22,7 @@ use FastyBird\Metadata\Types as MetadataTypes;
 /**
  * Blank device entity schema
  *
- * @phpstan-extends Device<Entities\Devices\Blank>
+ * @extends Device<Entities\Devices\Blank>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

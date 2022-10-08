@@ -27,7 +27,7 @@ use function in_array;
 /**
  * Find connector properties entities query
  *
- * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Connectors\Controls\Control>
+ * @extends  DoctrineOrmQuery\QueryObject<Entities\Connectors\Controls\Control>
  *
  * @package          FastyBird:DevicesModule!
  * @subpackage       Queries

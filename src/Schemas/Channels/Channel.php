@@ -29,7 +29,7 @@ use function count;
 /**
  * Channel entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Channels\Channel>
+ * @extends JsonApiSchemas\JsonApi<Entities\Channels\Channel>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

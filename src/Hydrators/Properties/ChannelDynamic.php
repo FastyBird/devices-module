@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Channel property entity hydrator
  *
- * @phpstan-extends Channel<Entities\Channels\Properties\Dynamic>
+ * @extends Channel<Entities\Channels\Properties\Dynamic>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators

@@ -67,7 +67,7 @@ class Channel implements Entities\Entity,
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string", name="channel_name", nullable=true, options={"default": null})
 	 */
-	private string|null $name = null;
+	private string|null $name;
 
 	/**
 	 * @IPubDoctrine\Crud(is="writable")

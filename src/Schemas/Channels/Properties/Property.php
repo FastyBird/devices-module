@@ -31,8 +31,8 @@ use function strval;
 /**
  * Channel property entity schema
  *
- * @phpstan-template T of Entities\Channels\Properties\Property
- * @phpstan-extends  JsonApiSchemas\JsonApi<T>
+ * @template T of Entities\Channels\Properties\Property
+ * @extends  JsonApiSchemas\JsonApi<T>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

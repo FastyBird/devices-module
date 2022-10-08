@@ -36,7 +36,7 @@ final class ChannelsManager
 	use Nette\SmartObject;
 
 	/**
-	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\Channel> $entityCrud
+	 * @param Crud\IEntityCrud<Entities\Channels\Channel> $entityCrud
 	 */
 	public function __construct(private readonly Crud\IEntityCrud $entityCrud)
 	{

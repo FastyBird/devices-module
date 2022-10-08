@@ -30,8 +30,8 @@ use function strval;
 /**
  * Property entity hydrator
  *
- * @phpstan-template TEntityClass of Entities\Property
- * @phpstan-extends  JsonApiHydrators\Hydrator<TEntityClass>
+ * @template TEntityClass of Entities\Property
+ * @extends  JsonApiHydrators\Hydrator<TEntityClass>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators

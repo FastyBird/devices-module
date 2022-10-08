@@ -28,7 +28,7 @@ use function assert;
 /**
  * Device control entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Devices\Controls\Control>
+ * @extends JsonApiSchemas\JsonApi<Entities\Devices\Controls\Control>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

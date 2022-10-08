@@ -27,7 +27,7 @@ use function in_array;
 /**
  * Find channel controls entities query
  *
- * @phpstan-extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Controls\Control>
+ * @extends  DoctrineOrmQuery\QueryObject<Entities\Channels\Controls\Control>
  *
  * @package          FastyBird:DevicesModule!
  * @subpackage       Queries

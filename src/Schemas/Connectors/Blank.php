@@ -22,7 +22,7 @@ use FastyBird\Metadata\Types as MetadataTypes;
 /**
  * Modbus connector entity schema
  *
- * @phpstan-extends Connector<Entities\Connectors\Blank>
+ * @extends Connector<Entities\Connectors\Blank>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

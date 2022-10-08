@@ -20,7 +20,7 @@ use FastyBird\DevicesModule\Entities;
 /**
  * Connector property entity hydrator
  *
- * @phpstan-extends Connector<Entities\Connectors\Properties\Variable>
+ * @extends Connector<Entities\Connectors\Properties\Variable>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Hydrators

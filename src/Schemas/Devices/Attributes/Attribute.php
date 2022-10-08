@@ -29,7 +29,7 @@ use function is_scalar;
 /**
  * Device attribute entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Devices\Attributes\Attribute>
+ * @extends JsonApiSchemas\JsonApi<Entities\Devices\Attributes\Attribute>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

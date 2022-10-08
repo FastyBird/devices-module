@@ -30,8 +30,8 @@ use function count;
 /**
  * Device entity schema
  *
- * @phpstan-template T of Entities\Devices\Device
- * @phpstan-extends  JsonApiSchemas\JsonApi<T>
+ * @template T of Entities\Devices\Device
+ * @extends  JsonApiSchemas\JsonApi<T>
  *
  * @package          FastyBird:DevicesModule!
  * @subpackage       Schemas

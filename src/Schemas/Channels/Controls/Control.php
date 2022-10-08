@@ -28,7 +28,7 @@ use function assert;
 /**
  * Channel control entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Channels\Controls\Control>
+ * @extends JsonApiSchemas\JsonApi<Entities\Channels\Controls\Control>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas

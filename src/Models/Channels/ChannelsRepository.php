@@ -76,7 +76,7 @@ final class ChannelsRepository
 	}
 
 	/**
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Channels\Channel>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Channel>
 	 */
 	public function getResultSet(
 		Queries\FindChannels $queryObject,

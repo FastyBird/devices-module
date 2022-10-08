@@ -71,7 +71,7 @@ final class ControlsRepository
 	}
 
 	/**
-	 * @return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\Control>
+	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Controls\Control>
 	 */
 	public function getResultSet(
 		Queries\FindConnectorControls $queryObject,

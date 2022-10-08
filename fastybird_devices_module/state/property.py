@@ -45,14 +45,14 @@ class IPropertyState(ABC):
 
     # -----------------------------------------------------------------------------
 
-    @property  # type: ignore[misc]
+    @property
     @abstractmethod
     def actual_value(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Property actual value"""
 
     # -----------------------------------------------------------------------------
 
-    @actual_value.setter  # type: ignore[misc]
+    @actual_value.setter
     @abstractmethod
     def actual_value(
         self,
@@ -62,14 +62,14 @@ class IPropertyState(ABC):
 
     # -----------------------------------------------------------------------------
 
-    @property  # type: ignore[misc]
+    @property
     @abstractmethod
     def expected_value(self) -> Union[int, float, str, bool, datetime, ButtonPayload, SwitchPayload, None]:
         """Property expected value"""
 
     # -----------------------------------------------------------------------------
 
-    @expected_value.setter  # type: ignore[misc]
+    @expected_value.setter
     @abstractmethod
     def expected_value(
         self,
@@ -79,28 +79,28 @@ class IPropertyState(ABC):
 
     # -----------------------------------------------------------------------------
 
-    @property  # type: ignore[misc]
+    @property
     @abstractmethod
     def pending(self) -> bool:
         """Property expected value is pending"""
 
     # -----------------------------------------------------------------------------
 
-    @pending.setter  # type: ignore[misc]
+    @pending.setter
     @abstractmethod
     def pending(self, pending: bool) -> None:
         """Property expected value is pending setter"""
 
     # -----------------------------------------------------------------------------
 
-    @property  # type: ignore[misc]
+    @property
     @abstractmethod
     def valid(self) -> bool:
         """Property value is valid"""
 
     # -----------------------------------------------------------------------------
 
-    @valid.setter  # type: ignore[misc]
+    @valid.setter
     @abstractmethod
     def valid(self, valid: bool) -> None:
         """Property value is valid setter"""

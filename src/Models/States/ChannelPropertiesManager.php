@@ -42,15 +42,15 @@ final class ChannelPropertiesManager
 	use Nette\SmartObject;
 
 	public function __construct(
-		protected ExchangeEntities\EntityFactory $entityFactory,
-		protected IChannelPropertiesManager|null $manager,
-		private PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
+		protected readonly ExchangeEntities\EntityFactory $entityFactory,
+		protected readonly IChannelPropertiesManager|null $manager,
+		private readonly PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
 	)
 	{
 	}
 
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		Utils\ArrayHash $values,
 	): States\ChannelProperty
 	{
@@ -94,7 +94,7 @@ final class ChannelPropertiesManager
 	}
 
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		States\ChannelProperty $state,
 		Utils\ArrayHash $values,
 	): States\ChannelProperty
@@ -140,7 +140,7 @@ final class ChannelPropertiesManager
 	}
 
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		States\ChannelProperty $state,
 	): bool
 	{

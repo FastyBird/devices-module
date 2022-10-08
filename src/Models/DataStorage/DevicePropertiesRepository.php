@@ -36,7 +36,7 @@ use function strval;
 /**
  * Data storage device properties repository
  *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity>
+ * @implements IteratorAggregate<int, MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -50,12 +50,12 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 	/** @var Array<string, Array<string, mixed>> */
 	private array $rawData;
 
-	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity> */
+	/** @var Array<string, MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty> */
 	private array $entities;
 
 	public function __construct(
-		private Models\States\DevicePropertiesRepository $statesRepository,
-		private MetadataEntities\Modules\DevicesModule\DevicePropertyEntityFactory $entityFactory,
+		private readonly Models\States\DevicePropertiesRepository $statesRepository,
+		private readonly MetadataEntities\DevicesModule\DevicePropertyEntityFactory $entityFactory,
 	)
 	{
 		$this->rawData = [];
@@ -63,11 +63,11 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findById(
 		Uuid\UuidInterface $id,
-	): MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
+	): MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -77,12 +77,12 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $device,
 		string $identifier,
-	): MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|null
+	): MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|null
 	{
 		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
@@ -101,13 +101,13 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 	/**
 	 * @param class-string<T>|null $type
 	 *
-	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity>
+	 * @return Array<int, MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty>
 	 *
 	 * @template T
 	 *
-	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity> : Array<int, T>)
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty> : Array<int, T>)
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findAllByDevice(
 		Uuid\UuidInterface $device,
@@ -173,9 +173,9 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity>
+	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -185,7 +185,7 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
-		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity> $result */
+		/** @var RecursiveArrayIterator<int, MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty> $result */
 		$result = new RecursiveArrayIterator($entities);
 
 		return $result;
@@ -194,12 +194,12 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 	/**
 	 * @param Array<string, mixed> $data
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
 		array $data,
-	): MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+	): MetadataEntities\DevicesModule\DeviceVariableProperty|MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty
 	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$state = [];
@@ -207,8 +207,8 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 			if (
 				array_key_exists('type', $data)
 				&& (
-					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+					$data['type'] === MetadataTypes\PropertyType::TYPE_DYNAMIC
+					|| $data['type'] === MetadataTypes\PropertyType::TYPE_MAPPED
 				)
 			) {
 				$state = $this->loadPropertyState($id);
@@ -217,9 +217,9 @@ final class DevicePropertiesRepository implements Countable, IteratorAggregate
 			$entity = $this->entityFactory->create(array_merge($state, $data));
 
 			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+				$entity instanceof MetadataEntities\DevicesModule\DeviceVariableProperty
+				|| $entity instanceof MetadataEntities\DevicesModule\DeviceDynamicProperty
+				|| $entity instanceof MetadataEntities\DevicesModule\DeviceMappedProperty
 			) {
 				$this->entities[$id->toString()] = $entity;
 			} else {

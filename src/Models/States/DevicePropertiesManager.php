@@ -41,14 +41,14 @@ final class DevicePropertiesManager
 	use Nette\SmartObject;
 
 	public function __construct(
-		protected IDevicePropertiesManager|null $manager,
-		private PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
+		protected readonly IDevicePropertiesManager|null $manager,
+		private readonly PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
 	)
 	{
 	}
 
 	public function create(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		Utils\ArrayHash $values,
 	): States\DeviceProperty
 	{
@@ -92,7 +92,7 @@ final class DevicePropertiesManager
 	}
 
 	public function update(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		States\DeviceProperty $state,
 		Utils\ArrayHash $values,
 	): States\DeviceProperty
@@ -138,7 +138,7 @@ final class DevicePropertiesManager
 	}
 
 	public function delete(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		States\DeviceProperty $state,
 	): bool
 	{

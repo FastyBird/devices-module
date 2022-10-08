@@ -83,11 +83,11 @@ abstract class Property implements Entity,
 	protected bool $queryable = false;
 
 	/**
-	 * @var MetadataTypes\DataTypeType
+	 * @var MetadataTypes\DataType
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 *
-	 * @Enum(class=MetadataTypes\DataTypeType::class)
+	 * @Enum(class=MetadataTypes\DataType::class)
 	 * @IPubDoctrine\Crud(is="writable")
 	 * @ORM\Column(type="string_enum", name="property_data_type", length=100, nullable=true, options={"default": "unknown"})
 	 */
@@ -141,16 +141,16 @@ abstract class Property implements Entity,
 
 		$this->identifier = $identifier;
 
-		$this->dataType = MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_UNKNOWN);
+		$this->dataType = MetadataTypes\DataType::get(MetadataTypes\DataType::DATA_TYPE_UNKNOWN);
 
 		// Static property can not be set or read from device/channel property
-		if ($this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
 			$this->settable = false;
 			$this->queryable = false;
 		}
 	}
 
-	abstract public function getType(): MetadataTypes\PropertyTypeType;
+	abstract public function getType(): MetadataTypes\PropertyType;
 
 	public function getIdentifier(): string
 	{
@@ -174,8 +174,8 @@ abstract class Property implements Entity,
 
 	public function setSettable(bool $settable): void
 	{
-		if ($settable && $this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidArgument('Static type property can not be settable');
+		if ($settable && $this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
+			throw new Exceptions\InvalidArgument('Variable type property can not be settable');
 		}
 
 		$this->settable = $settable;
@@ -188,19 +188,19 @@ abstract class Property implements Entity,
 
 	public function setQueryable(bool $queryable): void
 	{
-		if ($queryable && $this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
-			throw new Exceptions\InvalidArgument('Static type property can not be queryable');
+		if ($queryable && $this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
+			throw new Exceptions\InvalidArgument('Variable type property can not be queryable');
 		}
 
 		$this->queryable = $queryable;
 	}
 
-	public function getDataType(): MetadataTypes\DataTypeType
+	public function getDataType(): MetadataTypes\DataType
 	{
 		return $this->dataType;
 	}
 
-	public function setDataType(MetadataTypes\DataTypeType $dataType): void
+	public function setDataType(MetadataTypes\DataType $dataType): void
 	{
 		$this->dataType = $dataType;
 	}
@@ -236,13 +236,13 @@ abstract class Property implements Entity,
 		} elseif (is_array($format)) {
 			if (
 				in_array($this->dataType->getValue(), [
-					MetadataTypes\DataTypeType::DATA_TYPE_CHAR,
-					MetadataTypes\DataTypeType::DATA_TYPE_UCHAR,
-					MetadataTypes\DataTypeType::DATA_TYPE_SHORT,
-					MetadataTypes\DataTypeType::DATA_TYPE_USHORT,
-					MetadataTypes\DataTypeType::DATA_TYPE_INT,
-					MetadataTypes\DataTypeType::DATA_TYPE_UINT,
-					MetadataTypes\DataTypeType::DATA_TYPE_FLOAT,
+					MetadataTypes\DataType::DATA_TYPE_CHAR,
+					MetadataTypes\DataType::DATA_TYPE_UCHAR,
+					MetadataTypes\DataType::DATA_TYPE_SHORT,
+					MetadataTypes\DataType::DATA_TYPE_USHORT,
+					MetadataTypes\DataType::DATA_TYPE_INT,
+					MetadataTypes\DataType::DATA_TYPE_UINT,
+					MetadataTypes\DataType::DATA_TYPE_FLOAT,
 				], true)
 			) {
 				$plainFormat = implode(':', array_map(static function ($item): string {
@@ -268,9 +268,9 @@ abstract class Property implements Entity,
 				throw new Exceptions\InvalidArgument('Provided property format is not valid');
 			} elseif (
 				in_array($this->dataType->getValue(), [
-					MetadataTypes\DataTypeType::DATA_TYPE_ENUM,
-					MetadataTypes\DataTypeType::DATA_TYPE_BUTTON,
-					MetadataTypes\DataTypeType::DATA_TYPE_SWITCH,
+					MetadataTypes\DataType::DATA_TYPE_ENUM,
+					MetadataTypes\DataType::DATA_TYPE_BUTTON,
+					MetadataTypes\DataType::DATA_TYPE_SWITCH,
 				], true)
 			) {
 				$plainFormat = implode(',', array_map(static function ($item): string {
@@ -316,19 +316,19 @@ abstract class Property implements Entity,
 		}
 
 		if (
-			$this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
-			|| $this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			$this->dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_CHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_UCHAR)
+			|| $this->dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_SHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_USHORT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_INT)
+			|| $this->dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_UINT)
 		) {
 			if (is_numeric($this->invalid)) {
 				return intval($this->invalid);
 			}
 
 			return null;
-		} elseif ($this->dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+		} elseif ($this->dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_FLOAT)) {
 			if (is_numeric($this->invalid)) {
 				return floatval($this->invalid);
 			}
@@ -354,9 +354,9 @@ abstract class Property implements Entity,
 		$this->numberOfDecimals = $numberOfDecimals;
 	}
 
-	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
 			throw new Exceptions\InvalidState(
 				sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())),
 			);
@@ -376,7 +376,7 @@ abstract class Property implements Entity,
 
 	public function setValue(string|null $value): void
 	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
 			throw new Exceptions\InvalidState(
 				sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())),
 			);
@@ -385,9 +385,9 @@ abstract class Property implements Entity,
 		$this->value = $value;
 	}
 
-	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
 			throw new Exceptions\InvalidState(
 				sprintf('Value is not allowed for property type: %s', strval($this->getType()->getValue())),
 			);
@@ -407,7 +407,7 @@ abstract class Property implements Entity,
 
 	public function setDefault(string|null $default): void
 	{
-		if (!$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
 			throw new Exceptions\InvalidState(
 				sprintf('Default value is not allowed for property type: %s', strval($this->getType()->getValue())),
 			);
@@ -435,7 +435,7 @@ abstract class Property implements Entity,
 			'number_of_decimals' => $this->getNumberOfDecimals(),
 		];
 
-		if ($this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_STATIC)) {
+		if ($this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
 			return array_merge($data, [
 				'default' => Utilities\ValueHelper::flattenValue($this->getDefault()),
 				'value' => Utilities\ValueHelper::flattenValue($this->getValue()),
@@ -455,13 +455,13 @@ abstract class Property implements Entity,
 
 		if (
 			in_array($this->dataType->getValue(), [
-				MetadataTypes\DataTypeType::DATA_TYPE_CHAR,
-				MetadataTypes\DataTypeType::DATA_TYPE_UCHAR,
-				MetadataTypes\DataTypeType::DATA_TYPE_SHORT,
-				MetadataTypes\DataTypeType::DATA_TYPE_USHORT,
-				MetadataTypes\DataTypeType::DATA_TYPE_INT,
-				MetadataTypes\DataTypeType::DATA_TYPE_UINT,
-				MetadataTypes\DataTypeType::DATA_TYPE_FLOAT,
+				MetadataTypes\DataType::DATA_TYPE_CHAR,
+				MetadataTypes\DataType::DATA_TYPE_UCHAR,
+				MetadataTypes\DataType::DATA_TYPE_SHORT,
+				MetadataTypes\DataType::DATA_TYPE_USHORT,
+				MetadataTypes\DataType::DATA_TYPE_INT,
+				MetadataTypes\DataType::DATA_TYPE_UINT,
+				MetadataTypes\DataType::DATA_TYPE_FLOAT,
 			], true)
 		) {
 			if (preg_match(Metadata\Constants::VALUE_FORMAT_NUMBER_RANGE, $format) === 1) {
@@ -469,9 +469,9 @@ abstract class Property implements Entity,
 			}
 		} elseif (
 			in_array($this->dataType->getValue(), [
-				MetadataTypes\DataTypeType::DATA_TYPE_ENUM,
-				MetadataTypes\DataTypeType::DATA_TYPE_BUTTON,
-				MetadataTypes\DataTypeType::DATA_TYPE_SWITCH,
+				MetadataTypes\DataType::DATA_TYPE_ENUM,
+				MetadataTypes\DataType::DATA_TYPE_BUTTON,
+				MetadataTypes\DataType::DATA_TYPE_SWITCH,
 			], true)
 		) {
 			if (preg_match(Metadata\Constants::VALUE_FORMAT_STRING_ENUM, $format) === 1) {

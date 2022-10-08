@@ -38,7 +38,7 @@ final class PropertiesManager
 	/**
 	 * @param Crud\IEntityCrud<Entities\Connectors\Properties\Property> $entityCrud
 	 */
-	public function __construct(private Crud\IEntityCrud $entityCrud)
+	public function __construct(private readonly Crud\IEntityCrud $entityCrud)
 	{
 		// Entity CRUD for handling entities
 	}

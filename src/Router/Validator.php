@@ -37,7 +37,7 @@ class Validator
 
 	private SlimRouterRouting\FastRouteDispatcher|null $routerDispatcher = null;
 
-	public function __construct(private DI\Container $container)
+	public function __construct(private readonly DI\Container $container)
 	{
 	}
 

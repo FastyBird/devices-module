@@ -41,14 +41,14 @@ final class DeviceChildrenV1 extends BaseV1
 	use Controllers\Finders\TDevice;
 
 	public function __construct(
-		protected Models\Devices\DevicesRepository $devicesRepository,
+		protected readonly Models\Devices\DevicesRepository $devicesRepository,
 	)
 	{
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,

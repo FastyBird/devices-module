@@ -39,32 +39,31 @@ final class ConnectorConnectionStateManager
 
 	use Nette\SmartObject;
 
-	private Models\DataStorage\ConnectorPropertiesRepository $dataStorageRepository;
-
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private Models\Connectors\ConnectorsRepository $connectorsRepository,
-		Models\DataStorage\ConnectorPropertiesRepository $repository,
-		private Models\Connectors\Properties\PropertiesManager $manager,
-		private Models\States\ConnectorPropertiesRepository $statesRepository,
-		private Models\States\ConnectorPropertiesManager $statesManager,
+		private readonly Models\Connectors\ConnectorsRepository $connectorsRepository,
+		private readonly Models\DataStorage\ConnectorPropertiesRepository $repository,
+		private readonly Models\Connectors\Properties\PropertiesManager $manager,
+		private readonly Models\States\ConnectorPropertiesRepository $statesRepository,
+		private readonly Models\States\ConnectorPropertiesManager $statesManager,
 		Log\LoggerInterface|null $logger = null,
 	)
 	{
-		$this->dataStorageRepository = $repository;
-
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
+	/**
+	 * @throws Metadata\Exceptions\FileNotFound
+	 */
 	public function setState(
-		Entities\Connectors\Connector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
-		MetadataTypes\ConnectionStateType $state,
+		Entities\Connectors\Connector|MetadataEntities\DevicesModule\Connector $connector,
+		MetadataTypes\ConnectionState $state,
 	): bool
 	{
-		$stateProperty = $this->dataStorageRepository->findByIdentifier(
+		$stateProperty = $this->repository->findByIdentifier(
 			$connector->getId(),
-			MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
+			MetadataTypes\ConnectorPropertyIdentifier::IDENTIFIER_STATE,
 		);
 
 		if ($stateProperty === null) {
@@ -82,15 +81,15 @@ final class ConnectorConnectionStateManager
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
 				'connector' => $connector,
 				'entity' => Entities\Connectors\Properties\Dynamic::class,
-				'identifier' => MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
-				'dataType' => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
+				'identifier' => MetadataTypes\ConnectorPropertyIdentifier::IDENTIFIER_STATE,
+				'dataType' => MetadataTypes\DataType::get(MetadataTypes\DataType::DATA_TYPE_ENUM),
 				'unit' => null,
 				'format' => [
-					MetadataTypes\ConnectionStateType::STATE_RUNNING,
-					MetadataTypes\ConnectionStateType::STATE_STOPPED,
-					MetadataTypes\ConnectionStateType::STATE_UNKNOWN,
-					MetadataTypes\ConnectionStateType::STATE_SLEEPING,
-					MetadataTypes\ConnectionStateType::STATE_ALERT,
+					MetadataTypes\ConnectionState::STATE_RUNNING,
+					MetadataTypes\ConnectionState::STATE_STOPPED,
+					MetadataTypes\ConnectionState::STATE_UNKNOWN,
+					MetadataTypes\ConnectionState::STATE_SLEEPING,
+					MetadataTypes\ConnectionState::STATE_ALERT,
 				],
 				'settable' => false,
 				'queryable' => false,
@@ -98,7 +97,7 @@ final class ConnectorConnectionStateManager
 		}
 
 		if (
-			$stateProperty instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+			$stateProperty instanceof MetadataEntities\DevicesModule\ConnectorDynamicProperty
 			|| $stateProperty instanceof Entities\Connectors\Properties\Dynamic
 		) {
 			try {
@@ -113,7 +112,7 @@ final class ConnectorConnectionStateManager
 					],
 				);
 
-				MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN);
+				MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_UNKNOWN);
 
 				return false;
 			}
@@ -166,24 +165,27 @@ final class ConnectorConnectionStateManager
 		return false;
 	}
 
+	/**
+	 * @throws Metadata\Exceptions\FileNotFound
+	 */
 	public function getState(
-		Entities\Connectors\Connector|MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
-	): MetadataTypes\ConnectionStateType
+		Entities\Connectors\Connector|MetadataEntities\DevicesModule\Connector $connector,
+	): MetadataTypes\ConnectionState
 	{
-		$stateProperty = $this->dataStorageRepository->findByIdentifier(
+		$stateProperty = $this->repository->findByIdentifier(
 			$connector->getId(),
-			MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
+			MetadataTypes\ConnectorPropertyIdentifier::IDENTIFIER_STATE,
 		);
 
 		if (
-			$stateProperty instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
+			$stateProperty instanceof MetadataEntities\DevicesModule\ConnectorDynamicProperty
 			&& $stateProperty->getActualValue() !== null
-			&& MetadataTypes\ConnectionStateType::isValidValue($stateProperty->getActualValue())
+			&& MetadataTypes\ConnectionState::isValidValue($stateProperty->getActualValue())
 		) {
-			return MetadataTypes\ConnectionStateType::get($stateProperty->getActualValue());
+			return MetadataTypes\ConnectionState::get($stateProperty->getActualValue());
 		}
 
-		return MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN);
+		return MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_UNKNOWN);
 	}
 
 }

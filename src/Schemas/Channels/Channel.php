@@ -29,19 +29,19 @@ use function count;
 /**
  * Channel entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Channels\Channel>
+ * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Channels\Channel>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class Channel extends JsonApiSchemas\JsonApiSchema
+final class Channel extends JsonApiSchemas\JsonApi
 {
 
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/channel';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES . '/channel';
 
 	/**
 	 * Define relationships names
@@ -52,7 +52,7 @@ final class Channel extends JsonApiSchemas\JsonApiSchema
 
 	public const RELATIONSHIPS_CONTROLS = 'controls';
 
-	public function __construct(private Routing\IRouter $router)
+	public function __construct(private readonly Routing\IRouter $router)
 	{
 	}
 

@@ -42,7 +42,7 @@ final class ConnectorsRepository
 	/** @var Array<ORM\EntityRepository<Entities\Connectors\Connector>> */
 	private array $repository = [];
 
-	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private readonly Persistence\ManagerRegistry $managerRegistry)
 	{
 	}
 

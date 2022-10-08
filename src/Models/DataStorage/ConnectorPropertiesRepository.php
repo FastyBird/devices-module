@@ -36,7 +36,7 @@ use function strval;
 /**
  * Data storage connector properties repository
  *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity>
+ * @implements IteratorAggregate<int, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -50,12 +50,12 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	/** @var Array<string, Array<string, mixed>> */
 	private array $rawData;
 
-	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> */
+	/** @var Array<string, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty> */
 	private array $entities;
 
 	public function __construct(
-		private Models\States\ConnectorPropertiesRepository $statesRepository,
-		private MetadataEntities\Modules\DevicesModule\ConnectorPropertyEntityFactory $entityFactory,
+		private readonly Models\States\ConnectorPropertiesRepository $statesRepository,
+		private readonly MetadataEntities\DevicesModule\ConnectorPropertyEntityFactory $entityFactory,
 	)
 	{
 		$this->rawData = [];
@@ -63,11 +63,11 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findById(
 		Uuid\UuidInterface $id,
-	): MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null
+	): MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -77,12 +77,12 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $connector,
 		string $identifier,
-	): MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|null
+	): MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|null
 	{
 		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
@@ -101,13 +101,13 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	/**
 	 * @param class-string<T>|null $type
 	 *
-	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity>
+	 * @return Array<int, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty>
 	 *
 	 * @template T
 	 *
-	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> : Array<int, T>)
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty> : Array<int, T>)
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findAllByConnector(
 		Uuid\UuidInterface $connector,
@@ -173,9 +173,9 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	}
 
 	/**
-	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity>
+	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -185,7 +185,7 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
-		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity> $result */
+		/** @var RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty> $result */
 		$result = new RecursiveArrayIterator($entities);
 
 		return $result;
@@ -194,12 +194,12 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	/**
 	 * @param Array<string, mixed> $data
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
 		array $data,
-	): MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+	): MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty
 	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$state = [];
@@ -207,8 +207,8 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 			if (
 				array_key_exists('type', $data)
 				&& (
-					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+					$data['type'] === MetadataTypes\PropertyType::TYPE_DYNAMIC
+					|| $data['type'] === MetadataTypes\PropertyType::TYPE_MAPPED
 				)
 			) {
 				$state = $this->loadPropertyState($id);
@@ -217,9 +217,9 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 			$entity = $this->entityFactory->create(array_merge($state, $data));
 
 			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+				$entity instanceof MetadataEntities\DevicesModule\ConnectorVariableProperty
+				|| $entity instanceof MetadataEntities\DevicesModule\ConnectorDynamicProperty
+				|| $entity instanceof MetadataEntities\DevicesModule\ConnectorMappedProperty
 			) {
 				$this->entities[$id->toString()] = $entity;
 			} else {

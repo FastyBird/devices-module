@@ -281,7 +281,10 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		)
 			->setType(Schemas\Devices\Properties\Dynamic::class);
 
-		$builder->addDefinition($this->prefix('schemas.device.property.static'), new DI\Definitions\ServiceDefinition())
+		$builder->addDefinition(
+			$this->prefix('schemas.device.property.variable'),
+			new DI\Definitions\ServiceDefinition(),
+		)
 			->setType(Schemas\Devices\Properties\Variable::class);
 
 		$builder->addDefinition($this->prefix('schemas.device.property.mapped'), new DI\Definitions\ServiceDefinition())
@@ -303,7 +306,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Schemas\Channels\Properties\Dynamic::class);
 
 		$builder->addDefinition(
-			$this->prefix('schemas.channel.property.static'),
+			$this->prefix('schemas.channel.property.variable'),
 			new DI\Definitions\ServiceDefinition(),
 		)
 			->setType(Schemas\Channels\Properties\Variable::class);
@@ -327,7 +330,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Schemas\Connectors\Properties\Dynamic::class);
 
 		$builder->addDefinition(
-			$this->prefix('schemas.connector.property.static'),
+			$this->prefix('schemas.connector.property.variable'),
 			new DI\Definitions\ServiceDefinition(),
 		)
 			->setType(Schemas\Connectors\Properties\Variable::class);
@@ -346,7 +349,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Hydrators\Properties\DeviceDynamic::class);
 
 		$builder->addDefinition(
-			$this->prefix('hydrators.device.property.static'),
+			$this->prefix('hydrators.device.property.variable'),
 			new DI\Definitions\ServiceDefinition(),
 		)
 			->setType(Hydrators\Properties\DeviceVariable::class);
@@ -367,7 +370,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Hydrators\Properties\ChannelDynamic::class);
 
 		$builder->addDefinition(
-			$this->prefix('hydrators.channel.property.static'),
+			$this->prefix('hydrators.channel.property.variable'),
 			new DI\Definitions\ServiceDefinition(),
 		)
 			->setType(Hydrators\Properties\ChannelVariable::class);
@@ -388,7 +391,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			->setType(Hydrators\Properties\ConnectorDynamic::class);
 
 		$builder->addDefinition(
-			$this->prefix('hydrators.connector.property.static'),
+			$this->prefix('hydrators.connector.property.variable'),
 			new DI\Definitions\ServiceDefinition(),
 		)
 			->setType(Hydrators\Properties\ConnectorVariable::class);

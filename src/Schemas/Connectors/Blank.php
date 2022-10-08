@@ -34,7 +34,7 @@ final class Blank extends Connector
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/connector/' . Entities\Connectors\Blank::CONNECTOR_TYPE;
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES . '/connector/' . Entities\Connectors\Blank::CONNECTOR_TYPE;
 
 	public function getEntityClass(): string
 	{

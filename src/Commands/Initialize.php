@@ -40,7 +40,7 @@ class Initialize extends Console\Command\Command
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private DataStorage\Writer $writer,
+		private readonly DataStorage\Writer $writer,
 		Log\LoggerInterface|null $logger = null,
 		string|null $name = null,
 	)

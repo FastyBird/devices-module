@@ -28,6 +28,6 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 interface ConnectorFactory
 {
 
-	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): Connector;
+	public function create(MetadataEntities\DevicesModule\Connector $connector): Connector;
 
 }

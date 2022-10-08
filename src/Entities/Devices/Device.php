@@ -52,14 +52,14 @@ use function strval;
  */
 abstract class Device implements Entities\Entity,
 	Entities\EntityParams,
-	SimpleAuthEntities\IEntityOwner,
+	SimpleAuthEntities\Owner,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated,
 	DoctrineDynamicDiscriminatorMapEntities\IDiscriminatorProvider
 {
 
 	use Entities\TEntity;
 	use Entities\TEntityParams;
-	use SimpleAuthEntities\TEntityOwner;
+	use SimpleAuthEntities\TOwner;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 

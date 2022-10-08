@@ -52,10 +52,10 @@ class DevicesV1 extends BaseV1
 	use Controllers\Finders\TDevice;
 
 	public function __construct(
-		protected Models\Devices\DevicesRepository $devicesRepository,
-		protected Models\Devices\DevicesManager $devicesManager,
-		protected Models\Channels\ChannelsRepository $channelsRepository,
-		protected Models\Channels\ChannelsManager $channelsManager,
+		protected readonly Models\Devices\DevicesRepository $devicesRepository,
+		protected readonly Models\Devices\DevicesManager $devicesManager,
+		protected readonly Models\Channels\ChannelsRepository $channelsRepository,
+		protected readonly Models\Channels\ChannelsManager $channelsManager,
 	)
 	{
 	}
@@ -78,7 +78,7 @@ class DevicesV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
@@ -93,8 +93,8 @@ class DevicesV1 extends BaseV1
 	/**
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
-	 * @throws JsonApiExceptions\JsonApiErrorException
+	 * @throws JsonApiExceptions\JsonApi
+	 * @throws JsonApiExceptions\JsonApiError
 	 *
 	 * @Secured
 	 * @Secured\Role(manager,administrator)
@@ -118,10 +118,10 @@ class DevicesV1 extends BaseV1
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
 
-			} catch (JsonApiExceptions\IJsonApiException $ex) {
+			} catch (JsonApiExceptions\JsonApi $ex) {
 				throw $ex;
 			} catch (DoctrineCrudExceptions\MissingRequiredFieldException $ex) {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.heading'),
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
@@ -130,7 +130,7 @@ class DevicesV1 extends BaseV1
 					],
 				);
 			} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.heading'),
 					$this->translator->translate('//devices-module.base.messages.missingAttribute.message'),
@@ -140,7 +140,7 @@ class DevicesV1 extends BaseV1
 				);
 			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
 				if (preg_match("%PRIMARY'%", $ex->getMessage(), $match) === 1) {
-					throw new JsonApiExceptions\JsonApiErrorException(
+					throw new JsonApiExceptions\JsonApiError(
 						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.heading'),
 						$this->translator->translate('//devices-module.base.messages.uniqueIdentifier.message'),
@@ -153,7 +153,7 @@ class DevicesV1 extends BaseV1
 					$columnKey = end($columnParts);
 
 					if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'device_')) {
-						throw new JsonApiExceptions\JsonApiErrorException(
+						throw new JsonApiExceptions\JsonApiError(
 							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
 							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
@@ -164,7 +164,7 @@ class DevicesV1 extends BaseV1
 					}
 				}
 
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
 					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
@@ -180,7 +180,7 @@ class DevicesV1 extends BaseV1
 					],
 				]);
 
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notCreated.heading'),
 					$this->translator->translate('//devices-module.base.messages.notCreated.message'),
@@ -197,7 +197,7 @@ class DevicesV1 extends BaseV1
 			return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
 		}
 
-		throw new JsonApiExceptions\JsonApiErrorException(
+		throw new JsonApiExceptions\JsonApiError(
 			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
@@ -210,8 +210,8 @@ class DevicesV1 extends BaseV1
 	/**
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
-	 * @throws JsonApiExceptions\JsonApiErrorException
+	 * @throws JsonApiExceptions\JsonApi
+	 * @throws JsonApiExceptions\JsonApiError
 	 *
 	 * @Secured
 	 * @Secured\Role(manager,administrator)
@@ -239,7 +239,7 @@ class DevicesV1 extends BaseV1
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
 
-			} catch (JsonApiExceptions\IJsonApiException $ex) {
+			} catch (JsonApiExceptions\JsonApi $ex) {
 				throw $ex;
 			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
 				if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) !== false) {
@@ -247,7 +247,7 @@ class DevicesV1 extends BaseV1
 					$columnKey = end($columnParts);
 
 					if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'device_')) {
-						throw new JsonApiExceptions\JsonApiErrorException(
+						throw new JsonApiExceptions\JsonApiError(
 							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
 							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
@@ -258,7 +258,7 @@ class DevicesV1 extends BaseV1
 					}
 				}
 
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
 					$this->translator->translate('//devices-module.base.messages.uniqueAttribute.message'),
@@ -274,7 +274,7 @@ class DevicesV1 extends BaseV1
 					],
 				]);
 
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
 					$this->translator->translate('//devices-module.base.messages.notUpdated.message'),
@@ -289,7 +289,7 @@ class DevicesV1 extends BaseV1
 			return $this->buildResponse($request, $response, $device);
 		}
 
-		throw new JsonApiExceptions\JsonApiErrorException(
+		throw new JsonApiExceptions\JsonApiError(
 			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
@@ -301,8 +301,8 @@ class DevicesV1 extends BaseV1
 
 	/**
 	 * @throws Doctrine\DBAL\Exception
-	 * @throws JsonApiExceptions\IJsonApiException
-	 * @throws JsonApiExceptions\JsonApiErrorException
+	 * @throws JsonApiExceptions\JsonApi
+	 * @throws JsonApiExceptions\JsonApiError
 	 *
 	 * @Secured
 	 * @Secured\Role(manager,administrator)
@@ -340,7 +340,7 @@ class DevicesV1 extends BaseV1
 				],
 			]);
 
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//devices-module.base.messages.notDeleted.heading'),
 				$this->translator->translate('//devices-module.base.messages.notDeleted.message'),
@@ -356,8 +356,8 @@ class DevicesV1 extends BaseV1
 	}
 
 	/**
-	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
+	 * @throws Throwable
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,

@@ -32,7 +32,7 @@ interface IDevicePropertiesRepository
 {
 
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 	): States\DeviceProperty|null;
 
 	public function findOneById(Uuid\UuidInterface $id): States\DeviceProperty|null;

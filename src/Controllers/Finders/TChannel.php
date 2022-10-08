@@ -31,7 +31,7 @@ trait TChannel
 {
 
 	/**
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	protected function findChannel(
 		string $id,
@@ -46,14 +46,14 @@ trait TChannel
 			$channel = $this->channelsRepository->findOneBy($findQuery);
 
 			if ($channel === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 					$this->translator->translate('//devices-module.base.messages.notFound.message'),
 				);
 			}
 		} catch (Uuid\Exception\InvalidUuidStringException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 				$this->translator->translate('//devices-module.base.messages.notFound.message'),

@@ -33,25 +33,23 @@ use function strval;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class Connector implements ExchangeConsumer\IConsumer
+final class Connector implements ExchangeConsumer\Consumer
 {
 
 	use Nette\SmartObject;
 
-	public function __construct(private DataStorage\Reader $reader)
+	public function __construct(private readonly DataStorage\Reader $reader)
 	{
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
 	 * @throws Utils\JsonException
 	 * @throws Flysystem\FilesystemException
 	 */
 	public function consume(
-		MetadataTypes\ModuleSourceType|MetadataTypes\PluginSourceType|MetadataTypes\ConnectorSourceType $source,
-		MetadataTypes\RoutingKeyType $routingKey,
-		MetadataEntities\IEntity|null $entity,
+		MetadataTypes\ModuleSource|MetadataTypes\PluginSource|MetadataTypes\ConnectorSource $source,
+		MetadataTypes\RoutingKey $routingKey,
+		MetadataEntities\Entity|null $entity,
 	): void
 	{
 		if (

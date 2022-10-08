@@ -31,7 +31,7 @@ trait TConnector
 {
 
 	/**
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	protected function findConnector(string $id): Entities\Connectors\Connector
 	{
@@ -42,14 +42,14 @@ trait TConnector
 			$connector = $this->connectorsRepository->findOneBy($findQuery);
 
 			if ($connector === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 					$this->translator->translate('//devices-module.base.messages.notFound.message'),
 				);
 			}
 		} catch (Uuid\Exception\InvalidUuidStringException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 				$this->translator->translate('//devices-module.base.messages.notFound.message'),

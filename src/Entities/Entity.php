@@ -39,6 +39,6 @@ interface Entity extends DoctrineCrud\Entities\IEntity
 	 */
 	public function toArray(): array;
 
-	public function getSource(): MetadataTypes\ModuleSourceType|MetadataTypes\PluginSourceType|MetadataTypes\ConnectorSourceType;
+	public function getSource(): MetadataTypes\ModuleSource|MetadataTypes\PluginSource|MetadataTypes\ConnectorSource;
 
 }

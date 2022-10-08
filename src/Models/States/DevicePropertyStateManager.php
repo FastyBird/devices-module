@@ -39,8 +39,8 @@ final class DevicePropertyStateManager
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private DevicesModuleModels\States\DevicePropertiesRepository $devicePropertyStateRepository,
-		private DevicesModuleModels\States\DevicePropertiesManager $devicePropertiesStatesManager,
+		private readonly DevicesModuleModels\States\DevicePropertiesRepository $devicePropertyStateRepository,
+		private readonly DevicesModuleModels\States\DevicePropertiesManager $devicePropertiesStatesManager,
 		Log\LoggerInterface|null $logger,
 	)
 	{
@@ -48,7 +48,7 @@ final class DevicePropertyStateManager
 	}
 
 	public function setValue(
-		Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity $property,
+		Metadata\Entities\DevicesModule\DeviceDynamicProperty $property,
 		Utils\ArrayHash $data,
 	): void
 	{
@@ -123,10 +123,10 @@ final class DevicePropertyStateManager
 	}
 
 	/**
-	 * @param Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|Array<Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity> $property
+	 * @param Metadata\Entities\DevicesModule\DeviceDynamicProperty|Array<Metadata\Entities\DevicesModule\DeviceDynamicProperty> $property
 	 */
 	public function setValidState(
-		Metadata\Entities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|array $property,
+		Metadata\Entities\DevicesModule\DeviceDynamicProperty|array $property,
 		bool $state,
 	): void
 	{

@@ -42,23 +42,23 @@ final class ValueHelper
 {
 
 	public static function normalizeValue(
-		MetadataTypes\DataTypeType $dataType,
-		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value,
+		MetadataTypes\DataType $dataType,
+		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null $value,
 		MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null $format = null,
 		float|int|string|null $invalid = null,
-	): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
 		if ($value === null) {
 			return null;
 		}
 
 		if (
-			$dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_CHAR)
-			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UCHAR)
-			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SHORT)
-			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_USHORT)
-			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_INT)
-			|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_UINT)
+			$dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_CHAR)
+			|| $dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_UCHAR)
+			|| $dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_SHORT)
+			|| $dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_USHORT)
+			|| $dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_INT)
+			|| $dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_UINT)
 		) {
 			if ($invalid === intval($value)) {
 				return $invalid;
@@ -75,7 +75,7 @@ final class ValueHelper
 			}
 
 			return intval($value);
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_FLOAT)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_FLOAT)) {
 			if ($invalid === floatval($value)) {
 				return $invalid;
 			}
@@ -91,11 +91,11 @@ final class ValueHelper
 			}
 
 			return floatval($value);
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_STRING)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_STRING)) {
 			return $value;
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BOOLEAN)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_BOOLEAN)) {
 			return in_array(Utils\Strings::lower(strval($value)), ['true', 't', 'yes', 'y', '1', 'on'], true);
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_DATE)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_DATE)) {
 			if ($value instanceof DateTime) {
 				return $value;
 			}
@@ -103,7 +103,7 @@ final class ValueHelper
 			$value = Utils\DateTime::createFromFormat('Y-m-d', strval($value));
 
 			return $value === false ? null : $value;
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_TIME)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_TIME)) {
 			if ($value instanceof DateTime) {
 				return $value;
 			}
@@ -111,7 +111,7 @@ final class ValueHelper
 			$value = Utils\DateTime::createFromFormat('H:i:sP', strval($value));
 
 			return $value === false ? null : $value;
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_DATETIME)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_DATETIME)) {
 			if ($value instanceof DateTime) {
 				return $value;
 			}
@@ -119,27 +119,27 @@ final class ValueHelper
 			$value = Utils\DateTime::createFromFormat(DateTimeInterface::ATOM, strval($value));
 
 			return $value === false ? null : $value;
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)) {
-			if ($value instanceof MetadataTypes\ButtonPayloadType) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_BUTTON)) {
+			if ($value instanceof MetadataTypes\ButtonPayload) {
 				return $value;
 			}
 
-			if (MetadataTypes\ButtonPayloadType::isValidValue(strval($value))) {
-				return MetadataTypes\ButtonPayloadType::get($value);
+			if (MetadataTypes\ButtonPayload::isValidValue(strval($value))) {
+				return MetadataTypes\ButtonPayload::get($value);
 			}
 
 			return null;
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)) {
-			if ($value instanceof MetadataTypes\SwitchPayloadType) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_SWITCH)) {
+			if ($value instanceof MetadataTypes\SwitchPayload) {
 				return $value;
 			}
 
-			if (MetadataTypes\SwitchPayloadType::isValidValue(strval($value))) {
-				return MetadataTypes\SwitchPayloadType::get($value);
+			if (MetadataTypes\SwitchPayload::isValidValue(strval($value))) {
+				return MetadataTypes\SwitchPayload::get($value);
 			}
 
 			return null;
-		} elseif ($dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)) {
+		} elseif ($dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_ENUM)) {
 			if ($format instanceof MetadataValueObjects\StringEnumFormat) {
 				$filtered = array_filter(
 					$format->getItems(),
@@ -184,7 +184,7 @@ final class ValueHelper
 	}
 
 	public static function flattenValue(
-		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null $value,
+		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null $value,
 	): bool|float|int|string|null
 	{
 		if ($value instanceof DateTimeInterface) {

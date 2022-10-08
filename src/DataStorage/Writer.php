@@ -23,6 +23,7 @@ use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher;
+use Throwable;
 use function array_merge;
 
 /**
@@ -39,19 +40,19 @@ final class Writer
 	use Nette\SmartObject;
 
 	public function __construct(
-		private Models\Connectors\ConnectorsRepository $connectorsRepository,
-		private Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository,
-		private Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository,
-		private Models\Devices\DevicesRepository $devicesRepository,
-		private Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository,
-		private Models\Devices\Controls\ControlsRepository $devicesControlsRepository,
-		private Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository,
-		private Models\Channels\ChannelsRepository $channelsRepository,
-		private Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository,
-		private Models\Channels\Controls\ControlsRepository $channelsControlsRepository,
-		private Reader $reader,
-		private Flysystem\Filesystem $filesystem,
-		private EventDispatcher\EventDispatcherInterface|null $dispatcher,
+		private readonly Models\Connectors\ConnectorsRepository $connectorsRepository,
+		private readonly Models\Connectors\Properties\PropertiesRepository $connectorsPropertiesRepository,
+		private readonly Models\Connectors\Controls\ControlsRepository $connectorsControlsRepository,
+		private readonly Models\Devices\DevicesRepository $devicesRepository,
+		private readonly Models\Devices\Properties\PropertiesRepository $devicesPropertiesRepository,
+		private readonly Models\Devices\Controls\ControlsRepository $devicesControlsRepository,
+		private readonly Models\Devices\Attributes\AttributesRepository $devicesAttributesRepository,
+		private readonly Models\Channels\ChannelsRepository $channelsRepository,
+		private readonly Models\Channels\Properties\PropertiesRepository $channelsPropertiesRepository,
+		private readonly Models\Channels\Controls\ControlsRepository $channelsControlsRepository,
+		private readonly Reader $reader,
+		private readonly Flysystem\Filesystem $filesystem,
+		private readonly EventDispatcher\EventDispatcherInterface|null $dispatcher,
 	)
 	{
 	}
@@ -59,6 +60,7 @@ final class Writer
 	/**
 	 * @throws Flysystem\FilesystemException
 	 * @throws Utils\JsonException
+	 * @throws Throwable
 	 */
 	public function write(): void
 	{

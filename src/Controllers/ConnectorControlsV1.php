@@ -45,15 +45,15 @@ final class ConnectorControlsV1 extends BaseV1
 	use Controllers\Finders\TConnector;
 
 	public function __construct(
-		protected Models\Connectors\ConnectorsRepository $connectorsRepository,
-		private Models\Connectors\Controls\ControlsRepository $connectorControlsRepository,
+		protected readonly Models\Connectors\ConnectorsRepository $connectorsRepository,
+		private readonly Models\Connectors\Controls\ControlsRepository $connectorControlsRepository,
 	)
 	{
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
@@ -74,7 +74,7 @@ final class ConnectorControlsV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
@@ -97,7 +97,7 @@ final class ConnectorControlsV1 extends BaseV1
 			}
 		}
 
-		throw new JsonApiExceptions\JsonApiErrorException(
+		throw new JsonApiExceptions\JsonApiError(
 			StatusCodeInterface::STATUS_NOT_FOUND,
 			$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 			$this->translator->translate('//devices-module.base.messages.notFound.message'),
@@ -106,7 +106,7 @@ final class ConnectorControlsV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
@@ -132,7 +132,7 @@ final class ConnectorControlsV1 extends BaseV1
 					return $this->buildResponse($request, $response, $control->getConnector());
 				}
 			} else {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 					$this->translator->translate('//devices-module.base.messages.notFound.message'),

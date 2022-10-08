@@ -163,7 +163,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->isSettable();
 		}
@@ -175,7 +175,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Settable setter is allowed only for parent');
 		}
@@ -187,7 +187,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->isQueryable();
 		}
@@ -199,7 +199,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Queryable setter is allowed only for parent');
 		}
@@ -207,11 +207,11 @@ abstract class Property extends Entities\Property
 		parent::setQueryable($queryable);
 	}
 
-	public function getDataType(): MetadataTypes\DataTypeType
+	public function getDataType(): MetadataTypes\DataType
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->getDataType();
 		}
@@ -219,11 +219,11 @@ abstract class Property extends Entities\Property
 		return parent::getDataType();
 	}
 
-	public function setDataType(MetadataTypes\DataTypeType $dataType): void
+	public function setDataType(MetadataTypes\DataType $dataType): void
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Data type setter is allowed only for parent');
 		}
@@ -235,7 +235,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->getUnit();
 		}
@@ -247,7 +247,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Value unit setter is allowed only for parent');
 		}
@@ -258,7 +258,7 @@ abstract class Property extends Entities\Property
 	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	{
 		if (
-			$this->getParent() !== null && !$this->getType()->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+			$this->getParent() !== null && !$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->getFormat();
 		}
@@ -270,7 +270,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Value format setter is allowed only for parent');
 		}
@@ -282,7 +282,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->getInvalid();
 		}
@@ -294,7 +294,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Invalid value setter is allowed only for parent');
 		}
@@ -306,7 +306,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->getNumberOfDecimals();
 		}
@@ -318,7 +318,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Number of decimals setter is allowed only for parent');
 		}
@@ -326,11 +326,11 @@ abstract class Property extends Entities\Property
 		parent::setNumberOfDecimals($numberOfDecimals);
 	}
 
-	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			return $this->getParent()->getDefault();
 		}
@@ -342,7 +342,7 @@ abstract class Property extends Entities\Property
 	{
 		if (
 			$this->getParent() !== null && !$this->getType()
-				->equalsValue(MetadataTypes\PropertyTypeType::TYPE_MAPPED)
+				->equalsValue(MetadataTypes\PropertyType::TYPE_MAPPED)
 		) {
 			throw new Exceptions\InvalidState('Default value setter is allowed only for parent');
 		}

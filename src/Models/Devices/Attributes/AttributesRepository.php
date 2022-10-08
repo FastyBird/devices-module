@@ -41,7 +41,7 @@ final class AttributesRepository
 	/** @var ORM\EntityRepository<Entities\Devices\Attributes\Attribute>|null */
 	private ORM\EntityRepository|null $repository = null;
 
-	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private readonly Persistence\ManagerRegistry $managerRegistry)
 	{
 	}
 

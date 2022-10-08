@@ -31,7 +31,7 @@ trait TDevice
 {
 
 	/**
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	protected function findDevice(string $id): Entities\Devices\Device
 	{
@@ -42,14 +42,14 @@ trait TDevice
 			$device = $this->devicesRepository->findOneBy($findQuery);
 
 			if ($device === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 					$this->translator->translate('//devices-module.base.messages.notFound.message'),
 				);
 			}
 		} catch (Uuid\Exception\InvalidUuidStringException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 				$this->translator->translate('//devices-module.base.messages.notFound.message'),

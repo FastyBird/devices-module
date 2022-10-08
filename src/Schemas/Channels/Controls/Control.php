@@ -28,26 +28,26 @@ use function assert;
 /**
  * Channel control entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Channels\Controls\Control>
+ * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Channels\Controls\Control>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class Control extends JsonApiSchemas\JsonApiSchema
+final class Control extends JsonApiSchemas\JsonApi
 {
 
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/control/channel';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES . '/control/channel';
 
 	/**
 	 * Define relationships names
 	 */
 	public const RELATIONSHIPS_CHANNEL = 'channel';
 
-	public function __construct(private Routing\IRouter $router)
+	public function __construct(private readonly Routing\IRouter $router)
 	{
 	}
 

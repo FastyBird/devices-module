@@ -26,12 +26,12 @@ use FastyBird\Metadata\Types as MetadataTypes;
 class Variable extends Property
 {
 
-	public function getType(): MetadataTypes\PropertyTypeType
+	public function getType(): MetadataTypes\PropertyType
 	{
-		return MetadataTypes\PropertyTypeType::get(MetadataTypes\PropertyTypeType::TYPE_STATIC);
+		return MetadataTypes\PropertyType::get(MetadataTypes\PropertyType::TYPE_VARIABLE);
 	}
 
-	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayloadType|MetadataTypes\SwitchPayloadType|null
+	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
 		if ($this->getParent() !== null) {
 			return $this->getParent()->getValue();

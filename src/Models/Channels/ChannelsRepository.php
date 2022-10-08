@@ -42,7 +42,7 @@ final class ChannelsRepository
 	/** @var ORM\EntityRepository<Entities\Channels\Channel>|null */
 	private ORM\EntityRepository|null $repository = null;
 
-	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private readonly Persistence\ManagerRegistry $managerRegistry)
 	{
 	}
 

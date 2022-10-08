@@ -27,6 +27,7 @@ use FastyBird\Metadata\Types as MetadataTypes;
 use Nette;
 use Nette\Utils;
 use Symfony\Component\EventDispatcher;
+use Throwable;
 use function array_merge;
 
 /**
@@ -43,11 +44,11 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	use Nette\SmartObject;
 
 	public function __construct(
-		private Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
-		private Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
-		private Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
-		private ExchangeEntities\EntityFactory $entityFactory,
-		private ExchangePublisher\IPublisher|null $publisher = null,
+		private readonly Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
+		private readonly Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
+		private readonly Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
+		private readonly ExchangeEntities\EntityFactory $entityFactory,
+		private readonly ExchangePublisher\Container|null $publisher = null,
 	)
 	{
 	}
@@ -65,8 +66,9 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 * @throws Utils\JsonException
+	 * @throws Throwable
 	 */
 	public function stateCreated(Events\StateEntityCreated $event): void
 	{
@@ -84,8 +86,9 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 * @throws Utils\JsonException
+	 * @throws Throwable
 	 */
 	public function stateUpdated(Events\StateEntityUpdated $event): void
 	{
@@ -107,8 +110,9 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 * @throws Utils\JsonException
+	 * @throws Throwable
 	 */
 	public function stateDeleted(Events\StateEntityDeleted $event): void
 	{
@@ -126,11 +130,12 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 * @throws Utils\JsonException
+	 * @throws Throwable
 	 */
 	private function publishEntity(
-		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property,
+		MetadataEntities\DevicesModule\DynamicProperty|MetadataEntities\DevicesModule\VariableProperty|MetadataEntities\DevicesModule\MappedProperty|Entities\Property $property,
 		States\ConnectorProperty|States\ChannelProperty|States\DeviceProperty|null $state = null,
 	): void
 	{
@@ -139,30 +144,30 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 		}
 
 		if (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\ConnectorDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\ConnectorMappedProperty
 			|| $property instanceof Entities\Connectors\Properties\Property
 		) {
-			$routingKey = MetadataTypes\RoutingKeyType::get(
-				MetadataTypes\RoutingKeyType::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED,
+			$routingKey = MetadataTypes\RoutingKey::get(
+				MetadataTypes\RoutingKey::ROUTE_CONNECTOR_PROPERTY_ENTITY_REPORTED,
 			);
 
 		} elseif (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\DeviceDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\DeviceMappedProperty
 			|| $property instanceof Entities\Devices\Properties\Property
 		) {
-			$routingKey = MetadataTypes\RoutingKeyType::get(
-				MetadataTypes\RoutingKeyType::ROUTE_DEVICE_PROPERTY_ENTITY_REPORTED,
+			$routingKey = MetadataTypes\RoutingKey::get(
+				MetadataTypes\RoutingKey::ROUTE_DEVICE_PROPERTY_ENTITY_REPORTED,
 			);
 
 		} elseif (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\ChannelDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\ChannelMappedProperty
 			|| $property instanceof Entities\Channels\Properties\Property
 		) {
-			$routingKey = MetadataTypes\RoutingKeyType::get(
-				MetadataTypes\RoutingKeyType::ROUTE_CHANNEL_PROPERTY_ENTITY_REPORTED,
+			$routingKey = MetadataTypes\RoutingKey::get(
+				MetadataTypes\RoutingKey::ROUTE_CHANNEL_PROPERTY_ENTITY_REPORTED,
 			);
 
 		} else {
@@ -170,7 +175,7 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 		}
 
 		$this->publisher->publish(
-			MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+			MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 			$routingKey,
 			$this->entityFactory->create(
 				Utils\Json::encode(
@@ -184,26 +189,29 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 		);
 	}
 
+	/**
+	 * @throws MetadataExceptions\FileNotFound
+	 */
 	private function findParent(
-		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property,
-	): MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property|null
+		MetadataEntities\DevicesModule\DynamicProperty|MetadataEntities\DevicesModule\VariableProperty|MetadataEntities\DevicesModule\MappedProperty|Entities\Property $property,
+	): MetadataEntities\DevicesModule\DynamicProperty|MetadataEntities\DevicesModule\VariableProperty|MetadataEntities\DevicesModule\MappedProperty|Entities\Property|null
 	{
 		if (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\ConnectorDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\ConnectorMappedProperty
 			|| $property instanceof Entities\Connectors\Properties\Dynamic
 		) {
 			return null;
 		} elseif (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\DeviceDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\DeviceMappedProperty
 		) {
 			if ($property->getParent() !== null) {
 				return $this->devicePropertiesRepository->findById($property->getParent());
 			}
 		} elseif (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\ChannelDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\ChannelMappedProperty
 		) {
 			if ($property->getParent() !== null) {
 				return $this->channelPropertiesRepository->findById($property->getParent());
@@ -224,25 +232,25 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	private function refreshRepository(
-		MetadataEntities\Modules\DevicesModule\IDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IMappedPropertyEntity|Entities\Property $property,
+		MetadataEntities\DevicesModule\DynamicProperty|MetadataEntities\DevicesModule\VariableProperty|MetadataEntities\DevicesModule\MappedProperty|Entities\Property $property,
 	): void
 	{
 		if (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\ConnectorDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\ConnectorMappedProperty
 			|| $property instanceof Entities\Connectors\Properties\Dynamic
 		) {
 			$this->connectorPropertiesRepository->reset($property->getId());
 		} elseif (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\DeviceDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\DeviceMappedProperty
 			|| $property instanceof Entities\Devices\Properties\Dynamic
 			|| $property instanceof Entities\Devices\Properties\Mapped
 		) {
 			$this->devicePropertiesRepository->reset($property->getId());
 		} elseif (
-			$property instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-			|| $property instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+			$property instanceof MetadataEntities\DevicesModule\ChannelDynamicProperty
+			|| $property instanceof MetadataEntities\DevicesModule\ChannelMappedProperty
 			|| $property instanceof Entities\Channels\Properties\Dynamic
 			|| $property instanceof Entities\Channels\Properties\Mapped
 		) {

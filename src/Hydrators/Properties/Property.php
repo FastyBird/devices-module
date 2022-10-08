@@ -80,17 +80,17 @@ abstract class Property extends JsonApiHydrators\Hydrator
 
 	protected function hydrateDataTypeAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes,
-	): MetadataTypes\DataTypeType|null
+	): MetadataTypes\DataType|null
 	{
 		if (
 			!is_scalar($attributes->get('data_type'))
 			|| (string) $attributes->get('data_type') === ''
-			|| !MetadataTypes\DataTypeType::isValidValue((string) $attributes->get('data_type'))
+			|| !MetadataTypes\DataType::isValidValue((string) $attributes->get('data_type'))
 		) {
 			return null;
 		}
 
-		return MetadataTypes\DataTypeType::get((string) $attributes->get('data_type'));
+		return MetadataTypes\DataType::get((string) $attributes->get('data_type'));
 	}
 
 	protected function hydrateUnitAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): string|null
@@ -113,14 +113,14 @@ abstract class Property extends JsonApiHydrators\Hydrator
 		if (is_array($rawFormat)) {
 			if (
 				is_scalar($rawDataType)
-				&& MetadataTypes\DataTypeType::isValidValue((string) $rawDataType)
+				&& MetadataTypes\DataType::isValidValue((string) $rawDataType)
 			) {
-				$dataType = MetadataTypes\DataTypeType::get((string) $rawDataType);
+				$dataType = MetadataTypes\DataType::get((string) $rawDataType);
 
 				if (
-					$dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_ENUM)
-					|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_BUTTON)
-					|| $dataType->equalsValue(MetadataTypes\DataTypeType::DATA_TYPE_SWITCH)
+					$dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_ENUM)
+					|| $dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_BUTTON)
+					|| $dataType->equalsValue(MetadataTypes\DataType::DATA_TYPE_SWITCH)
 				) {
 					return implode(
 						',',

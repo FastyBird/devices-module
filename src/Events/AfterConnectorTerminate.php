@@ -29,7 +29,7 @@ use Symfony\Contracts\EventDispatcher;
 class AfterConnectorTerminate extends EventDispatcher\Event
 {
 
-	public function __construct(private Connectors\Connector $connector)
+	public function __construct(private readonly Connectors\Connector $connector)
 	{
 	}
 

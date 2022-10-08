@@ -46,8 +46,8 @@ class ConnectorsV1 extends BaseV1
 {
 
 	public function __construct(
-		private Models\Connectors\ConnectorsRepository $connectorsRepository,
-		private Models\Connectors\ConnectorsManager $connectorsManager,
+		private readonly Models\Connectors\ConnectorsRepository $connectorsRepository,
+		private readonly Models\Connectors\ConnectorsManager $connectorsManager,
 	)
 	{
 	}
@@ -70,7 +70,7 @@ class ConnectorsV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
@@ -85,8 +85,8 @@ class ConnectorsV1 extends BaseV1
 	/**
 	 * @throws Doctrine\DBAL\Exception
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
-	 * @throws JsonApiExceptions\JsonApiErrorException
+	 * @throws JsonApiExceptions\JsonApi
+	 * @throws JsonApiExceptions\JsonApiError
 	 *
 	 * @Secured
 	 * @Secured\Role(manager,administrator)
@@ -114,7 +114,7 @@ class ConnectorsV1 extends BaseV1
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
 
-			} catch (JsonApiExceptions\IJsonApiException $ex) {
+			} catch (JsonApiExceptions\JsonApi $ex) {
 				throw $ex;
 			} catch (Throwable $ex) {
 				// Log caught exception
@@ -127,7 +127,7 @@ class ConnectorsV1 extends BaseV1
 					],
 				]);
 
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 					$this->translator->translate('//devices-module.base.messages.notUpdated.heading'),
 					$this->translator->translate('//devices-module.base.messages.notUpdated.message'),
@@ -142,7 +142,7 @@ class ConnectorsV1 extends BaseV1
 			return $this->buildResponse($request, $response, $connector);
 		}
 
-		throw new JsonApiExceptions\JsonApiErrorException(
+		throw new JsonApiExceptions\JsonApiError(
 			StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 			$this->translator->translate('//devices-module.base.messages.invalidType.heading'),
 			$this->translator->translate('//devices-module.base.messages.invalidType.message'),
@@ -154,7 +154,7 @@ class ConnectorsV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
@@ -177,7 +177,7 @@ class ConnectorsV1 extends BaseV1
 	}
 
 	/**
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	protected function findConnector(string $id): Entities\Connectors\Connector
 	{
@@ -188,14 +188,14 @@ class ConnectorsV1 extends BaseV1
 			$connector = $this->connectorsRepository->findOneBy($findQuery);
 
 			if ($connector === null) {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 					$this->translator->translate('//devices-module.base.messages.notFound.message'),
 				);
 			}
 		} catch (Uuid\Exception\InvalidUuidStringException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 				$this->translator->translate('//devices-module.base.messages.notFound.message'),

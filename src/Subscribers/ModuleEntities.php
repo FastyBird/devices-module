@@ -30,6 +30,7 @@ use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use ReflectionClass;
+use Throwable;
 use function array_merge;
 use function count;
 use function is_a;
@@ -55,16 +56,16 @@ final class ModuleEntities implements Common\EventSubscriber
 	private const ACTION_DELETED = 'deleted';
 
 	public function __construct(
-		private ORM\EntityManagerInterface $entityManager,
-		private Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
-		private Models\States\DevicePropertiesManager $devicePropertiesStatesManager,
-		private Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
-		private Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
-		private Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
-		private Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
-		private DataStorage\Writer $configurationDataWriter,
-		private ExchangeEntities\EntityFactory $entityFactory,
-		private ExchangePublisher\Publisher|null $publisher = null,
+		private readonly ORM\EntityManagerInterface $entityManager,
+		private readonly Models\States\DevicePropertiesRepository $devicePropertiesStatesRepository,
+		private readonly Models\States\DevicePropertiesManager $devicePropertiesStatesManager,
+		private readonly Models\States\ChannelPropertiesRepository $channelPropertiesStatesRepository,
+		private readonly Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
+		private readonly Models\States\ConnectorPropertiesRepository $connectorPropertiesStatesRepository,
+		private readonly Models\States\ConnectorPropertiesManager $connectorPropertiesStatesManager,
+		private readonly DataStorage\Writer $configurationDataWriter,
+		private readonly ExchangeEntities\EntityFactory $entityFactory,
+		private readonly ExchangePublisher\Publisher|null $publisher = null,
 	)
 	{
 	}
@@ -82,9 +83,10 @@ final class ModuleEntities implements Common\EventSubscriber
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 * @throws Utils\JsonException
 	 * @throws Flysystem\FilesystemException
+	 * @throws Throwable
 	 */
 	public function postPersist(ORM\Event\LifecycleEventArgs $eventArgs): void
 	{
@@ -102,9 +104,10 @@ final class ModuleEntities implements Common\EventSubscriber
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
-	 * @throws Utils\JsonException
 	 * @throws Flysystem\FilesystemException
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws Throwable
+	 * @throws Utils\JsonException
 	 */
 	public function postUpdate(ORM\Event\LifecycleEventArgs $eventArgs): void
 	{
@@ -137,7 +140,8 @@ final class ModuleEntities implements Common\EventSubscriber
 
 	/**
 	 * @throws Flysystem\FilesystemException
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws Throwable
 	 * @throws Utils\JsonException
 	 */
 	public function postRemove(ORM\Event\LifecycleEventArgs $eventArgs): void
@@ -190,7 +194,7 @@ final class ModuleEntities implements Common\EventSubscriber
 
 	/**
 	 * @throws Utils\JsonException
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function publishEntity(Entities\Entity $entity, string $action): void
 	{
@@ -204,7 +208,7 @@ final class ModuleEntities implements Common\EventSubscriber
 			case self::ACTION_CREATED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if (is_a($entity, $class)) {
-						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
+						$publishRoutingKey = MetadataTypes\RoutingKey::get($routingKey);
 					}
 				}
 
@@ -212,7 +216,7 @@ final class ModuleEntities implements Common\EventSubscriber
 			case self::ACTION_UPDATED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if (is_a($entity, $class)) {
-						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
+						$publishRoutingKey = MetadataTypes\RoutingKey::get($routingKey);
 					}
 				}
 
@@ -220,7 +224,7 @@ final class ModuleEntities implements Common\EventSubscriber
 			case self::ACTION_DELETED:
 				foreach (DevicesModule\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 					if (is_a($entity, $class)) {
-						$publishRoutingKey = MetadataTypes\RoutingKeyType::get($routingKey);
+						$publishRoutingKey = MetadataTypes\RoutingKey::get($routingKey);
 					}
 				}
 
@@ -233,7 +237,7 @@ final class ModuleEntities implements Common\EventSubscriber
 					$state = $this->devicePropertiesStatesRepository->findOne($entity);
 
 					$this->publisher->publish(
-						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(
 							Utils\Json::encode(
@@ -248,7 +252,7 @@ final class ModuleEntities implements Common\EventSubscriber
 
 				} catch (Exceptions\NotImplemented) {
 					$this->publisher->publish(
-						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 					);
@@ -258,7 +262,7 @@ final class ModuleEntities implements Common\EventSubscriber
 					$state = $this->channelPropertiesStatesRepository->findOne($entity);
 
 					$this->publisher->publish(
-						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(
 							Utils\Json::encode(
@@ -273,7 +277,7 @@ final class ModuleEntities implements Common\EventSubscriber
 
 				} catch (Exceptions\NotImplemented) {
 					$this->publisher->publish(
-						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 					);
@@ -283,7 +287,7 @@ final class ModuleEntities implements Common\EventSubscriber
 					$state = $this->connectorPropertiesStatesRepository->findOne($entity);
 
 					$this->publisher->publish(
-						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(
 							Utils\Json::encode(
@@ -298,14 +302,14 @@ final class ModuleEntities implements Common\EventSubscriber
 
 				} catch (Exceptions\NotImplemented) {
 					$this->publisher->publish(
-						MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+						MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 						$publishRoutingKey,
 						$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 					);
 				}
 			} else {
 				$this->publisher->publish(
-					MetadataTypes\ModuleSourceType::get(MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES),
+					MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES),
 					$publishRoutingKey,
 					$this->entityFactory->create(Utils\Json::encode($entity->toArray()), $publishRoutingKey),
 				);

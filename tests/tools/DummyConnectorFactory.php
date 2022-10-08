@@ -14,7 +14,7 @@ class DummyConnectorFactory implements Connectors\ConnectorFactory
 		return 'dummy';
 	}
 
-	public function create(MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector): Connector
+	public function create(MetadataEntities\DevicesModule\Connector $connector): Connector
 	{
 		return new DummyConnector();
 	}

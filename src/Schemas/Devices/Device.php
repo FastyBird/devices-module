@@ -24,19 +24,20 @@ use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
+use Throwable;
 use function count;
 
 /**
  * Device entity schema
  *
  * @phpstan-template T of Entities\Devices\Device
- * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
+ * @phpstan-extends  JsonApiSchemas\JsonApi<T>
  *
  * @package          FastyBird:DevicesModule!
  * @subpackage       Schemas
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class Device extends JsonApiSchemas\JsonApiSchema
+abstract class Device extends JsonApiSchemas\JsonApi
 {
 
 	/**
@@ -57,9 +58,9 @@ abstract class Device extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CHILDREN = 'children';
 
 	public function __construct(
-		protected Models\Devices\DevicesRepository $devicesRepository,
-		protected Models\Channels\ChannelsRepository $channelsRepository,
-		protected Routing\IRouter $router,
+		protected readonly Models\Devices\DevicesRepository $devicesRepository,
+		protected readonly Models\Channels\ChannelsRepository $channelsRepository,
+		protected readonly Routing\IRouter $router,
 	)
 	{
 	}
@@ -109,6 +110,8 @@ abstract class Device extends JsonApiSchemas\JsonApiSchema
 	 *
 	 * @phpstan-param T $device
 	 *
+	 * @throws Throwable
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
@@ -157,6 +160,8 @@ abstract class Device extends JsonApiSchemas\JsonApiSchema
 
 	/**
 	 * @phpstan-param T $device
+	 *
+	 * @throws Throwable
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
@@ -303,6 +308,8 @@ abstract class Device extends JsonApiSchemas\JsonApiSchema
 
 	/**
 	 * @return Array<Entities\Channels\Channel>
+	 *
+	 * @throws Throwable
 	 */
 	private function getChannels(Entities\Devices\Device $device): array
 	{
@@ -314,6 +321,8 @@ abstract class Device extends JsonApiSchemas\JsonApiSchema
 
 	/**
 	 * @return Array<Entities\Devices\Device>
+	 *
+	 * @throws Throwable
 	 */
 	private function getParents(Entities\Devices\Device $device): array
 	{
@@ -325,6 +334,8 @@ abstract class Device extends JsonApiSchemas\JsonApiSchema
 
 	/**
 	 * @return Array<Entities\Devices\Device>
+	 *
+	 * @throws Throwable
 	 */
 	private function getChildren(Entities\Devices\Device $device): array
 	{

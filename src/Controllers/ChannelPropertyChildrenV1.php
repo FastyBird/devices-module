@@ -43,15 +43,15 @@ final class ChannelPropertyChildrenV1 extends BaseV1
 	use Controllers\Finders\TChannelProperty;
 
 	public function __construct(
-		protected Models\Devices\DevicesRepository $devicesRepository,
-		protected Models\Channels\Properties\PropertiesRepository $channelPropertiesRepository,
+		protected readonly Models\Devices\DevicesRepository $devicesRepository,
+		protected readonly Models\Channels\Properties\PropertiesRepository $channelPropertiesRepository,
 	)
 	{
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,

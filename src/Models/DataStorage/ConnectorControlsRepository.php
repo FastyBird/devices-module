@@ -28,7 +28,7 @@ use function count;
 /**
  * Data storage connector controls repository
  *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity>
+ * @implements IteratorAggregate<int, MetadataEntities\DevicesModule\ConnectorControl>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -42,11 +42,11 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	/** @var Array<string, Array<string, mixed>> */
 	private array $rawData;
 
-	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity> */
+	/** @var Array<string, MetadataEntities\DevicesModule\ConnectorControl> */
 	private array $entities;
 
 	public function __construct(
-		private MetadataEntities\Modules\DevicesModule\ConnectorControlEntityFactory $entityFactory,
+		private readonly MetadataEntities\DevicesModule\ConnectorControlEntityFactory $entityFactory,
 	)
 	{
 		$this->rawData = [];
@@ -54,11 +54,11 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findById(
 		Uuid\UuidInterface $id,
-	): MetadataEntities\Modules\DevicesModule\IConnectorControlEntity|null
+	): MetadataEntities\DevicesModule\ConnectorControl|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -68,9 +68,9 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity>
+	 * @return Array<int, MetadataEntities\DevicesModule\ConnectorControl>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
@@ -129,9 +129,9 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity>
+	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ConnectorControl>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -141,7 +141,7 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
-		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IConnectorControlEntity> $result */
+		/** @var RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ConnectorControl> $result */
 		$result = new RecursiveArrayIterator($entities);
 
 		return $result;
@@ -150,12 +150,12 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	/**
 	 * @param Array<string, mixed> $data
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
 		array $data,
-	): MetadataEntities\Modules\DevicesModule\IConnectorControlEntity
+	): MetadataEntities\DevicesModule\ConnectorControl
 	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$this->entities[$id->toString()] = $this->entityFactory->create($data);

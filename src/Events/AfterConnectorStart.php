@@ -30,12 +30,12 @@ class AfterConnectorStart extends EventDispatcher\Event
 {
 
 	public function __construct(
-		private MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
+		private readonly MetadataEntities\DevicesModule\Connector $connector,
 	)
 	{
 	}
 
-	public function getConnector(): MetadataEntities\Modules\DevicesModule\IConnectorEntity
+	public function getConnector(): MetadataEntities\DevicesModule\Connector
 	{
 		return $this->connector;
 	}

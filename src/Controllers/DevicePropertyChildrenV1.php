@@ -42,15 +42,15 @@ final class DevicePropertyChildrenV1 extends BaseV1
 	use Controllers\Finders\TDeviceProperty;
 
 	public function __construct(
-		protected Models\Devices\DevicesRepository $devicesRepository,
-		private Models\Devices\Properties\PropertiesRepository $devicePropertiesRepository,
+		protected readonly Models\Devices\DevicesRepository $devicesRepository,
+		private readonly Models\Devices\Properties\PropertiesRepository $devicePropertiesRepository,
 	)
 	{
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,

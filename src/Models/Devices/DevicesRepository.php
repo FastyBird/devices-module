@@ -42,7 +42,7 @@ final class DevicesRepository
 	/** @var Array<ORM\EntityRepository<Entities\Devices\Device>> */
 	private array $repository = [];
 
-	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private readonly Persistence\ManagerRegistry $managerRegistry)
 	{
 	}
 

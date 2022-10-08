@@ -20,6 +20,8 @@
 [![Black](https://img.shields.io/badge/black-enabled-brightgreen.svg?style=flat-square)](https://github.com/psf/black)
 [![MyPy](https://img.shields.io/badge/mypy-enabled-brightgreen.svg?style=flat-square)](http://mypy-lang.org)
 
+***
+
 ## What is FastyBird IoT devices module?
 
 Devices module is a combined [Nette framework](https://nette.org) extension, [Vuex ORM](https://vuex-orm.org) plugin

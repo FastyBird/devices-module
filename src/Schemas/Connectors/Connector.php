@@ -28,13 +28,13 @@ use function count;
  * Connector entity schema
  *
  * @phpstan-template T of Entities\Connectors\Connector
- * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
+ * @phpstan-extends  JsonApiSchemas\JsonApi<T>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class Connector extends JsonApiSchemas\JsonApiSchema
+abstract class Connector extends JsonApiSchemas\JsonApi
 {
 
 	/**
@@ -46,7 +46,7 @@ abstract class Connector extends JsonApiSchemas\JsonApiSchema
 
 	public const RELATIONSHIPS_CONTROLS = 'controls';
 
-	public function __construct(private Routing\IRouter $router)
+	public function __construct(private readonly Routing\IRouter $router)
 	{
 	}
 

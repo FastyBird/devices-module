@@ -35,25 +35,25 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class Access implements MiddlewareInterface
 {
 
-	public function __construct(private Localization\Translator $translator)
+	public function __construct(private readonly Localization\Translator $translator)
 	{
 	}
 
 	/**
-	 * @throws JsonApiExceptions\JsonApiErrorException
+	 * @throws JsonApiExceptions\JsonApiError
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
 		try {
 			return $handler->handle($request);
-		} catch (SimpleAuthExceptions\UnauthorizedAccessException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+		} catch (SimpleAuthExceptions\UnauthorizedAccess) {
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_UNAUTHORIZED,
 				$this->translator->translate('//devices-module.base.messages.unauthorized.heading'),
 				$this->translator->translate('//devices-module.base.messages.unauthorized.message'),
 			);
-		} catch (SimpleAuthExceptions\ForbiddenAccessException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+		} catch (SimpleAuthExceptions\ForbiddenAccess) {
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_FORBIDDEN,
 				$this->translator->translate('//devices-module.base.messages.forbidden.heading'),
 				$this->translator->translate('//devices-module.base.messages.forbidden.message'),

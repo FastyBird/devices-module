@@ -41,18 +41,18 @@ final class Reader
 	use Nette\SmartObject;
 
 	public function __construct(
-		private Models\DataStorage\ConnectorsRepository $connectorsRepository,
-		private Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
-		private Models\DataStorage\ConnectorControlsRepository $connectorControlsRepository,
-		private Models\DataStorage\DevicesRepository $devicesRepository,
-		private Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
-		private Models\DataStorage\DeviceControlsRepository $deviceControlsRepository,
-		private Models\DataStorage\DeviceAttributesRepository $deviceAttributesRepository,
-		private Models\DataStorage\ChannelsRepository $channelsRepository,
-		private Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
-		private Models\DataStorage\ChannelControlsRepository $channelControlsRepository,
-		private Flysystem\Filesystem $filesystem,
-		private EventDispatcher\EventDispatcherInterface|null $dispatcher,
+		private readonly Models\DataStorage\ConnectorsRepository $connectorsRepository,
+		private readonly Models\DataStorage\ConnectorPropertiesRepository $connectorPropertiesRepository,
+		private readonly Models\DataStorage\ConnectorControlsRepository $connectorControlsRepository,
+		private readonly Models\DataStorage\DevicesRepository $devicesRepository,
+		private readonly Models\DataStorage\DevicePropertiesRepository $devicePropertiesRepository,
+		private readonly Models\DataStorage\DeviceControlsRepository $deviceControlsRepository,
+		private readonly Models\DataStorage\DeviceAttributesRepository $deviceAttributesRepository,
+		private readonly Models\DataStorage\ChannelsRepository $channelsRepository,
+		private readonly Models\DataStorage\ChannelPropertiesRepository $channelPropertiesRepository,
+		private readonly Models\DataStorage\ChannelControlsRepository $channelControlsRepository,
+		private readonly Flysystem\Filesystem $filesystem,
+		private readonly EventDispatcher\EventDispatcherInterface|null $dispatcher,
 	)
 	{
 	}

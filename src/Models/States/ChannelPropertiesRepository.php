@@ -35,12 +35,12 @@ final class ChannelPropertiesRepository
 
 	use Nette\SmartObject;
 
-	public function __construct(private IChannelPropertiesRepository|null $repository)
+	public function __construct(private readonly IChannelPropertiesRepository|null $repository)
 	{
 	}
 
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 	): States\ChannelProperty|null
 	{
 		if ($this->repository === null) {

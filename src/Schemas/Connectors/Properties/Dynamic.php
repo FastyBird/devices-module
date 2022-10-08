@@ -40,11 +40,11 @@ final class Dynamic extends Property
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/property/connector/' . MetadataTypes\PropertyTypeType::TYPE_DYNAMIC;
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES . '/property/connector/' . MetadataTypes\PropertyType::TYPE_DYNAMIC;
 
 	public function __construct(
 		Routing\IRouter $router,
-		private Models\States\ConnectorPropertiesRepository $propertiesStatesRepository,
+		private readonly Models\States\ConnectorPropertiesRepository $propertiesStatesRepository,
 	)
 	{
 		parent::__construct($router);

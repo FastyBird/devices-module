@@ -46,16 +46,16 @@ final class ChannelControlsV1 extends BaseV1
 	use Controllers\Finders\TChannel;
 
 	public function __construct(
-		protected Models\Devices\DevicesRepository $devicesRepository,
-		protected Models\Channels\ChannelsRepository $channelsRepository,
-		protected Models\Channels\Controls\ControlsRepository $channelControlsRepository,
+		protected readonly Models\Devices\DevicesRepository $devicesRepository,
+		protected readonly Models\Channels\ChannelsRepository $channelsRepository,
+		protected readonly Models\Channels\Controls\ControlsRepository $channelControlsRepository,
 	)
 	{
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
@@ -79,7 +79,7 @@ final class ChannelControlsV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
@@ -105,7 +105,7 @@ final class ChannelControlsV1 extends BaseV1
 			}
 		}
 
-		throw new JsonApiExceptions\JsonApiErrorException(
+		throw new JsonApiExceptions\JsonApiError(
 			StatusCodeInterface::STATUS_NOT_FOUND,
 			$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 			$this->translator->translate('//devices-module.base.messages.notFound.message'),
@@ -114,7 +114,7 @@ final class ChannelControlsV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
@@ -143,7 +143,7 @@ final class ChannelControlsV1 extends BaseV1
 					return $this->buildResponse($request, $response, $device);
 				}
 			} else {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 					$this->translator->translate('//devices-module.base.messages.notFound.message'),

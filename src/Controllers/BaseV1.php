@@ -62,7 +62,7 @@ abstract class BaseV1
 
 	protected Router\Validator $routesValidator;
 
-	protected JsonApiHydrators\HydratorsContainer $hydratorsContainer;
+	protected JsonApiHydrators\Container $hydratorsContainer;
 
 	protected Log\LoggerInterface $logger;
 
@@ -91,13 +91,13 @@ abstract class BaseV1
 		$this->routesValidator = $validator;
 	}
 
-	public function injectHydratorsContainer(JsonApiHydrators\HydratorsContainer $hydratorsContainer): void
+	public function injectHydratorsContainer(JsonApiHydrators\Container $hydratorsContainer): void
 	{
 		$this->hydratorsContainer = $hydratorsContainer;
 	}
 
 	/**
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
@@ -108,7 +108,7 @@ abstract class BaseV1
 		$relationEntity = Utils\Strings::lower(strval($request->getAttribute(Router\Routes::RELATION_ENTITY)));
 
 		if ($relationEntity !== '') {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//devices-module.base.messages.relationNotFound.heading'),
 				$this->translator->translate(
@@ -118,7 +118,7 @@ abstract class BaseV1
 			);
 		}
 
-		throw new JsonApiExceptions\JsonApiErrorException(
+		throw new JsonApiExceptions\JsonApiError(
 			StatusCodeInterface::STATUS_NOT_FOUND,
 			$this->translator->translate('//devices-module.base.messages.unknownRelation.heading'),
 			$this->translator->translate('//devices-module.base.messages.unknownRelation.message'),
@@ -126,7 +126,7 @@ abstract class BaseV1
 	}
 
 	/**
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	protected function createDocument(Message\ServerRequestInterface $request): JsonAPIDocument\IDocument
 	{
@@ -134,7 +134,7 @@ abstract class BaseV1
 			$content = Utils\Json::decode($request->getBody()->getContents());
 
 			if (!$content instanceof stdClass) {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_BAD_REQUEST,
 					$this->translator->translate('//devices-module.base.messages.notValidJsonApi.heading'),
 					$this->translator->translate('//devices-module.base.messages.notValidJsonApi.message'),
@@ -144,13 +144,13 @@ abstract class BaseV1
 			$document = new JsonAPIDocument\Document($content);
 
 		} catch (Utils\JsonException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_BAD_REQUEST,
 				$this->translator->translate('//devices-module.base.messages.notValidJson.heading'),
 				$this->translator->translate('//devices-module.base.messages.notValidJson.message'),
 			);
 		} catch (JsonAPIDocument\Exceptions\RuntimeException) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_BAD_REQUEST,
 				$this->translator->translate('//devices-module.base.messages.notValidJsonApi.heading'),
 				$this->translator->translate('//devices-module.base.messages.notValidJsonApi.message'),
@@ -161,7 +161,7 @@ abstract class BaseV1
 	}
 
 	/**
-	 * @throws JsonApiExceptions\JsonApiErrorException
+	 * @throws JsonApiExceptions\JsonApiError
 	 */
 	protected function validateIdentifier(
 		Message\ServerRequestInterface $request,
@@ -176,7 +176,7 @@ abstract class BaseV1
 			&& $request->getAttribute(Router\Routes::URL_ITEM_ID) !== null
 			&& $request->getAttribute(Router\Routes::URL_ITEM_ID) !== $document->getResource()->getId()
 		) {
-			throw new JsonApiExceptions\JsonApiErrorException(
+			throw new JsonApiExceptions\JsonApiError(
 				StatusCodeInterface::STATUS_BAD_REQUEST,
 				$this->translator->translate('//devices-module.base.messages.invalidIdentifier.heading'),
 				$this->translator->translate('//devices-module.base.messages.invalidIdentifier.message'),

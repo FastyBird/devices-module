@@ -30,7 +30,7 @@ use function strval;
 /**
  * Data storage device attributes repository
  *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity>
+ * @implements IteratorAggregate<int, MetadataEntities\DevicesModule\DeviceAttribute>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -44,11 +44,11 @@ final class DeviceAttributesRepository implements Countable, IteratorAggregate
 	/** @var Array<string, Array<string, mixed>> */
 	private array $rawData;
 
-	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity> */
+	/** @var Array<string, MetadataEntities\DevicesModule\DeviceAttribute> */
 	private array $entities;
 
 	public function __construct(
-		private MetadataEntities\Modules\DevicesModule\DeviceAttributeEntityFactory $entityFactory,
+		private readonly MetadataEntities\DevicesModule\DeviceAttributeEntityFactory $entityFactory,
 	)
 	{
 		$this->rawData = [];
@@ -56,9 +56,9 @@ final class DeviceAttributesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
-	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity|null
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\DevicesModule\DeviceAttribute|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -68,12 +68,12 @@ final class DeviceAttributesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $device,
 		string $identifier,
-	): MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity|null
+	): MetadataEntities\DevicesModule\DeviceAttribute|null
 	{
 		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
@@ -90,9 +90,9 @@ final class DeviceAttributesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity>
+	 * @return Array<int, MetadataEntities\DevicesModule\DeviceAttribute>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findAllByDevice(Uuid\UuidInterface $device): array
 	{
@@ -151,9 +151,9 @@ final class DeviceAttributesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity>
+	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\DeviceAttribute>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -163,7 +163,7 @@ final class DeviceAttributesRepository implements Countable, IteratorAggregate
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
-		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity> $result */
+		/** @var RecursiveArrayIterator<int, MetadataEntities\DevicesModule\DeviceAttribute> $result */
 		$result = new RecursiveArrayIterator($entities);
 
 		return $result;
@@ -172,12 +172,12 @@ final class DeviceAttributesRepository implements Countable, IteratorAggregate
 	/**
 	 * @param Array<string, mixed> $data
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
 		array $data,
-	): MetadataEntities\Modules\DevicesModule\IDeviceAttributeEntity
+	): MetadataEntities\DevicesModule\DeviceAttribute
 	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$this->entities[$id->toString()] = $this->entityFactory->create($data);

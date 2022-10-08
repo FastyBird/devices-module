@@ -29,26 +29,26 @@ use function is_scalar;
 /**
  * Device attribute entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Devices\Attributes\Attribute>
+ * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Devices\Attributes\Attribute>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class Attribute extends JsonApiSchemas\JsonApiSchema
+final class Attribute extends JsonApiSchemas\JsonApi
 {
 
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/attribute/device';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES . '/attribute/device';
 
 	/**
 	 * Define relationships names
 	 */
 	public const RELATIONSHIPS_DEVICE = 'device';
 
-	public function __construct(private Routing\IRouter $router)
+	public function __construct(private readonly Routing\IRouter $router)
 	{
 	}
 

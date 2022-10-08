@@ -38,7 +38,7 @@ final class DevicesManager
 	/**
 	 * @param Crud\IEntityCrud<Entities\Devices\Device> $entityCrud
 	 */
-	public function __construct(private Crud\IEntityCrud $entityCrud)
+	public function __construct(private readonly Crud\IEntityCrud $entityCrud)
 	{
 		// Entity CRUD for handling entities
 	}

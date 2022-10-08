@@ -28,26 +28,26 @@ use function assert;
 /**
  * Connector control entity schema
  *
- * @phpstan-extends JsonApiSchemas\JsonApiSchema<Entities\Connectors\Controls\Control>
+ * @phpstan-extends JsonApiSchemas\JsonApi<Entities\Connectors\Controls\Control>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class Control extends JsonApiSchemas\JsonApiSchema
+final class Control extends JsonApiSchemas\JsonApi
 {
 
 	/**
 	 * Define entity schema type string
 	 */
-	public const SCHEMA_TYPE = MetadataTypes\ModuleSourceType::SOURCE_MODULE_DEVICES . '/control/connector';
+	public const SCHEMA_TYPE = MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES . '/control/connector';
 
 	/**
 	 * Define relationships names
 	 */
 	public const RELATIONSHIPS_CONNECTOR = 'connector';
 
-	public function __construct(private Routing\IRouter $router)
+	public function __construct(private readonly Routing\IRouter $router)
 	{
 	}
 

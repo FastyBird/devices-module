@@ -36,7 +36,7 @@ use function strval;
 /**
  * Data storage channel properties repository
  *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity>
+ * @implements IteratorAggregate<int, MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -50,12 +50,12 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 	/** @var Array<string, Array<string, mixed>> */
 	private array $rawData;
 
-	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> */
+	/** @var Array<string, MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty> */
 	private array $entities;
 
 	public function __construct(
-		private Models\States\ChannelPropertiesRepository $statesRepository,
-		private MetadataEntities\Modules\DevicesModule\ChannelPropertyEntityFactory $entityFactory,
+		private readonly Models\States\ChannelPropertiesRepository $statesRepository,
+		private readonly MetadataEntities\DevicesModule\ChannelPropertyEntityFactory $entityFactory,
 	)
 	{
 		$this->rawData = [];
@@ -63,11 +63,11 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findById(
 		Uuid\UuidInterface $id,
-	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null
+	): MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -77,12 +77,12 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $channel,
 		string $identifier,
-	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity|null
+	): MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|null
 	{
 		foreach ($this->rawData as $id => $rawDataRow) {
 			if (
@@ -101,13 +101,13 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 	/**
 	 * @param class-string<T>|null $type
 	 *
-	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity>
+	 * @return Array<int, MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty>
 	 *
 	 * @template T
 	 *
-	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> : Array<int, T>)
+	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty> : Array<int, T>)
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findAllByChannel(
 		Uuid\UuidInterface $channel,
@@ -173,9 +173,9 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity>
+	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -185,7 +185,7 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
-		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity> $result */
+		/** @var RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty> $result */
 		$result = new RecursiveArrayIterator($entities);
 
 		return $result;
@@ -194,12 +194,12 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 	/**
 	 * @param Array<string, mixed> $data
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
 		array $data,
-	): MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+	): MetadataEntities\DevicesModule\ChannelVariableProperty|MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty
 	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$state = [];
@@ -207,8 +207,8 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 			if (
 				array_key_exists('type', $data)
 				&& (
-					$data['type'] === MetadataTypes\PropertyTypeType::TYPE_DYNAMIC
-					|| $data['type'] === MetadataTypes\PropertyTypeType::TYPE_MAPPED
+					$data['type'] === MetadataTypes\PropertyType::TYPE_DYNAMIC
+					|| $data['type'] === MetadataTypes\PropertyType::TYPE_MAPPED
 				)
 			) {
 				$state = $this->loadPropertyState($id);
@@ -217,9 +217,9 @@ final class ChannelPropertiesRepository implements Countable, IteratorAggregate
 			$entity = $this->entityFactory->create(array_merge($state, $data));
 
 			if (
-				$entity instanceof MetadataEntities\Modules\DevicesModule\IChannelStaticPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelDynamicPropertyEntity
-				|| $entity instanceof MetadataEntities\Modules\DevicesModule\IChannelMappedPropertyEntity
+				$entity instanceof MetadataEntities\DevicesModule\ChannelVariableProperty
+				|| $entity instanceof MetadataEntities\DevicesModule\ChannelDynamicProperty
+				|| $entity instanceof MetadataEntities\DevicesModule\ChannelMappedProperty
 			) {
 				$this->entities[$id->toString()] = $entity;
 			} else {

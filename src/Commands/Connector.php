@@ -63,20 +63,20 @@ class Connector extends Console\Command\Command
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private Models\DataStorage\ConnectorsRepository $connectorsRepository,
-		private Models\DataStorage\DevicesRepository $devicesRepository,
-		private Models\DataStorage\DevicePropertiesRepository $devicesPropertiesRepository,
-		private Models\DataStorage\ChannelsRepository $channelsRepository,
-		private Models\DataStorage\ChannelPropertiesRepository $channelsPropertiesRepository,
-		private Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager,
-		private Models\States\DeviceConnectionStateManager $deviceConnectionStateManager,
-		private Models\States\DevicePropertyStateManager $devicePropertyStateManager,
-		private Models\States\ChannelPropertyStateManager $channelPropertyStateManager,
-		private Consumers\Connector $connectorConsumer,
-		private ExchangeConsumer\Consumer $consumer,
-		private DateTimeFactory\DateTimeFactory $dateTimeFactory,
-		private EventLoop\LoopInterface $eventLoop,
-		private PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
+		private readonly Models\DataStorage\ConnectorsRepository $connectorsRepository,
+		private readonly Models\DataStorage\DevicesRepository $devicesRepository,
+		private readonly Models\DataStorage\DevicePropertiesRepository $devicesPropertiesRepository,
+		private readonly Models\DataStorage\ChannelsRepository $channelsRepository,
+		private readonly Models\DataStorage\ChannelPropertiesRepository $channelsPropertiesRepository,
+		private readonly Models\States\ConnectorConnectionStateManager $connectorConnectionStateManager,
+		private readonly Models\States\DeviceConnectionStateManager $deviceConnectionStateManager,
+		private readonly Models\States\DevicePropertyStateManager $devicePropertyStateManager,
+		private readonly Models\States\ChannelPropertyStateManager $channelPropertyStateManager,
+		private readonly Consumers\Connector $connectorConsumer,
+		private readonly ExchangeConsumer\Container $consumer,
+		private readonly DateTimeFactory\Factory $dateTimeFactory,
+		private readonly EventLoop\LoopInterface $eventLoop,
+		private readonly PsrEventDispatcher\EventDispatcherInterface|null $dispatcher,
 		Log\LoggerInterface|null $logger = null,
 		string|null $name = null,
 	)
@@ -180,6 +180,7 @@ class Connector extends Console\Command\Command
 
 	/**
 	 * @throws Exceptions\Terminate
+	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
@@ -298,7 +299,7 @@ class Connector extends Console\Command\Command
 			try {
 				$this->resetConnectorDevices(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN),
+					MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_UNKNOWN),
 				);
 
 				// Start connector service
@@ -306,7 +307,7 @@ class Connector extends Console\Command\Command
 
 				$this->connectorConnectionStateManager->setState(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_RUNNING),
+					MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_RUNNING),
 				);
 			} catch (Throwable $ex) {
 				throw new Exceptions\Terminate('Connector can\'t be started', $ex->getCode(), $ex);
@@ -315,7 +316,7 @@ class Connector extends Console\Command\Command
 			$this->dispatcher?->dispatch(new Events\AfterConnectorStart($connector));
 		});
 
-		$this->eventLoop->addSignal(SIGINT, function (int $signal) use ($connector, $service): void {
+		$this->eventLoop->addSignal(SIGINT, function () use ($connector, $service): void {
 			$this->logger->info('Stopping connector...', [
 				'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 				'type' => 'service-cmd',
@@ -328,7 +329,7 @@ class Connector extends Console\Command\Command
 
 				$this->resetConnectorDevices(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_DISCONNECTED),
+					MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_DISCONNECTED),
 				);
 
 				$now = $this->dateTimeFactory->getNow();
@@ -351,12 +352,12 @@ class Connector extends Console\Command\Command
 
 				$this->connectorConnectionStateManager->setState(
 					$connector,
-					MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_STOPPED),
+					MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_STOPPED),
 				);
 
 				$this->eventLoop->stop();
 			} catch (Throwable $ex) {
-				$this->logger->error('Connector couldn\'t be stopped. An unexpected error occurred', [
+				$this->logger->error('Connector could not be stopped. An unexpected error occurred', [
 					'source' => Metadata\Constants::MODULE_DEVICES_SOURCE,
 					'type' => 'service-cmd',
 					'exception' => [
@@ -374,27 +375,30 @@ class Connector extends Console\Command\Command
 		});
 	}
 
+	/**
+	 * @throws Metadata\Exceptions\FileNotFound
+	 */
 	private function resetConnectorDevices(
-		MetadataEntities\Modules\DevicesModule\IConnectorEntity $connector,
-		MetadataTypes\ConnectionStateType $state,
+		MetadataEntities\DevicesModule\Connector $connector,
+		MetadataTypes\ConnectionState $state,
 	): void
 	{
 		foreach ($this->devicesRepository->findAllByConnector($connector->getId()) as $device) {
 			$this->deviceConnectionStateManager->setState($device, $state);
 
-			/** @var Array<MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity> $properties */
+			/** @var Array<MetadataEntities\DevicesModule\DeviceDynamicProperty> $properties */
 			$properties = $this->devicesPropertiesRepository->findAllByDevice(
 				$device->getId(),
-				MetadataEntities\Modules\DevicesModule\DeviceDynamicPropertyEntity::class,
+				MetadataEntities\DevicesModule\DeviceDynamicProperty::class,
 			);
 
 			$this->devicePropertyStateManager->setValidState($properties, false);
 
 			foreach ($this->channelsRepository->findAllByDevice($device->getId()) as $channel) {
-				/** @var Array<MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity> $properties */
+				/** @var Array<MetadataEntities\DevicesModule\ChannelDynamicProperty> $properties */
 				$properties = $this->channelsPropertiesRepository->findAllByChannel(
 					$channel->getId(),
-					MetadataEntities\Modules\DevicesModule\ChannelDynamicPropertyEntity::class,
+					MetadataEntities\DevicesModule\ChannelDynamicProperty::class,
 				);
 
 				$this->channelPropertyStateManager->setValidState($properties, false);

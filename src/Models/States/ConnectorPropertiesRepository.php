@@ -35,12 +35,12 @@ final class ConnectorPropertiesRepository
 
 	use Nette\SmartObject;
 
-	public function __construct(protected IConnectorPropertiesRepository|null $repository)
+	public function __construct(protected readonly IConnectorPropertiesRepository|null $repository)
 	{
 	}
 
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IConnectorDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IConnectorMappedPropertyEntity|Entities\Connectors\Properties\Dynamic $property,
+		MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|Entities\Connectors\Properties\Dynamic $property,
 	): States\ConnectorProperty|null
 	{
 		if ($this->repository === null) {

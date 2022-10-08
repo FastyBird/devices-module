@@ -45,15 +45,15 @@ final class DeviceAttributesV1 extends BaseV1
 	use Controllers\Finders\TDevice;
 
 	public function __construct(
-		protected Models\Devices\DevicesRepository $devicesRepository,
-		private Models\Devices\Attributes\AttributesRepository $deviceAttributesRepository,
+		protected readonly Models\Devices\DevicesRepository $devicesRepository,
+		private readonly Models\Devices\Attributes\AttributesRepository $deviceAttributesRepository,
 	)
 	{
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
@@ -74,7 +74,7 @@ final class DeviceAttributesV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function read(
 		Message\ServerRequestInterface $request,
@@ -97,7 +97,7 @@ final class DeviceAttributesV1 extends BaseV1
 			}
 		}
 
-		throw new JsonApiExceptions\JsonApiErrorException(
+		throw new JsonApiExceptions\JsonApiError(
 			StatusCodeInterface::STATUS_NOT_FOUND,
 			$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 			$this->translator->translate('//devices-module.base.messages.notFound.message'),
@@ -106,7 +106,7 @@ final class DeviceAttributesV1 extends BaseV1
 
 	/**
 	 * @throws Exception
-	 * @throws JsonApiExceptions\IJsonApiException
+	 * @throws JsonApiExceptions\JsonApi
 	 */
 	public function readRelationship(
 		Message\ServerRequestInterface $request,
@@ -132,7 +132,7 @@ final class DeviceAttributesV1 extends BaseV1
 					return $this->buildResponse($request, $response, $attribute->getDevice());
 				}
 			} else {
-				throw new JsonApiExceptions\JsonApiErrorException(
+				throw new JsonApiExceptions\JsonApiError(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//devices-module.base.messages.notFound.heading'),
 					$this->translator->translate('//devices-module.base.messages.notFound.message'),

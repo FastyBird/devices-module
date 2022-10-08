@@ -42,25 +42,28 @@ final class DeviceConnectionStateManager
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private Models\Devices\DevicesRepository $devicesRepository,
-		private Models\DataStorage\DevicePropertiesRepository $repository,
-		private Models\Devices\Properties\PropertiesManager $manager,
-		private Models\States\DevicePropertiesRepository $statesRepository,
-		private Models\States\DevicePropertiesManager $statesManager,
+		private readonly Models\Devices\DevicesRepository $devicesRepository,
+		private readonly Models\DataStorage\DevicePropertiesRepository $repository,
+		private readonly Models\Devices\Properties\PropertiesManager $manager,
+		private readonly Models\States\DevicePropertiesRepository $statesRepository,
+		private readonly Models\States\DevicePropertiesManager $statesManager,
 		Log\LoggerInterface|null $logger = null,
 	)
 	{
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
+	/**
+	 * @throws Metadata\Exceptions\FileNotFound
+	 */
 	public function setState(
-		Entities\Devices\Device|MetadataEntities\Modules\DevicesModule\IDeviceEntity $device,
-		MetadataTypes\ConnectionStateType $state,
+		Entities\Devices\Device|MetadataEntities\DevicesModule\Device $device,
+		MetadataTypes\ConnectionState $state,
 	): bool
 	{
 		$stateProperty = $this->repository->findByIdentifier(
 			$device->getId(),
-			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE,
+			MetadataTypes\DevicePropertyIdentifier::IDENTIFIER_STATE,
 		);
 
 		if ($stateProperty === null) {
@@ -78,20 +81,20 @@ final class DeviceConnectionStateManager
 			$stateProperty = $this->manager->create(Utils\ArrayHash::from([
 				'device' => $device,
 				'entity' => Entities\Devices\Properties\Dynamic::class,
-				'identifier' => MetadataTypes\ConnectorPropertyIdentifierType::IDENTIFIER_STATE,
-				'dataType' => MetadataTypes\DataTypeType::get(MetadataTypes\DataTypeType::DATA_TYPE_ENUM),
+				'identifier' => MetadataTypes\ConnectorPropertyIdentifier::IDENTIFIER_STATE,
+				'dataType' => MetadataTypes\DataType::get(MetadataTypes\DataType::DATA_TYPE_ENUM),
 				'unit' => null,
 				'format' => [
-					MetadataTypes\ConnectionStateType::STATE_CONNECTED,
-					MetadataTypes\ConnectionStateType::STATE_DISCONNECTED,
-					MetadataTypes\ConnectionStateType::STATE_INIT,
-					MetadataTypes\ConnectionStateType::STATE_READY,
-					MetadataTypes\ConnectionStateType::STATE_RUNNING,
-					MetadataTypes\ConnectionStateType::STATE_SLEEPING,
-					MetadataTypes\ConnectionStateType::STATE_STOPPED,
-					MetadataTypes\ConnectionStateType::STATE_LOST,
-					MetadataTypes\ConnectionStateType::STATE_ALERT,
-					MetadataTypes\ConnectionStateType::STATE_UNKNOWN,
+					MetadataTypes\ConnectionState::STATE_CONNECTED,
+					MetadataTypes\ConnectionState::STATE_DISCONNECTED,
+					MetadataTypes\ConnectionState::STATE_INIT,
+					MetadataTypes\ConnectionState::STATE_READY,
+					MetadataTypes\ConnectionState::STATE_RUNNING,
+					MetadataTypes\ConnectionState::STATE_SLEEPING,
+					MetadataTypes\ConnectionState::STATE_STOPPED,
+					MetadataTypes\ConnectionState::STATE_LOST,
+					MetadataTypes\ConnectionState::STATE_ALERT,
+					MetadataTypes\ConnectionState::STATE_UNKNOWN,
 				],
 				'settable' => false,
 				'queryable' => false,
@@ -99,7 +102,7 @@ final class DeviceConnectionStateManager
 		}
 
 		if (
-			$stateProperty instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			$stateProperty instanceof MetadataEntities\DevicesModule\DeviceDynamicProperty
 			|| $stateProperty instanceof Entities\Devices\Properties\Dynamic
 		) {
 			try {
@@ -114,7 +117,7 @@ final class DeviceConnectionStateManager
 					],
 				);
 
-				MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN);
+				MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_UNKNOWN);
 
 				return false;
 			}
@@ -167,24 +170,27 @@ final class DeviceConnectionStateManager
 		return false;
 	}
 
+	/**
+	 * @throws Metadata\Exceptions\FileNotFound
+	 */
 	public function getState(
-		Entities\Devices\Device|MetadataEntities\Modules\DevicesModule\IDeviceEntity $device,
-	): MetadataTypes\ConnectionStateType
+		Entities\Devices\Device|MetadataEntities\DevicesModule\Device $device,
+	): MetadataTypes\ConnectionState
 	{
 		$stateProperty = $this->repository->findByIdentifier(
 			$device->getId(),
-			MetadataTypes\DevicePropertyIdentifierType::IDENTIFIER_STATE,
+			MetadataTypes\DevicePropertyIdentifier::IDENTIFIER_STATE,
 		);
 
 		if (
-			$stateProperty instanceof MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity
+			$stateProperty instanceof MetadataEntities\DevicesModule\DeviceDynamicProperty
 			&& $stateProperty->getActualValue() !== null
-			&& MetadataTypes\ConnectionStateType::isValidValue($stateProperty->getActualValue())
+			&& MetadataTypes\ConnectionState::isValidValue($stateProperty->getActualValue())
 		) {
-			return MetadataTypes\ConnectionStateType::get($stateProperty->getActualValue());
+			return MetadataTypes\ConnectionState::get($stateProperty->getActualValue());
 		}
 
-		return MetadataTypes\ConnectionStateType::get(MetadataTypes\ConnectionStateType::STATE_UNKNOWN);
+		return MetadataTypes\ConnectionState::get(MetadataTypes\ConnectionState::STATE_UNKNOWN);
 	}
 
 }

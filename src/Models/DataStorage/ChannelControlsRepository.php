@@ -28,7 +28,7 @@ use function count;
 /**
  * Data storage channel controls repository
  *
- * @implements IteratorAggregate<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity>
+ * @implements IteratorAggregate<int, MetadataEntities\DevicesModule\ChannelControl>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Models
@@ -42,11 +42,11 @@ final class ChannelControlsRepository implements Countable, IteratorAggregate
 	/** @var Array<string, Array<string, mixed>> */
 	private array $rawData;
 
-	/** @var Array<string, MetadataEntities\Modules\DevicesModule\IChannelControlEntity> */
+	/** @var Array<string, MetadataEntities\DevicesModule\ChannelControl> */
 	private array $entities;
 
 	public function __construct(
-		private MetadataEntities\Modules\DevicesModule\ChannelControlEntityFactory $entityFactory,
+		private readonly MetadataEntities\DevicesModule\ChannelControlEntityFactory $entityFactory,
 	)
 	{
 		$this->rawData = [];
@@ -54,9 +54,9 @@ final class ChannelControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
-	public function findById(Uuid\UuidInterface $id): MetadataEntities\Modules\DevicesModule\IChannelControlEntity|null
+	public function findById(Uuid\UuidInterface $id): MetadataEntities\DevicesModule\ChannelControl|null
 	{
 		if (array_key_exists($id->toString(), $this->rawData)) {
 			return $this->getEntity($id, $this->rawData[$id->toString()]);
@@ -66,9 +66,9 @@ final class ChannelControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return Array<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity>
+	 * @return Array<int, MetadataEntities\DevicesModule\ChannelControl>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findAllByChannel(Uuid\UuidInterface $channel): array
 	{
@@ -127,9 +127,9 @@ final class ChannelControlsRepository implements Countable, IteratorAggregate
 	}
 
 	/**
-	 * @return RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity>
+	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ChannelControl>
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -139,7 +139,7 @@ final class ChannelControlsRepository implements Countable, IteratorAggregate
 			$entities[] = $this->getEntity(Uuid\Uuid::fromString($id), $rawDataRow);
 		}
 
-		/** @var RecursiveArrayIterator<int, MetadataEntities\Modules\DevicesModule\IChannelControlEntity> $result */
+		/** @var RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ChannelControl> $result */
 		$result = new RecursiveArrayIterator($entities);
 
 		return $result;
@@ -148,12 +148,12 @@ final class ChannelControlsRepository implements Countable, IteratorAggregate
 	/**
 	 * @param Array<string, mixed> $data
 	 *
-	 * @throws MetadataExceptions\FileNotFoundException
+	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,
 		array $data,
-	): MetadataEntities\Modules\DevicesModule\IChannelControlEntity
+	): MetadataEntities\DevicesModule\ChannelControl
 	{
 		if (!array_key_exists($id->toString(), $this->entities)) {
 			$this->entities[$id->toString()] = $this->entityFactory->create($data);

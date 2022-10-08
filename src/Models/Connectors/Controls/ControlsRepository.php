@@ -41,7 +41,7 @@ final class ControlsRepository
 	/** @var ORM\EntityRepository<Entities\Connectors\Controls\Control>|null */
 	private ORM\EntityRepository|null $repository = null;
 
-	public function __construct(private Persistence\ManagerRegistry $managerRegistry)
+	public function __construct(private readonly Persistence\ManagerRegistry $managerRegistry)
 	{
 	}
 

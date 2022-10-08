@@ -39,17 +39,20 @@ final class ChannelPropertyStateManager
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository,
-		private DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository,
-		private DevicesModuleModels\States\ChannelPropertiesManager $channelPropertiesStatesManager,
+		private readonly DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository,
+		private readonly DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository,
+		private readonly DevicesModuleModels\States\ChannelPropertiesManager $channelPropertiesStatesManager,
 		Log\LoggerInterface|null $logger,
 	)
 	{
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
+	/**
+	 * @throws Metadata\Exceptions\FileNotFound
+	 */
 	public function setValue(
-		Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity $property,
+		Metadata\Entities\DevicesModule\ChannelDynamicProperty $property,
 		Utils\ArrayHash $data,
 	): void
 	{
@@ -134,10 +137,12 @@ final class ChannelPropertyStateManager
 	}
 
 	/**
-	 * @param Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity|Array<Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity> $property
+	 * @param Metadata\Entities\DevicesModule\ChannelDynamicProperty|Array<Metadata\Entities\DevicesModule\ChannelDynamicProperty> $property
+	 *
+	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	public function setValidState(
-		Metadata\Entities\Modules\DevicesModule\IChannelDynamicPropertyEntity|array $property,
+		Metadata\Entities\DevicesModule\ChannelDynamicProperty|array $property,
 		bool $state,
 	): void
 	{

@@ -24,6 +24,7 @@ use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
+use Throwable;
 use function count;
 use function strval;
 
@@ -31,13 +32,13 @@ use function strval;
  * Device property entity schema
  *
  * @phpstan-template T of Entities\Devices\Properties\Property
- * @phpstan-extends  JsonApiSchemas\JsonApiSchema<T>
+ * @phpstan-extends  JsonApiSchemas\JsonApi<T>
  *
  * @package         FastyBird:DevicesModule!
  * @subpackage      Schemas
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class Property extends JsonApiSchemas\JsonApiSchema
+abstract class Property extends JsonApiSchemas\JsonApi
 {
 
 	/**
@@ -50,8 +51,8 @@ abstract class Property extends JsonApiSchemas\JsonApiSchema
 	public const RELATIONSHIPS_CHILDREN = 'children';
 
 	public function __construct(
-		private Routing\IRouter $router,
-		private Models\Devices\Properties\PropertiesRepository $propertiesRepository,
+		private readonly Routing\IRouter $router,
+		private readonly Models\Devices\Properties\PropertiesRepository $propertiesRepository,
 	)
 	{
 	}
@@ -103,6 +104,8 @@ abstract class Property extends JsonApiSchemas\JsonApiSchema
 
 	/**
 	 * @return iterable<string, mixed>
+	 *
+	 * @throws Throwable
 	 *
 	 * @phpstan-param T $property
 	 *
@@ -219,6 +222,8 @@ abstract class Property extends JsonApiSchemas\JsonApiSchema
 
 	/**
 	 * @return Array<Entities\Devices\Properties\Property>
+	 *
+	 * @throws Throwable
 	 */
 	private function getChildren(Entities\Devices\Properties\Property $property): array
 	{

@@ -38,7 +38,7 @@ final class ChannelsManager
 	/**
 	 * @phpstan-param Crud\IEntityCrud<Entities\Channels\Channel> $entityCrud
 	 */
-	public function __construct(private Crud\IEntityCrud $entityCrud)
+	public function __construct(private readonly Crud\IEntityCrud $entityCrud)
 	{
 		// Entity CRUD for handling entities
 	}

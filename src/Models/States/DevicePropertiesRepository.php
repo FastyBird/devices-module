@@ -35,12 +35,12 @@ final class DevicePropertiesRepository
 
 	use Nette\SmartObject;
 
-	public function __construct(protected IDevicePropertiesRepository|null $repository)
+	public function __construct(protected readonly IDevicePropertiesRepository|null $repository)
 	{
 	}
 
 	public function findOne(
-		MetadataEntities\Modules\DevicesModule\IDeviceDynamicPropertyEntity|MetadataEntities\Modules\DevicesModule\IDeviceMappedPropertyEntity|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
+		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 	): States\DeviceProperty|null
 	{
 		if ($this->repository === null) {

@@ -275,6 +275,8 @@ class Connector extends Console\Command\Command
 			$io->section('Initializing connector');
 		}
 
+		$this->dispatcher?->dispatch(new Events\ConnectorStartup());
+
 		$service = null;
 
 		foreach ($this->factories as $factory) {

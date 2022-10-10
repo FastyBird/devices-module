@@ -52,6 +52,7 @@ class DevicesModuleExtension extends DI\CompilerExtension
 {
 
 	public const NAME = 'fbDevicesModule';
+
 	public const CONNECTOR_TYPE_TAG = 'connector_type';
 
 	public static function register(

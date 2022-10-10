@@ -51,11 +51,12 @@ use const DIRECTORY_SEPARATOR;
 class DevicesModuleExtension extends DI\CompilerExtension
 {
 
+	public const NAME = 'fbDevicesModule';
 	public const CONNECTOR_TYPE_TAG = 'connector_type';
 
 	public static function register(
 		Nette\Configurator $config,
-		string $extensionName = 'fbDevicesModule',
+		string $extensionName = self::NAME,
 	): void
 	{
 		$config->onCompile[] = static function (

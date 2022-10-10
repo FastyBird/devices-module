@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Tools;
+namespace Tests\Fixtures;
 
 use FastyBird\DevicesModule\Connectors;
 use Ramsey\Uuid;

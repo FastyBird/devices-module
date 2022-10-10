@@ -7,7 +7,7 @@
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
- * @subpackage     DynamicProperties
+ * @subpackage     States
  * @since          0.1.0
  *
  * @date           03.03.20
@@ -21,7 +21,7 @@ use Ramsey\Uuid;
  * Property interface
  *
  * @package        FastyBird:DevicesModule!
- * @subpackage     DynamicProperties
+ * @subpackage     States
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */

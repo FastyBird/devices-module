@@ -2,6 +2,8 @@
 
 This module adds support for managing [FastyBird](https://www.fastybird.com) IoT devices.
 
+***
+
 ## Installation
 
 ### Application backend in PHP
@@ -48,14 +50,6 @@ or if you prefer npm:
 npm install @fastybird/devices-module
 ```
 
-### Application workers in Python
-
-The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
-
-```sh
-pip install fastybird-devices-module
-```
-
 ## Configuration
 
 This module is dependent on other Nette extensions. All this extensions have to enabled and configured in NEON
@@ -78,59 +72,3 @@ your-console-entrypoint fb:devices-module:initialize
 ```
 
 This console command is interactive and will ask for all required information.
-
-## Running module interface
-
-This module is dependent on [fastybird/web-server](https://github.com/FastyBird/web-server) which is server-less web
-server for serving API content. This module is registering its routes to this webserver automatically. All what you have
-to do is start this server with your console entrypoint:
-
-```sh
-your-console-entrypoint fb:web-server:start
-```
-
-After successful start, server is listening for incoming http api request messages from clients.
-
-## Register Vuex ORM models
-
-This module could be registered in your Vuex ORM instance
-
-```js
-import VuexORM, { Database } from '@vuex-orm/core'
-import DevicesModule from '@fastybird/devices-module'
-
-// Create new instance of Database
-const database = new Database()
-
-VuexORM.use(DevicesModule, { database })
-
-export default {
-  plugins: [
-    VuexORM.install(database),
-  ],
-}
-```
-
-## Registering Python services
-
-This module is using [dependency injection module](https://github.com/kodemore/kink) and has created services registration factory.
-All what you have to do i create SQLAlchemy session instance and register it to DI:
-
-```python
-from kink import di
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-
-from fastybird_devices_module.bootstrap import register_services
-
-db_engine = create_engine(f"mysql+pymysql://username:password@127.0.0.1/database_name")
-db_session = Session(db_engine)
-
-# Inject database session into DI
-# Module will autowire session in its own services
-di[Session] = db_session
-
-# Register module services into DI container
-register_services()
-```

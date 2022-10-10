@@ -7,7 +7,7 @@
  * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:DevicesModule!
- * @subpackage     DynamicProperties
+ * @subpackage     States
  * @since          0.31.0
  *
  * @date           08.02.22
@@ -19,7 +19,7 @@ namespace FastyBird\DevicesModule\States;
  * Connector property interface
  *
  * @package        FastyBird:DevicesModule!
- * @subpackage     DynamicProperties
+ * @subpackage     States
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */

@@ -1,47 +1,38 @@
 {
-  "compilerOptions" : {
-    "target" : "esnext",
-    "module" : "esnext",
-    "strict" : true,
-    "declaration" : true,
-    "declarationDir" : "dist/dts",
-    "jsx": "preserve",
-    "noUnusedLocals" : true,
-    "noUnusedParameters" : true,
-    "importHelpers" : true,
-    "moduleResolution" : "node",
-    "experimentalDecorators" : true,
-    "esModuleInterop" : true,
-    "allowSyntheticDefaultImports" : true,
-    "sourceMap" : true,
-    "resolveJsonModule" : true,
-    "baseUrl" : ".",
-    "types" : [
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "declaration": true,
+    "declarationDir": "dist/dts",
+    "emitDeclarationOnly": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": [
       "node",
-      "@fastybird/metadata",
-      "@fastybird/vue-wamp-v1",
-      "@fastybird/vuex-orm-wamp",
-      "@fastybird/web-ui-theme",
-      "@types/lodash",
-      "@types/uuid",
-      "@vuex-orm/core",
-      "@vuex-orm/plugin-axios"
+      "vue"
     ],
-    "paths" : {
-      "@/*" : [
+    "paths": {
+      "@/*": [
         "public/*"
       ]
     },
-    "lib" : [
+    "lib": [
       "esnext",
       "dom",
       "dom.iterable",
       "scripthost"
     ]
   },
-  "exclude" : [
+  "exclude": [
     "node_modules",
-    "dist",
-    "vendor"
+    "dist"
   ]
 }

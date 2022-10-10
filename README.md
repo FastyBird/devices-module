@@ -14,23 +14,15 @@
 [![JS downloads total](https://badgen.net/npm/dt/@fastybird/devices-module?cache=300&style=flat-square)](https://www.npmjs.com/package/@fastybird/devices-module)
 ![Types](https://badgen.net/npm/types/@fastybird/devices-module?cache=300&style=flat-square)
 
-![Python](https://badgen.net/pypi/python/fastybird-devices-module?cache=300&style=flat-square)
-[![Python latest stable](https://badgen.net/pypi/v/fastybird-devices-module?cache=300&style=flat-square)](https://pypi.org/project/fastybird-devices-module/)
-[![Python downloads month](https://img.shields.io/pypi/dm/fastybird-devices-module?cache=300&style=flat-square)](https://pypi.org/project/fastybird-devices-module/)
-[![Black](https://img.shields.io/badge/black-enabled-brightgreen.svg?style=flat-square)](https://github.com/psf/black)
-[![MyPy](https://img.shields.io/badge/mypy-enabled-brightgreen.svg?style=flat-square)](http://mypy-lang.org)
-
 ***
 
 ## What is FastyBird IoT devices module?
 
-Devices module is a combined [Nette framework](https://nette.org) extension, [Vuex ORM](https://vuex-orm.org) plugin
-and also [Python](https://python.org) module for managing connectors and connected devices and their basic logic.
+Devices module is a [Nette framework](https://nette.org) extension for managing connectors and connected devices and their basic logic.
 
 [FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is
 an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed
-in [PHP](https://www.php.net) with [Nette framework](https://nette.org), in [Typescript](https://www.typescriptlang.org)
-and also in [Python](https://python.org).
+in [PHP](https://www.php.net) with [Nette framework](https://nette.org) and in [Typescript](https://www.typescriptlang.org).
 
 ### Features:
 
@@ -40,9 +32,8 @@ and also in [Python](https://python.org).
 - [{JSON:API}](https://jsonapi.org/) schemas for full api access
 - User access [check & validation](https://github.com/FastyBird/simple-auth)
 - Multilingual
-- JS integration via [Vuex ORM](https://vuex-orm.org) plugin
-- Python integration via [SQLAlchemy](https://www.sqlalchemy.org)
-- Integrated connector worker for Python based connectors & PHP based connectors
+- User interface integration via [Vue 3](https://vuejs.org) components
+- Integrated connector worker for PHP based connectors
 
 ## Requirements
 
@@ -53,11 +44,7 @@ and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programm
 JavaScript part of [FastyBird](https://www.fastybird.com) devices module is tested
 against [ECMAScript 6](https://www.w3schools.com/JS/js_es6.asp)
 
-Python part of [FastyBird](https://www.fastybird.com) devices module is tested against [Python 3.7](http://python.org)
-
 ## Installation
-
-#### Application backend in PHP
 
 The best way to install **fastybird/devices-module** is using [Composer](http://getcomposer.org/):
 
@@ -65,9 +52,7 @@ The best way to install **fastybird/devices-module** is using [Composer](http://
 composer require fastybird/devices-module
 ```
 
-#### Application frontend in JS
-
-The best way to install **@fastybird/devices-module** is using [Yarn](https://yarnpkg.com/):
+And for user interface is the best way to install **@fastybird/devices-module** with [Yarn](https://yarnpkg.com/):
 
 ```sh
 yarn add @fastybird/devices-module
@@ -77,14 +62,6 @@ or if you prefer npm:
 
 ```sh
 npm install @fastybird/devices-module
-```
-
-#### Application workers in Python
-
-The best way to install **fastybird-devices-module** is using [pip](https://pip.pypa.io/):
-
-```sh
-pip install fastybird-devices-module
 ```
 
 ## Documentation

@@ -1,12 +1,9 @@
 .idea
-.mypy_cache
-/vendor
 /dist
 /node_modules
-/venv
-tests/*/output
-tests/tmp
-__pycache__
-composer.lock
-yarn.lock
+/vendor
+/composer.lock
+/yarn.lock
+/tests/*/output
+/tests/tmp
 .DS_Store

@@ -53,9 +53,6 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	{
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public static function getSubscribedEvents(): array
 	{
 		return [

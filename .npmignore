@@ -1,23 +1,12 @@
-.github
-build
-config
-devices_module
-node_modules
-patches
 src
-tests
-vendor
 .editorconfig
 .eslintrc
 .gitattributes
 .gitignore
-babel.config.json
-composer.json
-composer.lock
-editorconfig.xml
-Makefile
-phpstan.neon
-ruleset.xml
+.npmignore export-ignore
+Makefile export-ignore
+phpcs.xml export-ignore
+phpstan.neon export-ignore
 tsconfig.json
 tslint.json
 yarn.lock

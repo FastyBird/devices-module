@@ -70,9 +70,6 @@ final class ModuleEntities implements Common\EventSubscriber
 	{
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getSubscribedEvents(): array
 	{
 		return [

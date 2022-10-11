@@ -1,7 +1,7 @@
 {
   "name": "@fastybird/devices-module",
   "version": "0.75.0",
-  "description": "Devices module data model plugin",
+  "description": "FastyBird IoT devices module for devices management & basic control logic",
   "keywords": [
     "devices",
     "orm",

@@ -18,7 +18,8 @@
 
 ## What is FastyBird IoT devices module?
 
-Devices module is a [Nette framework](https://nette.org) extension for managing connectors and connected devices and their basic logic.
+Devices module is a [FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things)
+extension for managing connectors and connected devices and their basic logic.
 
 [FastyBird](https://www.fastybird.com) [IoT](https://en.wikipedia.org/wiki/Internet_of_things) devices module is
 an [Apache2 licensed](http://www.apache.org/licenses/LICENSE-2.0) distributed extension, developed
@@ -27,7 +28,7 @@ in [PHP](https://www.php.net) with [Nette framework](https://nette.org) and in [
 ### Features:
 
 - Devices connectors management
-- Devices and channels management
+- Devices and their channels management
 - Support for data [exchange bus](https://github.com/FastyBird/exchange)
 - [{JSON:API}](https://jsonapi.org/) schemas for full api access
 - User access [check & validation](https://github.com/FastyBird/simple-auth)
@@ -37,8 +38,7 @@ in [PHP](https://www.php.net) with [Nette framework](https://nette.org) and in [
 
 ## Requirements
 
-PHP part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 7.4
-and [ReactPHP http](https://github.com/reactphp/http) 0.8 event-driven, streaming plaintext HTTP server
+PHP part of [FastyBird](https://www.fastybird.com) devices module is tested against PHP 8.1
 and [Nette framework](https://nette.org/en/) 3.0 PHP framework for real programmers
 
 JavaScript part of [FastyBird](https://www.fastybird.com) devices module is tested
@@ -66,7 +66,7 @@ npm install @fastybird/devices-module
 
 ## Documentation
 
-Learn how to use devices module and manage your connectors & devices
+Learn how to configure and use devices module and manage your connectors & devices
 in [documentation](https://github.com/FastyBird/devices-module/blob/main/.docs/en/index.md).
 
 ## Feedback

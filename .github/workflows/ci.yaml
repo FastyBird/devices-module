@@ -342,7 +342,7 @@ jobs:
       - name : "Setup node"
         uses : "actions/setup-node@v1"
         with :
-          node-version : "12"
+          node-version : "16"
 
       - name : "Get yarn cache directory path"
         id : "yarn-cache-dir-path"
@@ -385,7 +385,7 @@ jobs:
       - name : "Install node"
         uses : "actions/setup-node@v1"
         with :
-          node-version : "12"
+          node-version : "16"
           registry-url : "https://registry.npmjs.org"
 
       - name : "Install package dependencies"
@@ -418,7 +418,7 @@ jobs:
       - name : "Install node"
         uses : "actions/setup-node@v1"
         with :
-          node-version : "12"
+          node-version : "16"
           registry-url : "https://registry.npmjs.org"
 
       - name : "Extract version"
@@ -462,7 +462,7 @@ jobs:
       - name : "Install node"
         uses : "actions/setup-node@v1"
         with :
-          node-version : "12"
+          node-version : "16"
           registry-url : "https://npm.pkg.github.com"
 
       - name : "Extract version"

@@ -30,8 +30,6 @@ extensions:
     fbExchange                          : FastyBird\Exchange\DI\ExchangeExtension
     fbJsonApi                           : FastyBird\JsonApi\DI\JsonApiExtension
     fbSimpleAuth                        : FastyBird\SimpleAuth\DI\SimpleAuthExtension
-    fbSocketServerFactory               : FastyBird\SocketServerFactory\DI\SocketServerFactoryExtension
-    fbWebServer                         : FastyBird\WebServer\DI\WebServerExtension(%consoleMode%)
 
 services:
     - {factory: Symfony\Component\Console\Application}
@@ -56,7 +54,6 @@ nettrineDbal:
         user: root
         password: root
         charset: utf8
-        wrapperClass: \Tests\Tools\ConnectionWrapper
 
         types:
             uuid_binary:

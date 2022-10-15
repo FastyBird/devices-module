@@ -47,37 +47,37 @@ abstract class Property extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $property
+	 * @phpstan-return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$property,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
-			'identifier' => $property->getIdentifier(),
-			'name' => $property->getName(),
-			'settable' => $property->isSettable(),
-			'queryable' => $property->isQueryable(),
-			'data_type' => strval($property->getDataType()->getValue()),
-			'unit' => $property->getUnit(),
-			'format' => $property->getFormat()?->toArray(),
-			'invalid' => $property->getInvalid(),
-			'number_of_decimals' => $property->getNumberOfDecimals(),
+			'identifier' => $resource->getIdentifier(),
+			'name' => $resource->getName(),
+			'settable' => $resource->isSettable(),
+			'queryable' => $resource->isQueryable(),
+			'data_type' => strval($resource->getDataType()->getValue()),
+			'unit' => $resource->getUnit(),
+			'format' => $resource->getFormat()?->toArray(),
+			'invalid' => $resource->getInvalid(),
+			'number_of_decimals' => $resource->getNumberOfDecimals(),
 		];
 	}
 
 	/**
-	 * @phpstan-param T $property
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getSelfLink(
-		$property,
+		$resource,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
@@ -85,8 +85,8 @@ abstract class Property extends JsonApiSchemas\JsonApi
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_CONNECTOR_PROPERTY,
 				[
-					Router\Routes::URL_CONNECTOR_ID => $property->getConnector()->getPlainId(),
-					Router\Routes::URL_ITEM_ID => $property->getPlainId(),
+					Router\Routes::URL_CONNECTOR_ID => $resource->getConnector()->getPlainId(),
+					Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 				],
 			),
 			false,
@@ -94,20 +94,20 @@ abstract class Property extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, mixed>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $property
+	 * @phpstan-return iterable<string, mixed>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
-		$property,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_CONNECTOR => [
-				self::RELATIONSHIP_DATA => $property->getConnector(),
+				self::RELATIONSHIP_DATA => $resource->getConnector(),
 				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -115,12 +115,12 @@ abstract class Property extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @phpstan-param T $property
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipRelatedLink(
-		$property,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -130,14 +130,14 @@ abstract class Property extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 					[
-						Router\Routes::URL_ITEM_ID => $property->getConnector()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getConnector()->getPlainId(),
 					],
 				),
 				false,
 			);
 		}
 
-		return parent::getRelationshipRelatedLink($property, $name);
+		return parent::getRelationshipRelatedLink($resource, $name);
 	}
 
 }

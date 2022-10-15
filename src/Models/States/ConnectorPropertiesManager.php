@@ -25,6 +25,7 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
+use function property_exists;
 use function strval;
 
 /**
@@ -47,6 +48,9 @@ final class ConnectorPropertiesManager
 	{
 	}
 
+	/**
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function create(
 		MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|Entities\Connectors\Properties\Dynamic $property,
 		Utils\ArrayHash $values,
@@ -57,8 +61,8 @@ final class ConnectorPropertiesManager
 		}
 
 		if (
-			$values->offsetExists('actualValue')
-			&& $values->offsetExists('expectedValue')
+			property_exists($values, 'actualValue')
+			&& property_exists($values, 'expectedValue')
 		) {
 			$actualValue = Utilities\ValueHelper::normalizeValue(
 				$property->getDataType(),
@@ -87,6 +91,9 @@ final class ConnectorPropertiesManager
 		return $createdState;
 	}
 
+	/**
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function update(
 		MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|Entities\Connectors\Properties\Dynamic $property,
 		States\ConnectorProperty $state,
@@ -129,6 +136,9 @@ final class ConnectorPropertiesManager
 		return $updatedState;
 	}
 
+	/**
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function delete(
 		MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|Entities\Connectors\Properties\Dynamic $property,
 		States\ConnectorProperty $state,

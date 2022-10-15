@@ -17,7 +17,8 @@ namespace FastyBird\DevicesModule\Models\Devices\Attributes;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
-use IPub\DoctrineCrud\Crud;
+use IPub\DoctrineCrud\Crud as DoctrineCrudCrud;
+use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette;
 use Nette\Utils;
 use function assert;
@@ -36,9 +37,9 @@ final class AttributesManager
 	use Nette\SmartObject;
 
 	/**
-	 * @param Crud\IEntityCrud<Entities\Devices\Attributes\Attribute> $entityCrud
+	 * @param DoctrineCrudCrud\IEntityCrud<Entities\Devices\Attributes\Attribute> $entityCrud
 	 */
-	public function __construct(private readonly Crud\IEntityCrud $entityCrud)
+	public function __construct(private readonly DoctrineCrudCrud\IEntityCrud $entityCrud)
 	{
 		// Entity CRUD for handling entities
 	}
@@ -53,6 +54,9 @@ final class AttributesManager
 		return $entity;
 	}
 
+	/**
+	 * @throws DoctrineCrudExceptions\InvalidArgumentException
+	 */
 	public function update(
 		Entities\Devices\Attributes\Attribute $entity,
 		Utils\ArrayHash $values,
@@ -64,6 +68,9 @@ final class AttributesManager
 		return $entity;
 	}
 
+	/**
+	 * @throws DoctrineCrudExceptions\InvalidArgumentException
+	 */
 	public function delete(Entities\Devices\Attributes\Attribute $entity): bool
 	{
 		// Delete entity from database

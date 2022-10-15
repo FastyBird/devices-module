@@ -63,6 +63,7 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	}
 
 	/**
+	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findById(
@@ -77,6 +78,7 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	}
 
 	/**
+	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findByIdentifier(
@@ -107,6 +109,7 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	 *
 	 * @phpstan-return ($type is null ? Array<int, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty> : Array<int, T>)
 	 *
+	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function findAllByConnector(
@@ -159,9 +162,9 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 		} else {
 			$ids = $id;
 
-			foreach ($ids as $id) {
-				if (array_key_exists($id->toString(), $this->entities)) {
-					unset($this->entities[$id->toString()]);
+			foreach ($ids as $subId) {
+				if (array_key_exists($subId->toString(), $this->entities)) {
+					unset($this->entities[$subId->toString()]);
 				}
 			}
 		}
@@ -175,6 +178,7 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	/**
 	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ConnectorVariableProperty|MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty>
 	 *
+	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
 	 */
 	public function getIterator(): RecursiveArrayIterator
@@ -194,6 +198,7 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	/**
 	 * @param Array<string, mixed> $data
 	 *
+	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function getEntity(

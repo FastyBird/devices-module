@@ -20,7 +20,6 @@ use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
-use Throwable;
 
 /**
  * @ORM\Entity
@@ -67,9 +66,6 @@ class Control implements Entities\Entity,
 	 */
 	private Entities\Connectors\Connector $connector;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(string $name, Entities\Connectors\Connector $connector)
 	{
 		$this->id = Uuid\Uuid::uuid4();

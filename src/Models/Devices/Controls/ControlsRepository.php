@@ -18,9 +18,9 @@ namespace FastyBird\DevicesModule\Models\Devices\Controls;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use Throwable;
 use function is_array;
@@ -45,14 +45,19 @@ final class ControlsRepository
 	{
 	}
 
+	/**
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
+	 */
 	public function findOneBy(Queries\FindDeviceControls $queryObject): Entities\Devices\Controls\Control|null
 	{
 		return $queryObject->fetchOne($this->getRepository());
 	}
 
 	/**
-	 * @return Array<Entities\Devices\Controls\Control>
+	 * @phpstan-return Array<Entities\Devices\Controls\Control>
 	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws Throwable
 	 */
 	public function findAllBy(Queries\FindDeviceControls $queryObject): array
@@ -72,16 +77,15 @@ final class ControlsRepository
 
 	/**
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\Control>
+	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function getResultSet(
 		Queries\FindDeviceControls $queryObject,
 	): DoctrineOrmQuery\ResultSet
 	{
+		/** @var DoctrineOrmQuery\ResultSet<Entities\Devices\Controls\Control> $result */
 		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
-		}
 
 		return $result;
 	}
@@ -96,10 +100,6 @@ final class ControlsRepository
 		if ($this->repository === null) {
 			/** @var ORM\EntityRepository<Entities\Devices\Controls\Control> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
-
-			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidState('Entity repository could not be loaded');
-			}
 
 			$this->repository = $repository;
 		}

@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Subscribers;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Events;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
 use FastyBird\Exchange\Entities as ExchangeEntities;
@@ -178,7 +179,7 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 				Utils\Json::encode(
 					array_merge(
 						$property->toArray(),
-						$state ? $state->toArray() : [],
+						$state?->toArray() ?? [],
 					),
 				),
 				$routingKey,
@@ -187,6 +188,7 @@ final class DynamicProperties implements EventDispatcher\EventSubscriberInterfac
 	}
 
 	/**
+	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
 	 */
 	private function findParent(

@@ -16,6 +16,7 @@
 namespace FastyBird\DevicesModule\Schemas\Devices\Properties;
 
 use FastyBird\DevicesModule\Entities;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
@@ -50,18 +51,22 @@ final class Variable extends Property
 	}
 
 	/**
-	 * @return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 * @phpstan-param Entities\Devices\Properties\Variable $resource
+	 *
+	 * @phpstan-return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 *
+	 * @throws Exceptions\InvalidState
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$property,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
-		return array_merge((array) parent::getAttributes($property, $context), [
-			'value' => Utilities\ValueHelper::flattenValue($property->getValue()),
-			'default' => Utilities\ValueHelper::flattenValue($property->getDefault()),
+		return array_merge((array) parent::getAttributes($resource, $context), [
+			'value' => Utilities\ValueHelper::flattenValue($resource->getValue()),
+			'default' => Utilities\ValueHelper::flattenValue($resource->getDefault()),
 		]);
 	}
 

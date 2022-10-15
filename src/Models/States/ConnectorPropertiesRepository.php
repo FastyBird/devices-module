@@ -39,6 +39,9 @@ final class ConnectorPropertiesRepository
 	{
 	}
 
+	/**
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function findOne(
 		MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|Entities\Connectors\Properties\Dynamic $property,
 	): States\ConnectorProperty|null
@@ -50,6 +53,9 @@ final class ConnectorPropertiesRepository
 		return $this->repository->findOne($property);
 	}
 
+	/**
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function findOneById(
 		Uuid\UuidInterface $id,
 	): States\ConnectorProperty|null

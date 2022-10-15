@@ -58,45 +58,45 @@ abstract class Property extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $property
+	 * @phpstan-return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$property,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
-			'identifier' => $property->getIdentifier(),
-			'name' => $property->getName(),
-			'settable' => $property->isSettable(),
-			'queryable' => $property->isQueryable(),
-			'data_type' => strval($property->getDataType()->getValue()),
-			'unit' => $property->getUnit(),
-			'format' => $property->getFormat()?->toArray(),
-			'invalid' => $property->getInvalid(),
-			'number_of_decimals' => $property->getNumberOfDecimals(),
+			'identifier' => $resource->getIdentifier(),
+			'name' => $resource->getName(),
+			'settable' => $resource->isSettable(),
+			'queryable' => $resource->isQueryable(),
+			'data_type' => strval($resource->getDataType()->getValue()),
+			'unit' => $resource->getUnit(),
+			'format' => $resource->getFormat()?->toArray(),
+			'invalid' => $resource->getInvalid(),
+			'number_of_decimals' => $resource->getNumberOfDecimals(),
 		];
 	}
 
 	/**
-	 * @phpstan-param T $property
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getSelfLink($property): JsonApi\Contracts\Schema\LinkInterface
+	public function getSelfLink($resource): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
 			false,
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY,
 				[
-					Router\Routes::URL_DEVICE_ID => $property->getChannel()->getDevice()->getPlainId(),
-					Router\Routes::URL_CHANNEL_ID => $property->getChannel()->getPlainId(),
-					Router\Routes::URL_ITEM_ID => $property->getPlainId(),
+					Router\Routes::URL_DEVICE_ID => $resource->getChannel()->getDevice()->getPlainId(),
+					Router\Routes::URL_CHANNEL_ID => $resource->getChannel()->getPlainId(),
+					Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 				],
 			),
 			false,
@@ -104,32 +104,32 @@ abstract class Property extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, mixed>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $property
+	 * @phpstan-return iterable<string, mixed>
 	 *
 	 * @throws Throwable
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
-		$property,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_CHANNEL => [
-				self::RELATIONSHIP_DATA => $property->getChannel(),
+				self::RELATIONSHIP_DATA => $resource->getChannel(),
 				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_PARENT => [
-				self::RELATIONSHIP_DATA => $property->getParent(),
+				self::RELATIONSHIP_DATA => $resource->getParent(),
 				self::RELATIONSHIP_LINKS_SELF => true,
-				self::RELATIONSHIP_LINKS_RELATED => $property->getParent() !== null,
+				self::RELATIONSHIP_LINKS_RELATED => $resource->getParent() !== null,
 			],
 			self::RELATIONSHIPS_CHILDREN => [
-				self::RELATIONSHIP_DATA => $this->getChildren($property),
+				self::RELATIONSHIP_DATA => $this->getChildren($resource),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -137,12 +137,12 @@ abstract class Property extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @phpstan-param T $property
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipRelatedLink(
-		$property,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -152,21 +152,21 @@ abstract class Property extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL,
 					[
-						Router\Routes::URL_DEVICE_ID => $property->getChannel()->getDevice()->getPlainId(),
-						Router\Routes::URL_ITEM_ID => $property->getChannel()->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getChannel()->getPlainId(),
 					],
 				),
 				false,
 			);
-		} elseif ($name === self::RELATIONSHIPS_PARENT && $property->getParent() !== null) {
+		} elseif ($name === self::RELATIONSHIPS_PARENT && $resource->getParent() !== null) {
 			return new JsonApi\Schema\Link(
 				false,
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY,
 					[
-						Router\Routes::URL_DEVICE_ID => $property->getChannel()->getDevice()->getPlainId(),
-						Router\Routes::URL_CHANNEL_ID => $property->getChannel()->getPlainId(),
-						Router\Routes::URL_ITEM_ID => $property->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID => $resource->getChannel()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 					],
 				),
 				false,
@@ -177,28 +177,28 @@ abstract class Property extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_CHILDREN,
 					[
-						Router\Routes::URL_DEVICE_ID => $property->getChannel()->getDevice()->getPlainId(),
-						Router\Routes::URL_CHANNEL_ID => $property->getChannel()->getPlainId(),
-						Router\Routes::URL_PROPERTY_ID => $property->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID => $resource->getChannel()->getPlainId(),
+						Router\Routes::URL_PROPERTY_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($property->getChildren()),
+					'count' => count($resource->getChildren()),
 				],
 			);
 		}
 
-		return parent::getRelationshipRelatedLink($property, $name);
+		return parent::getRelationshipRelatedLink($resource, $name);
 	}
 
 	/**
-	 * @phpstan-param T $property
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipSelfLink(
-		$property,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -211,9 +211,9 @@ abstract class Property extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL_PROPERTY_RELATIONSHIP,
 					[
-						Router\Routes::URL_DEVICE_ID => $property->getChannel()->getDevice()->getPlainId(),
-						Router\Routes::URL_CHANNEL_ID => $property->getChannel()->getPlainId(),
-						Router\Routes::URL_ITEM_ID => $property->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_CHANNEL_ID => $resource->getChannel()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 						Router\Routes::RELATION_ENTITY => $name,
 
 					],
@@ -222,11 +222,11 @@ abstract class Property extends JsonApiSchemas\JsonApi
 			);
 		}
 
-		return parent::getRelationshipSelfLink($property, $name);
+		return parent::getRelationshipSelfLink($resource, $name);
 	}
 
 	/**
-	 * @return Array<Entities\Channels\Properties\Property>
+	 * @phpstan-return Array<Entities\Channels\Properties\Property>
 	 *
 	 * @throws Throwable
 	 */

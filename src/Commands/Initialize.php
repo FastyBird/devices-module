@@ -50,6 +50,9 @@ class Initialize extends Console\Command\Command
 		parent::__construct($name);
 	}
 
+	/**
+	 * @throws Console\Exception\InvalidArgumentException
+	 */
 	protected function configure(): void
 	{
 		$this
@@ -75,6 +78,9 @@ class Initialize extends Console\Command\Command
 			);
 	}
 
+	/**
+	 * @throws Console\Exception\InvalidArgumentException
+	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$symfonyApp = $this->getApplication();
@@ -85,19 +91,19 @@ class Initialize extends Console\Command\Command
 
 		$io = new Style\SymfonyStyle($input, $output);
 
-		if (!$input->getOption('quiet')) {
+		if ($input->getOption('quiet') === false) {
 			$io->title('FB devices module - initialization');
 
 			$io->note('This action will create|update module database structure and build module configuration.');
 		}
 
-		if (!$input->getOption('no-confirm')) {
+		if ($input->getOption('no-confirm') === false) {
 			$question = new Console\Question\ConfirmationQuestion(
 				'Would you like to continue?',
 				false,
 			);
 
-			$continue = $io->askQuestion($question);
+			$continue = (bool) $io->askQuestion($question);
 
 			if (!$continue) {
 				return Console\Command\Command::SUCCESS;
@@ -105,15 +111,15 @@ class Initialize extends Console\Command\Command
 		}
 
 		try {
-			if ($input->getOption('database')) {
+			if ($input->getOption('database') === true) {
 				$this->initializeDatabase($io, $input, $output);
 			}
 
-			if ($input->getOption('data-storage')) {
+			if ($input->getOption('data-storage') === true) {
 				$this->initializeDataStorage($io, $input);
 			}
 
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->success('Devices module has been successfully initialized and can be now used.');
 			}
 
@@ -129,7 +135,7 @@ class Initialize extends Console\Command\Command
 				],
 			]);
 
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->error('Something went wrong, initialization could not be finished. Error was logged.');
 			}
 
@@ -138,6 +144,7 @@ class Initialize extends Console\Command\Command
 	}
 
 	/**
+	 * @throws Console\Exception\InvalidArgumentException
 	 * @throws Console\Exception\ExceptionInterface
 	 */
 	private function initializeDatabase(
@@ -152,7 +159,7 @@ class Initialize extends Console\Command\Command
 			return;
 		}
 
-		if (!$input->getOption('quiet')) {
+		if ($input->getOption('quiet') === false) {
 			$io->section('Preparing module database');
 		}
 
@@ -163,7 +170,7 @@ class Initialize extends Console\Command\Command
 		]), $output);
 
 		if ($result !== Console\Command\Command::SUCCESS) {
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->error('Something went wrong, initialization could not be finished.');
 			}
 
@@ -177,28 +184,31 @@ class Initialize extends Console\Command\Command
 		]), $output);
 
 		if ($result !== 0) {
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->error('Something went wrong, database initialization could not be finished.');
 			}
 
 			return;
 		}
 
-		if (!$input->getOption('quiet')) {
+		if ($input->getOption('quiet') === false) {
 			$io->success('Devices module database has been successfully initialized.');
 		}
 	}
 
+	/**
+	 * @throws Console\Exception\InvalidArgumentException
+	 */
 	private function initializeDataStorage(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
-		if (!$input->getOption('quiet')) {
+		if ($input->getOption('quiet') === false) {
 			$io->section('Preparing module data storage');
 		}
 
 		try {
 			$this->writer->write();
 
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->success('Devices module data storage has been successfully initialized.');
 			}
 
@@ -214,7 +224,7 @@ class Initialize extends Console\Command\Command
 				],
 			]);
 
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->error(
 					'Something went wrong, data storage initialization could not be finished. Error was logged.',
 				);

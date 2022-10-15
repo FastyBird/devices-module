@@ -18,9 +18,9 @@ namespace FastyBird\DevicesModule\Models\Channels\Properties;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use Throwable;
 use function is_array;
@@ -47,6 +47,9 @@ final class PropertiesRepository
 
 	/**
 	 * @param class-string $type
+	 *
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function findOneBy(
 		Queries\FindChannelProperties $queryObject,
@@ -57,10 +60,11 @@ final class PropertiesRepository
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param class-string $type
 	 *
-	 * @return Array<Entities\Channels\Properties\Property>
+	 * @phpstan-return Array<Entities\Channels\Properties\Property>
 	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws Throwable
 	 */
 	public function findAllBy(
@@ -85,17 +89,16 @@ final class PropertiesRepository
 	 * @phpstan-param  class-string $type
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property>
+	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function getResultSet(
 		Queries\FindChannelProperties $queryObject,
 		string $type = Entities\Channels\Properties\Property::class,
 	): DoctrineOrmQuery\ResultSet
 	{
+		/** @var DoctrineOrmQuery\ResultSet<Entities\Channels\Properties\Property> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
-		}
 
 		return $result;
 	}
@@ -110,10 +113,6 @@ final class PropertiesRepository
 		if (!isset($this->repository[$type])) {
 			/** @var ORM\EntityRepository<Entities\Channels\Properties\Property> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
-
-			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidState('Entity repository could not be loaded');
-			}
 
 			$this->repository[$type] = $repository;
 		}

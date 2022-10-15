@@ -23,7 +23,6 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineDynamicDiscriminatorMap\Entities as DoctrineDynamicDiscriminatorMapEntities;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
-use Throwable;
 
 /**
  * @ORM\Entity
@@ -118,9 +117,6 @@ abstract class Connector implements Entities\Entity,
 	 */
 	protected Common\Collections\Collection $controls;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(
 		string $identifier,
 		Uuid\UuidInterface|null $id = null,
@@ -197,10 +193,8 @@ abstract class Connector implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($properties as $entity) {
-			if ($this->properties->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->properties->add($entity);
-			}
+			// ...and assign them to collection
+			$this->properties->add($entity);
 		}
 	}
 
@@ -262,10 +256,8 @@ abstract class Connector implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($controls as $entity) {
-			if ($this->controls->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->controls->add($entity);
-			}
+			// ...and assign them to collection
+			$this->controls->add($entity);
 		}
 	}
 

@@ -34,6 +34,7 @@ use Nette\Utils;
 use Psr\Http\Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log;
+use RuntimeException;
 use stdClass;
 use function array_key_exists;
 use function in_array;
@@ -127,6 +128,7 @@ abstract class BaseV1
 
 	/**
 	 * @throws JsonApiExceptions\JsonApi
+	 * @throws RuntimeException
 	 */
 	protected function createDocument(Message\ServerRequestInterface $request): JsonAPIDocument\IDocument
 	{
@@ -186,6 +188,9 @@ abstract class BaseV1
 		return true;
 	}
 
+	/**
+	 * @throws Exceptions\Runtime
+	 */
 	protected function getOrmConnection(): Connection
 	{
 		$connection = $this->managerRegistry->getConnection();

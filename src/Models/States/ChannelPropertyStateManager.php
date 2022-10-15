@@ -15,9 +15,10 @@
 
 namespace FastyBird\DevicesModule\Models\States;
 
-use FastyBird\DevicesModule\Exceptions as DevicesModuleExceptions;
-use FastyBird\DevicesModule\Models as DevicesModuleModels;
+use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
 use Nette\Utils;
 use Psr\Log;
@@ -39,9 +40,9 @@ final class ChannelPropertyStateManager
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private readonly DevicesModuleModels\DataStorage\ChannelsRepository $channelsRepository,
-		private readonly DevicesModuleModels\States\ChannelPropertiesRepository $channelPropertyStateRepository,
-		private readonly DevicesModuleModels\States\ChannelPropertiesManager $channelPropertiesStatesManager,
+		private readonly Models\DataStorage\ChannelsRepository $channelsRepository,
+		private readonly Models\States\ChannelPropertiesRepository $channelPropertyStateRepository,
+		private readonly Models\States\ChannelPropertiesManager $channelPropertiesStatesManager,
 		Log\LoggerInterface|null $logger,
 	)
 	{
@@ -49,16 +50,17 @@ final class ChannelPropertyStateManager
 	}
 
 	/**
+	 * @throws Exceptions\InvalidState
 	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	public function setValue(
-		Metadata\Entities\DevicesModule\ChannelDynamicProperty $property,
+		MetadataEntities\DevicesModule\ChannelDynamicProperty $property,
 		Utils\ArrayHash $data,
 	): void
 	{
 		try {
 			$propertyState = $this->channelPropertyStateRepository->findOne($property);
-		} catch (DevicesModuleExceptions\NotImplemented) {
+		} catch (Exceptions\NotImplemented) {
 			$this->logger->warning(
 				'DynamicProperties repository is not configured. State could not be fetched',
 				[
@@ -125,7 +127,7 @@ final class ChannelPropertyStateManager
 					],
 				);
 			}
-		} catch (DevicesModuleExceptions\NotImplemented) {
+		} catch (Exceptions\NotImplemented) {
 			$this->logger->warning(
 				'DynamicProperties manager is not configured. State could not be saved',
 				[
@@ -137,12 +139,13 @@ final class ChannelPropertyStateManager
 	}
 
 	/**
-	 * @param Metadata\Entities\DevicesModule\ChannelDynamicProperty|Array<Metadata\Entities\DevicesModule\ChannelDynamicProperty> $property
+	 * @param MetadataEntities\DevicesModule\ChannelDynamicProperty|Array<MetadataEntities\DevicesModule\ChannelDynamicProperty> $property
 	 *
+	 * @throws Exceptions\InvalidState
 	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	public function setValidState(
-		Metadata\Entities\DevicesModule\ChannelDynamicProperty|array $property,
+		MetadataEntities\DevicesModule\ChannelDynamicProperty|array $property,
 		bool $state,
 	): void
 	{

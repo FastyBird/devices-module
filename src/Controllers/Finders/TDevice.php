@@ -20,6 +20,7 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use Fig\Http\Message\StatusCodeInterface;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette\Localization;
 use Ramsey\Uuid;
 
@@ -31,6 +32,8 @@ trait TDevice
 {
 
 	/**
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws JsonApiExceptions\JsonApi
 	 */
 	protected function findDevice(string $id): Entities\Devices\Device

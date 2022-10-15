@@ -51,39 +51,39 @@ abstract class Connector extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, (string|Array<string>|bool|null)>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $connector
+	 * @phpstan-return iterable<string, (string|Array<string>|bool|null)>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$connector,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
-			'identifier' => $connector->getIdentifier(),
-			'name' => $connector->getName(),
-			'comment' => $connector->getComment(),
+			'identifier' => $resource->getIdentifier(),
+			'name' => $resource->getName(),
+			'comment' => $resource->getComment(),
 
-			'enabled' => $connector->isEnabled(),
+			'enabled' => $resource->isEnabled(),
 		];
 	}
 
 	/**
-	 * @phpstan-param T $connector
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getSelfLink($connector): JsonApi\Contracts\Schema\LinkInterface
+	public function getSelfLink($resource): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
 			false,
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 				[
-					Router\Routes::URL_ITEM_ID => $connector->getPlainId(),
+					Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 				],
 			),
 			false,
@@ -91,30 +91,30 @@ abstract class Connector extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, mixed>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $connector
+	 * @phpstan-return iterable<string, mixed>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
-		$connector,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_DEVICES => [
-				self::RELATIONSHIP_DATA => $connector->getDevices(),
+				self::RELATIONSHIP_DATA => $resource->getDevices(),
 				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => false,
 			],
 			self::RELATIONSHIPS_PROPERTIES => [
-				self::RELATIONSHIP_DATA => $connector->getProperties(),
+				self::RELATIONSHIP_DATA => $resource->getProperties(),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_CONTROLS => [
-				self::RELATIONSHIP_DATA => $connector->getControls(),
+				self::RELATIONSHIP_DATA => $resource->getControls(),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -122,12 +122,12 @@ abstract class Connector extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @phpstan-param T $connector
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipRelatedLink(
-		$connector,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -137,12 +137,12 @@ abstract class Connector extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR_PROPERTIES,
 					[
-						Router\Routes::URL_CONNECTOR_ID => $connector->getPlainId(),
+						Router\Routes::URL_CONNECTOR_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($connector->getProperties()),
+					'count' => count($resource->getProperties()),
 				],
 			);
 		} elseif ($name === self::RELATIONSHIPS_CONTROLS) {
@@ -151,26 +151,26 @@ abstract class Connector extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR_CONTROLS,
 					[
-						Router\Routes::URL_CONNECTOR_ID => $connector->getPlainId(),
+						Router\Routes::URL_CONNECTOR_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($connector->getControls()),
+					'count' => count($resource->getControls()),
 				],
 			);
 		}
 
-		return parent::getRelationshipRelatedLink($connector, $name);
+		return parent::getRelationshipRelatedLink($resource, $name);
 	}
 
 	/**
-	 * @phpstan-param T $connector
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipSelfLink(
-		$connector,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -183,7 +183,7 @@ abstract class Connector extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR_RELATIONSHIP,
 					[
-						Router\Routes::URL_ITEM_ID => $connector->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 						Router\Routes::RELATION_ENTITY => $name,
 
 					],
@@ -192,7 +192,7 @@ abstract class Connector extends JsonApiSchemas\JsonApi
 			);
 		}
 
-		return parent::getRelationshipSelfLink($connector, $name);
+		return parent::getRelationshipSelfLink($resource, $name);
 	}
 
 }

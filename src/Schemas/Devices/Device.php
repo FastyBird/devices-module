@@ -66,39 +66,39 @@ abstract class Device extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, string|bool|null>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $device
+	 * @phpstan-return iterable<string, string|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$device,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
-			'identifier' => $device->getIdentifier(),
-			'name' => $device->getName(),
-			'comment' => $device->getComment(),
+			'identifier' => $resource->getIdentifier(),
+			'name' => $resource->getName(),
+			'comment' => $resource->getComment(),
 
-			'owner' => $device->getOwnerId(),
+			'owner' => $resource->getOwnerId(),
 		];
 	}
 
 	/**
-	 * @phpstan-param T $device
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getSelfLink($device): JsonApi\Contracts\Schema\LinkInterface
+	public function getSelfLink($resource): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
 			false,
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_DEVICE,
 				[
-					Router\Routes::URL_ITEM_ID => $device->getPlainId(),
+					Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 				],
 			),
 			false,
@@ -106,52 +106,52 @@ abstract class Device extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, mixed>
+	 * @phpstan-param T $resource
 	 *
-	 * @phpstan-param T $device
+	 * @phpstan-return iterable<string, mixed>
 	 *
 	 * @throws Throwable
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
-		$device,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_PROPERTIES => [
-				self::RELATIONSHIP_DATA => $device->getProperties(),
+				self::RELATIONSHIP_DATA => $resource->getProperties(),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_CONTROLS => [
-				self::RELATIONSHIP_DATA => $device->getControls(),
+				self::RELATIONSHIP_DATA => $resource->getControls(),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_ATTRIBUTES => [
-				self::RELATIONSHIP_DATA => $device->getAttributes(),
+				self::RELATIONSHIP_DATA => $resource->getAttributes(),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_CHANNELS => [
-				self::RELATIONSHIP_DATA => $this->getChannels($device),
+				self::RELATIONSHIP_DATA => $this->getChannels($resource),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_CONNECTOR => [
-				self::RELATIONSHIP_DATA => $device->getConnector(),
+				self::RELATIONSHIP_DATA => $resource->getConnector(),
 				self::RELATIONSHIP_LINKS_SELF => true,
-				self::RELATIONSHIP_LINKS_RELATED => $device->getConnector() !== null,
+				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_PARENTS => [
-				self::RELATIONSHIP_DATA => $this->getParents($device),
+				self::RELATIONSHIP_DATA => $this->getParents($resource),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
 			self::RELATIONSHIPS_CHILDREN => [
-				self::RELATIONSHIP_DATA => $this->getChildren($device),
+				self::RELATIONSHIP_DATA => $this->getChildren($resource),
 				self::RELATIONSHIP_LINKS_SELF => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -159,14 +159,12 @@ abstract class Device extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @phpstan-param T $device
-	 *
-	 * @throws Throwable
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipRelatedLink(
-		$device,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -176,12 +174,12 @@ abstract class Device extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_PROPERTIES,
 					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($device->getProperties()),
+					'count' => count($resource->getProperties()),
 				],
 			);
 		} elseif ($name === self::RELATIONSHIPS_CONTROLS) {
@@ -190,12 +188,12 @@ abstract class Device extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_CONTROLS,
 					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($device->getControls()),
+					'count' => count($resource->getControls()),
 				],
 			);
 		} elseif ($name === self::RELATIONSHIPS_ATTRIBUTES) {
@@ -204,12 +202,12 @@ abstract class Device extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_ATTRIBUTES,
 					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($device->getAttributes()),
+					'count' => count($resource->getAttributes()),
 				],
 			);
 		} elseif ($name === self::RELATIONSHIPS_CHANNELS) {
@@ -218,12 +216,12 @@ abstract class Device extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNELS,
 					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($device->getChannels()),
+					'count' => count($resource->getChannels()),
 				],
 			);
 		} elseif ($name === self::RELATIONSHIPS_PARENTS) {
@@ -232,12 +230,12 @@ abstract class Device extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_PARENTS,
 					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($this->getParents($device)),
+					'count' => count($this->getParents($resource)),
 				],
 			);
 		} elseif ($name === self::RELATIONSHIPS_CHILDREN) {
@@ -246,37 +244,37 @@ abstract class Device extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_CHILDREN,
 					[
-						Router\Routes::URL_DEVICE_ID => $device->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getPlainId(),
 					],
 				),
 				true,
 				[
-					'count' => count($this->getChildren($device)),
+					'count' => count($this->getChildren($resource)),
 				],
 			);
-		} elseif ($name === self::RELATIONSHIPS_CONNECTOR && $device->getConnector() !== null) {
+		} elseif ($name === self::RELATIONSHIPS_CONNECTOR) {
 			return new JsonApi\Schema\Link(
 				false,
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 					[
-						Router\Routes::URL_ITEM_ID => $device->getConnector()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getConnector()->getPlainId(),
 					],
 				),
 				false,
 			);
 		}
 
-		return parent::getRelationshipRelatedLink($device, $name);
+		return parent::getRelationshipRelatedLink($resource, $name);
 	}
 
 	/**
-	 * @phpstan-param T $device
+	 * @phpstan-param T $resource
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipSelfLink(
-		$device,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -294,7 +292,7 @@ abstract class Device extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE_RELATIONSHIP,
 					[
-						Router\Routes::URL_ITEM_ID => $device->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 						Router\Routes::RELATION_ENTITY => $name,
 
 					],
@@ -303,11 +301,11 @@ abstract class Device extends JsonApiSchemas\JsonApi
 			);
 		}
 
-		return parent::getRelationshipSelfLink($device, $name);
+		return parent::getRelationshipSelfLink($resource, $name);
 	}
 
 	/**
-	 * @return Array<Entities\Channels\Channel>
+	 * @phpstan-return Array<Entities\Channels\Channel>
 	 *
 	 * @throws Throwable
 	 */
@@ -320,9 +318,7 @@ abstract class Device extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return Array<Entities\Devices\Device>
-	 *
-	 * @throws Throwable
+	 * @phpstan-return Array<Entities\Devices\Device>
 	 */
 	private function getParents(Entities\Devices\Device $device): array
 	{
@@ -333,9 +329,7 @@ abstract class Device extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return Array<Entities\Devices\Device>
-	 *
-	 * @throws Throwable
+	 * @phpstan-return Array<Entities\Devices\Device>
 	 */
 	private function getChildren(Entities\Devices\Device $device): array
 	{

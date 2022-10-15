@@ -23,7 +23,6 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineDynamicDiscriminatorMap\Entities as DoctrineDynamicDiscriminatorMapEntities;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
-use Throwable;
 use function strval;
 
 /**
@@ -147,9 +146,6 @@ abstract class Device implements Entities\Entity,
 	 */
 	protected Entities\Connectors\Connector $connector;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(
 		string $identifier,
 		Entities\Connectors\Connector $connector,
@@ -231,10 +227,8 @@ abstract class Device implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($parents as $entity) {
-			if ($this->parents->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->parents->add($entity);
-			}
+			// ...and assign them to collection
+			$this->parents->add($entity);
 		}
 	}
 
@@ -269,10 +263,8 @@ abstract class Device implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($children as $entity) {
-			if ($this->children->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->children->add($entity);
-			}
+			// ...and assign them to collection
+			$this->children->add($entity);
 		}
 	}
 
@@ -311,10 +303,8 @@ abstract class Device implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($channels as $entity) {
-			if ($this->channels->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->channels->add($entity);
-			}
+			// ...and assign them to collection
+			$this->channels->add($entity);
 		}
 	}
 
@@ -369,10 +359,8 @@ abstract class Device implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($controls as $entity) {
-			if ($this->controls->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->controls->add($entity);
-			}
+			// ...and assign them to collection
+			$this->controls->add($entity);
 		}
 	}
 
@@ -427,10 +415,8 @@ abstract class Device implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($properties as $entity) {
-			if ($this->properties->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->properties->add($entity);
-			}
+			// ...and assign them to collection
+			$this->properties->add($entity);
 		}
 	}
 
@@ -487,10 +473,8 @@ abstract class Device implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($attributes as $entity) {
-			if ($this->attributes->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->attributes->add($entity);
-			}
+			// ...and assign them to collection
+			$this->attributes->add($entity);
 		}
 	}
 

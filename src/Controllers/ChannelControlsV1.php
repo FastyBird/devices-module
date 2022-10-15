@@ -140,7 +140,7 @@ final class ChannelControlsV1 extends BaseV1
 
 			if ($control !== null) {
 				if ($relationEntity === Schemas\Channels\Controls\Control::RELATIONSHIPS_CHANNEL) {
-					return $this->buildResponse($request, $response, $device);
+					return $this->buildResponse($request, $response, $control->getChannel());
 				}
 			} else {
 				throw new JsonApiExceptions\JsonApiError(

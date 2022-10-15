@@ -15,6 +15,7 @@
 
 namespace FastyBird\DevicesModule\Commands;
 
+use BadMethodCallException;
 use FastyBird\DateTimeFactory;
 use FastyBird\DevicesModule\Connectors;
 use FastyBird\DevicesModule\Consumers;
@@ -25,6 +26,7 @@ use FastyBird\Exchange\Consumer as ExchangeConsumer;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Psr\EventDispatcher as PsrEventDispatcher;
 use Psr\Log;
 use Ramsey\Uuid;
@@ -37,7 +39,6 @@ use Symfony\Component\Console\Style;
 use Throwable;
 use function array_search;
 use function array_values;
-use function assert;
 use function count;
 use function is_string;
 use const SIGINT;
@@ -93,6 +94,9 @@ class Connector extends Console\Command\Command
 		$this->factories->attach($factory, $type);
 	}
 
+	/**
+	 * @throws Console\Exception\InvalidArgumentException
+	 */
 	protected function configure(): void
 	{
 		$this
@@ -117,23 +121,26 @@ class Connector extends Console\Command\Command
 			);
 	}
 
+	/**
+	 * @throws Console\Exception\InvalidArgumentException
+	 */
 	protected function execute(Input\InputInterface $input, Output\OutputInterface $output): int
 	{
 		$io = new Style\SymfonyStyle($input, $output);
 
-		if (!$input->getOption('quiet')) {
+		if ($input->getOption('quiet') === false) {
 			$io->title('FB devices module - service');
 
 			$io->note('This action will run module services.');
 		}
 
-		if (!$input->getOption('no-confirm')) {
+		if ($input->getOption('no-confirm') === false) {
 			$question = new Console\Question\ConfirmationQuestion(
 				'Would you like to continue?',
 				false,
 			);
 
-			$continue = $io->askQuestion($question);
+			$continue = (bool) $io->askQuestion($question);
 
 			if (!$continue) {
 				return Console\Command\Command::SUCCESS;
@@ -170,7 +177,7 @@ class Connector extends Console\Command\Command
 				],
 			]);
 
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->error('Something went wrong, service could not be finished. Error was logged.');
 			}
 
@@ -179,12 +186,14 @@ class Connector extends Console\Command\Command
 	}
 
 	/**
+	 * @throws Console\Exception\InvalidArgumentException
+	 * @throws BadMethodCallException
 	 * @throws Exceptions\Terminate
 	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
-		if (!$input->getOption('quiet')) {
+		if ($input->getOption('quiet') === false) {
 			$io->section('Preparing connector');
 		}
 
@@ -202,7 +211,7 @@ class Connector extends Console\Command\Command
 				: $this->connectorsRepository->findByIdentifier($connectorId);
 
 			if ($connector === null) {
-				if (!$input->getOption('quiet')) {
+				if ($input->getOption('quiet') === false) {
 					$io->warning('Connector was not found in system');
 				}
 
@@ -212,13 +221,12 @@ class Connector extends Console\Command\Command
 			$connectors = [];
 
 			foreach ($this->connectorsRepository as $connector) {
-				$connectors[$connector->getIdentifier()] = $connector->getIdentifier() . $connector->getName()
-					? ' [' . $connector->getName() . ']'
-					: '';
+				$connectors[$connector->getIdentifier()] = $connector->getIdentifier() .
+					($connector->getName() !== null ? ' [' . $connector->getName() . ']' : '');
 			}
 
 			if (count($connectors) === 0) {
-				if (!$input->getOption('quiet')) {
+				if ($input->getOption('quiet') === false) {
 					$io->warning('No connectors registered in system');
 				}
 
@@ -235,7 +243,7 @@ class Connector extends Console\Command\Command
 			$connectorIdentifierKey = array_search($io->askQuestion($question), $connectors, true);
 
 			if ($connectorIdentifierKey === false) {
-				if (!$input->getOption('quiet')) {
+				if ($input->getOption('quiet') === false) {
 					$io->error('Something went wrong, connector could not be loaded');
 				}
 
@@ -250,7 +258,7 @@ class Connector extends Console\Command\Command
 			$connector = $this->connectorsRepository->findByIdentifier($connectorIdentifierKey);
 
 			if ($connector === null) {
-				if (!$input->getOption('quiet')) {
+				if ($input->getOption('quiet') === false) {
 					$io->error('Something went wrong, connector could not be loaded');
 				}
 
@@ -264,14 +272,14 @@ class Connector extends Console\Command\Command
 		}
 
 		if (!$connector->isEnabled()) {
-			if (!$input->getOption('quiet')) {
+			if ($input->getOption('quiet') === false) {
 				$io->warning('Connector is disabled. Disabled connector could not be executed');
 			}
 
 			return;
 		}
 
-		if (!$input->getOption('quiet')) {
+		if ($input->getOption('quiet') === false) {
 			$io->section('Initializing connector');
 		}
 
@@ -280,7 +288,6 @@ class Connector extends Console\Command\Command
 		$service = null;
 
 		foreach ($this->factories as $factory) {
-			assert($factory instanceof Connectors\ConnectorFactory);
 			if ($connector->getType() === $this->factories[$factory]) {
 				$service = $factory->create($connector);
 			}
@@ -378,6 +385,9 @@ class Connector extends Console\Command\Command
 	}
 
 	/**
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
+	 * @throws Exceptions\InvalidState
 	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	private function resetConnectorDevices(

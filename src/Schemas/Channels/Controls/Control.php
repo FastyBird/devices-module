@@ -23,7 +23,6 @@ use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
-use function assert;
 
 /**
  * Channel control entity schema
@@ -62,35 +61,37 @@ final class Control extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, string|bool|null>
+	 * @phpstan-param Entities\Channels\Controls\Control $resource
+	 *
+	 * @phpstan-return iterable<string, string|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$control,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
-		assert($control instanceof Entities\Channels\Controls\Control);
-
 		return [
-			'name' => $control->getName(),
+			'name' => $resource->getName(),
 		];
 	}
 
 	/**
+	 * @phpstan-param Entities\Channels\Controls\Control $resource
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getSelfLink($control): JsonApi\Contracts\Schema\LinkInterface
+	public function getSelfLink($resource): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
 			false,
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_CHANNEL_CONTROL,
 				[
-					Router\Routes::URL_DEVICE_ID => $control->getChannel()->getDevice()->getPlainId(),
-					Router\Routes::URL_CHANNEL_ID => $control->getChannel()->getPlainId(),
-					Router\Routes::URL_ITEM_ID => $control->getPlainId(),
+					Router\Routes::URL_DEVICE_ID => $resource->getChannel()->getDevice()->getPlainId(),
+					Router\Routes::URL_CHANNEL_ID => $resource->getChannel()->getPlainId(),
+					Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 				],
 			),
 			false,
@@ -98,18 +99,20 @@ final class Control extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, mixed>
+	 * @phpstan-param Entities\Channels\Controls\Control $resource
+	 *
+	 * @phpstan-return iterable<string, mixed>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
-		$control,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_CHANNEL => [
-				self::RELATIONSHIP_DATA => $control->getChannel(),
+				self::RELATIONSHIP_DATA => $resource->getChannel(),
 				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -117,10 +120,12 @@ final class Control extends JsonApiSchemas\JsonApi
 	}
 
 	/**
+	 * @phpstan-param Entities\Channels\Controls\Control $resource
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipRelatedLink(
-		$control,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -130,15 +135,15 @@ final class Control extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CHANNEL,
 					[
-						Router\Routes::URL_DEVICE_ID => $control->getChannel()->getDevice()->getPlainId(),
-						Router\Routes::URL_ITEM_ID => $control->getChannel()->getPlainId(),
+						Router\Routes::URL_DEVICE_ID => $resource->getChannel()->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getChannel()->getPlainId(),
 					],
 				),
 				false,
 			);
 		}
 
-		return parent::getRelationshipRelatedLink($control, $name);
+		return parent::getRelationshipRelatedLink($resource, $name);
 	}
 
 }

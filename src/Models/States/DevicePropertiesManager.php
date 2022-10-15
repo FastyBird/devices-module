@@ -25,6 +25,7 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
+use function property_exists;
 use function strval;
 
 /**
@@ -47,6 +48,10 @@ final class DevicePropertiesManager
 	{
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function create(
 		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		Utils\ArrayHash $values,
@@ -61,8 +66,8 @@ final class DevicePropertiesManager
 		}
 
 		if (
-			$values->offsetExists('actualValue')
-			&& $values->offsetExists('expectedValue')
+			property_exists($values, 'actualValue')
+			&& property_exists($values, 'expectedValue')
 		) {
 			$actualValue = Utilities\ValueHelper::normalizeValue(
 				$property->getDataType(),
@@ -91,6 +96,10 @@ final class DevicePropertiesManager
 		return $createdState;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function update(
 		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		States\DeviceProperty $state,
@@ -137,6 +146,10 @@ final class DevicePropertiesManager
 		return $updatedState;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function delete(
 		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 		States\DeviceProperty $state,

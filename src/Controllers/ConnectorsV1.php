@@ -25,6 +25,7 @@ use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use FastyBird\Metadata;
 use Fig\Http\Message\StatusCodeInterface;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
@@ -177,6 +178,8 @@ class ConnectorsV1 extends BaseV1
 	}
 
 	/**
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws JsonApiExceptions\JsonApi
 	 */
 	protected function findConnector(string $id): Entities\Connectors\Connector

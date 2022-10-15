@@ -62,49 +62,53 @@ final class Mapped extends Property
 	}
 
 	/**
-	 * @return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 * @phpstan-param Entities\Channels\Properties\Mapped $resource
+	 *
+	 * @phpstan-return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 *
+	 * @throws Exceptions\InvalidState
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$property,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		try {
-			$state = $this->propertiesStatesRepository->findOne($property);
+			$state = $this->propertiesStatesRepository->findOne($resource);
 
 		} catch (Exceptions\NotImplemented) {
 			$state = null;
 		}
 
-		if ($property->getParent() instanceof Entities\Channels\Properties\Dynamic) {
+		if ($resource->getParent() instanceof Entities\Channels\Properties\Dynamic) {
 			$actualValue = $state !== null
 				? Utilities\ValueHelper::normalizeValue(
-					$property->getDataType(),
+					$resource->getDataType(),
 					$state->getActualValue(),
-					$property->getFormat(),
-					$property->getInvalid(),
+					$resource->getFormat(),
+					$resource->getInvalid(),
 				)
 				: null;
 			$expectedValue = $state !== null
 				? Utilities\ValueHelper::normalizeValue(
-					$property->getDataType(),
+					$resource->getDataType(),
 					$state->getExpectedValue(),
-					$property->getFormat(),
-					$property->getInvalid(),
+					$resource->getFormat(),
+					$resource->getInvalid(),
 				)
 				: null;
 
-			return array_merge((array) parent::getAttributes($property, $context), [
+			return array_merge((array) parent::getAttributes($resource, $context), [
 				'actual_value' => Utilities\ValueHelper::flattenValue($actualValue),
 				'expected_value' => Utilities\ValueHelper::flattenValue($expectedValue),
 				'pending' => $state !== null && $state->isPending(),
 			]);
 		} else {
-			return array_merge((array) parent::getAttributes($property, $context), [
-				'value' => Utilities\ValueHelper::flattenValue($property->getValue()),
-				'default' => Utilities\ValueHelper::flattenValue($property->getDefault()),
+			return array_merge((array) parent::getAttributes($resource, $context), [
+				'value' => Utilities\ValueHelper::flattenValue($resource->getValue()),
+				'default' => Utilities\ValueHelper::flattenValue($resource->getDefault()),
 			]);
 		}
 	}

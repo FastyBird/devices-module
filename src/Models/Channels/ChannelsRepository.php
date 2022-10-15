@@ -18,12 +18,11 @@ namespace FastyBird\DevicesModule\Models\Channels;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use Throwable;
-use function assert;
 use function is_array;
 
 /**
@@ -46,18 +45,19 @@ final class ChannelsRepository
 	{
 	}
 
+	/**
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
+	 */
 	public function findOneBy(Queries\FindChannels $queryObject): Entities\Channels\Channel|null
 	{
-		/** @var mixed $channel */
-		$channel = $queryObject->fetchOne($this->getRepository());
-		assert($channel instanceof Entities\Channels\Channel || $channel === null);
-
-		return $channel;
+		return $queryObject->fetchOne($this->getRepository());
 	}
 
 	/**
-	 * @return Array<Entities\Channels\Channel>
+	 * @phpstan-return Array<Entities\Channels\Channel>
 	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws Throwable
 	 */
 	public function findAllBy(Queries\FindChannels $queryObject): array
@@ -77,16 +77,15 @@ final class ChannelsRepository
 
 	/**
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Channels\Channel>
+	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function getResultSet(
 		Queries\FindChannels $queryObject,
 	): DoctrineOrmQuery\ResultSet
 	{
+		/** @var DoctrineOrmQuery\ResultSet<Entities\Channels\Channel> $result */
 		$result = $queryObject->fetch($this->getRepository());
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
-		}
 
 		return $result;
 	}
@@ -101,10 +100,6 @@ final class ChannelsRepository
 		if ($this->repository === null) {
 			/** @var ORM\EntityRepository<Entities\Channels\Channel> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
-
-			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidState('Entity repository could not be loaded');
-			}
 
 			$this->repository = $repository;
 		}

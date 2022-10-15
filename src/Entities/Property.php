@@ -27,7 +27,6 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Nette\Utils;
 use Ramsey\Uuid;
-use Throwable;
 use function array_map;
 use function array_merge;
 use function floatval;
@@ -129,9 +128,6 @@ abstract class Property implements Entity,
 	 */
 	protected string|null $default = null;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(
 		string $identifier,
 		Uuid\UuidInterface|null $id = null,
@@ -172,6 +168,9 @@ abstract class Property implements Entity,
 		return $this->settable;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidArgument
+	 */
 	public function setSettable(bool $settable): void
 	{
 		if ($settable && $this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
@@ -186,6 +185,9 @@ abstract class Property implements Entity,
 		return $this->queryable;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidArgument
+	 */
 	public function setQueryable(bool $queryable): void
 	{
 		if ($queryable && $this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
@@ -222,6 +224,8 @@ abstract class Property implements Entity,
 
 	/**
 	 * @param string|Array<int, string>|Array<int, string|int|float|Array<int, string|int|float>|Utils\ArrayHash|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|Utils\ArrayHash|null>>|null $format
+	 *
+	 * @throws Exceptions\InvalidArgument
 	 */
 	public function setFormat(array|string|null $format): void
 	{
@@ -354,6 +358,9 @@ abstract class Property implements Entity,
 		$this->numberOfDecimals = $numberOfDecimals;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
@@ -374,6 +381,9 @@ abstract class Property implements Entity,
 		);
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setValue(string|null $value): void
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
@@ -385,6 +395,9 @@ abstract class Property implements Entity,
 		$this->value = $value;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
@@ -405,6 +418,9 @@ abstract class Property implements Entity,
 		);
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setDefault(string|null $default): void
 	{
 		if (!$this->getType()->equalsValue(MetadataTypes\PropertyType::TYPE_VARIABLE)) {
@@ -418,6 +434,8 @@ abstract class Property implements Entity,
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws Exceptions\InvalidState
 	 */
 	public function toArray(): array
 	{

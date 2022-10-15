@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Controllers;
 use Doctrine;
 use Exception;
 use FastyBird\DevicesModule\Controllers;
+use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
@@ -25,13 +26,14 @@ use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Exceptions as JsonApiExceptions;
 use FastyBird\Metadata;
 use Fig\Http\Message\StatusCodeInterface;
+use InvalidArgumentException;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette\Utils;
 use Psr\Http\Message;
 use Throwable;
 use function end;
 use function explode;
-use function is_string;
 use function preg_match;
 use function strval;
 
@@ -161,7 +163,7 @@ final class ChannelsV1 extends BaseV1
 					$columnParts = explode('.', $match['key']);
 					$columnKey = end($columnParts);
 
-					if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'channel_')) {
+					if (Utils\Strings::startsWith($columnKey, 'channel_')) {
 						throw new JsonApiExceptions\JsonApiError(
 							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 							$this->translator->translate('//devices-module.base.messages.uniqueAttribute.heading'),
@@ -291,6 +293,10 @@ final class ChannelsV1 extends BaseV1
 
 	/**
 	 * @throws Doctrine\DBAL\Exception
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
+	 * @throws Exceptions\Runtime
+	 * @throws InvalidArgumentException
 	 * @throws JsonApiExceptions\JsonApi
 	 * @throws JsonApiExceptions\JsonApiError
 	 *

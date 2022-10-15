@@ -61,17 +61,19 @@ final class Dynamic extends Property
 	}
 
 	/**
-	 * @return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 * @phpstan-param Entities\Connectors\Properties\Dynamic $resource
+	 *
+	 * @phpstan-return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$property,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		try {
-			$state = $this->propertiesStatesRepository->findOne($property);
+			$state = $this->propertiesStatesRepository->findOne($resource);
 
 		} catch (Exceptions\NotImplemented) {
 			$state = null;
@@ -79,22 +81,22 @@ final class Dynamic extends Property
 
 		$actualValue = $state !== null
 			? Utilities\ValueHelper::normalizeValue(
-				$property->getDataType(),
+				$resource->getDataType(),
 				$state->getActualValue(),
-				$property->getFormat(),
-				$property->getInvalid(),
+				$resource->getFormat(),
+				$resource->getInvalid(),
 			)
 			: null;
 		$expectedValue = $state !== null
 			? Utilities\ValueHelper::normalizeValue(
-				$property->getDataType(),
+				$resource->getDataType(),
 				$state->getExpectedValue(),
-				$property->getFormat(),
-				$property->getInvalid(),
+				$resource->getFormat(),
+				$resource->getInvalid(),
 			)
 			: null;
 
-		return array_merge((array) parent::getAttributes($property, $context), [
+		return array_merge((array) parent::getAttributes($resource, $context), [
 			'actual_value' => Utilities\ValueHelper::flattenValue($actualValue),
 			'expected_value' => Utilities\ValueHelper::flattenValue($expectedValue),
 			'pending' => $state !== null && $state->isPending(),

@@ -21,7 +21,6 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Types as MetadataTypes;
 use Ramsey\Uuid;
-use Throwable;
 use function array_merge;
 
 /**
@@ -30,9 +29,6 @@ use function array_merge;
 class Mapped extends Property
 {
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(
 		Entities\Channels\Channel $channel,
 		Entities\Channels\Properties\Property $parent,
@@ -50,6 +46,9 @@ class Mapped extends Property
 		return MetadataTypes\PropertyType::get(MetadataTypes\PropertyType::TYPE_MAPPED);
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function getParent(): Property
 	{
 		if ($this->parent === null) {

@@ -114,9 +114,9 @@ final class ConnectorsRepository implements Countable, IteratorAggregate
 		} else {
 			$ids = $id;
 
-			foreach ($ids as $id) {
-				if (array_key_exists($id->toString(), $this->entities)) {
-					unset($this->entities[$id->toString()]);
+			foreach ($ids as $subId) {
+				if (array_key_exists($subId->toString(), $this->entities)) {
+					unset($this->entities[$subId->toString()]);
 				}
 			}
 		}

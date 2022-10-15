@@ -18,12 +18,11 @@ namespace FastyBird\DevicesModule\Models\Devices;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use Throwable;
-use function assert;
 use function is_array;
 
 /**
@@ -47,25 +46,25 @@ final class DevicesRepository
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param class-string $type
+	 *
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function findOneBy(
 		Queries\FindDevices $queryObject,
 		string $type = Entities\Devices\Device::class,
 	): Entities\Devices\Device|null
 	{
-		/** @var mixed $device */
-		$device = $queryObject->fetchOne($this->getRepository($type));
-		assert($device instanceof Entities\Devices\Device || $device === null);
-
-		return $device;
+		return $queryObject->fetchOne($this->getRepository($type));
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param class-string $type
 	 *
-	 * @return Array<Entities\Devices\Device>
+	 * @phpstan-return Array<Entities\Devices\Device>
 	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws Throwable
 	 */
 	public function findAllBy(
@@ -90,17 +89,16 @@ final class DevicesRepository
 	 * @phpstan-param class-string $type
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Devices\Device>
+	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function getResultSet(
 		Queries\FindDevices $queryObject,
 		string $type = Entities\Devices\Device::class,
 	): DoctrineOrmQuery\ResultSet
 	{
+		/** @var DoctrineOrmQuery\ResultSet<Entities\Devices\Device> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
-		}
 
 		return $result;
 	}
@@ -115,10 +113,6 @@ final class DevicesRepository
 		if (!isset($this->repository[$type])) {
 			/** @var ORM\EntityRepository<Entities\Devices\Device> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
-
-			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidState('Entity repository could not be loaded');
-			}
 
 			$this->repository[$type] = $repository;
 		}

@@ -23,7 +23,6 @@ use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
-use function assert;
 use function is_scalar;
 
 /**
@@ -63,33 +62,35 @@ final class Attribute extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, string|bool|null>
+	 * @phpstan-param Entities\Devices\Attributes\Attribute $resource
+	 *
+	 * @phpstan-return iterable<string, string|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$attribute,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
-		assert($attribute instanceof Entities\Devices\Attributes\Attribute);
-
 		return [
-			'identifier' => $attribute->getIdentifier(),
-			'name' => $attribute->getName(),
-			'content' => is_scalar($attribute->getContent(true)) || $attribute->getContent(
+			'identifier' => $resource->getIdentifier(),
+			'name' => $resource->getName(),
+			'content' => is_scalar($resource->getContent(true)) || $resource->getContent(
 				true,
-			) === null ? $attribute->getContent(
+			) === null ? $resource->getContent(
 				true,
-			) : (string) $attribute->getContent(),
+			) : (string) $resource->getContent(),
 		];
 	}
 
 	/**
+	 * @phpstan-param Entities\Devices\Attributes\Attribute $resource
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getSelfLink(
-		$attribute,
+		$resource,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
@@ -97,8 +98,8 @@ final class Attribute extends JsonApiSchemas\JsonApi
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_DEVICE_ATTRIBUTE,
 				[
-					Router\Routes::URL_DEVICE_ID => $attribute->getDevice()->getPlainId(),
-					Router\Routes::URL_ITEM_ID => $attribute->getPlainId(),
+					Router\Routes::URL_DEVICE_ID => $resource->getDevice()->getPlainId(),
+					Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 				],
 			),
 			false,
@@ -106,18 +107,20 @@ final class Attribute extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, mixed>
+	 * @phpstan-param Entities\Devices\Attributes\Attribute $resource
+	 *
+	 * @phpstan-return iterable<string, mixed>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
-		$attribute,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_DEVICE => [
-				self::RELATIONSHIP_DATA => $attribute->getDevice(),
+				self::RELATIONSHIP_DATA => $resource->getDevice(),
 				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -125,10 +128,12 @@ final class Attribute extends JsonApiSchemas\JsonApi
 	}
 
 	/**
+	 * @phpstan-param Entities\Devices\Attributes\Attribute $resource
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipRelatedLink(
-		$attribute,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -138,14 +143,14 @@ final class Attribute extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_DEVICE,
 					[
-						Router\Routes::URL_ITEM_ID => $attribute->getDevice()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getDevice()->getPlainId(),
 					],
 				),
 				false,
 			);
 		}
 
-		return parent::getRelationshipRelatedLink($attribute, $name);
+		return parent::getRelationshipRelatedLink($resource, $name);
 	}
 
 }

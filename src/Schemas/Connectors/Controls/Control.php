@@ -23,7 +23,6 @@ use FastyBird\JsonApi\Schemas as JsonApiSchemas;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
-use function assert;
 
 /**
  * Connector control entity schema
@@ -62,34 +61,36 @@ final class Control extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, string|bool|null>
+	 * @phpstan-param Entities\Connectors\Controls\Control $resource
+	 *
+	 * @phpstan-return iterable<string, string|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getAttributes(
-		$control,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
-		assert($control instanceof Entities\Connectors\Controls\Control);
-
 		return [
-			'name' => $control->getName(),
+			'name' => $resource->getName(),
 		];
 	}
 
 	/**
+	 * @phpstan-param Entities\Connectors\Controls\Control $resource
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
-	public function getSelfLink($control): JsonApi\Contracts\Schema\LinkInterface
+	public function getSelfLink($resource): JsonApi\Contracts\Schema\LinkInterface
 	{
 		return new JsonApi\Schema\Link(
 			false,
 			$this->router->urlFor(
 				DevicesModule\Constants::ROUTE_NAME_CONNECTOR_CONTROL,
 				[
-					Router\Routes::URL_CONNECTOR_ID => $control->getConnector()->getPlainId(),
-					Router\Routes::URL_ITEM_ID => $control->getPlainId(),
+					Router\Routes::URL_CONNECTOR_ID => $resource->getConnector()->getPlainId(),
+					Router\Routes::URL_ITEM_ID => $resource->getPlainId(),
 				],
 			),
 			false,
@@ -97,18 +98,20 @@ final class Control extends JsonApiSchemas\JsonApi
 	}
 
 	/**
-	 * @return iterable<string, mixed>
+	 * @phpstan-param Entities\Connectors\Controls\Control $resource
+	 *
+	 * @phpstan-return iterable<string, mixed>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationships(
-		$control,
+		$resource,
 		JsonApi\Contracts\Schema\ContextInterface $context,
 	): iterable
 	{
 		return [
 			self::RELATIONSHIPS_CONNECTOR => [
-				self::RELATIONSHIP_DATA => $control->getConnector(),
+				self::RELATIONSHIP_DATA => $resource->getConnector(),
 				self::RELATIONSHIP_LINKS_SELF => false,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
@@ -116,10 +119,12 @@ final class Control extends JsonApiSchemas\JsonApi
 	}
 
 	/**
+	 * @phpstan-param Entities\Connectors\Controls\Control $resource
+	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */
 	public function getRelationshipRelatedLink(
-		$control,
+		$resource,
 		string $name,
 	): JsonApi\Contracts\Schema\LinkInterface
 	{
@@ -129,14 +134,14 @@ final class Control extends JsonApiSchemas\JsonApi
 				$this->router->urlFor(
 					DevicesModule\Constants::ROUTE_NAME_CONNECTOR,
 					[
-						Router\Routes::URL_ITEM_ID => $control->getConnector()->getPlainId(),
+						Router\Routes::URL_ITEM_ID => $resource->getConnector()->getPlainId(),
 					],
 				),
 				false,
 			);
 		}
 
-		return parent::getRelationshipRelatedLink($control, $name);
+		return parent::getRelationshipRelatedLink($resource, $name);
 	}
 
 }

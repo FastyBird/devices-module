@@ -1,9 +1,10 @@
 .idea
 /dist
 /node_modules
+/var
 /vendor
 /composer.lock
-/yarn.lock
 /tests/*/output
 /tests/tmp
+/yarn.lock
 .DS_Store

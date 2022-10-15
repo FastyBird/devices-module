@@ -536,6 +536,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 			]);
 	}
 
+	/**
+	 * @throws Nette\DI\MissingServiceException
+	 */
 	public function beforeCompile(): void
 	{
 		parent::beforeCompile();
@@ -600,6 +603,9 @@ class DevicesModuleExtension extends DI\CompilerExtension
 		}
 	}
 
+	/**
+	 * @throws Nette\DI\MissingServiceException
+	 */
 	public function afterCompile(PhpGenerator\ClassType $class): void
 	{
 		$builder = $this->getContainerBuilder();

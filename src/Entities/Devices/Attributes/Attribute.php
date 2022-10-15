@@ -23,7 +23,6 @@ use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Nette\Utils;
 use Ramsey\Uuid;
-use Throwable;
 use function implode;
 use function is_scalar;
 use function is_string;
@@ -91,9 +90,6 @@ class Attribute implements Entities\Entity,
 	 */
 	private Entities\Devices\Device $device;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(string $identifier, Entities\Devices\Device $device)
 	{
 		$this->id = Uuid\Uuid::uuid4();
@@ -153,13 +149,13 @@ class Attribute implements Entities\Entity,
 			if (
 				$this->content !== null
 				&& (
-					preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', (string) $this->content) !== 0
-					|| preg_match('/^([0-9A-Fa-f]{12})$/', (string) $this->content) !== 0
+					preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $this->content) !== 0
+					|| preg_match('/^([0-9A-Fa-f]{12})$/', $this->content) !== 0
 				)
 			) {
 				return implode(
 					':',
-					str_split(Utils\Strings::lower(str_replace([':', '-'], '', (string) $this->content)), 2),
+					str_split(Utils\Strings::lower(str_replace([':', '-'], '', $this->content)), 2),
 				);
 			}
 
@@ -183,6 +179,9 @@ class Attribute implements Entities\Entity,
 		return $this->content;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidArgument
+	 */
 	public function setContent(
 		string|MetadataTypes\HardwareManufacturer|MetadataTypes\FirmwareManufacturer|MetadataTypes\DeviceModel|null $content,
 	): void

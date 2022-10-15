@@ -67,7 +67,6 @@ class Validator
 			$basePath = $router->getBasePath();
 
 			foreach ($router->getIterator() as $route) {
-				assert($route instanceof SlimRouterRouting\IRoute);
 				$r->addRoute($route->getMethods(), $basePath . $route->getPattern(), $route->getIdentifier());
 			}
 		};

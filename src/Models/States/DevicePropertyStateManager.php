@@ -15,9 +15,10 @@
 
 namespace FastyBird\DevicesModule\Models\States;
 
-use FastyBird\DevicesModule\Exceptions as DevicesModuleExceptions;
-use FastyBird\DevicesModule\Models as DevicesModuleModels;
+use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata;
+use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
 use Nette\Utils;
 use Psr\Log;
@@ -39,22 +40,25 @@ final class DevicePropertyStateManager
 	private Log\LoggerInterface $logger;
 
 	public function __construct(
-		private readonly DevicesModuleModels\States\DevicePropertiesRepository $devicePropertyStateRepository,
-		private readonly DevicesModuleModels\States\DevicePropertiesManager $devicePropertiesStatesManager,
+		private readonly Models\States\DevicePropertiesRepository $devicePropertyStateRepository,
+		private readonly Models\States\DevicePropertiesManager $devicePropertiesStatesManager,
 		Log\LoggerInterface|null $logger,
 	)
 	{
 		$this->logger = $logger ?? new Log\NullLogger();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setValue(
-		Metadata\Entities\DevicesModule\DeviceDynamicProperty $property,
+		MetadataEntities\DevicesModule\DeviceDynamicProperty $property,
 		Utils\ArrayHash $data,
 	): void
 	{
 		try {
 			$propertyState = $this->devicePropertyStateRepository->findOne($property);
-		} catch (DevicesModuleExceptions\NotImplemented) {
+		} catch (Exceptions\NotImplemented) {
 			$this->logger->warning(
 				'DynamicProperties repository is not configured. State could not be fetched',
 				[
@@ -111,7 +115,7 @@ final class DevicePropertyStateManager
 					],
 				);
 			}
-		} catch (DevicesModuleExceptions\NotImplemented) {
+		} catch (Exceptions\NotImplemented) {
 			$this->logger->warning(
 				'DynamicProperties manager is not configured. State could not be saved',
 				[
@@ -123,10 +127,12 @@ final class DevicePropertyStateManager
 	}
 
 	/**
-	 * @param Metadata\Entities\DevicesModule\DeviceDynamicProperty|Array<Metadata\Entities\DevicesModule\DeviceDynamicProperty> $property
+	 * @param MetadataEntities\DevicesModule\DeviceDynamicProperty|Array<MetadataEntities\DevicesModule\DeviceDynamicProperty> $property
+	 *
+	 * @throws Exceptions\InvalidState
 	 */
 	public function setValidState(
-		Metadata\Entities\DevicesModule\DeviceDynamicProperty|array $property,
+		MetadataEntities\DevicesModule\DeviceDynamicProperty|array $property,
 		bool $state,
 	): void
 	{

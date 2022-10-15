@@ -190,6 +190,7 @@ final class ModuleEntities implements Common\EventSubscriber
 	}
 
 	/**
+	 * @throws Exceptions\InvalidState
 	 * @throws Utils\JsonException
 	 * @throws MetadataExceptions\FileNotFound
 	 */

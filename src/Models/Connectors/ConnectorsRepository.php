@@ -18,12 +18,11 @@ namespace FastyBird\DevicesModule\Models\Connectors;
 use Doctrine\ORM;
 use Doctrine\Persistence;
 use FastyBird\DevicesModule\Entities;
-use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Queries;
 use IPub\DoctrineOrmQuery;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use Throwable;
-use function assert;
 use function is_array;
 
 /**
@@ -47,25 +46,25 @@ final class ConnectorsRepository
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param class-string $type
+	 *
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function findOneBy(
 		Queries\FindConnectors $queryObject,
 		string $type = Entities\Connectors\Connector::class,
 	): Entities\Connectors\Connector|null
 	{
-		/** @var mixed $connector */
-		$connector = $queryObject->fetchOne($this->getRepository($type));
-		assert($connector instanceof Entities\Connectors\Connector || $connector === null);
-
-		return $connector;
+		return $queryObject->fetchOne($this->getRepository($type));
 	}
 
 	/**
-	 * @param class-string $type
+	 * @phpstan-param class-string $type
 	 *
-	 * @return Array<Entities\Connectors\Connector>
+	 * @phpstan-return Array<Entities\Connectors\Connector>
 	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws Throwable
 	 */
 	public function findAllBy(
@@ -90,17 +89,16 @@ final class ConnectorsRepository
 	 * @phpstan-param class-string $type
 	 *
 	 * @phpstan-return DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector>
+	 *
+	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 */
 	public function getResultSet(
 		Queries\FindConnectors $queryObject,
 		string $type = Entities\Connectors\Connector::class,
 	): DoctrineOrmQuery\ResultSet
 	{
+		/** @var DoctrineOrmQuery\ResultSet<Entities\Connectors\Connector> $result */
 		$result = $queryObject->fetch($this->getRepository($type));
-
-		if (!$result instanceof DoctrineOrmQuery\ResultSet) {
-			throw new Exceptions\InvalidState('Result set for given query could not be loaded.');
-		}
 
 		return $result;
 	}
@@ -115,10 +113,6 @@ final class ConnectorsRepository
 		if (!isset($this->repository[$type])) {
 			/** @var ORM\EntityRepository<Entities\Connectors\Connector> $repository */
 			$repository = $this->managerRegistry->getRepository($type);
-
-			if (!$repository instanceof ORM\EntityRepository) {
-				throw new Exceptions\InvalidState('Entity repository could not be loaded');
-			}
 
 			$this->repository[$type] = $repository;
 		}

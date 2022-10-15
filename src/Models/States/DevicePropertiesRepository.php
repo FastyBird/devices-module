@@ -39,6 +39,10 @@ final class DevicePropertiesRepository
 	{
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function findOne(
 		MetadataEntities\DevicesModule\DeviceDynamicProperty|MetadataEntities\DevicesModule\DeviceMappedProperty|Entities\Devices\Properties\Dynamic|Entities\Devices\Properties\Mapped $property,
 	): States\DeviceProperty|null
@@ -65,6 +69,9 @@ final class DevicePropertiesRepository
 		return $this->repository->findOne($property);
 	}
 
+	/**
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function findOneById(Uuid\UuidInterface $id): States\DeviceProperty|null
 	{
 		if ($this->repository === null) {

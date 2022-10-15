@@ -26,6 +26,7 @@ use FastyBird\Metadata\Entities as MetadataEntities;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
+use function property_exists;
 use function strval;
 
 /**
@@ -49,6 +50,10 @@ final class ChannelPropertiesManager
 	{
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function create(
 		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		Utils\ArrayHash $values,
@@ -63,8 +68,8 @@ final class ChannelPropertiesManager
 		}
 
 		if (
-			$values->offsetExists('actualValue')
-			&& $values->offsetExists('expectedValue')
+			property_exists($values, 'actualValue')
+			&& property_exists($values, 'expectedValue')
 		) {
 			$actualValue = Utilities\ValueHelper::normalizeValue(
 				$property->getDataType(),
@@ -93,6 +98,10 @@ final class ChannelPropertiesManager
 		return $createdState;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function update(
 		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		States\ChannelProperty $state,
@@ -139,6 +148,10 @@ final class ChannelPropertiesManager
 		return $updatedState;
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 * @throws Exceptions\NotImplemented
+	 */
 	public function delete(
 		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
 		States\ChannelProperty $state,

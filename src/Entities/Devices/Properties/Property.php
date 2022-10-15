@@ -24,7 +24,6 @@ use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
-use Throwable;
 use function array_merge;
 
 /**
@@ -78,9 +77,6 @@ abstract class Property extends Entities\Property
 	 */
 	protected Common\Collections\Collection $children;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(
 		Entities\Devices\Device $device,
 		string $identifier,
@@ -128,10 +124,8 @@ abstract class Property extends Entities\Property
 
 		// Process all passed entities...
 		foreach ($children as $entity) {
-			if ($this->children->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->children->add($entity);
-			}
+			// ...and assign them to collection
+			$this->children->add($entity);
 		}
 	}
 
@@ -170,6 +164,10 @@ abstract class Property extends Entities\Property
 		return parent::isSettable();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidArgument
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setSettable(bool $settable): void
 	{
 		if (
@@ -193,6 +191,10 @@ abstract class Property extends Entities\Property
 		return parent::isQueryable();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidArgument
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setQueryable(bool $queryable): void
 	{
 		if (
@@ -217,6 +219,9 @@ abstract class Property extends Entities\Property
 		return parent::getDataType();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setDataType(MetadataTypes\DataType $dataType): void
 	{
 		if (
@@ -241,6 +246,9 @@ abstract class Property extends Entities\Property
 		return parent::getUnit();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setUnit(string|null $unit): void
 	{
 		if (
@@ -265,6 +273,10 @@ abstract class Property extends Entities\Property
 		return parent::getFormat();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidArgument
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setFormat(array|string|null $format): void
 	{
 		if (
@@ -289,6 +301,9 @@ abstract class Property extends Entities\Property
 		return parent::getInvalid();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setInvalid(string|null $invalid): void
 	{
 		if (
@@ -313,6 +328,9 @@ abstract class Property extends Entities\Property
 		return parent::getNumberOfDecimals();
 	}
 
+	/**
+	 * @throws Exceptions\InvalidState
+	 */
 	public function setNumberOfDecimals(int|null $numberOfDecimals): void
 	{
 		if (

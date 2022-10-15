@@ -36,10 +36,10 @@ use function in_array;
 class FindConnectors extends DoctrineOrmQuery\QueryObject
 {
 
-	/** @var Array<Closure> */
+	/** @var Array<Closure(ORM\QueryBuilder $qb): void> */
 	private array $filter = [];
 
-	/** @var Array<Closure> */
+	/** @var Array<Closure(ORM\QueryBuilder $qb): void> */
 	private array $select = [];
 
 	public function byId(Uuid\UuidInterface $id): void
@@ -56,6 +56,9 @@ class FindConnectors extends DoctrineOrmQuery\QueryObject
 		};
 	}
 
+	/**
+	 * @throws Exceptions\InvalidArgument
+	 */
 	public function sortBy(string $sortBy, string $sortDir = Common\Collections\Criteria::ASC): void
 	{
 		if (!in_array($sortDir, [Common\Collections\Criteria::ASC, Common\Collections\Criteria::DESC], true)) {

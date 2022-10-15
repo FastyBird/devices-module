@@ -22,6 +22,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
 use FastyBird\Metadata\Types as MetadataTypes;
+use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use Nette\Utils;
 use Psr\Log;
@@ -54,6 +55,9 @@ final class DeviceConnectionStateManager
 	}
 
 	/**
+	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
+	 * @throws DoctrineOrmQueryExceptions\QueryException
+	 * @throws Exceptions\InvalidState
 	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	public function setState(
@@ -171,6 +175,7 @@ final class DeviceConnectionStateManager
 	}
 
 	/**
+	 * @throws Exceptions\InvalidState
 	 * @throws Metadata\Exceptions\FileNotFound
 	 */
 	public function getState(

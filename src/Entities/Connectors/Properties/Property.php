@@ -19,7 +19,6 @@ use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
-use Throwable;
 use function array_merge;
 
 /**
@@ -58,9 +57,6 @@ abstract class Property extends Entities\Property
 	 */
 	protected Entities\Connectors\Connector $connector;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(
 		Entities\Connectors\Connector $connector,
 		string $identifier,

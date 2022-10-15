@@ -21,7 +21,6 @@ use FastyBird\DevicesModule\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
-use Throwable;
 
 /**
  * @ORM\Entity
@@ -98,9 +97,6 @@ class Channel implements Entities\Entity,
 	 */
 	private Entities\Devices\Device $device;
 
-	/**
-	 * @throws Throwable
-	 */
 	public function __construct(
 		Entities\Devices\Device $device,
 		string $identifier,
@@ -171,10 +167,8 @@ class Channel implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($properties as $entity) {
-			if ($this->properties->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->properties->add($entity);
-			}
+			// ...and assign them to collection
+			$this->properties->add($entity);
 		}
 	}
 
@@ -231,10 +225,8 @@ class Channel implements Entities\Entity,
 
 		// Process all passed entities...
 		foreach ($controls as $entity) {
-			if ($this->controls->contains($entity) === false) {
-				// ...and assign them to collection
-				$this->controls->add($entity);
-			}
+			// ...and assign them to collection
+			$this->controls->add($entity);
 		}
 	}
 

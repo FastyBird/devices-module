@@ -17,7 +17,8 @@ namespace FastyBird\DevicesModule\Models\Channels\Controls;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Models;
-use IPub\DoctrineCrud\Crud;
+use IPub\DoctrineCrud\Crud as DoctrineCrudCrud;
+use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Nette;
 use Nette\Utils;
 use function assert;
@@ -36,9 +37,9 @@ final class ControlsManager
 	use Nette\SmartObject;
 
 	/**
-	 * @param Crud\IEntityCrud<Entities\Channels\Controls\Control> $entityCrud
+	 * @param DoctrineCrudCrud\IEntityCrud<Entities\Channels\Controls\Control> $entityCrud
 	 */
-	public function __construct(private readonly Crud\IEntityCrud $entityCrud)
+	public function __construct(private readonly DoctrineCrudCrud\IEntityCrud $entityCrud)
 	{
 		// Entity CRUD for handling entities
 	}
@@ -53,6 +54,9 @@ final class ControlsManager
 		return $entity;
 	}
 
+	/**
+	 * @throws DoctrineCrudExceptions\InvalidArgumentException
+	 */
 	public function update(
 		Entities\Channels\Controls\Control $entity,
 		Utils\ArrayHash $values,
@@ -64,6 +68,9 @@ final class ControlsManager
 		return $entity;
 	}
 
+	/**
+	 * @throws DoctrineCrudExceptions\InvalidArgumentException
+	 */
 	public function delete(Entities\Channels\Controls\Control $entity): bool
 	{
 		// Delete entity from database

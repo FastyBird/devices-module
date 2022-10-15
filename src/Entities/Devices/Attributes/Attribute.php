@@ -246,4 +246,9 @@ class Attribute implements Entities\Entity,
 		];
 	}
 
+	public function getSource(): MetadataTypes\ModuleSource
+	{
+		return MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES);
+	}
+
 }

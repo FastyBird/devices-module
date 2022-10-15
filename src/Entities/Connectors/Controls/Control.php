@@ -17,6 +17,7 @@ namespace FastyBird\DevicesModule\Entities\Connectors\Controls;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
@@ -99,6 +100,11 @@ class Control implements Entities\Entity,
 
 			'owner' => $this->getConnector()->getOwnerId(),
 		];
+	}
+
+	public function getSource(): MetadataTypes\ModuleSource
+	{
+		return MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES);
 	}
 
 }

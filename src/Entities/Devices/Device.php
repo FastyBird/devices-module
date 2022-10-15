@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Entities\Devices;
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
+use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\SimpleAuth\Entities as SimpleAuthEntities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineDynamicDiscriminatorMap\Entities as DoctrineDynamicDiscriminatorMapEntities;
@@ -545,6 +546,11 @@ abstract class Device implements Entities\Entity,
 
 			'owner' => $this->getOwnerId(),
 		];
+	}
+
+	public function getSource(): MetadataTypes\ModuleSource
+	{
+		return MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES);
 	}
 
 }

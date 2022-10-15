@@ -548,7 +548,7 @@ abstract class Device implements Entities\Entity,
 		];
 	}
 
-	public function getSource(): MetadataTypes\ModuleSource
+	public function getSource(): MetadataTypes\ModuleSource|MetadataTypes\PluginSource|MetadataTypes\ConnectorSource
 	{
 		return MetadataTypes\ModuleSource::get(MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES);
 	}

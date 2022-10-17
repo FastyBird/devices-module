@@ -22,6 +22,7 @@ use FastyBird\DevicesModule\Queries;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\JsonApi\Schemas as JsonApiSchemas;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use IPub\SlimRouter\Routing;
 use Neomerx\JsonApi;
 use Throwable;
@@ -61,6 +62,9 @@ abstract class Property extends JsonApiSchemas\JsonApi
 	 * @phpstan-param T $resource
 	 *
 	 * @phpstan-return iterable<string, (string|bool|int|float|Array<string>|Array<int, (int|float|Array<int, (string|int|float|null)>|null)>|Array<int, Array<int, (string|Array<int, (string|int|float|bool)>|null)>>|null)>
+	 *
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

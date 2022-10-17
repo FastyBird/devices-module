@@ -20,6 +20,7 @@ use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
@@ -276,6 +277,7 @@ abstract class Property extends Entities\Property
 	/**
 	 * @throws Exceptions\InvalidArgument
 	 * @throws Exceptions\InvalidState
+	 * @throws MetadataExceptions\InvalidArgument
 	 */
 	public function setFormat(array|string|null $format): void
 	{

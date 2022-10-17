@@ -19,6 +19,7 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use Nette;
 use Nette\Utils;
 use Psr\Log;
@@ -51,7 +52,12 @@ final class ChannelPropertyStateManager
 
 	/**
 	 * @throws Exceptions\InvalidState
-	 * @throws Metadata\Exceptions\FileNotFound
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function setValue(
 		MetadataEntities\DevicesModule\ChannelDynamicProperty $property,
@@ -142,7 +148,12 @@ final class ChannelPropertyStateManager
 	 * @param MetadataEntities\DevicesModule\ChannelDynamicProperty|Array<MetadataEntities\DevicesModule\ChannelDynamicProperty> $property
 	 *
 	 * @throws Exceptions\InvalidState
-	 * @throws Metadata\Exceptions\FileNotFound
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function setValidState(
 		MetadataEntities\DevicesModule\ChannelDynamicProperty|array $property,

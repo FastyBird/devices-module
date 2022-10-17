@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\Types;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\Types;
 
 use Consistence\Enum\InvalidEnumValueException;
 use FastyBird\Metadata\Types as MetadataTypes;

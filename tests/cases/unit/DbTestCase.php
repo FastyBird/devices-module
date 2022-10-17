@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit;
 
 use DateTimeImmutable;
 use Doctrine\DBAL;
@@ -14,6 +14,8 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use function array_reverse;
 use function assert;
+use function constant;
+use function defined;
 use function fclose;
 use function feof;
 use function fgets;
@@ -126,12 +128,13 @@ abstract class DbTestCase extends TestCase
 	private function createContainer(): Nette\DI\Container
 	{
 		$rootDir = __DIR__ . '/../..';
+		$vendorDir = defined('FB_VENDOR_DIR') ? constant('FB_VENDOR_DIR') : $rootDir . '/../vendor';
 
 		$config = new Nette\Configurator();
 		$config->setTempDirectory(FB_TEMP_DIR);
 
 		$config->addParameters(['container' => ['class' => 'SystemContainer_' . md5((string) time())]]);
-		$config->addParameters(['appDir' => $rootDir, 'wwwDir' => $rootDir]);
+		$config->addParameters(['appDir' => $rootDir, 'wwwDir' => $rootDir, 'vendorDir' => $vendorDir]);
 
 		$config->addConfig(__DIR__ . '/../../common.neon');
 

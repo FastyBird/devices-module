@@ -22,6 +22,7 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\States;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
@@ -50,6 +51,8 @@ final class ConnectorPropertiesManager
 
 	/**
 	 * @throws Exceptions\NotImplemented
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function create(
 		MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|Entities\Connectors\Properties\Dynamic $property,
@@ -93,6 +96,8 @@ final class ConnectorPropertiesManager
 
 	/**
 	 * @throws Exceptions\NotImplemented
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function update(
 		MetadataEntities\DevicesModule\ConnectorDynamicProperty|MetadataEntities\DevicesModule\ConnectorMappedProperty|Entities\Connectors\Properties\Dynamic $property,

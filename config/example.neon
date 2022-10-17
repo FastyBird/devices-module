@@ -41,7 +41,7 @@ contributteTranslation:
     localeResolvers: []
     dirs:
         - %appDir%/../src/Translations
-        - %appDir%/../vendor/fastybird/json-api/src/Translations
+        - %vendorDir%/fastybird/json-api/src/Translations
 
 nettrineDbal:
     connection:

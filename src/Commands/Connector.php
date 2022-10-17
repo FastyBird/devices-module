@@ -25,6 +25,7 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\Exchange\Consumer as ExchangeConsumer;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Psr\EventDispatcher as PsrEventDispatcher;
@@ -189,7 +190,12 @@ class Connector extends Console\Command\Command
 	 * @throws Console\Exception\InvalidArgumentException
 	 * @throws BadMethodCallException
 	 * @throws Exceptions\Terminate
-	 * @throws Metadata\Exceptions\FileNotFound
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	private function executeConnector(Style\SymfonyStyle $io, Input\InputInterface $input): void
 	{
@@ -388,7 +394,12 @@ class Connector extends Console\Command\Command
 	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
 	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws Exceptions\InvalidState
-	 * @throws Metadata\Exceptions\FileNotFound
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	private function resetConnectorDevices(
 		MetadataEntities\DevicesModule\Connector $connector,

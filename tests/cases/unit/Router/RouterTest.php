@@ -1,8 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\Router;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\Router;
 
 use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
 use FastyBird\Metadata;
 use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
@@ -11,7 +12,6 @@ use IPub\SlimRouter;
 use Nette;
 use React\Http\Message\ServerRequest;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
 
 const VALID_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uZmFzdHliaXJkLmF1dGgtbW9kdWxlIiwianRpIjoiMjQ3MTBlOTYtYTZmYi00ZmM3LWFhMzAtNDc'
 	. 'yNzkwNWQzMDRjIiwiaWF0IjoxNTg1NzQyNDAwLCJleHAiOjE1ODU3NDk2MDAsInVzZXIiOiI1ZTc5ZWZiZi1iZDBkLTViN2MtNDZlZi1iZmJkZWZiZmJkMzQiLCJyb2xlcyI6WyJhZG1pb'

@@ -57,6 +57,11 @@ final class DevicesRepository implements Countable, IteratorAggregate
 
 	/**
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findById(Uuid\UuidInterface $id): MetadataEntities\DevicesModule\Device|null
 	{
@@ -69,6 +74,11 @@ final class DevicesRepository implements Countable, IteratorAggregate
 
 	/**
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $connector,
@@ -93,6 +103,11 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	 * @return Array<int, MetadataEntities\DevicesModule\Device>
 	 *
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
@@ -154,6 +169,11 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\Device>
 	 *
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -173,6 +193,11 @@ final class DevicesRepository implements Countable, IteratorAggregate
 	 * @param Array<string, mixed> $data
 	 *
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\MalformedInput
+	 * @throws MetadataExceptions\Logic
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,

@@ -23,6 +23,7 @@ use FastyBird\DevicesModule\States;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Exchange\Entities as ExchangeEntities;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use Nette;
 use Nette\Utils;
 use Psr\EventDispatcher as PsrEventDispatcher;
@@ -53,6 +54,8 @@ final class ChannelPropertiesManager
 	/**
 	 * @throws Exceptions\InvalidState
 	 * @throws Exceptions\NotImplemented
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function create(
 		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,
@@ -101,6 +104,8 @@ final class ChannelPropertiesManager
 	/**
 	 * @throws Exceptions\InvalidState
 	 * @throws Exceptions\NotImplemented
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function update(
 		MetadataEntities\DevicesModule\ChannelDynamicProperty|MetadataEntities\DevicesModule\ChannelMappedProperty|Entities\Channels\Properties\Dynamic|Entities\Channels\Properties\Mapped $property,

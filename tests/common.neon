@@ -44,9 +44,9 @@ services:
     - {factory: React\EventLoop\Loop::get}
 
     -
-        factory: Tests\Fixtures\Dummy\DummyConnectorFactory
+        factory: FastyBird\DevicesModule\Tests\Fixtures\Dummy\DummyConnectorFactory
         tags: [connector_type: dummy]
-    - {factory: Tests\Fixtures\Dummy\DummyConnectorSchema}
+    - {factory: FastyBird\DevicesModule\Tests\Fixtures\Dummy\DummyConnectorSchema}
 
 contributteTranslation:
     locales:
@@ -55,7 +55,7 @@ contributteTranslation:
     localeResolvers: []
     dirs:
         - %appDir%/../src/Translations
-        - %appDir%/../vendor/fastybird/json-api/src/Translations
+        - %vendorDir%/fastybird/json-api/src/Translations
 
 contributeFlysystem:
     filesystem:
@@ -74,7 +74,7 @@ nettrineDbal:
         user: root
         password: root
         charset: utf8
-        wrapperClass: \Tests\Tools\ConnectionWrapper
+        wrapperClass: \FastyBird\DevicesModule\Tests\Tools\ConnectionWrapper
 
         types:
             uuid_binary:
@@ -104,7 +104,7 @@ nettrineOrm:
 
 nettrineOrmAnnotations:
     mapping: [
-        Tests\Fixtures\Dummy: %appDir%/fixtures/dummy
+        FastyBird\DevicesModule\Tests\Fixtures\Dummy: %appDir%/fixtures/dummy
     ]
 
 fbSimpleAuth:

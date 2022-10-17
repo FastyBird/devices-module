@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\DataStorage;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\DataStorage;
 
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
 use League\Flysystem;
 use Nette;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
 
 final class ReaderTest extends DbTestCase
 {

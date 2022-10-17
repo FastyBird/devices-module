@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\DI;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\DI;
 
 use FastyBird\DevicesModule\Commands;
 use FastyBird\DevicesModule\Controllers;
@@ -11,11 +11,11 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Router;
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\DevicesModule\Subscribers;
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
 use Nette;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
 
-final class ServicesTest extends DbTestCase
+final class DevicesModuleExtensionTests extends DbTestCase
 {
 
 	/**

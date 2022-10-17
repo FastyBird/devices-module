@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\Models\Repositories;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\Models\Repositories;
 
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
 use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
 
 final class DevicesRepositoryTest extends DbTestCase
 {

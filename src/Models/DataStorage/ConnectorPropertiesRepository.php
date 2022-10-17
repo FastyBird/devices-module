@@ -65,6 +65,11 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	/**
 	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findById(
 		Uuid\UuidInterface $id,
@@ -80,6 +85,11 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	/**
 	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findByIdentifier(
 		Uuid\UuidInterface $connector,
@@ -111,6 +121,11 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	 *
 	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findAllByConnector(
 		Uuid\UuidInterface $connector,
@@ -180,6 +195,11 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	 *
 	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -200,6 +220,11 @@ final class ConnectorPropertiesRepository implements Countable, IteratorAggregat
 	 *
 	 * @throws Exceptions\InvalidState
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,

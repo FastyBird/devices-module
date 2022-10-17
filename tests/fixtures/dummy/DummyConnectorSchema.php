@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Fixtures\Dummy;
+namespace FastyBird\DevicesModule\Tests\Fixtures\Dummy;
 
 use FastyBird\DevicesModule\Schemas;
 use FastyBird\Metadata\Types as MetadataTypes;

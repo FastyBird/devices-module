@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\DataStorage;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\DataStorage;
 
 use FastyBird\DevicesModule;
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Exceptions;
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
+use FastyBird\DevicesModule\Tests\Tools;
 use League\Flysystem;
 use Nette;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
-use Tests\Tools;
 
 final class WriterTest extends DbTestCase
 {

@@ -1,17 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\Models\DataStorage;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\Models\DataStorage;
 
 use FastyBird\DevicesModule\DataStorage;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use League\Flysystem;
 use Nette;
 use Nette\Utils;
 use Ramsey\Uuid;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
 
 final class ConnectorsRepositoryTest extends DbTestCase
 {
@@ -36,6 +36,8 @@ final class ConnectorsRepositoryTest extends DbTestCase
 	/**
 	 * @throws Exceptions\InvalidArgument
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\Logic
 	 * @throws Nette\DI\MissingServiceException
 	 * @throws RuntimeException
 	 */

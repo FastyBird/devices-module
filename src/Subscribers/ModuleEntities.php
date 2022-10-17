@@ -23,9 +23,11 @@ use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Exchange\Entities as ExchangeEntities;
+use FastyBird\Exchange\Exceptions as ExchangeExceptions;
 use FastyBird\Exchange\Publisher as ExchangePublisher;
 use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
+use IPub\Phone\Exceptions as PhoneExceptions;
 use League\Flysystem;
 use Nette;
 use Nette\Utils;
@@ -191,8 +193,16 @@ final class ModuleEntities implements Common\EventSubscriber
 
 	/**
 	 * @throws Exceptions\InvalidState
+	 * @throws ExchangeExceptions\InvalidState
+	 * @throws PhoneExceptions\NoValidPhoneException
+	 * @throws PhoneExceptions\NoValidCountryException
 	 * @throws Utils\JsonException
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	private function publishEntity(Entities\Entity $entity, string $action): void
 	{

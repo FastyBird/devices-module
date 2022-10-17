@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\Subscribers;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\Subscribers;
 
 use Doctrine\ORM;
 use FastyBird\DevicesModule\DataStorage;

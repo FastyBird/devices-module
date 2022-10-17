@@ -1,17 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\Entities;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\Entities;
 
 use FastyBird\DevicesModule\Entities;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
 use Nette\Utils;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
 
 final class DeviceEntitiesTest extends DbTestCase
 {

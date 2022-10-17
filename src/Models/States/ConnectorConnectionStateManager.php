@@ -21,6 +21,7 @@ use FastyBird\DevicesModule\Models;
 use FastyBird\DevicesModule\Queries;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use IPub\DoctrineOrmQuery\Exceptions as DoctrineOrmQueryExceptions;
 use Nette;
@@ -58,7 +59,12 @@ final class ConnectorConnectionStateManager
 	 * @throws DoctrineOrmQueryExceptions\InvalidStateException
 	 * @throws DoctrineOrmQueryExceptions\QueryException
 	 * @throws Exceptions\InvalidState
-	 * @throws Metadata\Exceptions\FileNotFound
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function setState(
 		Entities\Connectors\Connector|MetadataEntities\DevicesModule\Connector $connector,
@@ -171,7 +177,12 @@ final class ConnectorConnectionStateManager
 
 	/**
 	 * @throws Exceptions\InvalidState
-	 * @throws Metadata\Exceptions\FileNotFound
+	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function getState(
 		Entities\Connectors\Connector|MetadataEntities\DevicesModule\Connector $connector,

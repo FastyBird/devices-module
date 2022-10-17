@@ -19,6 +19,7 @@ use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Models;
 use FastyBird\Metadata;
 use FastyBird\Metadata\Entities as MetadataEntities;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use Nette;
 use Nette\Utils;
 use Psr\Log;
@@ -50,6 +51,8 @@ final class DevicePropertyStateManager
 
 	/**
 	 * @throws Exceptions\InvalidState
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function setValue(
 		MetadataEntities\DevicesModule\DeviceDynamicProperty $property,
@@ -130,6 +133,8 @@ final class DevicePropertyStateManager
 	 * @param MetadataEntities\DevicesModule\DeviceDynamicProperty|Array<MetadataEntities\DevicesModule\DeviceDynamicProperty> $property
 	 *
 	 * @throws Exceptions\InvalidState
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function setValidState(
 		MetadataEntities\DevicesModule\DeviceDynamicProperty|array $property,

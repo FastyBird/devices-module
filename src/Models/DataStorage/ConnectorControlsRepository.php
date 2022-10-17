@@ -55,6 +55,11 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 
 	/**
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findById(
 		Uuid\UuidInterface $id,
@@ -71,6 +76,11 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	 * @return Array<int, MetadataEntities\DevicesModule\ConnectorControl>
 	 *
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function findAllByConnector(Uuid\UuidInterface $connector): array
 	{
@@ -132,6 +142,11 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	 * @return RecursiveArrayIterator<int, MetadataEntities\DevicesModule\ConnectorControl>
 	 *
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	public function getIterator(): RecursiveArrayIterator
 	{
@@ -151,6 +166,11 @@ final class ConnectorControlsRepository implements Countable, IteratorAggregate
 	 * @param Array<string, mixed> $data
 	 *
 	 * @throws MetadataExceptions\FileNotFound
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidData
+	 * @throws MetadataExceptions\InvalidState
+	 * @throws MetadataExceptions\Logic
+	 * @throws MetadataExceptions\MalformedInput
 	 */
 	private function getEntity(
 		Uuid\UuidInterface $id,

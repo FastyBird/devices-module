@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Fixtures\Dummy;
+namespace FastyBird\DevicesModule\Tests\Fixtures\Dummy;
 
 use FastyBird\DevicesModule\Connectors;
 use FastyBird\DevicesModule\Connectors\Connector;

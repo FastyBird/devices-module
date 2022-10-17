@@ -18,6 +18,7 @@ namespace FastyBird\DevicesModule\Utilities;
 use Consistence;
 use DateTime;
 use DateTimeInterface;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use Nette\Utils;
@@ -41,6 +42,9 @@ use const DATE_ATOM;
 final class ValueHelper
 {
 
+	/**
+	 * @throws MetadataExceptions\InvalidState
+	 */
 	public static function normalizeValue(
 		MetadataTypes\DataType $dataType,
 		bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null $value,

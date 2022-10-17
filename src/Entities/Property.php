@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FastyBird\DevicesModule\Exceptions;
 use FastyBird\DevicesModule\Utilities;
 use FastyBird\Metadata;
+use FastyBird\Metadata\Exceptions as MetadataExceptions;
 use FastyBird\Metadata\Types as MetadataTypes;
 use FastyBird\Metadata\ValueObjects as MetadataValueObjects;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
@@ -217,6 +218,9 @@ abstract class Property implements Entity,
 		$this->unit = $unit;
 	}
 
+	/**
+	 * @throws MetadataExceptions\InvalidArgument
+	 */
 	public function getFormat(): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null
 	{
 		return $this->buildFormat($this->format);
@@ -226,6 +230,7 @@ abstract class Property implements Entity,
 	 * @param string|Array<int, string>|Array<int, string|int|float|Array<int, string|int|float>|Utils\ArrayHash|null>|Array<int, Array<int, string|Array<int, string|int|float|bool>|Utils\ArrayHash|null>>|null $format
 	 *
 	 * @throws Exceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidArgument
 	 */
 	public function setFormat(array|string|null $format): void
 	{
@@ -360,6 +365,8 @@ abstract class Property implements Entity,
 
 	/**
 	 * @throws Exceptions\InvalidState
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function getValue(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
@@ -397,6 +404,8 @@ abstract class Property implements Entity,
 
 	/**
 	 * @throws Exceptions\InvalidState
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function getDefault(): bool|float|int|string|DateTimeInterface|MetadataTypes\ButtonPayload|MetadataTypes\SwitchPayload|null
 	{
@@ -436,6 +445,8 @@ abstract class Property implements Entity,
 	 * {@inheritDoc}
 	 *
 	 * @throws Exceptions\InvalidState
+	 * @throws MetadataExceptions\InvalidArgument
+	 * @throws MetadataExceptions\InvalidState
 	 */
 	public function toArray(): array
 	{
@@ -463,6 +474,9 @@ abstract class Property implements Entity,
 		return $data;
 	}
 
+	/**
+	 * @throws MetadataExceptions\InvalidArgument
+	 */
 	private function buildFormat(
 		string|null $format,
 	): MetadataValueObjects\StringEnumFormat|MetadataValueObjects\NumberRangeFormat|MetadataValueObjects\CombinedEnumFormat|null

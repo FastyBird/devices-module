@@ -18,10 +18,10 @@
         <properties>
             <property name="rootNamespaces" type="array">
                 <element key="src" value="FastyBird\DevicesModule"/>
-                <element key="tests/cases/unit" value="Tests\Cases\Unit"/>
-                <element key="tests/fixtures" value="Tests\Fixtures"/>
-                <element key="tests/fixtures/dummy" value="Tests\Fixtures\Dummy"/>
-                <element key="tests/tools" value="Tests\Tools"/>
+                <element key="tests/cases/unit" value="FastyBird\DevicesModule\Tests\Cases\Unit"/>
+                <element key="tests/fixtures" value="FastyBird\DevicesModule\Tests\Fixtures"/>
+                <element key="tests/fixtures/dummy" value="FastyBird\DevicesModule\Tests\Fixtures\Dummy"/>
+                <element key="tests/tools" value="FastyBird\DevicesModule\Tests\Tools"/>
             </property>
         </properties>
     </rule>

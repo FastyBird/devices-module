@@ -1,7 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Cases\Unit\Controllers;
+namespace FastyBird\DevicesModule\Tests\Cases\Unit\Controllers;
 
+use FastyBird\DevicesModule\Tests\Cases\Unit\DbTestCase;
+use FastyBird\DevicesModule\Tests\Tools;
 use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
@@ -11,8 +13,6 @@ use Nette;
 use Nette\Utils;
 use React\Http\Message\ServerRequest;
 use RuntimeException;
-use Tests\Cases\Unit\DbTestCase;
-use Tests\Tools;
 
 final class DeviceParentsV1Test extends DbTestCase
 {

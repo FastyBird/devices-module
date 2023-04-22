@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * Routes.php
+ * ApiRoutes.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -23,14 +23,14 @@ use FastyBird\SimpleAuth\Middleware as SimpleAuthMiddleware;
 use IPub\SlimRouter\Routing;
 
 /**
- * Module routes configuration
+ * Module API routes configuration
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Router
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class Routes
+class ApiRoutes
 {
 
 	public const URL_ITEM_ID = 'id';

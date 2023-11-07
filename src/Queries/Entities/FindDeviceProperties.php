@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FindDeviceControls.php
+ * FindDeviceProperties.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,10 +10,10 @@
  * @subpackage     Queries
  * @since          1.0.0
  *
- * @date           29.09.21
+ * @date           22.03.20
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use Closure;
 use Doctrine\Common;
@@ -25,15 +25,16 @@ use Ramsey\Uuid;
 use function in_array;
 
 /**
- * Find device controls entities query
+ * Find device properties entities query
  *
- * @extends  DoctrineOrmQuery\QueryObject<Entities\Devices\Controls\Control>
+ * @template T of Entities\Devices\Properties\Property
+ * @extends  DoctrineOrmQuery\QueryObject<T>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Queries
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class FindDeviceControls extends DoctrineOrmQuery\QueryObject
+class FindDeviceProperties extends DoctrineOrmQuery\QueryObject
 {
 
 	/** @var array<Closure(ORM\QueryBuilder $qb): void> */
@@ -45,14 +46,28 @@ class FindDeviceControls extends DoctrineOrmQuery\QueryObject
 	public function byId(Uuid\UuidInterface $id): void
 	{
 		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($id): void {
-			$qb->andWhere('c.id = :id')->setParameter('id', $id, Uuid\Doctrine\UuidBinaryType::NAME);
+			$qb->andWhere('p.id = :id')->setParameter('id', $id, Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
-	public function byName(string $name): void
+	public function byIdentifier(string $identifier): void
 	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($name): void {
-			$qb->andWhere('c.name = :name')->setParameter('name', $name);
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
+			$qb->andWhere('p.identifier = :identifier')->setParameter('identifier', $identifier);
+		};
+	}
+
+	public function startWithIdentifier(string $identifier): void
+	{
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
+			$qb->andWhere('p.identifier LIKE :identifier')->setParameter('identifier', $identifier . '%');
+		};
+	}
+
+	public function endWithIdentifier(string $identifier): void
+	{
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
+			$qb->andWhere('p.identifier LIKE :identifier')->setParameter('identifier', '%' . $identifier);
 		};
 	}
 
@@ -72,6 +87,21 @@ class FindDeviceControls extends DoctrineOrmQuery\QueryObject
 		};
 	}
 
+	public function forParent(Entities\Devices\Properties\Property $property): void
+	{
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($property): void {
+			$qb->andWhere('p.parent = :parent')
+				->setParameter('parent', $property->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+		};
+	}
+
+	public function byParentId(Uuid\UuidInterface $parentId): void
+	{
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($parentId): void {
+			$qb->andWhere('p.parent = :parent')->setParameter('parent', $parentId, Uuid\Doctrine\UuidBinaryType::NAME);
+		};
+	}
+
 	/**
 	 * @throws Exceptions\InvalidArgument
 	 */
@@ -87,7 +117,7 @@ class FindDeviceControls extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository<Entities\Devices\Controls\Control> $repository
+	 * @param ORM\EntityRepository<T> $repository
 	 */
 	protected function doCreateQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
@@ -101,13 +131,13 @@ class FindDeviceControls extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository<Entities\Devices\Controls\Control> $repository
+	 * @param ORM\EntityRepository<T> $repository
 	 */
 	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $repository->createQueryBuilder('c');
+		$qb = $repository->createQueryBuilder('p');
 		$qb->addSelect('device');
-		$qb->join('c.device', 'device');
+		$qb->join('p.device', 'device');
 
 		foreach ($this->filter as $modifier) {
 			$modifier($qb);
@@ -117,11 +147,11 @@ class FindDeviceControls extends DoctrineOrmQuery\QueryObject
 	}
 
 	/**
-	 * @param ORM\EntityRepository<Entities\Devices\Controls\Control> $repository
+	 * @param ORM\EntityRepository<T> $repository
 	 */
 	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $this->createBasicDql($repository)->select('COUNT(c.id)');
+		$qb = $this->createBasicDql($repository)->select('COUNT(p.id)');
 
 		foreach ($this->select as $modifier) {
 			$modifier($qb);

@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FindDeviceProperties.php
+ * FindConnectorProperties.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,10 +10,10 @@
  * @subpackage     Queries
  * @since          1.0.0
  *
- * @date           22.03.20
+ * @date           08.02.22
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use Closure;
 use Doctrine\Common;
@@ -25,16 +25,16 @@ use Ramsey\Uuid;
 use function in_array;
 
 /**
- * Find device properties entities query
+ * Find connector properties entities query
  *
- * @template T of Entities\Devices\Properties\Property
+ * @template T of Entities\Connectors\Properties\Property
  * @extends  DoctrineOrmQuery\QueryObject<T>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Queries
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class FindDeviceProperties extends DoctrineOrmQuery\QueryObject
+class FindConnectorProperties extends DoctrineOrmQuery\QueryObject
 {
 
 	/** @var array<Closure(ORM\QueryBuilder $qb): void> */
@@ -57,48 +57,19 @@ class FindDeviceProperties extends DoctrineOrmQuery\QueryObject
 		};
 	}
 
-	public function startWithIdentifier(string $identifier): void
+	public function forConnector(Entities\Connectors\Connector $connector): void
 	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
-			$qb->andWhere('p.identifier LIKE :identifier')->setParameter('identifier', $identifier . '%');
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($connector): void {
+			$qb->andWhere('connector.id = :connector')
+				->setParameter('connector', $connector->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
-	public function endWithIdentifier(string $identifier): void
+	public function byConnectorId(Uuid\UuidInterface $connectorId): void
 	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
-			$qb->andWhere('p.identifier LIKE :identifier')->setParameter('identifier', '%' . $identifier);
-		};
-	}
-
-	public function forDevice(Entities\Devices\Device $device): void
-	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($device): void {
-			$qb->andWhere('device.id = :device')
-				->setParameter('device', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
-		};
-	}
-
-	public function byDeviceId(Uuid\UuidInterface $deviceId): void
-	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($deviceId): void {
-			$qb->andWhere('device.id = :device')
-				->setParameter('device', $deviceId, Uuid\Doctrine\UuidBinaryType::NAME);
-		};
-	}
-
-	public function forParent(Entities\Devices\Properties\Property $property): void
-	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($property): void {
-			$qb->andWhere('p.parent = :parent')
-				->setParameter('parent', $property->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
-		};
-	}
-
-	public function byParentId(Uuid\UuidInterface $parentId): void
-	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($parentId): void {
-			$qb->andWhere('p.parent = :parent')->setParameter('parent', $parentId, Uuid\Doctrine\UuidBinaryType::NAME);
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($connectorId): void {
+			$qb->andWhere('connector.id = :connector')
+				->setParameter('connector', $connectorId, Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
@@ -136,8 +107,8 @@ class FindDeviceProperties extends DoctrineOrmQuery\QueryObject
 	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
 		$qb = $repository->createQueryBuilder('p');
-		$qb->addSelect('device');
-		$qb->join('p.device', 'device');
+		$qb->addSelect('connector');
+		$qb->join('p.connector', 'connector');
 
 		foreach ($this->filter as $modifier) {
 			$modifier($qb);

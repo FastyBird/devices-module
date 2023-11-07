@@ -13,7 +13,7 @@
  * @date           16.04.21
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use Closure;
 use Doctrine\Common;

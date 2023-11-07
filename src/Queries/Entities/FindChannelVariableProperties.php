@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FindConnectorVariableProperties.php
+ * FindChannelVariableProperties.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,24 +10,24 @@
  * @subpackage     Queries
  * @since          1.0.0
  *
- * @date           07.08.23
+ * @date           25.11.18
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use FastyBird\Module\Devices\Entities;
 
 /**
- * Find connector variable properties entities query
+ * Find channel dynamic properties entities query
  *
- * @template T of Entities\Connectors\Properties\Variable
- * @extends  FindConnectorProperties<T>
+ * @template T of Entities\Channels\Properties\Variable
+ * @extends  FindChannelProperties<T>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Queries
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class FindConnectorVariableProperties extends FindConnectorProperties
+class FindChannelVariableProperties extends FindChannelProperties
 {
 
 }

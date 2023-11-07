@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FindConnectorDynamicProperties.php
+ * FindConnectorVariableProperties.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -13,21 +13,21 @@
  * @date           07.08.23
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use FastyBird\Module\Devices\Entities;
 
 /**
- * Find connector dynamic properties entities query
+ * Find connector variable properties entities query
  *
- * @template T of Entities\Connectors\Properties\Dynamic
+ * @template T of Entities\Connectors\Properties\Variable
  * @extends  FindConnectorProperties<T>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Queries
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class FindConnectorDynamicProperties extends FindConnectorProperties
+class FindConnectorVariableProperties extends FindConnectorProperties
 {
 
 }

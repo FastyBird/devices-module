@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FindDeviceMappedProperties.php
+ * FindChannelMappedProperties.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,24 +10,24 @@
  * @subpackage     Queries
  * @since          1.0.0
  *
- * @date           05.08.20
+ * @date           25.11.18
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use FastyBird\Module\Devices\Entities;
 
 /**
- * Find device mapped properties entities query
+ * Find channel dynamic properties entities query
  *
- * @template T of Entities\Devices\Properties\Mapped
- * @extends  FindDeviceProperties<T>
+ * @template T of Entities\Channels\Properties\Mapped
+ * @extends  FindChannelProperties<T>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Queries
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class FindDeviceMappedProperties extends FindDeviceProperties
+class FindChannelMappedProperties extends FindChannelProperties
 {
 
 }

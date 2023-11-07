@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FindDeviceDynamicProperties.php
+ * FindDeviceVariableProperties.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -13,21 +13,21 @@
  * @date           05.08.20
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use FastyBird\Module\Devices\Entities;
 
 /**
- * Find device dynamic properties entities query
+ * Find device variable properties entities query
  *
- * @template T of Entities\Devices\Properties\Dynamic
+ * @template T of Entities\Devices\Properties\Variable
  * @extends  FindDeviceProperties<T>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Queries
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class FindDeviceDynamicProperties extends FindDeviceProperties
+class FindDeviceVariableProperties extends FindDeviceProperties
 {
 
 }

@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * FindChannelProperties.php
+ * FindChannels.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -10,10 +10,10 @@
  * @subpackage     Queries
  * @since          1.0.0
  *
- * @date           25.11.18
+ * @date           30.07.18
  */
 
-namespace FastyBird\Module\Devices\Queries;
+namespace FastyBird\Module\Devices\Queries\Entities;
 
 use Closure;
 use Doctrine\Common;
@@ -25,16 +25,16 @@ use Ramsey\Uuid;
 use function in_array;
 
 /**
- * Find channel properties entities query
+ * Find device channels entities query
  *
- * @template T of Entities\Channels\Properties\Property
+ * @template T of Entities\Channels\Channel
  * @extends  DoctrineOrmQuery\QueryObject<T>
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Queries
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class FindChannelProperties extends DoctrineOrmQuery\QueryObject
+class FindChannels extends DoctrineOrmQuery\QueryObject
 {
 
 	/** @var array<Closure(ORM\QueryBuilder $qb): void> */
@@ -46,59 +46,70 @@ class FindChannelProperties extends DoctrineOrmQuery\QueryObject
 	public function byId(Uuid\UuidInterface $id): void
 	{
 		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($id): void {
-			$qb->andWhere('p.id = :id')->setParameter('id', $id, Uuid\Doctrine\UuidBinaryType::NAME);
+			$qb->andWhere('ch.id = :id')->setParameter('id', $id, Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
 	public function byIdentifier(string $identifier): void
 	{
 		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
-			$qb->andWhere('p.identifier = :identifier')->setParameter('identifier', $identifier);
+			$qb->andWhere('ch.identifier = :identifier')->setParameter('identifier', $identifier);
 		};
 	}
 
 	public function startWithIdentifier(string $identifier): void
 	{
 		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
-			$qb->andWhere('p.identifier LIKE :identifier')->setParameter('identifier', $identifier . '%');
+			$qb->andWhere('ch.identifier LIKE :identifier')->setParameter('identifier', $identifier . '%');
 		};
 	}
 
 	public function endWithIdentifier(string $identifier): void
 	{
 		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($identifier): void {
-			$qb->andWhere('p.identifier LIKE :identifier')->setParameter('identifier', '%' . $identifier);
+			$qb->andWhere('ch.identifier LIKE :identifier')->setParameter('identifier', '%' . $identifier);
 		};
 	}
 
-	public function forChannel(Entities\Channels\Channel $channel): void
+	public function forDevice(Entities\Devices\Device $device): void
 	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($channel): void {
-			$qb->andWhere('channel.id = :channel')
-				->setParameter('channel', $channel->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($device): void {
+			$qb->andWhere('device.id = :device')
+				->setParameter('device', $device->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
-	public function byChannelId(Uuid\UuidInterface $channelId): void
+	public function byDeviceId(Uuid\UuidInterface $deviceId): void
 	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($channelId): void {
-			$qb->andWhere('channel.id = :channel')
-				->setParameter('channel', $channelId, Uuid\Doctrine\UuidBinaryType::NAME);
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($deviceId): void {
+			$qb->andWhere('device.id = :deviceId')
+				->setParameter('deviceId', $deviceId, Uuid\Doctrine\UuidBinaryType::NAME);
 		};
 	}
 
-	public function forParent(Entities\Channels\Properties\Property $property): void
+	public function byDeviceIdentifier(string $deviceIdentifier): void
 	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($property): void {
-			$qb->andWhere('p.parent = :parent')
-				->setParameter('parent', $property->getId(), Uuid\Doctrine\UuidBinaryType::NAME);
+		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($deviceIdentifier): void {
+			$qb->andWhere('device.identifier = :deviceIdentifier')
+				->setParameter('deviceIdentifier', $deviceIdentifier);
 		};
 	}
 
-	public function byParentId(Uuid\UuidInterface $parentId): void
+	public function withProperties(): void
 	{
-		$this->filter[] = static function (ORM\QueryBuilder $qb) use ($parentId): void {
-			$qb->andWhere('p.parent = :parent')->setParameter('parent', $parentId, Uuid\Doctrine\UuidBinaryType::NAME);
+		$this->filter[] = static function (ORM\QueryBuilder $qb): void {
+			$qb->andWhere('SIZE(ch.properties) <> 0');
+		};
+	}
+
+	public function withSettableProperties(): void
+	{
+		$this->select[] = static function (ORM\QueryBuilder $qb): void {
+			$qb->join('ch.properties', 'properties');
+		};
+
+		$this->filter[] = static function (ORM\QueryBuilder $qb): void {
+			$qb->andWhere('properties.settable = :settable')->setParameter('settable', true);
 		};
 	}
 
@@ -135,9 +146,9 @@ class FindChannelProperties extends DoctrineOrmQuery\QueryObject
 	 */
 	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $repository->createQueryBuilder('p');
-		$qb->addSelect('channel');
-		$qb->join('p.channel', 'channel');
+		$qb = $repository->createQueryBuilder('ch');
+		$qb->addSelect('device');
+		$qb->join('ch.device', 'device');
 
 		foreach ($this->filter as $modifier) {
 			$modifier($qb);
@@ -151,7 +162,7 @@ class FindChannelProperties extends DoctrineOrmQuery\QueryObject
 	 */
 	protected function doCreateCountQuery(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $this->createBasicDql($repository)->select('COUNT(p.id)');
+		$qb = $this->createBasicDql($repository)->select('COUNT(ch.id)');
 
 		foreach ($this->select as $modifier) {
 			$modifier($qb);

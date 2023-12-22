@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * Initialize.php
+ * Install.php
  *
  * @license        More in LICENSE.md
  * @copyright      https://www.fastybird.com
@@ -27,17 +27,17 @@ use Symfony\Component\Console\Style;
 use Throwable;
 
 /**
- * Module initialize command
+ * Module install command
  *
  * @package        FastyBird:DevicesModule!
  * @subpackage     Commands
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-class Initialize extends Console\Command\Command
+class Install extends Console\Command\Command
 {
 
-	public const NAME = 'fb:devices-module:initialize';
+	public const NAME = 'fb:devices-module:install';
 
 	public function __construct(
 		private readonly Models\Configuration\Builder $configurationBuilder,
@@ -56,7 +56,7 @@ class Initialize extends Console\Command\Command
 	{
 		$this
 			->setName(self::NAME)
-			->setDescription('Devices module initialization');
+			->setDescription('Devices module installer');
 	}
 
 	/**
@@ -73,9 +73,9 @@ class Initialize extends Console\Command\Command
 		$io = new Style\SymfonyStyle($input, $output);
 
 		if ($input->getOption('quiet') === false) {
-			$io->title($this->translator->translate('//devices-module.cmd.initialize.title'));
+			$io->title($this->translator->translate('//devices-module.cmd.install.title'));
 
-			$io->note($this->translator->translate('//devices-module.cmd.initialize.subtitle'));
+			$io->note($this->translator->translate('//devices-module.cmd.install.subtitle'));
 		}
 
 		if ($input->getOption('no-interaction') === false) {
@@ -97,7 +97,7 @@ class Initialize extends Console\Command\Command
 			$this->configurationBuilder->clean();
 
 			if ($input->getOption('quiet') === false) {
-				$io->success($this->translator->translate('//devices-module.cmd.initialize.messages.success'));
+				$io->success($this->translator->translate('//devices-module.cmd.install.messages.success'));
 			}
 
 			return Console\Command\Command::SUCCESS;
@@ -105,12 +105,12 @@ class Initialize extends Console\Command\Command
 			// Log caught exception
 			$this->logger->error('An unhandled error occurred', [
 				'source' => MetadataTypes\ModuleSource::SOURCE_MODULE_DEVICES,
-				'type' => 'command',
+				'type' => 'initialize-cmd',
 				'exception' => BootstrapHelpers\Logger::buildException($ex),
 			]);
 
 			if ($input->getOption('quiet') === false) {
-				$io->error($this->translator->translate('//devices-module.cmd.initialize.messages.error'));
+				$io->error($this->translator->translate('//devices-module.cmd.install.messages.error'));
 			}
 
 			return Console\Command\Command::FAILURE;
@@ -134,7 +134,7 @@ class Initialize extends Console\Command\Command
 		}
 
 		if ($input->getOption('quiet') === false) {
-			$io->section($this->translator->translate('//devices-module.cmd.initialize.info.database'));
+			$io->section($this->translator->translate('//devices-module.cmd.install.info.database'));
 		}
 
 		$databaseCmd = $symfonyApp->find('orm:schema-tool:update');
@@ -146,7 +146,7 @@ class Initialize extends Console\Command\Command
 		if ($result !== Console\Command\Command::SUCCESS) {
 			if ($input->getOption('quiet') === false) {
 				$io->error(
-					$this->translator->translate('//devices-module.cmd.initialize.messages.initialisationFailed'),
+					$this->translator->translate('//devices-module.cmd.install.messages.initialisationFailed'),
 				);
 			}
 
@@ -161,14 +161,14 @@ class Initialize extends Console\Command\Command
 
 		if ($result !== 0) {
 			if ($input->getOption('quiet') === false) {
-				$io->error($this->translator->translate('//devices-module.cmd.initialize.messages.databaseFailed'));
+				$io->error($this->translator->translate('//devices-module.cmd.install.messages.databaseFailed'));
 			}
 
 			return;
 		}
 
 		if ($input->getOption('quiet') === false) {
-			$io->success($this->translator->translate('//devices-module.cmd.initialize.messages.databaseReady'));
+			$io->success($this->translator->translate('//devices-module.cmd.install.messages.databaseReady'));
 		}
 	}
 

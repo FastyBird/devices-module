@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "set"
+      ]
+    },
+    "channel": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Channel unique uuid v4 identifier"
+    },
+    "control": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Channel control unique uuid v4 identifier"
+    },
+    "expected_value": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "required": [
+    "action",
+    "channel",
+    "control"
+  ]
+}

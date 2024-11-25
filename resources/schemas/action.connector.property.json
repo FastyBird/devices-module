@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "get",
+        "set"
+      ]
+    },
+    "connector": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Connector unique uuid v4 identifier"
+    },
+    "property": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Connector property unique uuid v4 identifier"
+    }
+  },
+  "if": {
+    "properties": {
+      "action": {
+        "const": "get"
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "action",
+      "connector",
+      "property"
+    ]
+  },
+  "else": {
+    "if": {
+      "properties": {
+        "action": {
+          "const": "set"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "set": {
+          "type": "object",
+          "properties": {
+            "actual_value": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "description": "Property actual value to be set into property"
+            },
+            "expected_value": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "description": "Property expected value to be set into property"
+            }
+          },
+          "oneOf": [
+            {
+              "required": [
+                "actual_value"
+              ]
+            },
+            {
+              "required": [
+                "expected_value"
+              ]
+            },
+            {
+              "required": [
+                "actual_value",
+                "expected_value"
+              ]
+            }
+          ]
+        },
+        "write": {
+          "type": "object",
+          "properties": {
+            "actual_value": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "description": "Property actual value to be written into property"
+            },
+            "expected_value": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "description": "Property expected value to be written into property"
+            }
+          },
+          "oneOf": [
+            {
+              "required": [
+                "actual_value"
+              ]
+            },
+            {
+              "required": [
+                "expected_value"
+              ]
+            },
+            {
+              "required": [
+                "actual_value",
+                "expected_value"
+              ]
+            }
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "action",
+            "connector",
+            "property",
+            "set"
+          ]
+        },
+        {
+          "required": [
+            "action",
+            "connector",
+            "property",
+            "write"
+          ]
+        }
+      ]
+    }
+  }
+}
